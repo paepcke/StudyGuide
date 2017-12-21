@@ -1,0 +1,216 @@
+0
+00:00:00,620 --> 00:00:04,710
+In this section, I want to add the idea of variables to code.
+
+1
+00:00:04,710 --> 00:00:08,420
+A variable in the computer is sort of like a box.
+
+2
+00:00:08,420 --> 00:00:10,740
+So, here, if I have code like this where I
+
+3
+00:00:10,740 --> 00:00:14,850
+say x is equal to 7, semicolon, what that means is
+
+4
+00:00:14,850 --> 00:00:17,666
+there&#39;s a box in the computer labeled x, as I&#39;ve
+
+5
+00:00:17,666 --> 00:00:20,480
+drawn here, and this just stores a 7 into that box.
+
+6
+00:00:20,480 --> 00:00:22,550
+Or we could store any value we wanted.
+
+7
+00:00:22,550 --> 00:00:26,990
+Then later in the code, if wherever an x appears, the computer
+
+8
+00:00:26,990 --> 00:00:30,050
+knows to use 7 or whatever it is I put in there.
+
+9
+00:00:30,050 --> 00:00:32,100
+So in effect, the variable becomes sort of a,
+
+10
+00:00:32,100 --> 00:00:35,740
+a convenient shorthand for whatever value I want to use.
+
+11
+00:00:35,740 --> 00:00:39,790
+So let me show you how this is going to work in typically in CS101.
+
+12
+00:00:39,790 --> 00:00:44,520
+I&#39;ll have a line like this, x equals 7, so that just puts a 7 in the box.
+
+13
+00:00:45,520 --> 00:00:48,629
+And then on the later lines, I will use that variable.
+
+14
+00:00:48,629 --> 00:00:54,006
+So I&#39;ll say, here it says print x or lucky x or actually, x is x.
+
+15
+00:00:54,006 --> 00:00:56,010
+So let me just try running that.
+
+16
+00:00:56,010 --> 00:00:59,180
+And what you see is the 7 just shows up through here because any
+
+17
+00:00:59,180 --> 00:01:03,194
+place I used x, the computer is pulling the value out of the box.
+
+18
+00:01:03,194 --> 00:01:04,279
+This makes it convenient to change.
+
+19
+00:01:04,279 --> 00:01:07,183
+So for example, if I change this to 4x equals 42
+
+20
+00:01:07,183 --> 00:01:10,990
+and run it, now the 42 shows up all over the place.
+
+21
+00:01:10,990 --> 00:01:12,430
+Or works for strings too.
+
+22
+00:01:12,430 --> 00:01:15,420
+I could say x equals quote hi quote, and
+
+23
+00:01:15,420 --> 00:01:18,180
+run it, and we get the hi all through there.
+
+24
+00:01:18,180 --> 00:01:23,930
+I should mention this use of equals to in the computer just puts a value in the box.
+
+25
+00:01:23,930 --> 00:01:26,150
+That&#39;s the only way we are going to use it.
+
+26
+00:01:26,150 --> 00:01:28,394
+In mathematics, the equals sign has a
+
+27
+00:01:28,394 --> 00:01:31,450
+different, and kind of a, a stronger meaning.
+
+28
+00:01:31,450 --> 00:01:35,028
+In mathematics, the equals sign means the two values are the same
+
+29
+00:01:35,028 --> 00:01:38,293
+at all times, and that is not what it means in the computer.
+
+30
+00:01:38,293 --> 00:01:42,280
+In, in this use it is a simpler, just assign value into box.
+
+31
+00:01:43,770 --> 00:01:47,050
+So let me try let me work this little problem.
+
+32
+00:01:49,050 --> 00:01:52,310
+So this says you know, write code to produce this
+
+33
+00:01:52,310 --> 00:01:55,150
+output, Alice Alice Alice, I had a crush on Alice.
+
+34
+00:01:55,150 --> 00:01:57,680
+And it says, do it in a way that we
+
+35
+00:01:57,680 --> 00:02:00,620
+can change the name very easily, so use a variable.
+
+36
+00:02:00,620 --> 00:02:02,900
+I put a little code here to start just to remind you of the syntax,
+
+37
+00:02:02,900 --> 00:02:07,320
+but it, this doesn&#39;t do anything like we, want we wanted, so I&#39;ll fix it.
+
+38
+00:02:07,320 --> 00:02:13,393
+So, I&#39;m going to say x is equal to quote Alice.
+
+39
+00:02:13,393 --> 00:02:17,020
+And then inside here, I&#39;ll just say x, x.
+
+40
+00:02:17,020 --> 00:02:20,300
+X will just try, this is not a complete solution, we&#39;ll just try it as we go.
+
+41
+00:02:21,410 --> 00:02:23,787
+So if I run that, right, we get the three Alices
+
+42
+00:02:23,787 --> 00:02:25,935
+and then I had this, I had a crush on thing.
+
+43
+00:02:25,935 --> 00:02:35,030
+So I&#39;ll say print quote, I had a crush on, comma and I&#39;ll say, x.
+
+44
+00:02:35,030 --> 00:02:38,370
+So that way, it&#39;ll just use whatever we had in the box there.
+
+45
+00:02:38,370 --> 00:02:41,118
+So if I run that, all right, that looks right.
+
+46
+00:02:41,118 --> 00:02:44,039
+And then this has the, the the desired feature that if
+
+47
+00:02:44,039 --> 00:02:46,421
+I changed this to like, if I just say x equals Zoe
+
+48
+00:02:46,421 --> 00:02:48,624
+at the top, then it just says Zoe, or I could
+
+49
+00:02:48,624 --> 00:02:52,047
+say, you know, Bob or whatever, or you know, bleh, let&#39;s say.
+
+50
+00:02:52,047 --> 00:02:53,429
+Then like, it just shows up all [INAUDIBLE].
+
+51
+00:02:53,429 --> 00:02:56,327
+So this shows those kind of shorthand nature of variables
+
+52
+00:02:56,327 --> 00:02:58,930
+and that&#39;s the way we&#39;re going to use them in CS101.
+
+53
+00:02:58,930 --> 00:03:03,740
+So, that&#39;s how to use variables in code, so try it yourself now in the exercises.
+
