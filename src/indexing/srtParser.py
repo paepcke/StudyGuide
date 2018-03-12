@@ -29,6 +29,11 @@
 
 #remove words with count of 1
 #find snippet of when this explanation started
+#doc2vec for query and word and word2vec for word queries(word vectors addition)
+#testing: look at course for potential queries and good time slots
+#tfidf: check about scikit matrix and vector for tfidf
+#tfidf for stop words
+#k-means in the future for clustering
 
 import re,sys
 import pysubs2
@@ -116,7 +121,7 @@ class parseSrt:
         self.documentLen = 4 #sets docLen to 4 lines
         self.corpus = []
 
-        self.tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), min_df = 0, stop_words = 'english')
+        self.tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), min_df = 0, max_df = 0.9, stop_words = 'english')
 
 
     def setupData(self, fileName):
@@ -133,6 +138,10 @@ class parseSrt:
     #idf gives  the inverse of number of times word appears in other documents, get words with high idf
     #words with just high tf
     #phrase queries with tfidf to match highest score....
+    def calcCosineSim(self, queryTfidfVec, tfidfMatrix, top_n = 10):
+        cosine_similarities = linear_kernel(queryTfidfVec, tfidfMatrix).flatten()
+        related_docs_indices = [i for i in cosine_similarities.argsort()[::-1]]
+        return [(index, cosine_similarities[index]) for index in related_docs_indices][0:top_n]
 
     def calcTFidfQuery(self, query):
         response = self.tfidf.transform([query])
@@ -142,11 +151,15 @@ class parseSrt:
         #print feature_names
         for col in response.nonzero()[1]:
             print feature_names[col], ', ', response[0, col]
+        return response
 
     def calcTFidf(self):
         tfidf_matrix =  self.tfidf.fit_transform(self.corpus)
         feature_names = self.tfidf.get_feature_names()
         dense = tfidf_matrix.todense()
+        stopWordsSet = self.tfidf.get_stop_words()
+        print 'Stop Words'
+        print stopWordsSet
 
         currDoc = dense[1].tolist()[0] #filter out to get doc (i+1)
         phrase_scores = [pair for pair in zip(range(0, len(currDoc)), currDoc) if pair[1] > 0] #pair of featurename to feature score
@@ -164,7 +177,12 @@ class parseSrt:
         print len(feature_names)
         print len(currDoc)
         print phrase_scores
-        self.calcTFidfQuery("This is an MIT srt on computer science")
+        response = self.calcTFidfQuery("This is an MIT srt on computer science")
+        topChoices = self.calcCosineSim(response, tfidf_matrix)
+
+        print topChoices
+        for choice in topChoices:
+            print self.corpus[choice[0]]
 
     def getRandomQuery(self):
         word = random.choice(list(self.uniqueVocab))
