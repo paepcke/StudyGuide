@@ -1,0 +1,1036 @@
+1
+00:00:00,000 --> 00:00:04,642
+So in this video, we talk about wireless
+networking, and why wireless systems turn
+
+2
+00:00:04,642 --> 00:00:07,680
+out in practice to be really different from
+wired ones.
+
+3
+00:00:07,680 --> 00:00:11,389
+One of the big challenges you see today on
+the Internet is, we all want to connect
+
+4
+00:00:11,389 --> 00:00:15,754
+wirelessly, yet there have been a lot of
+assumptions made historically that
+
+5
+00:00:15,754 --> 00:00:19,817
+networks should behave like wired ones.
+And actually reaching that to wireless is
+
+6
+00:00:19,817 --> 00:00:23,829
+often difficult, which is why we see poor
+performance, say, on your laptop using
+
+7
+00:00:23,829 --> 00:00:26,091
+WiFi.
+So in this video I'm going to talk really
+
+8
+00:00:26,092 --> 00:00:29,604
+about why is wireless different?
+What are these properties that make it so
+
+9
+00:00:29,605 --> 00:00:32,349
+challenging and so difficult?
+And why does it sometimes seem to be
+
+10
+00:00:32,348 --> 00:00:34,941
+flaky?
+So in the context of this video, I'm going
+
+11
+00:00:34,941 --> 00:00:38,590
+to focus on access point networks, and by
+that I mean.
+
+12
+00:00:38,590 --> 00:00:44,030
+Wireless networks, where, say you have your
+laptop,
+
+13
+00:00:44,030 --> 00:00:49,909
+with some WiFi card,
+and it connects to
+
+14
+00:00:49,909 --> 00:00:54,740
+some access point,
+which then has a wired connection to the
+
+15
+00:00:54,740 --> 00:01:01,166
+internet .
+And this access point is serving
+
+16
+00:01:01,166 --> 00:01:04,980
+- and it's often multiple devices,
+like, here's your phone.
+
+17
+00:01:05,171 --> 00:01:12,271
+This is different than say a mobile phone
+network or, you know, a 3G or 4G, which
+
+18
+00:01:12,271 --> 00:01:14,858
+are managed very differently.
+Much more tightly controlled.
+
+19
+00:01:14,858 --> 00:01:18,688
+All kinds of different issues emerge in
+those systems.
+
+20
+00:01:18,688 --> 00:01:24,545
+Here we're just going to focus on open,
+open standards, access point networks, you
+
+21
+00:01:24,545 --> 00:01:27,157
+know, things which you just plug in at
+home, connect to your wire connection to
+
+22
+00:01:27,157 --> 00:01:31,323
+bridge to the broader Internet.
+So the first thing to realize about
+
+23
+00:01:31,323 --> 00:01:35,010
+wireless is that, unlike in a wired
+network where the medium, the wire, is
+
+24
+00:01:35,010 --> 00:01:38,800
+completely under your control -
+there's nobody fighting you for the
+
+25
+00:01:38,800 --> 00:01:41,694
+capacity of that wire.
+It's for you and you alone.
+
+26
+00:01:41,694 --> 00:01:45,627
+In the wireless environment you're using
+space, right you're using the
+
+27
+00:01:45,627 --> 00:01:49,674
+electromagnetic spectrum around you which
+everyone else might be wanting to use as
+
+28
+00:01:49,674 --> 00:01:52,547
+well.
+It's not a controlled medium.
+
+29
+00:01:52,547 --> 00:01:56,441
+It's a shared medium.
+And so in practice what this means is that
+
+30
+00:01:56,441 --> 00:02:00,449
+it is very tightly regulated.
+So this is a map of how, just in the
+
+31
+00:02:00,449 --> 00:02:05,751
+United States, radio spectrum is allocated.
+So radio spectrum - here's kind of the big
+
+32
+00:02:05,751 --> 00:02:08,831
+picture of RF.
+Or not of RF but of electromagnetic
+
+33
+00:02:08,830 --> 00:02:13,063
+spectrums down from very low frequency
+stuff all the way up to cosmic rays.
+
+34
+00:02:13,063 --> 00:02:16,575
+That's this big thing down at the bottom.
+So this is something you can get from the
+
+35
+00:02:16,575 --> 00:02:19,726
+US Department of Commerce, this is a free
+government document.
+
+36
+00:02:19,726 --> 00:02:23,178
+And so generally, data communication is
+occurring in this region down here,
+
+37
+00:02:23,178 --> 00:02:26,508
+different kinds of communication.
+Either data communication, voice
+
+38
+00:02:26,508 --> 00:02:30,026
+communication, etc.
+Up above, what's in this picture here,
+
+39
+00:02:30,026 --> 00:02:35,690
+this yellow region, is infrared, and then
+here's visible light here.
+
+40
+00:02:35,690 --> 00:02:40,505
+So,
+here's visible light, here's ultra-violet,
+
+41
+00:02:40,505 --> 00:02:44,067
+x-rays, gamma rays, et cetera.
+But RF is down here.
+
+42
+00:02:44,067 --> 00:02:47,110
+So below visible light.
+Lower frequencies.
+
+43
+00:02:47,110 --> 00:02:51,704
+And here's what the spectrum looks like.
+And so you can see there's a huge chunk of
+
+44
+00:02:51,704 --> 00:02:55,012
+spectrum where it's going all the way from
+three kilohertz.
+
+45
+00:02:55,012 --> 00:03:01,675
+So when you have 3000 waves per second, up
+to 300 gigahertz up or 300 billion
+
+46
+00:03:01,675 --> 00:03:05,907
+waves per second.
+So, if given that RF or that
+
+47
+00:03:05,907 --> 00:03:09,566
+electromagnetic wave moves at one foot per
+nano second,
+
+48
+00:03:09,566 --> 00:03:15,336
+at 3 kilohertz you're looking at waves
+that are on the order of 300,000
+
+49
+00:03:15,336 --> 00:03:19,797
+- sorry - yeah,
+300,000 feet long.
+
+50
+00:03:19,797 --> 00:03:25,199
+Whereas down to the 300 gigahertz range.
+You're looking at waves that are 1/300th
+
+51
+00:03:25,199 --> 00:03:27,983
+of a foot long.
+So a huge, huge range of frequencies for
+
+52
+00:03:27,983 --> 00:03:32,073
+all kinds of things, you know?
+There's TV, there's radio, there's data
+
+53
+00:03:32,073 --> 00:03:33,449
+communication.
+There are maritime systems, there are
+
+54
+00:03:33,449 --> 00:03:36,090
+military systems.
+There are satellites, etc.
+
+55
+00:03:36,090 --> 00:03:39,735
+But when we talk about access point
+networks.
+
+56
+00:03:39,740 --> 00:03:45,934
+And modern data communication systems,
+we're talking about these three, these
+
+57
+00:03:45,934 --> 00:03:52,000
+four narrow chunks.
+So, these green ones are telephony.
+
+58
+00:03:57,202 --> 00:04:00,845
+So it's down to 800, 900 megahertz range.
+700 this is the 1.9.
+
+59
+00:04:00,845 --> 00:04:05,520
+Telephony and WiMax and that stuff is
+starting to move up but basically 3G
+
+60
+00:04:05,520 --> 00:04:09,345
+standards are down here.
+And these two blocks, see these two red
+
+61
+00:04:09,345 --> 00:04:17,758
+blocks, this is Wifi.
+And so when you think about all of the
+
+62
+00:04:17,757 --> 00:04:22,375
+data communication that we use today,
+phones and laptops, it's all squished into
+
+63
+00:04:22,375 --> 00:04:27,029
+these two - these four tiny little slices.
+Now the really important thing to realize
+
+64
+00:04:27,029 --> 00:04:31,513
+about wireless is that [laugh] as you can
+imagine, wireless transmission, it's not a
+
+65
+00:04:31,513 --> 00:04:33,620
+wire.
+The wireless medium is not a wire.
+
+66
+00:04:33,620 --> 00:04:37,628
+And what this means is that, unlike
+something propagated on a wire, where
+
+67
+00:04:37,628 --> 00:04:42,774
+there's some attenuation or there's some
+resistance in the copper, a wireless signal
+
+68
+00:04:42,774 --> 00:04:47,600
+is radiating over space.
+Like, in the simplest, if you have a
+
+69
+00:04:47,600 --> 00:04:50,750
+perfect omnidirectional antenna, it's
+radiating in a, it's getting sort of in a
+
+70
+00:04:50,750 --> 00:04:53,810
+sphere, out.
+And what this means is that the signal
+
+71
+00:04:53,810 --> 00:04:59,145
+strength degrades with distance at R^2 or
+faster, right?
+
+72
+00:04:59,145 --> 00:05:01,731
+A signal when you are twice as far away
+from a transmitter,
+
+73
+00:05:01,731 --> 00:05:07,819
+the signal is at least attenuated by 75%.
+It's at a quarter of the strength.
+
+74
+00:05:07,819 --> 00:05:10,820
+Just because - think of the surface of a
+sphere.
+
+75
+00:05:10,820 --> 00:05:14,517
+And so what this means is that, unlike in
+a wired system, where we can know, oh, the
+
+76
+00:05:14,517 --> 00:05:17,896
+cable, as long as it's good and it's no
+longer than 100 meters, we're going to
+
+77
+00:05:17,896 --> 00:05:21,183
+have a strong signal strength.
+In wireless systems, you often have a very
+
+78
+00:05:21,183 --> 00:05:23,830
+weak signal strength.
+In fact, people are going to try and get
+
+79
+00:05:23,830 --> 00:05:27,254
+all the way to the edge, because they want
+to be sitting out, you know, on the lawn,
+
+80
+00:05:27,254 --> 00:05:30,532
+using their wi-fi access point.
+Furthermore, unlike a wire, where it's
+
+81
+00:05:30,532 --> 00:05:33,508
+tightly controlled, there's nobody doing
+stuff.
+
+82
+00:05:33,508 --> 00:05:37,074
+Wireless is out in the world around you.
+So, it can be that somebody steps between
+
+83
+00:05:37,074 --> 00:05:40,396
+you and your access point.
+Now, suddenly, all these wireless signals
+
+84
+00:05:40,396 --> 00:05:43,315
+have to go through that person.
+If there is a big bag of water,
+
+85
+00:05:43,315 --> 00:05:45,830
+the wireless is going to become much, much
+weaker.
+
+86
+00:05:45,830 --> 00:05:49,152
+And so the signal strength is going to
+change significantly over time.
+
+87
+00:05:49,152 --> 00:05:52,927
+As people open doors, people move around,
+as you move around, as the humidity
+
+88
+00:05:52,927 --> 00:05:55,402
+changes.
+Furthermore, there, everyone else is using
+
+89
+00:05:55,402 --> 00:05:57,828
+the medium as well.
+There's lots of interference.
+
+90
+00:05:57,828 --> 00:06:00,102
+It's not like you have this wire to
+yourself.
+
+91
+00:06:00,102 --> 00:06:03,943
+Instead, you know, the person next door
+might be using their wireless network,
+
+92
+00:06:03,943 --> 00:06:06,990
+which is on the same frequency.
+So let's look at the first of these signal strengths.
+
+93
+00:06:06,990 --> 00:06:08,290
+So.
+
+94
+00:06:08,290 --> 00:06:10,877
+The problem here is that there are
+obstructions in the real world.
+
+95
+00:06:10,877 --> 00:06:13,472
+And they can move around.
+And they weaken the signal.
+
+96
+00:06:13,472 --> 00:06:17,608
+If you stand behind a metal plate, your
+wireless signal will be much weaker than
+
+97
+00:06:17,608 --> 00:06:21,627
+if you stood in front of it.
+Furthermore, wireless signals reflect.
+
+98
+00:06:21,627 --> 00:06:29,440
+And so it can be that I'm standing, you
+know, in some hallway here with my laptop.
+
+99
+00:06:29,440 --> 00:06:35,654
+And there's an access point here,
+And it might be that the signal I get is
+
+100
+00:06:35,654 --> 00:06:38,934
+some weird reflection off of different
+media,
+
+101
+00:06:38,934 --> 00:06:43,961
+off of different walls.
+And the trick here is that, in practice,
+
+102
+00:06:43,961 --> 00:06:45,992
+this means that,
+for example, here, I'm getting this
+
+103
+00:06:45,992 --> 00:06:48,057
+reflection.
+But I'm also getting a direct signal, say,
+
+104
+00:06:48,057 --> 00:06:52,251
+through these walls.
+It's that, unlike in a wire, in a wireless
+
+105
+00:06:52,251 --> 00:06:53,885
+environment, you can have something called
+multipath.
+
+106
+00:06:53,885 --> 00:06:57,290
+That, you're getting the signal, but
+you're getting multiple copies of it
+
+107
+00:06:57,290 --> 00:06:59,646
+across different paths or different
+delays.
+
+108
+00:06:59,646 --> 00:07:03,809
+Think of it like echoes in a canyon.
+Where there's the direct sound you hear.
+
+109
+00:07:03,809 --> 00:07:07,443
+But then all of these echoes are taking different
+paths, reflecting off the walls of a
+
+110
+00:07:07,443 --> 00:07:11,265
+canyon.
+There's no perfectly uniform antenna.
+
+111
+00:07:11,265 --> 00:07:14,283
+So if you move a little to the left, it
+could be that, that antenna's no good and
+
+112
+00:07:14,283 --> 00:07:18,520
+that's actually much weaker where you are,
+so suddenly the signal goes down and you
+
+113
+00:07:18,520 --> 00:07:20,934
+lose connection.
+Furthermore, all these things are
+
+114
+00:07:20,934 --> 00:07:24,087
+continuously changing.
+You can imagine, you move a little bit and
+
+115
+00:07:24,087 --> 00:07:28,559
+suddenly there the multipath changes, the
+reflections change.
+
+116
+00:07:28,559 --> 00:07:30,984
+You can imagine I move a little bit, the
+antenna's a little different, it's
+
+117
+00:07:30,984 --> 00:07:34,137
+oriented differently.
+And so things are dynamically changing the
+
+118
+00:07:34,137 --> 00:07:36,255
+environment around you.
+It's not controlled.
+
+119
+00:07:36,255 --> 00:07:39,826
+It could be somebody closes their office
+door and suddenly your wireless signal
+
+120
+00:07:39,826 --> 00:07:41,732
+goes out.
+Just to give you a sense of what this
+
+121
+00:07:41,732 --> 00:07:47,114
+looks like - so this is some data collected
+by a student of mine who's now faculty at
+
+122
+00:07:47,114 --> 00:07:52,670
+Ohio State - Columb.
+And what it is showing you is signal
+
+123
+00:07:52,670 --> 00:07:56,840
+strength over time, down here in the bottom,
+what is called the received signal
+
+124
+00:07:56,840 --> 00:08:01,069
+strength indicator - signal strength.
+And then at the top, the observed packet
+
+125
+00:08:01,069 --> 00:08:06,492
+reception ratios.
+This is for an 802.15.4 link that is measured.
+
+126
+00:08:06,492 --> 00:08:11,850
+And so the transmitter is stationary,
+the receiver is stationary,
+
+127
+00:08:11,850 --> 00:08:15,497
+And for every packet received, it
+logged what was the received signal
+
+128
+00:08:15,497 --> 00:08:19,601
+strength and then he was observing what
+percentage of packets were received over
+
+129
+00:08:19,601 --> 00:08:21,982
+time.
+This red line shows the long-term average
+
+130
+00:08:21,982 --> 00:08:23,513
+of this communication.
+So actually pretty good.
+
+131
+00:08:23,513 --> 00:08:27,242
+Around 93%.
+But what we can see is that, over the space of
+
+132
+00:08:27,242 --> 00:08:29,708
+just a couple of seconds.
+The signal strength is pretty solid up at
+
+133
+00:08:29,708 --> 00:08:32,796
+84 dBm, that's the units,
+
+134
+00:08:32,796 --> 00:08:35,766
+you know, it drops down a little bit.
+Things get a little worse,
+
+135
+00:08:35,765 --> 00:08:37,281
+It drops down.
+And then, suddenly it drops.
+
+136
+00:08:37,282 --> 00:08:43,139
+And it just drops by around 6, or
+around 8 DBM, or around 8 DB.
+
+137
+00:08:43,139 --> 00:08:47,119
+So around a factor of ten or so, or
+five, five to ten.
+
+138
+00:08:47,119 --> 00:08:51,644
+And then, what happens is that, that is
+below the signal strength at which this
+
+139
+00:08:51,644 --> 00:08:56,651
+device can receive packets.
+So the packet reception ratio drops to 0%.
+
+140
+00:08:56,651 --> 00:08:58,776
+- for a short period, then it comes up and
+
+141
+00:08:58,776 --> 00:09:02,289
+starts receiving packets again.
+And so it's just over the space of here of
+
+142
+00:09:02,289 --> 00:09:05,291
+ten seconds or so.
+We see that your link is going from your
+
+143
+00:09:05,291 --> 00:09:09,899
+99% down to 85%, back up to 90%,
+
+144
+00:09:09,899 --> 00:09:14,100
+down to 0% to 70%.
+You see these significant changes over
+
+145
+00:09:14,100 --> 00:09:16,031
+time.
+And so somehow your network,
+
+146
+00:09:16,031 --> 00:09:20,952
+- think about TCP, think about all those
+retransmission schemes - has to deal with this kind
+
+147
+00:09:20,952 --> 00:09:24,854
+of behavior.
+So here I'm going to show you, in fact, a
+
+148
+00:09:24,854 --> 00:09:29,635
+real-time video of a network we had to
+plug here at Stanford called SWAN,
+
+149
+00:09:29,635 --> 00:09:34,140
+the Stanford Wireless Access Network.
+It's an 802.11b/g test bed, so Wifi.
+
+150
+00:09:34,151 --> 00:09:38,480
+And it's around 25 nodes or so.
+And essentially, what I'm going to show you is
+
+151
+00:09:38,480 --> 00:09:41,483
+what this network will collect over 2.5
+seconds.
+
+152
+00:09:41,483 --> 00:09:46,371
+So this is with a time step of 25 milliseconds, there is 100 time steps, and each
+
+153
+00:09:46,371 --> 00:09:50,655
+of these nodes - Gates is the computer science
+department, Packard is the EE-department, there
+
+154
+00:09:50,655 --> 00:09:57,355
+is this street in between, Serra Mall.
+And I'm going to show you what this
+
+155
+00:09:57,355 --> 00:10:00,561
+network looked like over a time.
+So for each node, there are lines between
+
+156
+00:10:00,561 --> 00:10:03,266
+nodes which show you the packet reception ratio
+
+157
+00:10:03,266 --> 00:10:06,703
+here of those links.
+The dark line means that all the packets
+
+158
+00:10:06,703 --> 00:10:09,859
+are received,
+And a very light line or no line, means
+
+159
+00:10:09,859 --> 00:10:14,527
+that no packets or very few packets are
+received.
+
+160
+00:10:16,449 --> 00:10:17,872
+So watch what's happening with these
+
+161
+00:10:17,872 --> 00:10:19,907
+links.
+How quickly they're changing.
+
+162
+00:10:19,907 --> 00:10:23,339
+This is 2.5 seconds.
+And so we can see, links are coming and
+
+163
+00:10:23,339 --> 00:10:27,236
+going, they're changing and on the space
+of 25 milliseconds or less.
+
+164
+00:10:27,236 --> 00:10:31,656
+Like, look at this link here at how
+it's oscillating between 80% and 10%.
+
+165
+00:10:31,657 --> 00:10:34,934
+Back and forth.
+And look at the links between the two.
+
+166
+00:10:34,934 --> 00:10:39,725
+So the point here is that in wireless
+networks like WiFi networks, they're
+
+167
+00:10:39,725 --> 00:10:43,013
+highly, highly dynamic.
+So in addition to position of the signal
+
+168
+00:10:43,013 --> 00:10:46,060
+strength changing over time, there's also
+the issue of interference.
+
+169
+00:10:46,060 --> 00:10:49,283
+So, a lot of wireless communications today
+is occurring in unlicensed
+
+170
+00:10:49,283 --> 00:10:52,087
+- like WiFi, it's access point networks that occur in
+unlicensed bands.
+
+171
+00:10:52,087 --> 00:10:53,729
+Bands that don't require license from the
+government.
+
+172
+00:10:53,729 --> 00:10:56,493
+Anyone can use this band.
+And that's why they're so
+
+173
+00:10:56,493 --> 00:10:59,789
+popular. Because they're free.
+But then lots and lots of different
+
+174
+00:10:59,789 --> 00:11:03,023
+technologies share the band.
+So here's a map, for example, of just
+
+175
+00:11:03,023 --> 00:11:08,353
+what's going on in the 2.4, basically,
+the 2.5
+
+176
+00:11:08,353 --> 00:11:10,752
+gigahertz range.
+This is wifi.
+
+177
+00:11:10,752 --> 00:11:14,661
+Wifi's lower frequency.
+So you can see, here's wifi 802.11b.
+
+178
+00:11:14,661 --> 00:11:18,051
+In this different ranges here, you can
+see its bandwidth of 22 megahertz.
+
+179
+00:11:18,051 --> 00:11:22,653
+Here's channels one, six, and eleven.
+But at the same frequency ranges, there's
+
+180
+00:11:22,653 --> 00:11:26,918
+802.15.4, Zigbee.
+A low power, wireless system.
+
+181
+00:11:26,918 --> 00:11:28,888
+Which is using the same range of
+frequencies.
+
+182
+00:11:28,888 --> 00:11:30,767
+Bluetooth uses the same range of
+frequencies.
+
+183
+00:11:30,767 --> 00:11:35,490
+So this means that something in 802.11 can
+receive interference with something
+
+184
+00:11:35,490 --> 00:11:39,002
+of 802.15.4, and vice versa.
+These are challenges that all these
+
+185
+00:11:39,002 --> 00:11:41,952
+systems have to deal with, that,
+they might have good signal.
+
+186
+00:11:41,952 --> 00:11:44,520
+They might have low noise.
+But then someone's interfering with them.
+
+187
+00:11:44,520 --> 00:11:48,481
+And so for example, if you just look at
+what wireless activity is like over time.
+
+188
+00:11:48,481 --> 00:11:55,505
+This is this nice graph which Omprakash Gnawali,
+who is now professor at
+
+189
+00:11:55,505 --> 00:12:00,826
+University of Houston, generated.
+This is taken at his data is from USC,
+
+190
+00:12:00,826 --> 00:12:05,347
+which is where he used to be a PhD student.
+
+191
+00:12:05,347 --> 00:12:08,018
+And you can see, look at all these WiFi
+activity.
+
+192
+00:12:08,018 --> 00:12:11,683
+So here's time in seconds, from 0 to
+2 minutes, in different WiFi channels, 1 to 11.
+
+193
+00:12:11,683 --> 00:12:13,935
+You can see that the channels 1 and
+
+194
+00:12:13,935 --> 00:12:17,496
+11 are really, really busy.
+They're orange, showing lots and lots of
+
+195
+00:12:17,496 --> 00:12:20,233
+WiFi activity.
+And so the lesson to take away here is
+
+196
+00:12:20,233 --> 00:12:22,341
+that wireless networks are becoming
+increasingly important.
+
+197
+00:12:22,341 --> 00:12:25,365
+We'd much rather just connect the
+Internet wirelessly rather than plug a wire
+
+198
+00:12:25,365 --> 00:12:30,408
+into our laptop.
+But generally they don't work as well.
+
+199
+00:12:30,408 --> 00:12:33,291
+They're less reliable,
+they're more flaky and this is because of
+
+200
+00:12:33,291 --> 00:12:36,719
+the fact that they're in this shared medium
+that is uncontrolled.
+
+201
+00:12:36,719 --> 00:12:38,426
+Lots of different devices are
+using it,
+
+202
+00:12:38,426 --> 00:12:44,230
+the environment is changing around them,
+and there's lots of interference.
+
+203
+00:12:44,230 --> 00:12:46,558
+And so.
+In practice what this means is that to try
+
+204
+00:12:46,558 --> 00:12:53,947
+to get wireless to be, you know, good
+enough, as to be usable,
+
+205
+00:12:53,947 --> 00:12:58,663
+due to these different properties and different
+behaviors, wireless actually ends up using
+
+206
+00:12:58,663 --> 00:13:03,322
+very different algorithms and protocols.
+So wireless link layers look different
+
+207
+00:13:03,322 --> 00:13:07,072
+than wired link layers.
+Wireless media access control systems look
+
+208
+00:13:07,072 --> 00:13:10,765
+different than wired ones.
+So this next series of videos is going to
+
+209
+00:13:10,765 --> 00:13:14,800
+go into some of those differences and
+explain how wireless today works.
+

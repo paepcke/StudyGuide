@@ -1,0 +1,67 @@
+1
+00:00:00,560 --> 00:00:07,560
+53 is represented in little endian. 53 is
+3 times 16 plus 5, and 0x35 is in the first
+
+2
+00:00:10,520 --> 00:00:13,320
+byte.
+
+3
+00:00:13,320 --> 00:00:20,320
+4116 is big endian. 4116 is equal to 4096
+plus 20. So the two bytes are 0x10 and 0x14,
+
+4
+00:00:29,449 --> 00:00:35,570
+with 0x10 being the byte representing the
+more significant bits, those of 4096. Since
+
+5
+00:00:35,570 --> 00:00:42,570
+the hexidecimal is 0x1014, this means the
+most significant byte comes first and it’s
+
+6
+00:00:43,260 --> 00:00:44,590
+big endian.
+
+7
+00:00:44,590 --> 00:00:51,260
+5 is big endian -- the least significant byte
+is last and has the highest address.
+
+8
+00:00:51,260 --> 00:00:58,260
+83,886,080 is little endian: it’s 5 times
+2 to the 24th, so this means that 0x05 is
+
+9
+00:00:59,800 --> 00:01:02,690
+the most significant byte.
+
+10
+00:01:02,690 --> 00:01:09,690
+Finally, 305,414,945 is little endian. Rather
+than try to figure out all of the digits on
+
+11
+00:01:11,249 --> 00:01:16,350
+this one, I just looked at the least significant
+bit. The least significant bit is either part
+
+12
+00:01:16,350 --> 00:01:23,350
+of 0x21 or 0x12. If it’s 0x21 and the least
+significant bit is 1, then the number is odd.
+
+13
+00:01:27,899 --> 00:01:34,670
+If it’s 0x12 and the least significant bit
+is 0, then the number is even. Since 305,414,945
+
+14
+00:01:34,670 --> 00:01:41,670
+is odd, this means 0x21 is the least significant
+byte and the number is being stored little-endian.
+

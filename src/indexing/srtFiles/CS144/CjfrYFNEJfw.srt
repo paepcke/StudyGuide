@@ -1,0 +1,1240 @@
+1
+00:00:00,000 --> 00:00:04,195
+So in this video about physical and link
+layers, I'm going to talk about Forward
+
+2
+00:00:04,195 --> 00:00:07,846
+Error Correction or FEC.
+So recall that for a given signal-to-noise
+
+3
+00:00:07,846 --> 00:00:12,096
+ratio in modulation scheme, we can compute
+what the expected bit error rate is.
+
+4
+00:00:12,096 --> 00:00:16,181
+Now this bit error rate, while it can
+become very, very small for, say, a high,
+
+5
+00:00:16,181 --> 00:00:18,907
+very high signal strength, it will never
+read zero.
+
+6
+00:00:18,907 --> 00:00:21,794
+There's always a chance that there'll be a
+bit error.
+
+7
+00:00:21,795 --> 00:00:25,772
+So in practice what this means, is that,
+because these bit errors, although
+
+8
+00:00:25,772 --> 00:00:30,107
+uncommon, you expect them to happen.
+Directly turning your link layer bits into
+
+9
+00:00:30,107 --> 00:00:33,043
+bits of the physical layer is very, very
+inefficient,
+
+10
+00:00:33,043 --> 00:00:37,504
+In that the sparsity of the modulation
+need, or the speed of the symbols that you
+
+11
+00:00:37,504 --> 00:00:41,513
+need in order to have a very, very low bit
+error rates that packet bit errors are
+
+12
+00:00:41,513 --> 00:00:45,917
+uncommon is really, really inefficient.
+It's going to be very, very far from the
+
+13
+00:00:45,917 --> 00:00:48,853
+Shannon limit.
+That's not a good way to build a high
+
+14
+00:00:48,853 --> 00:00:52,281
+throughput system So instead, what you
+want to do is coding.
+
+15
+00:00:52,281 --> 00:00:56,856
+So coding is a way where you add a little
+bit of redundancy to the data.
+
+16
+00:00:56,856 --> 00:01:01,802
+In this case, we're talking about the
+physical error but you can do it all kinds
+
+17
+00:01:01,802 --> 00:01:05,388
+of situations.
+So you add a little bit of redundancy to
+
+18
+00:01:05,388 --> 00:01:08,480
+make up for these expected uncommon bit
+errors.
+
+19
+00:01:08,480 --> 00:01:11,879
+And in adding in this little bit of
+redundancy, its cost is much, much smaller
+
+20
+00:01:11,879 --> 00:01:14,306
+than its benefit.
+By doing this you can greatly, greatly
+
+21
+00:01:14,306 --> 00:01:17,706
+improve reading throughput, because by
+just adding a little bit of redundancy,
+
+22
+00:01:17,706 --> 00:01:20,972
+all your packets get through as to, as
+opposed to none of your packets get
+
+23
+00:01:20,972 --> 00:01:23,532
+through, and this is true in theory as
+well as in practice.
+
+24
+00:01:23,532 --> 00:01:27,152
+So when we talk about coding, we also talk
+about coding gain, which is the ratio of
+
+25
+00:01:27,152 --> 00:01:29,933
+bits, in this case, the link layer with
+bits at the physical layer.
+
+26
+00:01:29,933 --> 00:01:33,597
+Coding gain is more general than that, but
+within the network we're usually talking
+
+27
+00:01:33,597 --> 00:01:35,540
+about the physical layer and the link
+layer.
+
+28
+00:01:35,540 --> 00:01:40,201
+So one-half code means that we turn one
+link layer bit into two physical layer
+
+29
+00:01:40,201 --> 00:01:42,798
+bits.
+So there's one redundant bit for every
+
+30
+00:01:42,798 --> 00:01:45,453
+bit.
+Three-quarter code is we turn three link
+
+31
+00:01:45,453 --> 00:01:48,286
+layer bits into four bits at the physical
+layer.
+
+32
+00:01:48,286 --> 00:01:51,118
+And this process is, is forward error
+correction.
+
+33
+00:01:51,118 --> 00:01:55,170
+The idea is proactively add some
+additional, redundant data to protect, to
+
+34
+00:01:55,170 --> 00:01:57,074
+protract and be able to correct potential
+errors.
+
+35
+00:01:57,074 --> 00:02:00,785
+It's called forward error correction,
+because you're doing it proactively, for
+
+36
+00:02:00,785 --> 00:02:02,735
+you.
+You're saying, hey look, I am not going to
+
+37
+00:02:02,735 --> 00:02:06,589
+have any errors, but beforehand I am just
+going to add a bit of redundancies so that
+
+38
+00:02:06,589 --> 00:02:09,729
+you can recover from them.
+This is nice, because you don't need any
+
+39
+00:02:09,729 --> 00:02:12,203
+exchanges.
+The recipient will be able to just decode
+
+40
+00:02:12,203 --> 00:02:15,962
+the data. It's not going to have to say,
+oh there is an error, can you resend this
+
+41
+00:02:15,962 --> 00:02:18,687
+part.
+And so it saves you the cost of those
+
+42
+00:02:18,687 --> 00:02:21,318
+kinds of message changes.
+So, how do you do this?
+
+43
+00:02:21,318 --> 00:02:24,341
+Well there's all kinds of coding
+algorithms out there.
+
+44
+00:02:24,509 --> 00:02:28,148
+There's lots of different ones,
+All kinds of different trade offs.
+
+45
+00:02:28,148 --> 00:02:31,828
+Here's just a couple of them.
+So in this video I'm going to talk about
+
+46
+00:02:31,828 --> 00:02:35,992
+one in particular, Reed-Solomon.
+So we're going to talk about Reed-Solomon
+
+47
+00:02:35,992 --> 00:02:40,723
+because it turns out, compared to many of
+these others, it's actually mathematically
+
+48
+00:02:40,723 --> 00:02:43,802
+pretty simple.
+It's also tremendously commonly used.
+
+49
+00:02:43,973 --> 00:02:48,134
+Cds use Reed-Solomon, DVDs, DSL lines
+WiMAX RAID six storage arrays,
+
+50
+00:02:48,134 --> 00:02:52,352
+All of these systems, all of these
+communication and storage systems you'd
+
+51
+00:02:52,352 --> 00:02:55,716
+Reed-Solomon, use Reed-Solomon.
+Furthermore, compared to some of these
+
+52
+00:02:55,716 --> 00:03:00,561
+other coding algorithms, Reed-Solomon is
+actually pretty mathematically simple.
+
+53
+00:03:00,561 --> 00:03:02,898
+I'm not going to go into all of the
+details.
+
+54
+00:03:03,070 --> 00:03:07,995
+The simple, the, the basic concept is
+simple, actually designing it so that you
+
+55
+00:03:07,995 --> 00:03:13,241
+can implement it very fast, involves a bit
+more math, which I won't go into, but the
+
+56
+00:03:13,241 --> 00:03:17,783
+basic concept is very simple.
+The key ideal behind Read-Solomon, is that
+
+57
+00:03:17,783 --> 00:03:22,197
+if I have a polynomial like here,
+polynomial, like here, where I have a
+
+58
+00:03:22,197 --> 00:03:25,780
+parabola, right, so I have some ax,
+squared plus bx plus c.
+
+59
+00:03:25,780 --> 00:03:34,362
+Then any polynomial of degree K, or here K
+equals two is uniquely determined by a k+1
+
+60
+00:03:34,362 --> 00:03:40,566
+points.
+What that means is that I give you three x
+
+61
+00:03:40,566 --> 00:03:46,250
+y points.
+So if three x, y points will uniquely
+
+62
+00:03:46,250 --> 00:03:52,452
+determine for a parabola for a, b, and c.
+So, why is this useful?
+
+63
+00:03:52,452 --> 00:03:57,679
+So, what I can do is I have some data that
+I want to, want to encode with reed
+
+64
+00:03:57,679 --> 00:04:00,396
+solmon.
+So I take K chunks of this data.
+
+65
+00:04:00,396 --> 00:04:05,274
+These K chunks become coefficients of a K
+minus one degree polynomial.
+
+66
+00:04:05,274 --> 00:04:10,569
+So for example, I take three chunks of
+data, and those three chunk become A, B
+
+67
+00:04:10,569 --> 00:04:12,730
+and C.
+These three coefficients.
+
+68
+00:04:12,730 --> 00:04:18,835
+Then what I do is, I compute end points
+along this polynomial right where N is
+
+69
+00:04:18,834 --> 00:04:24,314
+greater than or equal to K minus one,
+answer should be minus one, right.
+
+70
+00:04:24,314 --> 00:04:30,889
+So I compute these end points then that's
+what I send, I send those points along the
+
+71
+00:04:30,889 --> 00:04:35,081
+polynomial.
+Now what happens is I'm sending endpoints.
+
+72
+00:04:35,081 --> 00:04:39,920
+But because the original polynomial is of
+degree k minus one.
+
+73
+00:04:40,440 --> 00:04:47,420
+Any of those K points, where K is less
+than N, would allow you to uniquely and
+
+74
+00:04:47,420 --> 00:04:51,862
+correctly determine what these
+coefficients were.
+
+75
+00:04:51,862 --> 00:04:59,478
+So, for example, I have K, I have a second
+degree polynomial which I generated from
+
+76
+00:04:59,478 --> 00:05:05,552
+three chunks of data A, B, and C.
+Then what I do is I compute.0, .1, .2,
+
+77
+00:05:05,552 --> 00:05:07,709
+say.3, .4, .5.
+Point six.
+
+78
+00:05:07,709 --> 00:05:10,096
+An assent.
+P0, P1, P2, P3, P4, P5, P6.
+
+79
+00:05:10,096 --> 00:05:14,408
+Now turns out, that with any of these
+three points, right?
+
+80
+00:05:14,408 --> 00:05:20,183
+With P1, P5, and P6, or P4, P1, and P3,
+you can, if you know this is a parabola, you
+
+81
+00:05:20,183 --> 00:05:24,648
+can determine what A, B, and C are.
+So that's the basic math.
+
+82
+00:05:24,648 --> 00:05:30,577
+I compute points along a polynomial who's
+coefficients are the original data.
+
+83
+00:05:30,577 --> 00:05:36,891
+And then, if I'm able to recover enough of
+those points along the polynomial, I can
+
+84
+00:05:36,891 --> 00:05:40,510
+then reconstitute what those coefficients
+were.
+
+85
+00:05:40,657 --> 00:05:44,386
+There are some complications to this.
+Like, I, I can't just like, P2 can't be a
+
+86
+00:05:44,386 --> 00:05:47,968
+million, because how will I represent a
+million, and it's going to take up more
+
+87
+00:05:47,968 --> 00:05:50,324
+space.
+And there's some thing where, there are
+
+88
+00:05:50,324 --> 00:05:53,758
+some complications where the actual
+numbers you use aren't just basic
+
+89
+00:05:53,758 --> 00:05:57,242
+integers, the things numbers in a, a
+finite field which means, sort of
+
+90
+00:05:57,242 --> 00:06:00,040
+mathematical construct where it's closed
+over operations.
+
+91
+00:06:00,229 --> 00:06:05,346
+Just essentially means, that hey, I can
+represent each of these points in a finite
+
+92
+00:06:05,346 --> 00:06:10,589
+number of bits, it's not like, certainly a
+is, a million, and then that means p6 is
+
+93
+00:06:10,589 --> 00:06:15,390
+something totally off the charts and I
+can't represent it in a finite space.
+
+94
+00:06:15,390 --> 00:06:18,750
+That's one of the other complications that
+I'm not going to go into.
+
+95
+00:06:18,750 --> 00:06:23,599
+But this is the basic idea, is that I
+represent the data as coefficients of a
+
+96
+00:06:23,599 --> 00:06:26,685
+polynomial.
+I compute points along the polynomial,
+
+97
+00:06:26,685 --> 00:06:30,246
+then I send those points.
+And then the other side from those points
+
+98
+00:06:30,246 --> 00:06:33,792
+can reconstitute the coefficients.
+Now, a little bit more detail in terms of
+
+99
+00:06:33,792 --> 00:06:37,339
+what Reed-Solomon can do for you.
+So it turns out in these kinds of systems,
+
+100
+00:06:37,339 --> 00:06:41,027
+there are two kinds of errors we care
+about and it's important to distinguish
+
+101
+00:06:41,027 --> 00:06:42,351
+them.
+The first are erasures.
+
+102
+00:06:42,351 --> 00:06:45,992
+So, these are errors we know that they
+occurred like that piece of data is
+
+103
+00:06:45,992 --> 00:06:48,498
+missing, it's an erasure.
+The other is a general error.
+
+104
+00:06:48,498 --> 00:06:50,484
+We don't know that, where the error
+occurs.
+
+105
+00:06:50,484 --> 00:06:54,078
+So, this is what we know when we think of
+in terms of, say, bit errors, whereas,
+
+106
+00:06:54,078 --> 00:06:57,908
+erased values are, say, you know, oh gosh,
+this disk didn't answer, oh we missed that
+
+107
+00:06:57,908 --> 00:07:00,674
+packet.
+And so what Reed-Solomon does, is you're
+
+108
+00:07:00,674 --> 00:07:05,131
+taking k chunks of data you're coding it
+into n chunks, where n is greater than or
+
+109
+00:07:05,131 --> 00:07:09,588
+equal to k, worth and is equal to k,
+you're not actually doing any coding, And
+
+110
+00:07:09,588 --> 00:07:13,665
+what Reed-Solomon will do is you can
+correct up to n minus k erasurs, right,
+
+111
+00:07:13,665 --> 00:07:18,068
+because remember if we code, into n chunks
+if we have k points and we know those k
+
+112
+00:07:18,068 --> 00:07:22,200
+points are correct they're just missing
+others, we can reconstitute the data.
+
+113
+00:07:22,200 --> 00:07:27,253
+But it can also correct up to n minus k
+divided by two errors.
+
+114
+00:07:27,253 --> 00:07:32,960
+So, l-, let's say we have a very common
+Reed-Solomon code, is 223, 255,
+
+115
+00:07:32,960 --> 00:07:40,329
+Which means that we take the 223 bytes of
+data and turned into 255 coded bytes of
+
+116
+00:07:40,329 --> 00:07:44,194
+data.
+Well, 255 - 223 is equal to 32, so I mean
+
+117
+00:07:44,194 --> 00:07:53,650
+in this particular Reed-Soloman code can
+protect against 32 erasures or sixteen
+
+118
+00:07:53,650 --> 00:07:57,529
+errors,
+Where 32 of the eight-bit code words can
+
+119
+00:07:57,529 --> 00:08:03,424
+be missing, so long as we got 223, we can
+reconstitute the original data, that's 223
+
+120
+00:08:03,424 --> 00:08:08,528
+points on are 222 degree, polynomial,
+Or if sixteen, of, them, are, have bit
+
+121
+00:08:08,528 --> 00:08:12,770
+errors in them we can still reconstitute
+the original data.
+
+122
+00:08:12,770 --> 00:08:19,238
+So, here's that conceptually.
+Let's take 223 8-bit values, so we have,
+
+123
+00:08:19,238 --> 00:08:24,170
+take our data.
+Break it into bytes, take 223 bytes.
+
+124
+00:08:24,170 --> 00:08:28,462
+We're going to consider those now the
+coefficients of a 222 degree polynomial p.
+
+125
+00:08:28,462 --> 00:08:33,089
+We then compute p of zero, p of one, p of
+two, etcetera, etcetera, etcetera as 8-bit
+
+126
+00:08:33,089 --> 00:08:35,709
+values.
+There's this, again, this idea of using a
+
+127
+00:08:35,708 --> 00:08:39,777
+field rather than arbitrary numbers.
+There's that mathematical concept.
+
+128
+00:08:39,945 --> 00:08:42,510
+So we can then represent them as 8-bit
+values.
+
+129
+00:08:42,510 --> 00:08:47,597
+We then send these 255th, 255 points along
+the polynomial.
+
+130
+00:08:47,597 --> 00:08:53,788
+And so this is a 255-223 code.
+Each of these 255 code words come from 223
+
+131
+00:08:53,788 --> 00:08:56,925
+data words.
+32 erasures, sixteen errors.
+
+132
+00:08:56,925 --> 00:09:01,576
+So we send these 255 values.
+And that's the basic idea, is that if I
+
+133
+00:09:01,576 --> 00:09:06,129
+have up to sixteen errors I can still
+figure out which ones are wrong and I can
+
+134
+00:09:06,129 --> 00:09:10,283
+reconstitute the polynomial I can
+reconstitute the, polynomial coeffecients,
+
+135
+00:09:10,454 --> 00:09:15,405
+or I could be missing 32 of them as long I
+get 223, if I have 32 erasers I can still
+
+136
+00:09:15,405 --> 00:09:19,559
+reconstitute the original polynomial.
+As I said before this isn't exactly
+
+137
+00:09:19,559 --> 00:09:24,396
+what's, done in practice of for a bunch of
+reasons. these values have to be in a
+
+138
+00:09:24,396 --> 00:09:27,470
+conical field, it turns out that this
+exact scheme is.
+
+139
+00:09:27,470 --> 00:09:32,680
+Actually pretty expensive to decode, you
+have to consider all possible parameters
+
+140
+00:09:32,680 --> 00:09:36,837
+and do an interpolation.
+But it's giving the basic idea. The more
+
+141
+00:09:36,837 --> 00:09:42,110
+modern ones are a bit a bit more complex.
+But the basic idea of holds of you using
+
+142
+00:09:42,110 --> 00:09:46,949
+the original data as coefficients on a
+polynomial, computing points along that
+
+143
+00:09:46,949 --> 00:09:52,098
+polynomial and then sending those points.
+So here is a simple example - I take these
+
+144
+00:09:52,284 --> 00:09:56,626
+six bytes that say hello.
+I'm breaking them up into chunks of data I
+
+145
+00:09:56,626 --> 00:10:01,643
+then do my Reed-Solomon coding here.
+This is the basic concept, right, I'm
+
+146
+00:10:01,643 --> 00:10:06,696
+adding my forward error correction here, some
+redundant data, then when that data
+
+147
+00:10:06,696 --> 00:10:09,854
+arrives, I can decode it, and get the
+original data.
+
+148
+00:10:09,854 --> 00:10:12,948
+So, let's walk through this as a specific
+example.
+
+149
+00:10:12,948 --> 00:10:16,043
+So in this case, let's say we're using a
+7,5 code.
+
+150
+00:10:16,043 --> 00:10:21,412
+What this means is that each initial data
+word that we're going to use is three bits
+
+151
+00:10:21,412 --> 00:10:24,380
+long.
+That's determined by the seven, two to the
+
+152
+00:10:24,380 --> 00:10:28,233
+three minus one.
+So, we're breaking the data up into little
+
+153
+00:10:28,233 --> 00:10:31,822
+chunks of three bits.
+And so we're going to start with five of
+
+154
+00:10:31,822 --> 00:10:36,467
+these, data words, so fifteen bits, and
+each fifteen bits are going to be turned
+
+155
+00:10:36,467 --> 00:10:40,337
+into seven code words.
+So here we have the first fifteen bits the
+
+156
+00:10:40,337 --> 00:10:45,101
+next fifteen bits, the next fifteen bits,
+so it turns out we have 48 bits here, 48
+
+157
+00:10:45,101 --> 00:10:49,686
+not easily divisible by fifteen, so that
+45, plus three, so we'll just pad this
+
+158
+00:10:49,686 --> 00:10:52,544
+with zeros.
+So original data is going to grow from 48
+
+159
+00:10:52,544 --> 00:10:56,663
+to 60 bits.
+We then perform the Reed-Solomon coding to
+
+160
+00:10:56,663 --> 00:11:02,935
+turn these fifteen bits.
+Into 21 bits, and then send these total of
+
+161
+00:11:02,935 --> 00:11:07,759
+84 bits along say the wire or on the
+wireless.
+
+162
+00:11:07,759 --> 00:11:15,438
+This 84 bits transmitted, received, the
+other side gets these 84 coded bits, then
+
+163
+00:11:15,438 --> 00:11:23,020
+runs and reads on the decoder, and from
+that can regenerate the original data.
+
+164
+00:11:24,480 --> 00:11:30,960
+So since this is a seven, five code, that
+means that we can recover from one error
+
+165
+00:11:31,380 --> 00:11:37,836
+or two erasures.
+But note that these errors in our ratios
+
+166
+00:11:37,836 --> 00:11:41,717
+are for code words,
+And so it's possible in fact that if we
+
+167
+00:11:41,717 --> 00:11:45,796
+have, let's say we have bit errors that
+look like this.
+
+168
+00:11:45,796 --> 00:11:49,480
+Here's a bit error here's a bit error,
+here are 2-bit errors.
+
+169
+00:11:49,880 --> 00:11:54,613
+Can ask the question, will we be able to
+recover from these bit errors?
+
+170
+00:11:54,613 --> 00:11:59,751
+So, for this first code block, the answer
+is yes, there is single bit error.
+
+171
+00:11:59,751 --> 00:12:03,403
+A single bit error will corrupt at most
+one code word.
+
+172
+00:12:03,403 --> 00:12:07,527
+We can recover from one errored co-, one
+code word with an error.
+
+173
+00:12:07,527 --> 00:12:11,720
+And so, this first block we'll be able to
+successfully recover.
+
+174
+00:12:16,620 --> 00:12:22,147
+The same with the second code block.
+We have one bit error, it means one code
+
+175
+00:12:22,147 --> 00:12:25,420
+will be in error, so we can recover from
+that.
+
+176
+00:12:25,740 --> 00:12:30,013
+For the third code block, well this is a
+tricky question.
+
+177
+00:12:30,013 --> 00:12:35,201
+So one of our code words can be in error,
+and we have two bid errors.
+
+178
+00:12:35,201 --> 00:12:39,093
+So this now depends on where those bid
+errors fall.
+
+179
+00:12:39,093 --> 00:12:42,527
+If, let's say here our code word's spaced
+out.
+
+180
+00:12:42,527 --> 00:12:47,639
+Here's two, three, four, five, six, seven,
+let's say they look like this.
+
+181
+00:12:47,639 --> 00:12:54,203
+Well, if the two bit errors are in the
+same code word, they will be okay, because
+
+182
+00:12:54,203 --> 00:12:57,492
+we just have one error, one code word with
+an error.
+
+183
+00:12:57,492 --> 00:13:01,640
+So in that case, we'll be alright.
+However,
+
+184
+00:13:06,420 --> 00:13:11,964
+If the bit errors are in different code
+words, then, we will not be alright.
+
+185
+00:13:11,964 --> 00:13:15,860
+We have two errors, we can't recover from
+two errors.
+
+186
+00:13:20,040 --> 00:13:25,135
+So this might not seem very good, but
+compared to what happens if we were not to
+
+187
+00:13:25,135 --> 00:13:30,496
+use any coding whatsoever, here we've been
+able to protect against at least two bit
+
+188
+00:13:30,496 --> 00:13:37,251
+errors, and maybe even up to four.
+There's one other trick than you can use.
+
+189
+00:13:37,251 --> 00:13:40,047
+This is very common, this for example is
+done in CD.
+
+190
+00:13:40,047 --> 00:13:44,378
+So, one of the assumptions people, you
+often have, is that errors in the physical
+
+191
+00:13:44,378 --> 00:13:48,544
+layer, and some of them are, are just
+interspersed at random. Those are easy to
+
+192
+00:13:48,544 --> 00:13:50,627
+handle, what's harder are bursts of
+errors.
+
+193
+00:13:50,791 --> 00:13:55,286
+And so the way you can make your coding
+scheme more robust to bursts of errors is
+
+194
+00:13:55,286 --> 00:14:00,347
+through something called interleaving.
+So imagine for example I have, here's my
+
+195
+00:14:00,347 --> 00:14:03,547
+data and there is twelve chunks of 75
+code.
+
+196
+00:14:03,547 --> 00:14:09,353
+That means each of these chunks is in
+terms of the coded data is 21 bits long,
+
+197
+00:14:09,353 --> 00:14:15,679
+remember from the prior showing it's seven
+code words of that are three bits long
+
+198
+00:14:15,679 --> 00:14:19,475
+each.
+And so here I have twelve code blocks from
+
+199
+00:14:19,475 --> 00:14:23,420
+eight to L with bits A 03, A twenty and
+its L0 to L20.
+
+200
+00:14:23,880 --> 00:14:28,148
+So let's think about what happens when we
+have a burst of errors.
+
+201
+00:14:28,148 --> 00:14:33,271
+So it's possible, with, let's sat a, burst
+of, one error, well I know for sure I'm
+
+202
+00:14:33,271 --> 00:14:38,525
+going to recover from that, because that's
+going to corrupt at most one code word in
+
+203
+00:14:38,525 --> 00:14:41,415
+one block, and I can recover from one
+error.
+
+204
+00:14:41,415 --> 00:14:53,800
+So that would be okay, one, bit error.
+I'm okay.
+
+205
+00:14:54,800 --> 00:15:01,130
+How'bout two bit errors?
+Well again, recall, it's going to matter on
+
+206
+00:15:01,130 --> 00:15:07,328
+whether they fall in the same code word or
+if they say fall on different code words.
+
+207
+00:15:07,549 --> 00:15:13,452
+In fact, its possible that they can each
+fall on a burst of two errors, one falls
+
+208
+00:15:13,452 --> 00:15:17,584
+on a code word in one block, that block
+can be recovered.
+
+209
+00:15:17,584 --> 00:15:23,487
+Another falls on a code word in another
+block, that can be recovered, we would be
+
+210
+00:15:23,487 --> 00:15:26,291
+okay.
+So, in this case we would be okay.
+
+211
+00:15:26,291 --> 00:15:31,535
+If they both fell within a single.
+A code word, we'll be okay.
+
+212
+00:15:31,535 --> 00:15:38,749
+But, if they fell on two different code
+words within the same block, then we won't
+
+213
+00:15:38,749 --> 00:15:44,805
+be able to recover from that.
+There'll be two errors within a single
+
+214
+00:15:44,805 --> 00:15:48,307
+block.
+In fact it turns out, if we were to look
+
+215
+00:15:48,307 --> 00:15:53,588
+at what's the, the longest string of bit
+errors that we could possibly recover
+
+216
+00:15:53,588 --> 00:15:55,740
+from.
+That's a good question.
+
+217
+00:15:57,060 --> 00:16:06,760
+So it turns out that the longest that we
+can recover from is six bit errors.
+
+218
+00:16:08,531 --> 00:16:15,009
+And we can recover from a burst of six bit
+errors if and only if, it happens to be
+
+219
+00:16:15,009 --> 00:16:19,670
+that three of them fall on the last code
+word of one block.
+
+220
+00:16:19,670 --> 00:16:23,229
+And then three fall on the first code word
+of the next block.
+
+221
+00:16:23,229 --> 00:16:27,490
+So you can imagine if we add one more,
+it's going to corrupt the second code
+
+222
+00:16:27,490 --> 00:16:29,707
+word.
+So that is possible, but unlikely.
+
+223
+00:16:29,707 --> 00:16:34,609
+So that's the longest possible string of
+errors you could correct from using just a
+
+224
+00:16:34,609 --> 00:16:37,644
+basic coding.
+So what we can do instead is something
+
+225
+00:16:37,644 --> 00:16:41,262
+called interleaving.
+So rather than send our data as A through,
+
+226
+00:16:41,262 --> 00:16:46,573
+A0 through A20, B through BZ, B20, where
+then a burst of errors is concentrated on
+
+227
+00:16:46,573 --> 00:16:49,199
+the block.
+Instead, what we send is these bits,
+
+228
+00:16:49,199 --> 00:16:55,560
+interleaved.
+.
+
+229
+00:16:56,140 --> 00:17:07,332
+.
+For example, we send A zero, B zero, C
+
+230
+00:17:07,332 --> 00:17:13,081
+zero, D zero, etc., etc., etc., to L zero,
+A one, B one, C one, dot, dot, dot to L
+
+231
+00:17:13,080 --> 00:17:17,219
+one, then at the end we are going to send
+K twenty, L20.
+
+232
+00:17:17,220 --> 00:17:22,345
+And so now it happens that a burst of
+errors at the physical layer, is spread
+
+233
+00:17:22,345 --> 00:17:25,274
+out across, all, of the different code
+blocks.
+
+234
+00:17:25,273 --> 00:17:30,466
+So in this case, if we have even a string
+of twelve bit errors, a string of twelve
+
+235
+00:17:30,466 --> 00:17:35,458
+bit errors is going to, to cause one bit
+error on every single one of the code
+
+236
+00:17:35,458 --> 00:17:38,720
+blocks.
+So it cause one bit error in a, one bit error in
+
+237
+00:17:38,720 --> 00:17:43,484
+b, one bit error in c, and one bit error in l.
+And so in that way, it will suddenly
+
+238
+00:17:43,484 --> 00:17:47,209
+become more robust.
+So with interleaving, by interleaving all
+
+239
+00:17:47,209 --> 00:17:55,360
+of these bits, we can recover up to twelve
+bit errors with interleaving.
+
+240
+00:17:56,860 --> 00:17:59,267
+.
+We're even, where we didn't have
+
+241
+00:17:59,267 --> 00:18:04,142
+interleaving, even 2-bit errors can cause
+our system to fail, and 6-bit errors the
+
+242
+00:18:04,142 --> 00:18:07,994
+most we could ever do.
+But if all we do is interleave these bits,
+
+243
+00:18:07,994 --> 00:18:12,447
+we can deterministically, knowingly,
+recover a burst up to twelve bits long.
+
+244
+00:18:12,447 --> 00:18:16,360
+So interleaving is a very common and a
+very popular technique.
+
+245
+00:18:17,180 --> 00:18:21,025
+So this concludes the video on coding.
+If you want to read more, there's all
+
+246
+00:18:21,025 --> 00:18:23,606
+kinds of interesting coding algorithms out
+there.
+
+247
+00:18:23,606 --> 00:18:27,663
+I also suggest, if you want, dig into the
+math, Reed-Solomon, in terms of how it
+
+248
+00:18:27,663 --> 00:18:31,140
+works in practice to make efficient and
+coding and decoding.
+

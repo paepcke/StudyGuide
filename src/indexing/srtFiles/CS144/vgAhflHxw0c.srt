@@ -1,0 +1,678 @@
+1
+00:00:00,000 --> 00:00:02,832
+So in this video, I'm going to talk about
+CSMA/CA.
+
+2
+00:00:02,832 --> 00:00:05,980
+Carrier Sense Multiple Access Collision
+Avoidance.
+
+3
+00:00:05,980 --> 00:00:09,184
+A MAC protocol or MAC algorithm used in
+wireless networks.
+
+4
+00:00:09,184 --> 00:00:13,659
+So for a wireless network to be able to
+detect that there's a collision, it needs
+
+5
+00:00:13,659 --> 00:00:18,190
+to know whether or not a packet collided,
+or whether it was delivered successfully.
+
+6
+00:00:18,190 --> 00:00:22,562
+So, because in a wireless network due to
+signal strength attenuation, you can't
+
+7
+00:00:22,562 --> 00:00:26,935
+detect that there was a collision at a
+receiver because you can't observe the
+
+8
+00:00:26,935 --> 00:00:30,243
+receiver directly.
+You need some feedback from the receiver
+
+9
+00:00:30,243 --> 00:00:33,775
+as to what's happened.
+And so the way this is commonly achieved
+
+10
+00:00:33,775 --> 00:00:38,092
+is with link layer acknowledgments.
+And the idea is that if A is transmitting
+
+11
+00:00:38,092 --> 00:00:42,128
+a packet, a data packet, to B, if B
+successfully receives this packet, then
+
+12
+00:00:42,128 --> 00:00:44,820
+what it does, is it sends an
+acknowledgment back.
+
+13
+00:00:53,040 --> 00:00:56,523
+This acknowledgment packet could be
+very, very short.
+
+14
+00:00:56,523 --> 00:01:01,028
+It's occurring at the link layer.
+It doesn't go across multiple hops in the
+
+15
+00:01:01,028 --> 00:01:03,610
+network.
+It's directly, say, using a wireless
+
+16
+00:01:03,610 --> 00:01:07,334
+Ethernet between A and B.
+And so the advantage of this is if A
+
+17
+00:01:07,334 --> 00:01:12,019
+starts transmitting, say, a data packet to
+B, but at the same time, C transmits a
+
+18
+00:01:12,019 --> 00:01:18,186
+data packet and the two collide.
+Then B will not send that acknowledgement,
+
+19
+00:01:18,186 --> 00:01:22,375
+it doesn't successfully receive either
+packets, sends no acknowledgement, A knows
+
+20
+00:01:22,375 --> 00:01:26,087
+that it might need to re-transmit, that it
+should possibly re-transmit.
+
+21
+00:01:26,087 --> 00:01:30,381
+Of course you can have collusion on ACKs,
+ACKs aren't perfect, so  it  can be that A, does
+
+22
+00:01:30,381 --> 00:01:34,570
+some unnecessary re-transmissions but
+generally speaking A needs some feedback
+
+23
+00:01:34,570 --> 00:01:38,070
+from B to know whether or not the data was
+delivered successfully.
+
+24
+00:01:38,070 --> 00:01:40,114
+If these were very, very uncommon.
+Right?
+
+25
+00:01:40,114 --> 00:01:42,317
+So in the same way, the same wire
+Ethernet.
+
+26
+00:01:42,317 --> 00:01:46,354
+Where it's possible, it's very uncommon
+that a packet doesn't collide and yet
+
+27
+00:01:46,354 --> 00:01:49,395
+doesn't arrive successfully.
+Then you might not need an
+
+28
+00:01:49,395 --> 00:01:52,226
+acknowledgement.
+But the fact that wireless, the signal
+
+29
+00:01:52,226 --> 00:01:56,106
+strength changes so much over time.
+That data, data errors are common, means
+
+30
+00:01:56,106 --> 00:01:58,361
+that you want to have some positive
+feedback.
+
+31
+00:01:58,361 --> 00:02:01,926
+So using link layer acknowledgments.
+This is how CSMA/CA works.
+
+32
+00:02:01,926 --> 00:02:05,230
+So the idea is you start off with some
+initial random back off.
+
+33
+00:02:05,387 --> 00:02:07,851
+It can be very small, say, if the
+channel's idle.
+
+34
+00:02:07,851 --> 00:02:11,718
+You sense the local channel.
+And you transmit after the back off.
+
+35
+00:02:11,718 --> 00:02:16,250
+So the basic idea here is, listen, if the
+channels idle, then transmit.
+
+36
+00:02:16,250 --> 00:02:19,575
+If you don't hear the packet
+acknowledged, if you don't hear an
+
+37
+00:02:19,575 --> 00:02:22,122
+acknowledgement, then back off again and
+retry it.
+
+38
+00:02:22,122 --> 00:02:25,188
+So, transmit again.
+If you hear the packet acknowledged, then
+
+39
+00:02:25,188 --> 00:02:28,617
+you can send the next packet.
+This is the basic CSMA, carrier sense
+
+40
+00:02:28,617 --> 00:02:31,164
+multiple access, CA, collision avoidance
+algorithm.
+
+41
+00:02:31,164 --> 00:02:34,490
+And it's collision avoidance because you
+do just back off again.
+
+42
+00:02:34,490 --> 00:02:37,539
+So, let's look at this more concretely.
+What is 802.11?
+
+43
+00:02:37,539 --> 00:02:39,207
+It's a wi-fi.
+What does it do?
+
+44
+00:02:39,207 --> 00:02:41,451
+So, 802.11 has two modes.
+One is CSMA/CA.
+
+45
+00:02:41,451 --> 00:02:45,939
+Er, it has many modes, but the common mode
+that everybody uses today is CSMA/CA.
+
+46
+00:02:45,939 --> 00:02:50,139
+It also has another mode common,
+reasonably common, called request to send,
+
+47
+00:02:50,139 --> 00:02:53,303
+clear to send, which we'll talk about in a
+future video.
+
+48
+00:02:53,303 --> 00:02:56,200
+But here, let's talk about CSMA/CA.
+
+49
+00:02:56,200 --> 00:02:59,943
+So the basic approach is that you pick an
+initial wait period, T.
+
+50
+00:02:59,943 --> 00:03:05,234
+This often starts off as being very small.
+And what the transmitter does is it
+
+51
+00:03:05,234 --> 00:03:09,648
+periodically checks the channel.
+If the channel is idle on all those
+
+52
+00:03:09,648 --> 00:03:12,376
+checks, it decrements T, so it's counting
+down T.
+
+53
+00:03:12,376 --> 00:03:17,192
+So T represents the amount of idle time
+the transmitter wants to hear before it'll
+
+54
+00:03:17,192 --> 00:03:19,687
+transmit.
+So in T which is zero, it tries to
+
+55
+00:03:19,687 --> 00:03:22,806
+transmit.
+If it hears an acknowledgement, then it
+
+56
+00:03:22,806 --> 00:03:26,021
+accepts the next packet for transmission.
+All's good.
+
+57
+00:03:26,021 --> 00:03:29,173
+If it doesn't hear an acknowledgement, it
+doubles T.
+
+58
+00:03:29,173 --> 00:03:32,265
+So it'll exponentially back off, longer
+and longer.
+
+59
+00:03:32,450 --> 00:03:37,272
+If T grows to be larger than some large T
+value, then it just drops the packet.
+
+60
+00:03:37,272 --> 00:03:42,527
+Rather than waiting or blocking on a given
+packet, it'll just drop that packet and
+
+61
+00:03:42,527 --> 00:03:46,964
+try to go on to the next one.
+And so here's a little, little walk
+
+62
+00:03:46,964 --> 00:03:50,113
+through.
+So here's our sender S, and it picks an
+
+63
+00:03:50,113 --> 00:03:56,924
+initial T value here.
+T, the channel here is busy so it's not
+
+64
+00:03:56,924 --> 00:03:59,841
+decrementing T.
+It starts decrementing T.
+
+65
+00:03:59,841 --> 00:04:05,297
+T becomes zero here.
+And so it transmits, it transmits this
+
+66
+00:04:05,297 --> 00:04:08,263
+packet.
+Unfortunately, it doesn't hear an
+
+67
+00:04:08,263 --> 00:04:11,600
+acknowledgement so it picks a new T, which
+is.
+
+68
+00:04:12,300 --> 00:04:14,930
+In a range twice as large as the original
+t.
+
+69
+00:04:15,125 --> 00:04:20,403
+It decrements that T, there are periods of
+busy-ness, there are period of idleness
+
+70
+00:04:20,403 --> 00:04:25,812
+and then finally T decrements, let's call
+this T2, and finally T2 decrements to zero.
+
+71
+00:04:25,812 --> 00:04:28,809
+It transmits here is an acknowledgement.
+Great.
+
+72
+00:04:28,809 --> 00:04:34,414
+It goes on to the next packet transmission
+with the initial small T value as the back
+
+73
+00:04:34,414 --> 00:04:37,216
+off.
+So CSMA works, CSMA/CA works pretty well,
+
+74
+00:04:37,216 --> 00:04:41,451
+but it has a bunch of problems which
+really do occur in practice.
+
+75
+00:04:41,451 --> 00:04:46,730
+So the first one is something called
+hidden terminals and so this occurs when,
+
+76
+00:04:46,913 --> 00:04:51,373
+Say we have this node B in the middle,
+like this could be, say, your access
+
+77
+00:04:51,373 --> 00:04:53,825
+point.
+And you have two nodes, A and C, who both
+
+78
+00:04:53,825 --> 00:04:57,945
+want to transmit to the access point.
+So the basic problem with CSMA/CA is that a
+
+79
+00:04:57,945 --> 00:05:01,387
+transmitter is listening as to whether the
+channel is idle at it.
+
+80
+00:05:01,387 --> 00:05:05,454
+When really what it cares about is whether
+the channel's idle at the receiver.
+
+81
+00:05:05,454 --> 00:05:09,418
+It could be that the receiver is hearing
+something, and so it can't hear the
+
+82
+00:05:09,418 --> 00:05:13,642
+transmitter's packet, but the transmitter
+can't tell because it can't hear what's
+
+83
+00:05:13,642 --> 00:05:17,188
+happening at the receiver.
+It wants to sense the receiver's state, but
+
+84
+00:05:17,188 --> 00:05:20,786
+can actually only sense its own.
+And so a hidden terminal is when two
+
+85
+00:05:20,786 --> 00:05:26,634
+nodes, say A and C, both try to transmit.
+To, a receiver, or it can be even to an
+
+86
+00:05:26,634 --> 00:05:32,114
+adjecnt receivers.
+And the receivers can hear both of them,
+
+87
+00:05:32,114 --> 00:05:37,685
+so B can hear both A and C, but A and C
+cannot hear each other.
+
+88
+00:05:37,685 --> 00:05:44,244
+So A, is hidden to C, and C is hidden to A.
+And so A starts transmitting, B starts
+
+89
+00:05:44,244 --> 00:05:50,982
+receiving the packet, C doesn't hear it,
+so C says, aha, I think the channel's
+
+90
+00:05:50,982 --> 00:05:54,149
+clear, it transmits.
+B hears C and A's packets.
+
+91
+00:05:54,149 --> 00:05:56,170
+There's a collision.
+B hears nothing.
+
+92
+00:05:56,170 --> 00:05:59,314
+Both are lost.
+This is something which CSMA/CA can't
+
+93
+00:05:59,314 --> 00:06:01,840
+solve.
+Because you're sensing locally, but you
+
+94
+00:06:01,840 --> 00:06:04,759
+want to be sensing what's happening at the
+receiver.
+
+95
+00:06:04,759 --> 00:06:08,015
+So you can imagine that this happens a lot
+in AP networks.
+
+96
+00:06:08,015 --> 00:06:11,327
+So, the second problem is what's called an
+exposed terminal.
+
+97
+00:06:11,327 --> 00:06:14,302
+And this is kind of the reverse of a
+hidden terminal.
+
+98
+00:06:14,302 --> 00:06:18,568
+So imagine this case where B wants to
+transmit a packet to A, and C wants to
+
+99
+00:06:18,568 --> 00:06:24,310
+transmit a packet to D.
+But now A can't hear C, right.
+
+100
+00:06:24,310 --> 00:06:28,400
+So A can't hear C.
+What's going to happen?
+
+101
+00:06:28,400 --> 00:06:32,950
+B starts transmitting to A.
+All is good, A is receiving the packet.
+
+102
+00:06:32,950 --> 00:06:37,960
+Now C wants to transmit to D.
+D can't hear B.
+
+103
+00:06:42,440 --> 00:06:45,713
+And this is fine.
+D is absolutely capable to receive a
+
+104
+00:06:45,713 --> 00:06:50,592
+packet from C while B is transmitting.
+But C senses its local channel, and it
+
+105
+00:06:50,592 --> 00:06:54,122
+hears, aha, wait, wait, B is transmitting.
+I can't transmit.
+
+106
+00:06:54,122 --> 00:06:57,460
+And so it doesn't transmit, and so C is
+exposed to B.
+
+107
+00:06:57,460 --> 00:07:00,605
+And so.
+Whereas a hidden terminal is a case where
+
+108
+00:07:00,605 --> 00:07:05,869
+someone transmits when they shouldn't, an
+exposed terminal is when someone doesn't
+
+109
+00:07:05,869 --> 00:07:09,977
+transmit when they could.
+So the third problem that occurs, in
+
+110
+00:07:09,977 --> 00:07:15,241
+CSMA/CA, or, even in just wireless networks
+in general, is that, let's say we have our
+
+111
+00:07:15,241 --> 00:07:20,065
+nodes A and B.
+And A transmits a packet to B, but there's
+
+112
+00:07:20,065 --> 00:07:25,826
+no acknowledgement.
+So is this because there was a collision?
+
+113
+00:07:25,826 --> 00:07:32,010
+That is there is some other node C
+transmitting at the same time and that
+
+114
+00:07:32,010 --> 00:07:36,272
+interfered?
+Or is this because suddenly the channel
+
+115
+00:07:36,272 --> 00:07:42,623
+between A and B became very poor, the
+signal to noise ratio went down, it's a
+
+116
+00:07:42,623 --> 00:07:49,560
+weak signal like say, you know somebody,
+some person walked between the two.
+
+117
+00:07:50,060 --> 00:07:54,622
+Problem is, A can't tell.
+It doesn't know whether or not this was,
+
+118
+00:07:54,622 --> 00:07:57,939
+this loss was due to a collision or just
+poor signal.
+
+119
+00:07:57,939 --> 00:08:01,505
+And you can imagine, it might want to
+respond differently.
+
+120
+00:08:01,505 --> 00:08:04,384
+Because a collision is going to want to
+back off.
+
+121
+00:08:04,384 --> 00:08:07,637
+Because, it doesn't want to contend with
+the channel.
+
+122
+00:08:07,637 --> 00:08:12,580
+But, if it was due to low SNR, then it
+wants to perhaps reduce it's bit rate,
+
+123
+00:08:12,580 --> 00:08:17,836
+transmit slower so it can support more bit
+errors due to the, the lower signal
+
+124
+00:08:17,836 --> 00:08:20,557
+strength.
+And so there's often this issue.
+
+125
+00:08:20,557 --> 00:08:25,140
+And people are starting to solve this
+problem now and figure it out.
+
+126
+00:08:25,140 --> 00:08:29,469
+But, where A tries to transmit to B.
+It's loss due to collision.
+
+127
+00:08:29,469 --> 00:08:33,557
+A interprets that has being a low SNR so
+it starts transmitting a slower bit-rate.
+
+128
+00:08:33,557 --> 00:08:37,547
+Which then means its packets are longer
+which increases the chance of collisions
+
+129
+00:08:37,547 --> 00:08:40,650
+or it transmits to B.
+It thinks that it's because it's due to a
+
+130
+00:08:40,650 --> 00:08:43,064
+collision.
+So it backs off more, when really if it
+
+131
+00:08:43,063 --> 00:08:45,970
+just transmitted again immediately, it
+would have been fine.
+
+132
+00:08:45,970 --> 00:08:50,782
+And so in a standard CSMA, a simple CSMA
+algorithm distinguishing these two is
+
+133
+00:08:50,782 --> 00:08:54,422
+really, really hard.
+Nevertheless, because it's so simple, and
+
+134
+00:08:54,422 --> 00:08:59,482
+when there isn't a tremendous contention,
+when you do a good SNR, CSMA works pretty
+
+135
+00:08:59,482 --> 00:09:02,258
+well.
+CDMA/CA is the general MAc protocol you
+
+136
+00:09:02,258 --> 00:09:04,480
+see used, say, in WiFi networks today.
+

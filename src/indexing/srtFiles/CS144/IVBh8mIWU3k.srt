@@ -1,0 +1,1154 @@
+1
+00:00:00,000 --> 00:00:05,074
+This  video goes into the details of what
+DNS queries actually look like, and their
+
+2
+00:00:05,074 --> 00:00:10,051
+format and their structure.
+So, queries and the resource records that
+
+3
+00:00:10,051 --> 00:00:14,043
+compose them.
+As you recall, a DNS query starts from a
+
+4
+00:00:14,043 --> 00:00:17,024
+client.
+Say, it asks a resolver, what's
+
+5
+00:00:17,024 --> 00:00:20,011
+www.stanford.edu?
+And this is a recursive query.
+
+6
+00:00:20,067 --> 00:00:26,021
+And then, a resolver might either answer
+from its cache, or use cache entries.
+
+7
+00:00:26,021 --> 00:00:31,351
+And if it doesn't have a cache entry for
+any stage of the query, it can ask
+
+8
+00:00:31,351 --> 00:00:38,699
+questions from external servers.
+So, whom would I ask about edu?
+
+9
+00:00:38,699 --> 00:00:48,407
+Whom would I ask about Stanford.edu?
+Hey, what's www.stanford.edu?
+
+10
+00:00:48,407 --> 00:01:02,663
+Each of these are non-recursive queries
+and the resolver then caches those
+
+11
+00:01:02,663 --> 00:01:08,715
+results.
+So, edu, stanford.edu and
+
+12
+00:01:08,715 --> 00:01:14,151
+www.stanford.edu.
+So, that's a query at a high level.
+
+13
+00:01:14,151 --> 00:01:18,953
+But, the details, the way DNS works is
+that all DNS information and every DNS
+
+14
+00:01:18,953 --> 00:01:23,560
+message is represented in terms of things
+called Resource Records, RRs.
+
+15
+00:01:23,560 --> 00:01:27,439
+In the form of Resource Records is
+generally pretty simple.
+
+16
+00:01:27,439 --> 00:01:32,081
+It has a name, also a kind of resource
+record, sort of, name of the, the name
+
+17
+00:01:32,081 --> 00:01:36,498
+associated with this record.
+There can be a time to live, and a class,
+
+18
+00:01:36,498 --> 00:01:40,448
+then there is the type of record, and then
+the record data.
+
+19
+00:01:40,448 --> 00:01:46,024
+So, for example, a research record would
+be named say, www.stanford.edu.
+
+20
+00:01:46,024 --> 00:01:51,994
+So, this is a record for www.stanford.edu.
+TTL, how long is this record good.
+
+21
+00:01:51,994 --> 00:01:58,163
+Class, it's just the address class.
+So, typically, it's almost always IN 1
+
+22
+00:01:58,163 --> 00:02:03,408
+it's class one so for, this for
+Internet, for the Internet.
+
+23
+00:02:03,408 --> 00:02:07,552
+There's the type of the record and then
+the data.
+
+24
+00:02:07,552 --> 00:02:13,350
+And so here, I'm going to walk through two
+critical RR types, Resource Record types.
+
+25
+00:02:13,350 --> 00:02:18,632
+Type A, which is an ad..., or an IPv4
+address, and NS, which is a Name Server.
+
+26
+00:02:18,632 --> 00:02:22,896
+So, an A record tells you an address
+associated with a name.
+
+27
+00:02:22,896 --> 00:02:28,849
+So, it'll say, type A, the R data's an
+address, it's the address associated with
+
+28
+00:02:28,849 --> 00:02:32,059
+a name.
+Whereas in name server record, an NS
+
+29
+00:02:32,059 --> 00:02:38,012
+record will telly you the address of a
+name server associated with a name.
+
+30
+00:02:38,046 --> 00:02:43,597
+So, a great way to explore DNS and what
+records look like and what kinds of records
+
+31
+00:02:43,597 --> 00:02:49,357
+should you get is to use this cool tool
+called dig which I'll use several times.
+
+32
+00:02:49,357 --> 00:02:54,370
+A DNS message, an actual DNS message, its
+structure looks like this.
+
+33
+00:02:54,370 --> 00:02:58,374
+This is specified in the RFC 1035.
+So, beginning, there's a header which
+
+34
+00:02:58,374 --> 00:03:01,050
+describes the overall, what's in a
+message.
+
+35
+00:03:01,068 --> 00:03:04,071
+There's the question that this message is
+for.
+
+36
+00:03:04,071 --> 00:03:06,975
+If it's a query, then it's the question to
+query.
+
+37
+00:03:06,975 --> 00:03:10,264
+If it's a response, then it's a question's
+response, too.
+
+38
+00:03:10,264 --> 00:03:15,275
+And then, there are other sections which
+are empty inquiries, the answer authority
+
+39
+00:03:15,275 --> 00:03:19,070
+and additional sections.
+So, it's possible, for example, I send a
+
+40
+00:03:19,070 --> 00:03:21,989
+DNS query with multiple questions if you
+want.
+
+41
+00:03:21,989 --> 00:03:27,015
+Each of these can have multiple entries.
+So, there's a header and the question and
+
+42
+00:03:27,015 --> 00:03:31,077
+answer authority and additional sections
+are all made up of resource records.
+
+43
+00:03:31,077 --> 00:03:38,804
+So, let's look at an example of this.
+So, if I dig www.stanford.edu, this simply
+
+44
+00:03:38,804 --> 00:03:47,043
+just I'm asking, I'm discussing, I'd like
+to send a DNS query of, to, for the
+
+45
+00:03:47,043 --> 00:03:53,014
+address of www.stanford.edu.
+And this is what we see come back.
+
+46
+00:03:53,014 --> 00:03:59,006
+So, here, here's the dig output, tell you
+the version of dig.
+
+47
+00:03:59,006 --> 00:04:01,079
+Here's the header, some header
+information.
+
+48
+00:04:01,079 --> 00:04:04,058
+We'll talk a little bit more about that
+later.
+
+49
+00:04:04,058 --> 00:04:08,034
+Now, here's the question.
+I was asking for an address record of
+
+50
+00:04:08,034 --> 00:04:12,828
+www.stanford.edu, so you see here's a
+record, resource record, even the question
+
+51
+00:04:12,828 --> 00:04:16,018
+section.
+And, the answer has two records in it.
+
+52
+00:04:16,017 --> 00:04:22,008
+The first is what's called the CNAME
+record, which we'll talk a little bit more
+
+53
+00:04:22,009 --> 00:04:24,330
+later.
+This data says that www.stanford.edu is
+
+54
+00:04:24,330 --> 00:04:30,840
+actually the canonical name for that so
+what CNAME stands for, CNAME stands for is
+
+55
+00:04:30,840 --> 00:04:34,950
+www-v6.stanford.edu.
+So, there are six different, maybe there's
+
+56
+00:04:34,950 --> 00:04:40,508
+six different web servers for Stanford.
+Then, the address of www-v6, here's,
+
+57
+00:04:40,508 --> 00:04:46,326
+here's the Internet IN, so it's IN1,
+that's the class, TTL is 1800, this is an
+
+58
+00:04:46,326 --> 00:04:52,038
+A record and it's for this address.
+In addition to that, the authority section
+
+59
+00:04:52,060 --> 00:04:57,496
+is telling me who are the authoritative names.
+These are the NS and the name server
+
+60
+00:04:57,496 --> 00:05:02,186
+records for stanford.edu.
+So here, all of these different servers I
+
+61
+00:05:02,186 --> 00:05:07,071
+could ask about addresses in Stanford.
+The additional section then gives me a
+
+62
+00:05:07,071 --> 00:05:12,028
+whole bunch of just additional stuff like,
+here's the address record for Argus.
+
+63
+00:05:12,028 --> 00:05:16,062
+Here's the address record for Aerathea.
+Here's the address record for Atlanta.
+
+64
+00:05:16,062 --> 00:05:19,062
+Here's the, Atalante, here's the address
+for Avallone.
+
+65
+00:05:19,062 --> 00:05:23,729
+And so, we're going to think of what DNS
+is often doing, and the reason why you see
+
+66
+00:05:23,729 --> 00:05:28,472
+this message is so big is that, given this
+is going to send a response, it tries to
+
+67
+00:05:28,472 --> 00:05:32,722
+send you a whole bunch of extra data, a
+whole bunch of extra information just to
+
+68
+00:05:32,722 --> 00:05:37,222
+maybe prevent you from asking other query.
+And so, these are A Records, these are
+
+69
+00:05:37,222 --> 00:05:40,646
+IPv4 addresses.
+So, quad A records, AAAA, these are IPv6
+
+70
+00:05:40,646 --> 00:05:43,440
+addresses.
+And so, it turns out Stanford's DNS server
+
+71
+00:05:43,440 --> 00:05:48,258
+is giving you not only the address records
+of the Stanford name servers but also
+
+72
+00:05:48,258 --> 00:05:52,744
+their, you know, the A Record close to
+IPv6 in case I want to query them for
+
+73
+00:05:52,744 --> 00:05:55,496
+IPv6.
+So, this is what a response to a DNS query
+
+74
+00:05:55,496 --> 00:05:59,092
+looks like.
+So, you can see that there's the header,
+
+75
+00:05:59,092 --> 00:06:04,068
+there's the question section, the answer
+section, the authority section, and then
+
+76
+00:06:04,068 --> 00:06:09,930
+additional section.
+So, if we look inside the header,
+
+77
+00:06:09,930 --> 00:06:17,696
+specified RFC 1035.
+The header is ten bytes long, sorry, twelve
+
+78
+00:06:17,699 --> 00:06:23,011
+bytes long so it's pretty short.
+The first two bytes are an ID so you can
+
+79
+00:06:23,011 --> 00:06:27,946
+pair queries and responses.
+And then, the second, the first two byte
+
+80
+00:06:27,946 --> 00:06:31,672
+is an ID, the second two bytes are a bunch
+of flags.
+
+81
+00:06:31,672 --> 00:06:36,892
+So, there's the, first, that bit I mentioned
+whether this is a query or response,
+
+82
+00:06:36,892 --> 00:06:41,091
+there's a OPCODE.
+So, standard queries, and there's a return
+
+83
+00:06:41,091 --> 00:06:44,606
+code if there's an error code, and there's
+a bunch of flags.
+
+84
+00:06:44,606 --> 00:06:50,004
+So, it's an authoritative answer, is it
+truncated all of these sort of things.
+
+85
+00:06:50,004 --> 00:06:54,060
+So, you can see here, at the bottom
+recursion desired and recursion available.
+
+86
+00:06:54,060 --> 00:06:59,065
+There are ways where you can in fact ask a
+result over for non-recursive query
+
+87
+00:06:59,065 --> 00:07:02,071
+if you want.
+Then, after this first four bytes, there
+
+88
+00:07:02,071 --> 00:07:07,522
+are four two byte values which say how
+many resource records are there in each
+
+89
+00:07:07,522 --> 00:07:11,571
+section.
+So, how many queries are there, how many
+
+90
+00:07:11,571 --> 00:07:18,297
+answers are there, how many authorities
+are there, and how many additional records
+
+91
+00:07:18,297 --> 00:07:21,907
+are there.
+Now then, within each of these, of the
+
+92
+00:07:21,907 --> 00:07:27,364
+four sections that have resource records,
+resource record is pretty simple.
+
+93
+00:07:27,364 --> 00:07:31,939
+It has a name that could be a variable,
+number of, of bytes long.
+
+94
+00:07:31,939 --> 00:07:37,835
+I don't know how long it is.
+Then, there's a type, class and the TTL
+
+95
+00:07:37,835 --> 00:07:41,382
+within an RD length field specifying the R
+data.
+
+96
+00:07:41,382 --> 00:07:46,762
+So here, here's the basic DNS name and the
+type and then the class, TTL, RD length, R
+
+97
+00:07:46,762 --> 00:07:49,860
+data.
+And so, this is one of the sort of on the
+
+98
+00:07:49,860 --> 00:07:53,778
+wire with the byte format of a resource
+record looks like.
+
+99
+00:07:53,778 --> 00:07:59,139
+Now, notice that the beginning of a
+resource record is a name but it doesn't
+
+100
+00:07:59,139 --> 00:08:05,128
+say how long the name is that's because the
+length of the name just self-describing.
+
+101
+00:08:05,128 --> 00:08:10,256
+It turns out that the DNS does a lot of
+name compression because it's trying to
+
+102
+00:08:10,256 --> 00:08:16,001
+pack everything in the 512 bytes.
+Then, names that are repeated through the
+
+103
+00:08:16,001 --> 00:08:20,005
+packet are just, rather than repeated, are
+just referenced.
+
+104
+00:08:20,027 --> 00:08:25,020
+And so, imagine if I'm asking a query
+about say, www.stanford.edu, I don't
+
+105
+00:08:25,020 --> 00:08:29,316
+necessarily want to have that repeated
+many times in the packet.
+
+106
+00:08:29,316 --> 00:08:32,009
+I can just put it once and then referred
+with.
+
+107
+00:08:32,009 --> 00:08:36,091
+So, the first thing that DNS does is it
+breaks a name into separate labels related
+
+108
+00:08:36,091 --> 00:08:40,091
+to the steps of the hierarchy.
+So, www.stanford.edu is three separate
+
+109
+00:08:40,091 --> 00:08:46,927
+labels, www, Standford, and edu.
+Then, each label is encoded as a length
+
+110
+00:08:46,927 --> 00:08:53,084
+and then text values.
+The length is in binary so it's basically
+
+111
+00:08:53,084 --> 00:08:59,127
+some number, it's just one byte, and then
+the text is an ASCII.
+
+112
+00:08:59,127 --> 00:09:03,250
+So, for example, if I will encode
+3www, so w is 0x77.
+
+113
+00:09:03,250 --> 00:09:09,015
+The way that it is encoded in the bits in
+the packet is 0x0377 0x7777.
+
+114
+00:09:09,015 --> 00:09:13,058
+So, this tells me, these are three bytes
+and here they are.
+
+115
+00:09:13,082 --> 00:09:18,062
+Now, one trick in that, the name
+progression uses in order to take
+
+116
+00:09:18,062 --> 00:09:24,586
+advantage of the fact that this means
+longer period at the time in the packet,
+
+117
+00:09:24,586 --> 00:09:33,990
+is if the length field here in the label
+is greater than 192, that is, some of the
+
+118
+00:09:33,990 --> 00:09:39,076
+higher bits are set.
+Then, the next fourteen bits specify an
+
+119
+00:09:39,076 --> 00:09:44,092
+offset in the packet.
+And so, the way that I think of this is
+
+120
+00:09:44,092 --> 00:09:49,082
+that, if I see here that the first two
+bits of the length.
+
+121
+00:09:49,082 --> 00:09:56,382
+So, 128 plus 64 is 192, or one, one, then
+this length is actually two bytes long,
+
+122
+00:09:56,382 --> 00:10:02,071
+this length field, and the later fourteen
+bits specify an offset in the packet.
+
+123
+00:10:02,071 --> 00:10:09,020
+So, for example, if I see 0xc00c, this
+means that the name that this label, that
+
+124
+00:10:09,020 --> 00:10:16,011
+this label refers to is at this value
+minus, take out this first two bits, is at
+
+125
+00:10:16,011 --> 00:10:21,048
+offset twelve within the packet.
+So, if I were just to go to offset twelve,
+
+126
+00:10:21,048 --> 00:10:26,049
+that's the label that this refers to.
+So, if like something for Stanford, which
+
+127
+00:10:26,049 --> 00:10:31,064
+is eight characters long, rather than
+repeat Stanford many times, would actually
+
+128
+00:10:31,064 --> 00:10:36,021
+be the [inaudible] because we need the length,
+right at the zero, or the, at 0x08, then
+
+129
+00:10:36,021 --> 00:10:43,481
+the bytes at Stanford I can just say, 0xc0
+and then the offset at Stanford and they
+
+130
+00:10:43,481 --> 00:10:46,876
+will be only two bytes long.
+So, this is a little bit detail, it's
+
+131
+00:10:46,876 --> 00:10:50,755
+important for when we, I'm going to open up
+Wireshark so I can show you what's in a DNS
+
+132
+00:10:50,755 --> 00:10:53,822
+query in responses looks like.
+Otherwise, it would be really hard to
+
+133
+00:10:53,822 --> 00:10:57,897
+figure out, wait, what are these resource
+records and what are these weird values
+
+134
+00:10:57,897 --> 00:11:02,162
+that aren't actually specifying names.
+So, just to give you an idea.
+
+135
+00:11:02,162 --> 00:11:06,156
+So, what the DNSA, the DNS-A, or address
+record looks like.
+
+136
+00:11:06,156 --> 00:11:09,577
+So, let's just say, for
+market.scs.stanford.edu.
+
+137
+00:11:09,577 --> 00:11:14,040
+So, the first, the name region would say
+market.scs.stanford.edu.
+
+138
+00:11:14,040 --> 00:11:18,217
+This might be compressed so it might
+become shorter.
+
+139
+00:11:18,217 --> 00:11:23,032
+Then, the next two bytes would say one,
+this is an address record.
+
+140
+00:11:23,032 --> 00:11:27,160
+The next two bytes would say one, this is
+for the Internet.
+
+141
+00:11:27,160 --> 00:11:33,078
+The next four bytes say 3600 so the TTL of
+this record, the time to leave is an hour.
+
+142
+00:11:33,099 --> 00:11:39,085
+Then, the length of the R data, the length
+of the Internet address is four bytes, and
+
+143
+00:11:39,085 --> 00:11:44,057
+then here are the four bytes.
+And so, if you ever see it printed out
+
+144
+00:11:44,057 --> 00:11:50,007
+say, if you're using dig and you'd see
+this, but the overall record actually
+
+145
+00:11:50,007 --> 00:11:53,614
+looks like this.
+An NS record, say, the name server record
+
+146
+00:11:53,614 --> 00:11:59,621
+of scs.stanfordedu looks similar where
+here, we have scs.stanfordedu and the name
+
+147
+00:11:59,621 --> 00:12:05,527
+section, again, it might be compressed.
+Then, we have 2 saying that this is NS
+
+148
+00:12:05,527 --> 00:12:08,826
+record against the Internet, time to leave
+is 3600.
+
+149
+00:12:08,826 --> 00:12:14,406
+And then, the length is say, ten because
+it turns out that scs.stanford.edu is
+
+150
+00:12:14,406 --> 00:12:18,049
+compressed because, well, it's been
+mentioned elsewhere.
+
+151
+00:12:18,049 --> 00:12:25,044
+So, we really have mission, one, two,
+three, four, five, six, seven, right?
+
+152
+00:12:25,044 --> 00:12:29,319
+And then, we have a one, the, the one, the
+length for mission.
+
+153
+00:12:29,319 --> 00:12:35,097
+And then, the two which is the compressed
+indication of the scs.stanford.edu.
+
+154
+00:12:35,097 --> 00:12:38,961
+The first two bytes in  the R data
+are going to point to
+
+155
+00:12:38,961 --> 00:12:44,683
+scs.stanford.edu, then we have a byte say,
+the length of mission seven, and the seven
+
+156
+00:12:44,683 --> 00:12:50,035
+mission bytes for a total of ten bytes.
+So, let's dig for market.scs.stanford.edu.
+
+157
+00:12:50,035 --> 00:12:53,050
+So, just use the tool and see what
+happens.
+
+158
+00:12:53,050 --> 00:12:58,024
+So, we're asking, what is the address of
+marketscs.stanford.edu?
+
+159
+00:12:58,024 --> 00:13:02,060
+So, we're asking for an address record, we
+get the answer.
+
+160
+00:13:02,083 --> 00:13:07,063
+Its address is 171.66.3.10, and here's the,
+the time to leave is 2050.
+
+161
+00:13:07,085 --> 00:13:13,046
+Authority section, here are the name servers that
+answered, that can answer this question.
+
+162
+00:13:13,046 --> 00:13:18,050
+Here's a bunch fs.n mission to
+scs.stanford.edu, and here's some
+
+163
+00:13:18,050 --> 00:13:23,024
+additional information, address records
+for these name servers.
+
+164
+00:13:23,024 --> 00:13:26,060
+So that's what it looks like when you ask
+dig.
+
+165
+00:13:26,060 --> 00:13:31,920
+We can also ask dig what is the NS record
+for market, for scs.stanford.edu.
+
+166
+00:13:31,920 --> 00:13:39,055
+And so, here is, we're querying for the NS
+
+167
+00:13:39,055 --> 00:13:43,087
+record, scs.stanford.edu.
+We see there's a whole bunch of name
+
+168
+00:13:43,087 --> 00:13:49,009
+servers that serve scs.stanford.edu, NS3,
+NS1, garage, market, mission, and then
+
+169
+00:13:49,009 --> 00:13:53,096
+here is the additional section, which is
+giving you their IP addresses.
+
+170
+00:13:53,096 --> 00:13:59,012
+Some of them are just IPv4 addresses, some
+of them IPv4 and IPv6 addresses.
+
+171
+00:13:59,089 --> 00:14:03,782
+And so, here we consider so many name
+server and what that means is that if any
+
+172
+00:14:03,782 --> 00:14:08,060
+one of these goes down, I can still
+access, I can still go to another one.
+
+173
+00:14:08,060 --> 00:14:13,029
+So, even if, say, three of these name
+servers went down, let's say, NS3, garage,
+
+174
+00:14:13,029 --> 00:14:17,098
+and market, I can still contact NS1 or
+mission to ask questions what names in
+
+175
+00:14:17,098 --> 00:14:22,031
+scs.stanford.edu.
+So now, let's see what those queries look
+
+176
+00:14:22,031 --> 00:14:27,020
+like in Wireshark.
+So, here, I open up Wireshark and I setup
+
+177
+00:14:27,020 --> 00:14:32,058
+a filter, UDP Port 53, is  the DNS Port
+and IP addr, my IP address.
+
+178
+00:14:32,058 --> 00:14:38,061
+This is going to look at D, DNS request
+and responses from, from my machine.
+
+179
+00:14:38,061 --> 00:14:44,612
+And so, if we were to ask this question,
+dig market.scs.stanford.edu, we see, we got
+
+180
+00:14:44,612 --> 00:14:51,058
+a query and response.
+And so, here is the DNS query,
+
+181
+00:14:51,058 --> 00:14:54,061
+right?
+Again, Internet Protocol version four,
+
+182
+00:14:54,062 --> 00:14:56,075
+sourced.
+There's my DNS server.
+
+183
+00:14:57,046 --> 00:15:07,255
+And so, here's the query, right?
+There's a standard query, there's one
+
+184
+00:15:07,255 --> 00:15:12,045
+question, no other records.
+And so, the question is
+
+185
+00:15:12,045 --> 00:15:17,019
+market.scs.stanford.edu.
+Type A, so I'm asking for an address
+
+186
+00:15:17,019 --> 00:15:21,070
+record, class IN, name,
+market.scs.stanford.edu, type A, host
+
+187
+00:15:21,070 --> 00:15:26,076
+address, class Internet.
+And so here, in fact, we're looking inside
+
+188
+00:15:26,076 --> 00:15:33,648
+the bytes of the packet, here's all the
+information about the size, right?
+
+189
+00:15:33,648 --> 00:15:38,055
+We can see here down these bytes are
+00000.
+
+190
+00:15:38,086 --> 00:15:46,015
+Here is, this the header of the DNS,
+transaction ID right there, 0x3eaa.
+
+191
+00:15:46,015 --> 00:15:50,069
+Flags, questions, etc., 00.
+And then, here is the query itself.
+
+192
+00:15:50,069 --> 00:15:55,089
+So, this is the query section.
+This is market.scs.stanford.edu.
+
+193
+00:15:55,089 --> 00:16:02,839
+If you look down at the bytes, this byte
+is first byte for market is 06, that's
+
+194
+00:16:02,839 --> 00:16:09,831
+because market is six characters long.
+So, it's 06, then M, A, R, K, E, T, then
+
+195
+00:16:09,831 --> 00:16:17,230
+SCS which is three, so three long, 3scs.
+Then, Stanford which is eight long, so
+
+196
+00:16:17,230 --> 00:16:21,976
+it's eight S, T, A, N, F, O, R, D, then
+three long E, D, U.
+
+197
+00:16:21,976 --> 00:16:26,921
+And then, that's the, and then type A, so
+01 class IN01, great.
+
+198
+00:16:26,921 --> 00:16:32,578
+Now, if we look at the response, it's a
+lot more complicated because remember, how
+
+199
+00:16:32,578 --> 00:16:36,987
+many entries there are in a response?
+So, let's look inside this.
+
+200
+00:16:36,987 --> 00:16:40,863
+So, it's telling us for the transaction ID
+is 03eaa.
+
+201
+00:16:40,863 --> 00:16:46,824
+Saying, response is here,
+there's one question, one answer, five
+
+202
+00:16:46,824 --> 00:16:51,711
+authorities, seven additional.
+So, let's look at the query section.
+
+203
+00:16:51,711 --> 00:16:57,072
+So the query here, you can see, again,
+market.scs.stanford.edu.
+
+204
+00:16:57,072 --> 00:17:02,019
+Type A, class IN.
+And so here's the answer, market.
+
+205
+00:17:02,019 --> 00:17:06,039
+Scs.stanford.edu, blah, blah, blah, here's
+the address.
+
+206
+00:17:06,039 --> 00:17:12,532
+But now, if you look at this, the name
+section of this resource record is only
+
+207
+00:17:12,531 --> 00:17:15,098
+two bytes long.
+It's using name compression.
+
+208
+00:17:15,098 --> 00:17:20,054
+So, here's that c00c.
+What it's saying is that c, the first two
+
+209
+00:17:20,055 --> 00:17:26,061
+bits are one, this is a compressed name.
+And the start of the name is at offset 0c
+
+210
+00:17:26,060 --> 00:17:31,092
+or twelve within the packet.
+And if you would count the bytes within
+
+211
+00:17:31,092 --> 00:17:36,046
+the DNS packet, you can see that market
+starts at byte twelve.
+
+212
+00:17:36,048 --> 00:17:42,058
+This is saying this name is right there.
+And so, then here's type A, IN, 30, etc.
+
+213
+00:17:42,058 --> 00:17:46,002
+Etc.
+So that, you can see, so we've going to
+
+214
+00:17:46,002 --> 00:17:51,010
+take  market.scs.stanford.edu and
+compress the name entirely.
+
+215
+00:17:51,010 --> 00:17:56,009
+But, it turns that you can do some other
+types of compression.
+
+216
+00:17:56,009 --> 00:18:01,057
+So, here is the authoritative, here's an
+answer for scs.stanford.edu.
+
+217
+00:18:01,057 --> 00:18:07,014
+And so, we see again this name for
+scs.stanford.edu's compress, so c0, it's
+
+218
+00:18:07,014 --> 00:18:10,993
+compressed, thirteen.
+This is an address, the one where that
+
+219
+00:18:10,993 --> 00:18:14,818
+represents sixteen.
+This is an address nineteen within the
+
+220
+00:18:14,818 --> 00:18:19,398
+packet or offset nineteen, so why 19?
+Well, if you think, the original
+
+221
+00:18:19,398 --> 00:18:22,232
+market.scs name, which is an offset
+twelve.
+
+222
+00:18:22,238 --> 00:18:27,409
+Then, there's the length byte for market,
+and then the six market bytes, so a total
+
+223
+00:18:27,409 --> 00:18:30,616
+of seven bytes.
+And so, offset nineteen within the packet
+
+224
+00:18:30,616 --> 00:18:34,521
+is scs.stanford.edu.
+So, you can address not only into the
+
+225
+00:18:34,521 --> 00:18:38,475
+beginning of the series of labels, but any
+label within there.
+
+226
+00:18:38,475 --> 00:18:43,296
+And so, you'll see this happen many times.
+And so, if you start doing some, digging
+
+227
+00:18:43,296 --> 00:18:47,871
+some requests, and open up in Wireshark
+you can see this kind of name compression.
+
+228
+00:18:47,871 --> 00:18:54,006
+And what this means in practice right, is
+that this packet which had all of this
+
+229
+00:18:54,006 --> 00:18:58,072
+information in it, right?
+Look at all the stuff is in this packet.
+
+230
+00:18:58,072 --> 00:19:04,026
+All of these different records, the
+address records, name server records,
+
+231
+00:19:04,026 --> 00:19:22,091
+quad address records fits in 311 bytes.
+So, it's a 311 byte DNS response.
+

@@ -1,0 +1,291 @@
+1
+00:00:00,459 --> 00:00:06,680
+In the following demo we’re going to show
+how an attacker can masquerade as a DHCP server,
+
+2
+00:00:06,680 --> 00:00:13,680
+causing Alice to use the wrong DNS server.
+
+3
+00:00:21,390 --> 00:00:27,838
+In our demo, three hosts are connected to
+switch “s1”. Host 1 is Alice’s machine,
+
+4
+00:00:27,839 --> 00:00:34,839
+which is running a good DHCP client. Host
+“dhcp” runs a good dhcp server. The DHCP
+
+5
+00:00:37,539 --> 00:00:44,539
+server configures Alice’s machine to use
+the a Good DNS server. Host “evil” is
+
+6
+00:00:45,769 --> 00:00:52,249
+run by Eve the Attacker, and runs a rogue
+DHCP server, a rogue DNS server and a web
+
+7
+00:00:52,249 --> 00:00:53,269
+server.
+
+8
+00:00:53,269 --> 00:00:59,699
+Initially, we will assume the Eve has not
+started her attack, and we’ll see a Mininet
+
+9
+00:00:59,699 --> 00:01:04,680
+demo of the Good DHCP server correctly configuring
+Alice’s machine, so that she can access
+
+10
+00:01:04,680 --> 00:01:09,280
+the Internet just fine.
+Then, we’ll see what happens if Eve’s
+
+11
+00:01:09,280 --> 00:01:16,130
+machine masquerades as the local DHCP server,
+replying faster than the Good DHCP server.
+
+12
+00:01:16,130 --> 00:01:20,530
+Eve will configure Alice’s machine to use
+the Rogue DNS server, directing Eve’s web
+
+13
+00:01:20,530 --> 00:01:23,460
+traffic to Eve’s web server as well.
+
+14
+00:01:23,460 --> 00:01:25,549
+Let’s see what happens….
+
+15
+00:01:25,549 --> 00:01:30,170
+The demonstration shows how simple a DHCP
+attack is, if the Attacker has access to the
+
+16
+00:01:30,170 --> 00:01:33,750
+local network, and can install a rogue dhcp
+client close to the victim.
+
+17
+00:01:33,750 --> 00:01:38,680
+The demo I’m going to show you runs in the
+Mininet emulation system, which means you
+
+18
+00:01:38,680 --> 00:01:42,250
+can easily and safely run it yourself on your
+own computer, and I’ll tell you shortly
+
+19
+00:01:42,250 --> 00:01:48,219
+how. It also means the same code can easily
+be replicated into a real network. The demo
+
+20
+00:01:48,219 --> 00:01:51,969
+was created by Bob Lantz, at the Open Networking
+Lab in Palo Alto.
+
+21
+00:01:51,969 --> 00:01:57,750
+H1 runs a dhcp client and is initially configured
+correctly by a nearby host running a good
+
+22
+00:01:57,750 --> 00:02:04,340
+dhcp server for the local network. "evil"
+is run by Eve the Attacker and runs a rogue
+
+23
+00:02:04,340 --> 00:02:11,340
+DHCP server. The host "dhcp" is connected
+to s1 via a 500ms link, to delay its dhcp
+
+24
+00:02:13,420 --> 00:02:18,610
+responses to Alice. We need the delay to be
+sure Alice will hear the evil DHCP responses
+
+25
+00:02:18,610 --> 00:02:20,760
+before the good ones.
+
+26
+00:02:20,760 --> 00:02:25,090
+Alice uses host "h1" to browse the web using
+her Firefox browser.
+
+27
+00:02:25,090 --> 00:02:30,210
+As we can see, she can successfully reach
+the Stanford website. Her computer, h1, runs
+
+28
+00:02:30,210 --> 00:02:36,110
+a dhcp client to configure her IP address,
+the address of her local router and her DNS
+
+29
+00:02:36,110 --> 00:02:41,630
+server. If we use the dig command to look
+up another name like amazon.com, we can see
+
+30
+00:02:41,630 --> 00:02:48,380
+that the DNS server, in this case a public
+DNS server run by Google at IP address 8.8.8.8
+
+31
+00:02:48,380 --> 00:02:53,330
+is responding to the query with Amazon’s
+IP addresses, and the site loads as expected
+
+32
+00:02:53,330 --> 00:02:54,660
+in Firefox.
+
+33
+00:02:54,660 --> 00:02:59,570
+Eve the Attacker starts three processes on
+the evil host: A rogue DHCP server, a rogue
+
+34
+00:02:59,570 --> 00:03:04,350
+DNS server and a web server. Eve is going
+to force all Alice's web accesses to go to
+
+35
+00:03:04,350 --> 00:03:10,880
+Eve's web server instead. Every so often,
+our dhcp client is required to renew the lease
+
+36
+00:03:10,880 --> 00:03:16,970
+on its IP address. In wireshark we can see
+that when h1 issues a DHCP discover, the good
+
+37
+00:03:16,970 --> 00:03:23,110
+DHCP server at 10.0.0.50 responds with an
+offer that contains the address of the legitimate
+
+38
+00:03:23,110 --> 00:03:28,310
+DNS server at 8.8.8.8, but (unfortunately)
+Alice’s machine hears the offer from the
+
+39
+00:03:28,310 --> 00:03:33,360
+rogue DHCP server first and accepts it. She
+is now in trouble. Alice’s machine now uses
+
+40
+00:03:33,360 --> 00:03:40,360
+Eve’s rogue DNS server, also at 10.0.0.66.
+When Alice’s browser asks for the IP address
+
+41
+00:03:41,080 --> 00:03:46,170
+of google.com, the rogue DNS server tells
+Alice’s machine to use Eve’s web server
+
+42
+00:03:46,170 --> 00:03:51,170
+instead.
+
+43
+00:03:51,170 --> 00:03:56,700
+When she revisits amazon.com, most of the
+correct site appears since Firefox has cached
+
+44
+00:03:56,700 --> 00:04:01,980
+the DNS results, but as soon as Firefox does
+a *new* DNS lookup, which we can force by
+
+45
+00:04:01,980 --> 00:04:08,790
+pressing shift-refresh, she is given the IP
+addres of Eve’s rogue web server instead.
+
+46
+00:04:08,790 --> 00:04:13,900
+If she visits a new site like yahoo.com, then
+she will also end up at the rogue site. You
+
+47
+00:04:13,900 --> 00:04:18,989
+can imagine many bad things Eve could do.
+She could simply deny or block access to particular
+
+48
+00:04:18,988 --> 00:04:24,479
+web sites for Alice. Or she could copy the
+look and feel of those websites Alice visits,
+
+49
+00:04:24,479 --> 00:04:29,039
+and masquerade as an ecommerce site, forcing
+Alice to reveal her credit card or other personal
+
+50
+00:04:29,039 --> 00:04:34,340
+information. Or she could simply sit as a
+transparent proxy watching and recording all
+
+51
+00:04:34,340 --> 00:04:35,639
+Alice's traffic.
+
+52
+00:04:35,639 --> 00:04:40,889
+When we switch off the DNS server and evil
+dhcp client, Alice will eventually go back
+
+53
+00:04:40,889 --> 00:04:46,150
+to using the correct, local dhcp server. The
+first time she revisits the same web site,
+
+54
+00:04:46,150 --> 00:04:51,219
+her browser (in this case, Firefox) might
+have cached the bad DNS lookup and still try
+
+55
+00:04:51,219 --> 00:04:55,340
+and go to the evil web server. But eventually,
+Alice's host will start using the correct
+
+56
+00:04:55,340 --> 00:05:01,370
+DNS server and her network will start working
+correctly again.
+
+57
+00:05:01,370 --> 00:05:05,199
+The video shows just how scarily easy it is
+to attack a network, if you have local access
+
+58
+00:05:05,199 --> 00:05:12,199
+to the network and can intercept - or beat
+- DHCP lookups. If you would like, you can
+
+59
+00:05:22,310 --> 00:05:29,009
+reproduce this demo by downloading the script
+from http://mininet.org/teaching and run it
+
+60
+00:05:29,009 --> 00:05:30,419
+in a Mininet instance.
+

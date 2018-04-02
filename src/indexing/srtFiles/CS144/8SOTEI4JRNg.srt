@@ -1,0 +1,530 @@
+1
+00:00:00,260 --> 00:00:03,439
+So let's talk about BitTorrent. It's a fascinating
+Internet application,
+
+2
+00:00:03,439 --> 00:00:06,840
+with a lot of interesting algorithms and approaches.
+There's a
+
+3
+00:00:06,840 --> 00:00:09,210
+reason it works so well!
+
+4
+00:00:09,210 --> 00:00:13,650
+BitTorrent allows people to share and exchange
+large files. A BitTorrent
+
+5
+00:00:13,650 --> 00:00:17,330
+client requests documents from other clients.
+So that a single client can
+
+6
+00:00:17,330 --> 00:00:20,420
+request from many others in parallel, BitTorrent
+breaks files up into
+
+7
+00:00:20,420 --> 00:00:23,500
+chunks of data called pieces. When a client
+downloads a complete piece
+
+8
+00:00:23,500 --> 00:00:27,039
+from another client, it then tells other clients
+it has that piece so they
+
+9
+00:00:27,039 --> 00:00:30,740
+can download it too. These collections of
+collaborating clients are called
+
+10
+00:00:30,740 --> 00:00:35,059
+swarms. So we talk about a client joining
+or leaving the swarm.
+
+11
+00:00:35,059 --> 00:00:40,239
+A client joins a swarm by downloading a Torrent
+file that tells it information about the
+
+12
+00:00:40,239 --> 00:00:44,229
+file, such as how big it is, the size of its
+pieces, and how to start contacting other
+
+13
+00:00:44,229 --> 00:00:48,859
+clients. It used to be that a torrent would
+name a tracker, a computer that keeps track
+
+14
+00:00:48,859 --> 00:00:53,109
+of what clients are part of the swarm. When
+a client joins the swarm, it requests a list
+
+15
+00:00:53,109 --> 00:00:58,069
+of other clients from the tracker. It then
+starts contacting clients over TCP. A
+
+16
+00:00:58,069 --> 00:01:04,088
+BitTorrent client can have on the order of
+100 open TCP connections at once.
+
+17
+00:01:04,089 --> 00:01:08,500
+After trackers started to receive a lot of
+unwanted attention, in the late 2000s most
+
+18
+00:01:08,500 --> 00:01:13,570
+clients transitioned to using trackerless
+torrents. These torrents contact a host that
+
+19
+00:01:13,570 --> 00:01:18,750
+tells them how to join something called a
+distributed hash table, or DHT. A DHT is a
+
+20
+00:01:18,750 --> 00:01:22,960
+way to map a hash value to a node, where the
+set of nodes supporting that DHT can
+
+21
+00:01:22,960 --> 00:01:27,690
+change a lot yet you can still find the node.
+Rather than use a centralized table for
+
+22
+00:01:27,690 --> 00:01:33,820
+this lookup, the mapping is actually distributed
+across all the participating nodes. It’s
+
+23
+00:01:33,820 --> 00:01:37,610
+basically a way for many nodes to collaboratively
+store some data. In this case, they’re
+
+24
+00:01:37,610 --> 00:01:41,520
+storing lists of which clients are part of
+a swarm.
+
+25
+00:01:41,520 --> 00:01:48,520
+BitTorrent breaks a files up into N pieces.
+Each piece is 256kB or larger. This size is
+
+26
+00:01:49,590 --> 00:01:52,490
+intended to ensure a TCP stream transferring
+the
+
+27
+00:01:52,490 --> 00:01:56,290
+file is long-lived enough that its congestion
+window can grow to a reasonable size and so
+
+28
+00:01:56,290 --> 00:02:01,920
+support good throughput. But BitTorrent
+also breaks up pieces into subpieces, such
+
+29
+00:02:01,920 --> 00:02:05,810
+that it can request parts of pieces from multiple
+peers and so reduce latency.
+
+30
+00:02:05,810 --> 00:02:12,810
+A piece is also the unit that BitTorrent uses
+to check integrity with. A torrent contains
+
+31
+00:02:13,170 --> 00:02:18,900
+the SHA1 hashes of each piece. SHA1 is
+something called a cryptographic hash function.
+
+32
+00:02:18,900 --> 00:02:24,909
+It’s the primitive used in message authentication
+codes. A strong cryptographic hash
+
+33
+00:02:24,909 --> 00:02:29,819
+function has the properties that, given a
+hash, it’s really hard to create a piece
+
+34
+00:02:29,819 --> 00:02:33,209
+of data that has that hash value. This means
+that if the
+
+35
+00:02:33,209 --> 00:02:39,599
+torrent says that the hash of piece 5 is H,
+it’s hard to come up with a piece that isn’t
+
+36
+00:02:39,599 --> 00:02:44,930
+piece 5 which has hash H. So you can’t start
+replacing the pieces of the torrent and screw
+
+37
+00:02:44,930 --> 00:02:49,849
+it up without a client noticing that the hash
+isn’t right and retrying.
+
+38
+00:02:49,849 --> 00:02:56,569
+This brings up an interesting story. In 2006,
+HBO had a new series, Rome. There were several
+
+39
+00:02:56,569 --> 00:03:01,689
+different torrents for it, each of which
+had very large swarms. But many people found
+
+40
+00:03:01,689 --> 00:03:06,409
+their clients couldn’t download the series.
+Looking into it, it turns out that there were
+
+41
+00:03:06,409 --> 00:03:09,329
+a
+bunch of very very fast peers that many clients
+
+42
+00:03:09,329 --> 00:03:14,569
+were connecting to and downloading from. But
+these peers provided pieces that didn’t
+
+43
+00:03:14,569 --> 00:03:19,840
+have the right hash. So a client would download
+the piece, find the hash was wrong, throw
+
+44
+00:03:19,840 --> 00:03:25,540
+away the piece, and retry. Back then, the
+clients assumed that this was just an error
+
+45
+00:03:25,540 --> 00:03:30,769
+so kept on requesting from the same peer.
+So many clients would just enter an unending
+
+46
+00:03:30,769 --> 00:03:36,779
+loop of trying to download the same bad piece.
+The hypothesis was that this was an effort
+
+47
+00:03:36,779 --> 00:03:42,109
+by HBO to prevent downloads. Nowadays
+clients can “blacklist” peers that serve
+
+48
+00:03:42,109 --> 00:03:44,849
+up many bad pieces.
+
+49
+00:03:44,849 --> 00:03:48,749
+BitTorrent clients, when connected, periodically
+exchange information
+
+50
+00:03:48,749 --> 00:03:53,269
+on which pieces they have. A client tries
+to download the rarest piece
+
+51
+00:03:53,269 --> 00:03:58,749
+among its peers first. If a single piece becomes
+unavailable, nobody can
+
+52
+00:03:58,749 --> 00:04:03,370
+download the file. Also, if only a few clients
+have a piece, they’ll
+
+53
+00:04:03,370 --> 00:04:06,620
+become a bottleneck for downloading. This
+is called the rarest first
+
+54
+00:04:06,620 --> 00:04:11,319
+policy.
+The one exception to the rarest first policy
+
+55
+00:04:11,319 --> 00:04:14,739
+is when a client reaches the
+end of the torrent and only needs a few more
+
+56
+00:04:14,739 --> 00:04:20,480
+pieces. At this point, it
+requests for pieces from multiple peers. It
+
+57
+00:04:20,480 --> 00:04:23,890
+does this to counter the
+edge case of asking for the last piece from
+
+58
+00:04:23,890 --> 00:04:29,130
+a very slow peer. This final
+step means that the client might download
+
+59
+00:04:29,130 --> 00:04:33,380
+multiple copies of subpieces
+and waste swarm bandwidth, but since there
+
+60
+00:04:33,380 --> 00:04:37,250
+are often 1000 or so
+pieces in a swarm this cost is seen as small
+
+61
+00:04:37,250 --> 00:04:39,470
+and worth it.
+
+62
+00:04:39,470 --> 00:04:44,420
+So BitTorrent clients exchange metadata with
+each other to learn what pieces they have.
+
+63
+00:04:44,420 --> 00:04:48,950
+A client
+starts requesting pieces from its peers. But
+
+64
+00:04:48,950 --> 00:04:51,810
+if you sent data to every peer, you’d have
+lots of very
+
+65
+00:04:51,810 --> 00:04:58,810
+slow pieces. Instead of having a hundred slow
+TCP flows, BitTorrent tries to have a smaller
+
+66
+00:04:58,990 --> 00:05:05,990
+number of fast flows. You send data to peers
+who send you data. That way, peers who contribute
+
+67
+00:05:07,500 --> 00:05:14,380
+can download faster. It creates an incentive
+to send pieces to peers.
+
+68
+00:05:14,380 --> 00:05:21,380
+The way this works is through choking. Most
+peers are choked and you send no data to them.
+
+69
+00:05:21,410 --> 00:05:25,480
+BitTorrent measures the rate at which it is
+downloading from each of its peers and picks
+
+70
+00:05:25,480 --> 00:05:28,400
+the P
+best of them. P is usually a small number,
+
+71
+00:05:28,400 --> 00:05:31,920
+like 4 or the square root of the number of
+peers. It
+
+72
+00:05:31,920 --> 00:05:38,920
+unchokes these P peers and sends data to them.
+One problem with this algorithm is that it
+
+73
+00:05:42,500 --> 00:05:46,570
+doesn’t explore much. There could be a really
+good
+
+74
+00:05:46,570 --> 00:05:50,730
+peer out there who would send you data very
+fast if only you started sending some data
+
+75
+00:05:50,730 --> 00:05:54,700
+first. So
+every 30 seconds or so, BitTorrent unchokes
+
+76
+00:05:54,700 --> 00:05:58,530
+a random peer. This peer might then find its
+way into
+
+77
+00:05:58,530 --> 00:06:01,210
+the P best.
+
+78
+00:06:01,210 --> 00:06:05,480
+The BitTorrent tit-for-tat algorithm seems
+pretty robust: you send data preferentially
+
+79
+00:06:05,480 --> 00:06:08,800
+to other peers
+who send you data. But it’s not perfect.
+
+80
+00:06:08,800 --> 00:06:12,050
+There was a nice paper in 2007 that proposed
+something
+
+81
+00:06:12,050 --> 00:06:17,610
+called BitTyrant, which selfishly tried to
+game the system. And it did! Using BitTyrant
+
+82
+00:06:17,610 --> 00:06:22,600
+you could
+increase your BitTorrent throughput by 70%!
+
+83
+00:06:22,600 --> 00:06:28,980
+The basic observation is that in the standard
+BitTorrent, a peer tries to share its uplink
+
+84
+00:06:28,980 --> 00:06:33,820
+capacity evenly
+across its unchoked peers. So if a client
+
+85
+00:06:33,820 --> 00:06:37,460
+has P unchoked peers, then each one receives
+1 over P of its
+
+86
+00:06:37,460 --> 00:06:44,110
+uplink capacity. But once you’re in this
+top P, you get all of this. So the trick is
+
+87
+00:06:44,110 --> 00:06:47,390
+that you want to give a
+peer *just enough* to make your way into its
+
+88
+00:06:47,390 --> 00:06:52,030
+top P, and no more. You should spend the extra
+capacity
+
+89
+00:06:52,030 --> 00:06:56,890
+on trying to get into another peer’s top
+P. So this way you try to give everyone just
+
+90
+00:06:56,890 --> 00:07:00,450
+enough that they
+unchoke you, and maximize how many peers unchoke
+
+91
+00:07:00,450 --> 00:07:04,750
+you.
+It’s a nice result. They also found that
+
+92
+00:07:04,750 --> 00:07:07,670
+if everyone used BitTyrant, performance can
+improve slightly.
+
+93
+00:07:07,670 --> 00:07:12,780
+But you get the most benefit if you’re the
+only tyrant. The URL here links to the paper.
+
+94
+00:07:12,780 --> 00:07:16,220
+So that’s a basic overview of BitTorrent.
+Your client
+
+95
+00:07:16,220 --> 00:07:19,650
+downloads a torrent file, for example, over
+HTTP. This
+
+96
+00:07:19,650 --> 00:07:22,170
+describes the file to download and how to
+find peers to
+
+97
+00:07:22,170 --> 00:07:25,400
+download from. BitTorrent breaks the file
+into pieces, and
+
+98
+00:07:25,400 --> 00:07:28,460
+peers exchange these pieces. They connect
+over TCP/IP and
+
+99
+00:07:28,460 --> 00:07:30,810
+exchange metadata so they know what the distribution
+of
+
+100
+00:07:30,810 --> 00:07:34,210
+pieces is over their part of the swarm. A
+client then tries to
+
+101
+00:07:34,210 --> 00:07:36,410
+download the rarest piece first, in order
+to balance
+
+102
+00:07:36,410 --> 00:07:40,580
+availability. Clients upload data only to
+their top P
+
+103
+00:07:40,580 --> 00:07:43,350
+downloaders. So most of the peers are “choked”
+and receive
+
+104
+00:07:43,350 --> 00:07:46,240
+no data, and the client gives data to those
+who give you
+
+105
+00:07:46,240 --> 00:07:49,480
+data using a “tit-for-tat” algorithm.
+To discover potentially
+
+106
+00:07:49,480 --> 00:07:52,720
+good new peers, the client also randomly unchokes
+a peer
+
+107
+00:07:52,720 --> 00:07:53,360
+periodically.
+

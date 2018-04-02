@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import pysrt
 import HTMLParser
 import os
+import csv
 
 
 """
@@ -103,10 +104,16 @@ def xml_to_srt(xml_data):
     f = pysrt.SubRipFile()
     for child in xml_data:
         sub = pysrt.SubRipItem()
-        sub.text = h.unescape(child.text)
-        sub.start.seconds = float(child.attrib["start"])
-        sub.end.seconds = float(child.attrib["start"]) + float(child.attrib["dur"])
-        f.append(sub)
+        if child is not None:
+            subText = child.text
+            if child.text is None:
+                subText = ""
+            sub.text = h.unescape(subText)
+            sub.start.seconds = float(child.attrib["start"])
+            sub.end.seconds = float(child.attrib["start"])
+            if "dur" in child.attrib:
+                sub.end.seconds += float(child.attrib["dur"])
+            f.append(sub)
     return f
 
 
@@ -158,10 +165,15 @@ def save_youtube_srt(path, videoID, lang_codes=["en"], allow_translate=False):
         srt.save(path, encoding="utf-8")
 
 def main():
-    listUrl = ['FtUNQpu2b7Q', 'pw_ybaMBur4']
-    for url in listUrl:
-        save_youtube_srt('./newFiles/' + url + '.srt', url)
-        print 'DONE'
+    listURI = readFromCSV()#['FtUNQpu2b7Q', 'pw_ybaMBur4']
+    for url in listURI:
+        save_youtube_srt('./srtFiles/CS144/' + url + '.srt', url)
+        print 'SAVED FILE: ' + url
+
+def readFromCSV():
+    with open('../../input/youtubeURI/video_codes_cs144.csv') as csvFile:
+        listURI = [line.strip() for line in csvFile]
+    return listURI
 
 if __name__ == "__main__":
     main()

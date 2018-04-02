@@ -1,0 +1,1189 @@
+1
+00:00:00,000 --> 00:00:06,029
+This video I'm going to talk about a slightly
+advanced flow control algorithm called
+
+2
+00:00:06,029 --> 00:00:09,089
+sliding window used in most high
+performance protocols today.
+
+3
+00:00:10,040 --> 00:00:15,061
+So recall, a simple flow control algorithm
+called stop and wait has at most one
+
+4
+00:00:15,061 --> 00:00:19,032
+packet in flight at any time.
+So this is the basic simple protocol you
+
+5
+00:00:19,032 --> 00:00:21,099
+might, say, an algorithm might try to
+implement the first time you're doing
+
+6
+00:00:21,099 --> 00:00:25,077
+reliable communication.
+So sender sends a packet or chunk of data,
+
+7
+00:00:25,077 --> 00:00:28,055
+Receiver sends an acknowledgement, and
+sender,
+
+8
+00:00:28,055 --> 00:00:32,011
+If it doesn't receive the acknowledgement,
+times out, tries resending.
+
+9
+00:00:32,011 --> 00:00:34,018
+If it gets the acknowledgement it sends
+more data.
+
+10
+00:00:34,018 --> 00:00:37,059
+And there's some issues with duplicates.
+You can maintain a counter, a one bit
+
+11
+00:00:37,059 --> 00:00:41,042
+counter, to figure out if there's a
+duplicate ack or an ack to duplicate new
+
+12
+00:00:41,042 --> 00:00:43,765
+data.
+As long as thing aren't duplicated for
+
+13
+00:00:43,765 --> 00:00:47,014
+more than a round trip time, stop and wait
+works.
+
+14
+00:00:47,014 --> 00:00:48,079
+It's great.
+It's simple.
+
+15
+00:00:48,079 --> 00:00:54,086
+So while stop and wait works correctly it
+has one major problem.
+
+16
+00:00:54,086 --> 00:00:59,077
+Let's hear it try to communicate between
+Boston and San Francisco, and the
+
+17
+00:00:59,077 --> 00:01:04,071
+bottleneck is say 10Mb/s, so
+if there is a 10Mb/s link here.
+
+18
+00:01:04,071 --> 00:01:09,024
+Or let's say the Boston node can receive
+at 10Mb/s.
+
+19
+00:01:09,060 --> 00:01:12,033
+Basically that's the rate it can process
+data.
+
+20
+00:01:12,033 --> 00:01:17,043
+Your round trip time is 50 milliseconds.
+And let's just say for simplicity sake,
+
+21
+00:01:17,043 --> 00:01:23,020
+we're sending Ethernet frames.
+So that's the, size of the data so what
+
+22
+00:01:23,020 --> 00:01:28,045
+your, basically 1.5 kilobytes, or twelve
+kilobits.
+
+23
+00:01:29,014 --> 00:01:33,018
+Now our round trip time's 50 milliseconds.
+That means that San Francisco can send one
+
+24
+00:01:33,018 --> 00:01:35,938
+packet, 50, and if that packet's received
+successfully, 50 milliseconds later we'll
+
+25
+00:01:35,938 --> 00:01:41,053
+get an acknowledgement.
+So we have 1,000 milliseconds per second
+
+26
+00:01:41,053 --> 00:01:47,006
+divided by 50 milliseconds, this means
+that we can send at most twenty packets
+
+27
+00:01:47,006 --> 00:01:54,060
+per second on this on this path.
+Now twenty packets per second times twelve
+
+28
+00:01:54,060 --> 00:02:00,087
+kilobits.
+Kilobits per packet is equal to 240
+
+29
+00:02:00,087 --> 00:02:08,000
+kilobits, kilobits per second.
+So this path, which is San Francisco and
+
+30
+00:02:08,000 --> 00:02:12,046
+Boston using a stop and wait protocol, can
+send at most 240 kilobits per second
+
+31
+00:02:12,046 --> 00:02:16,025
+assuming no packets are lost, just a
+constant RTT 50 milliseconds.
+
+32
+00:02:16,025 --> 00:02:22,495
+But the bottle neck is 10Mb/s, 
+so this means that this stop and
+
+33
+00:02:22,495 --> 00:02:30,645
+wait protocol is using two percent of the
+capacity of what the communication could
+
+34
+00:02:30,645 --> 00:02:34,039
+be.
+So stop and wait while it works, can be
+
+35
+00:02:34,039 --> 00:02:38,096
+astoundingly inefficient.
+San Francisco could be sending data much
+
+36
+00:02:38,096 --> 00:02:44,766
+faster than what's stop and wait allows.
+So the basic solution that most protocols
+
+37
+00:02:44,766 --> 00:02:49,028
+use today for this problem is something
+called a sliding window.
+
+38
+00:02:49,028 --> 00:02:52,016
+And sliding windows are a generalization
+of stop and waits.
+
+39
+00:02:52,016 --> 00:02:55,071
+Where a stop and wait allows one packet in
+flight at any point in time, a sliding
+
+40
+00:02:55,071 --> 00:02:58,530
+window protocol allows up to N packets in
+flight.
+
+41
+00:02:58,530 --> 00:03:04,036
+So, when n is equal to one, a sliding
+window protocol acts like a stop and wait.
+
+42
+00:03:04,036 --> 00:03:10,394
+And so, let's say we have a sliding window
+protocol with an N equal to let's say five
+
+43
+00:03:10,394 --> 00:03:14,762
+packets.
+This means that San Francisco can have
+
+44
+00:03:14,762 --> 00:03:23,485
+five packets, In flight and simultaneously
+their can be five acknowledgements, there
+
+45
+00:03:23,485 --> 00:03:27,040
+can be five acknowledgements coming back
+from Boston.
+
+46
+00:03:28,051 --> 00:03:36,362
+And the idea here is that if you adapt, if
+you set N to be the correct value, then
+
+47
+00:03:36,362 --> 00:03:41,802
+you can keep the pipe full.
+That is San Francisco could send data to
+
+48
+00:03:41,802 --> 00:03:48,681
+Boston at ten megabits per second.
+So let's say that's Boston's rate and so
+
+49
+00:03:48,681 --> 00:03:53,994
+Boston can, by configuring the sliding
+window size, can have San Francisco send
+
+50
+00:03:53,994 --> 00:03:56,472
+data at a rate equal to ten megabits per
+second.
+
+51
+00:03:56,472 --> 00:04:02,107
+And so in this particular case, alright,
+if we have an RTT of 50 milliseconds and a
+
+52
+00:04:02,107 --> 00:04:08,771
+bottleneck of ten megabits per second,
+let's say that we're sending ethernet
+
+53
+00:04:08,771 --> 00:04:15,999
+frames at ten kilobits per packet.
+And we have twenty round trip times, that
+
+54
+00:04:15,999 --> 00:04:23,250
+essentially means that the sliding window
+is gonna be ten megabits per second,
+
+55
+00:04:23,250 --> 00:04:32,082
+divided by twenty round trip times, which
+basically, which is equal to 500 kilobits
+
+56
+00:04:32,082 --> 00:04:40,361
+per round trip time.
+So we're looking at a sliding window of
+
+57
+00:04:40,361 --> 00:04:48,081
+around 49, sorry, around 41 packets.
+40 is 480 kilobits per round trip time so
+
+58
+00:04:48,081 --> 00:04:55,661
+41 would be 492, and so if we had a
+sliding window of 40 packets, then we'd
+
+59
+00:04:55,661 --> 00:05:00,817
+actually be able to sustain a ten megabit
+connection from San Francisco to Boston
+
+60
+00:05:00,817 --> 00:05:06,599
+with a round trip time of 50 milliseconds.
+So just to draw a picture, kinda show what
+
+61
+00:05:06,599 --> 00:05:10,187
+this looks like, so here is the original,
+here's the stop and wait.
+
+62
+00:05:10,187 --> 00:05:14,158
+We have this one big counter, a data zero,
+ack zero, data one, ack one, data zero,
+
+63
+00:05:14,158 --> 00:05:22,155
+ack zero, so the sliding window.
+Let's say we have a sliding window of size
+
+64
+00:05:22,155 --> 00:05:27,952
+three.
+Well the sender will send three packets.
+
+65
+00:05:27,952 --> 00:05:36,690
+Let's call them D0, D1, D2, and the
+receiver can then acknowledge them.
+
+66
+00:05:36,690 --> 00:05:41,977
+Ack zero, ack one, ack two.
+Well as soon as acknowledgement zero
+
+67
+00:05:41,977 --> 00:05:46,853
+arrives the sender can send data three.
+As soon as acknowledgement one arrives,
+
+68
+00:05:46,853 --> 00:05:51,278
+the sender can send data four.
+As soon as acknowledgement two arrives,
+
+69
+00:05:51,278 --> 00:05:54,632
+the sender can send data five.
+This is the basic idea, rather than having
+
+70
+00:05:54,632 --> 00:05:56,501
+this one packet you could have many
+packets.
+
+71
+00:05:56,501 --> 00:06:01,617
+So in the case of having a sending window
+of size 40, you can imagine there are tons
+
+72
+00:06:01,617 --> 00:06:05,847
+and tons and tons of packets in flight.
+So, let's look at more concretely what
+
+73
+00:06:05,847 --> 00:06:09,799
+this algorithm looks like for both the
+sender and the receiver just as we did for
+
+74
+00:06:09,799 --> 00:06:14,096
+stop and wait.
+So a sliding window sender, first in the
+
+75
+00:06:14,096 --> 00:06:18,050
+sliding window protocol, every segment has
+a sequence number.
+
+76
+00:06:18,050 --> 00:06:21,090
+So in protocols like TCP this is usually
+done in terms of bytes because they can be
+
+77
+00:06:21,090 --> 00:06:26,042
+a variable size, for simplicity sake we'll
+just do it in terms of packet numbers.
+
+78
+00:06:27,078 --> 00:06:31,007
+So there's a sequence number for every
+segment.
+
+79
+00:06:31,007 --> 00:06:36,674
+So, the sender maintains three variables,
+the size of its sending window, the last
+
+80
+00:06:36,674 --> 00:06:42,076
+acknowledgement it received from the
+receiver, and the last segment it sent.
+
+81
+00:06:42,081 --> 00:06:46,738
+And the sender's job is to maintain this
+invariant, that the last segment sent
+
+82
+00:06:46,738 --> 00:06:51,594
+minus the last acknowledgement received
+has to be less than or equal to the send
+
+83
+00:06:51,594 --> 00:06:55,088
+window size.
+So this means that if it has received
+
+84
+00:06:55,088 --> 00:07:05,379
+packet N, a packet with a sequence number
+of n, the sender cannot send packet past n
+
+85
+00:07:05,379 --> 00:07:08,886
++ SWS.
+So lets say we were sending window is
+
+86
+00:07:08,886 --> 00:07:16,077
+equal to five and the last acknowledgement
+that's been received is equal to eleven.
+
+87
+00:07:16,077 --> 00:07:22,962
+Then this means that the sender cannot
+send a packet past twelve, thirteen,
+
+88
+00:07:22,962 --> 00:07:27,370
+fourteen, fifteen, sixteen.
+Its not allowed to send seventeen until it
+
+89
+00:07:27,370 --> 00:07:32,135
+gets acknowledgement for twelve.
+When you get a new acknowledgement you
+
+90
+00:07:32,135 --> 00:07:37,763
+advance LAR, as necessary, and you buffer
+up to sending window size segments, in
+
+91
+00:07:37,763 --> 00:07:41,649
+case suddenly you get an acknowledgment,
+and then you want to send a whole bunch of
+
+92
+00:07:41,649 --> 00:07:44,451
+new data.
+Let's pretend for a second, we have a
+
+93
+00:07:44,451 --> 00:07:52,076
+sending window size equal to three, and so
+here's packets at zero, 1,2,3.
+
+94
+00:07:52,076 --> 00:07:57,054
+Say zero had been sent and acknowledged.
+So our sending window size is three.
+
+95
+00:07:57,054 --> 00:08:04,074
+The last acknowledgement for the receiver
+is zero, so LAR is equal to zero, SWS is
+
+96
+00:08:04,074 --> 00:08:09,044
+equal to three.
+This just means that the last segment sent
+
+97
+00:08:09,044 --> 00:08:14,057
+is equal to three.
+So, now when an acknowledgment arrives,
+
+98
+00:08:14,057 --> 00:08:18,038
+say, for one, then the sending window can
+advance.
+
+99
+00:08:18,041 --> 00:08:23,082
+And so now the protocol can send four.
+And let's say an acknowledgment for four
+
+100
+00:08:23,082 --> 00:08:27,012
+arrives.
+Then the window can advance, and you can
+
+101
+00:08:27,012 --> 00:08:33,066
+send five, six and seven.
+Now one thing that's important here is
+
+102
+00:08:33,066 --> 00:08:37,077
+that let's say we have a send window which
+includes five, six and seven.
+
+103
+00:08:38,025 --> 00:08:43,007
+And five is lost, but six and seven arrive
+at the receiver and are acknowledged.
+
+104
+00:08:43,006 --> 00:08:46,026
+The center cannot advance the window past
+five.
+
+105
+00:08:46,026 --> 00:08:49,027
+Until five is acknowledged.
+And so the window is what's called
+
+106
+00:08:49,027 --> 00:08:50,098
+stalling.
+The window can stall.
+
+107
+00:08:50,098 --> 00:08:55,036
+Where although most of the data in the
+window's been delivered, it can't move
+
+108
+00:08:55,036 --> 00:08:57,086
+past the first unacknowledged piece of
+data.
+
+109
+00:08:57,086 --> 00:09:00,060
+So it can't advance the, the window past
+that.
+
+110
+00:09:00,093 --> 00:09:04,099
+The receiver also maintains three
+variables.
+
+111
+00:09:04,099 --> 00:09:09,007
+It has a receive window size, the last
+acceptable segments.
+
+112
+00:09:09,007 --> 00:09:13,001
+This is the last segment that it will
+receive and won't drop on the floor.
+
+113
+00:09:13,001 --> 00:09:16,328
+If it receives a segment past this value,
+it'll assume something's wrong or it's not
+
+114
+00:09:16,328 --> 00:09:19,011
+gonna buffer, you know, it'll just discard
+it.
+
+115
+00:09:19,011 --> 00:09:22,060
+Then there's the last segment that's
+actually received.
+
+116
+00:09:22,060 --> 00:09:27,049
+And so, the sender, the receivers then
+maintain this invariant, that the last
+
+117
+00:09:27,049 --> 00:09:31,679
+acceptable segment minus the last thing
+that we received must be less than or
+
+118
+00:09:31,679 --> 00:09:35,707
+equal to the receive window size.
+So, if you have a receive window size
+
+119
+00:09:35,707 --> 00:09:42,494
+equal to five and a last segment received
+equal to three then it's not going to
+
+120
+00:09:42,494 --> 00:09:47,289
+accept anything past four, five, six,
+seven, eight, right.
+
+121
+00:09:47,289 --> 00:09:53,820
+So if it receives suddenly segment ten, it
+won't accept it and it'll drop it.
+
+122
+00:09:53,820 --> 00:09:59,091
+Now if the receive packet is less than
+this acceptable segment, then it'll send
+
+123
+00:09:59,091 --> 00:10:03,511
+an acknowledgement.
+And so if it receives any of these packets
+
+124
+00:10:03,511 --> 00:10:11,042
+it will send an acknowledgement.
+Now, in a basic case, the way most sliding
+
+125
+00:10:11,042 --> 00:10:14,064
+window protocols work, these
+acknowledgments are what are called
+
+126
+00:10:14,064 --> 00:10:19,063
+cumulative acknowledgments.
+Such that you send an acknowledgment for,
+
+127
+00:10:19,063 --> 00:10:28,018
+not the data you received, but rather what
+is the end of the contiguous data you
+
+128
+00:10:28,018 --> 00:10:32,046
+received, that is cumulative?
+If I acknowledge three, that means that I
+
+129
+00:10:32,046 --> 00:10:35,080
+have received three in everything before
+it, not just three.
+
+130
+00:10:36,001 --> 00:10:40,094
+And so it represents a cumulative state of
+reception across the entire communication.
+
+131
+00:10:40,094 --> 00:10:46,056
+So in this example, if a receiver's
+received one, two, three, and five and
+
+132
+00:10:46,056 --> 00:10:49,085
+then suddenly receives five, it doesn't
+acknowledge five.
+
+133
+00:10:49,085 --> 00:10:53,075
+It acknowledges three.
+Now there are some protocols that can do
+
+134
+00:10:53,075 --> 00:10:57,085
+things like actually selective
+acknowledgements, but, the basic case is,
+
+135
+00:10:57,085 --> 00:11:02,000
+that use cumulative acknowledgements,
+which is cumulatively, what is the
+
+136
+00:11:02,000 --> 00:11:04,070
+continuous chunk of data that you've
+received.
+
+137
+00:11:05,058 --> 00:11:13,000
+So one little detail here.
+TCP doesn't acknowledge the data it's
+
+138
+00:11:13,000 --> 00:11:18,046
+received but rather N plus one.
+So TCP acknowledgements are in terms of
+
+139
+00:11:18,046 --> 00:11:23,093
+bytes, and so if TCP has received up to
+byte N, its acknowledgement packets will
+
+140
+00:11:23,093 --> 00:11:26,006
+say N plus one.
+So it's the first byte of data that's
+
+141
+00:11:26,006 --> 00:11:29,026
+expected.
+So if you're ever looking at a TCP trace
+
+142
+00:11:29,026 --> 00:11:32,007
+or trying to see how the TCP protocol
+works, just keep this in mind.
+
+143
+00:11:32,007 --> 00:11:37,461
+The acknowledgement value in a TCP header
+isn't the last byte received, the
+
+144
+00:11:37,461 --> 00:11:40,509
+cumulative acknowledgement, rather the
+next byte, the first missing byte.
+
+145
+00:11:40,509 --> 00:11:44,509
+So one of the things we talked about in
+stop-and-wait protocol, in the stop and wait
+
+146
+00:11:44,509 --> 00:11:48,265
+protocol is that a counter of [inaudible],
+a one bit counter was sufficient.
+
+147
+00:11:48,265 --> 00:11:52,529
+Assuming the packets weren't delayed more
+than a round-trip time.
+
+148
+00:11:52,529 --> 00:11:56,526
+So what about sliding window protocol?
+Suddenly we have a receive window, we have
+
+149
+00:11:56,526 --> 00:11:58,839
+a send window.
+How big a sequence numbered space do we
+
+150
+00:11:58,839 --> 00:12:01,168
+need?
+So the receive window is always greater
+
+151
+00:12:01,168 --> 00:12:04,906
+than one, the send window is always
+greater than one, greater than or equal to
+
+152
+00:12:04,906 --> 00:12:08,116
+one.
+And the receive window is greater than, is
+
+153
+00:12:08,116 --> 00:12:12,166
+less than or equal to the send window.
+This is because if the receiver window is
+
+154
+00:12:12,166 --> 00:12:14,411
+ever greater then send window it's a
+waste.
+
+155
+00:12:14,411 --> 00:12:18,172
+The send window, the sender would never have
+those packets in flight.
+
+156
+00:12:18,172 --> 00:12:21,149
+And so there's this extra buffer space,
+which will never be used.
+
+157
+00:12:21,149 --> 00:12:25,463
+However there are cases where the receive
+window can be smaller than the send window
+
+158
+00:12:25,463 --> 00:12:29,016
+and the protocol still works.
+So here's one interesting basic case of
+
+159
+00:12:29,016 --> 00:12:32,682
+that called Go-Back-N.
+Well let's say if a receive window of size
+
+160
+00:12:32,682 --> 00:12:36,371
+one, and a sending window that's larger
+than, larger than one.
+
+161
+00:12:36,371 --> 00:12:41,123
+Well in this case we're gonna need sending
+window size plus one sequence numbers.
+
+162
+00:12:41,123 --> 00:12:46,814
+So what does this protocol look like?
+Well the sender say, say is send window
+
+163
+00:12:46,814 --> 00:12:50,947
+size is equal to three.
+So the sender sends zero, one, and two,
+
+164
+00:12:50,947 --> 00:12:55,656
+and let's say those are all acknowledged,
+and so the receiver acknowledges a zero,
+
+165
+00:12:55,656 --> 00:12:58,390
+and acknowledges one, and acknowledges
+two.
+
+166
+00:12:58,390 --> 00:13:02,942
+Well when it acknowledges zero, the
+sender's gonna send three, slide the
+
+167
+00:13:02,942 --> 00:13:07,384
+window forward, when it acknowledges one
+it's gonna send four, and when it
+
+168
+00:13:07,384 --> 00:13:15,075
+acknowledges two it's gonna send five.
+So let's say that three is dropped.
+
+169
+00:13:16,017 --> 00:13:21,025
+Now the sender, the receiver - it's going
+to still receive four and five and so it
+
+170
+00:13:21,025 --> 00:13:25,089
+can ack two, it's going to send ack two,
+ack two.
+
+171
+00:13:26,075 --> 00:13:31,008
+The sender's going to time-out and re-send
+three.
+
+172
+00:13:31,008 --> 00:13:35,096
+This is called Go-Back-N protocol.
+Because, the receive window was size one,
+
+173
+00:13:35,096 --> 00:13:40,029
+the receiver can not buffer four or five.
+You see when a single packet is lost in
+
+174
+00:13:40,029 --> 00:13:44,630
+the case three, the sender has to go back
+and has to retransmit the entire send
+
+175
+00:13:44,630 --> 00:13:48,071
+window worth of packets.
+It has to retransmit three, it'll have to
+
+176
+00:13:48,071 --> 00:13:51,048
+retransmit four, and it'll have to
+retransmit five.
+
+177
+00:13:51,048 --> 00:13:56,043
+In contrast, if the receive window size
+have been three then the receiver could've
+
+178
+00:13:56,043 --> 00:13:59,029
+buffered four and five.
+The center would only have had to
+
+179
+00:13:59,029 --> 00:14:05,062
+re-transmit three, then you get in act
+five, and it could go on and send six,
+
+180
+00:14:05,062 --> 00:14:09,062
+seven and eight.
+And so here in the case of a Go-Back-N
+
+181
+00:14:09,062 --> 00:14:14,054
+protocol you need to send window size plus
+one sequence numbers.
+
+182
+00:14:14,054 --> 00:14:21,009
+Cause you imagine if you have only the set
+window size, there's zero, one, two.
+
+183
+00:14:21,009 --> 00:14:25,859
+And then remember what happened in stop
+and wait, when there's a packet delay, or
+
+184
+00:14:25,859 --> 00:14:31,783
+hey, let's say that the ack for zero is
+delayed, there's a time out, you
+
+185
+00:14:31,783 --> 00:14:36,049
+retransmit zero.
+Now you can't distinguish whether or not
+
+186
+00:14:36,049 --> 00:14:42,000
+the delayed acknowledgement was for the
+retransmission or for the old data.
+
+187
+00:14:42,055 --> 00:14:47,004
+Generally speaking if the two windows are
+the same size you need twice basically
+
+188
+00:14:47,004 --> 00:14:51,373
+their sum, and that's the generalization
+that you need RWS plus SWS sequence
+
+189
+00:14:51,373 --> 00:14:53,078
+number.
+You need sequenced number spaces at least
+
+190
+00:14:53,078 --> 00:14:59,076
+as big as the sum of the window sizes.
+So that's the basic sliding window
+
+191
+00:14:59,076 --> 00:15:04,021
+algorithm and the algorithm that the
+sender and receiver use and how the sender
+
+192
+00:15:04,021 --> 00:15:07,066
+manages the window.
+What does this look like in TCP?
+
+193
+00:15:07,066 --> 00:15:12,063
+So, TCP is a sliding window protocol and
+uses that for flow control.
+
+194
+00:15:12,063 --> 00:15:18,034
+And so here's the TCP header.
+And so the way TCP works is the set, the
+
+195
+00:15:18,034 --> 00:15:22,099
+receiver, specifies the flow control
+window using the window field, this in
+
+196
+00:15:22,099 --> 00:15:27,018
+terms of bytes.
+So it basically says, this is the buffer
+
+197
+00:15:27,018 --> 00:15:33,010
+size that I have on the receiver and so
+the set of packets that I will accept.
+
+198
+00:15:33,045 --> 00:15:38,052
+And the basic rule is that here the data
+sequence number and the acknowledgment
+
+199
+00:15:38,052 --> 00:15:43,008
+sequence number.
+And so a TCP receiver will only handle
+
+200
+00:15:43,008 --> 00:15:48,014
+data equal to the acknowledged sequence
+number plus the window.
+
+201
+00:15:48,014 --> 00:15:55,088
+So the sender isn't allowed to send data
+past ack plus window.
+
+202
+00:15:55,088 --> 00:16:00,083
+That's to make sure it doesn't send data
+which the receiver is not going to buffer.
+
+203
+00:16:00,083 --> 00:16:06,067
+And so this is a way for the receiver to
+essentially set what the send window size
+
+204
+00:16:06,067 --> 00:16:09,065
+is.
+So let's walk through an example.
+
+205
+00:16:09,065 --> 00:16:15,005
+So here, again I'm going to talk in terms
+of packets rather than bytes like in TCP.
+
+206
+00:16:15,005 --> 00:16:21,047
+And here's the sequence number space for
+the packets from you know, zero up to 29.
+
+207
+00:16:21,047 --> 00:16:29,699
+So let's say that we have a, a receive
+window size equal to two and a send window
+
+208
+00:16:29,699 --> 00:16:37,525
+size equal to three.
+So, communication begins, and the sender
+
+209
+00:16:37,525 --> 00:16:45,087
+is going to send zero, one, and two.
+Let's say all three of those packets
+
+210
+00:16:45,087 --> 00:16:49,079
+arrive.
+And so the receiver, receives zero, it's
+
+211
+00:16:49,079 --> 00:16:53,008
+gonna acknowledge zero.
+It's then going to receive one,
+
+212
+00:16:53,008 --> 00:16:57,039
+acknowledge one, receive two, and
+acknowledge two.
+
+213
+00:16:57,039 --> 00:17:03,110
+When the sender, here's ack zero, it will
+advance the window, the send window, and
+
+214
+00:17:03,110 --> 00:17:08,048
+it'll send three.
+When it hears the acknowledgement for one,
+
+215
+00:17:08,048 --> 00:17:13,553
+it will advance the window and send four.
+When it hears the acknowledgment for two,
+
+216
+00:17:13,553 --> 00:17:20,728
+it will advance the window and send five.
+Now let's say that packet three arrived
+
+217
+00:17:20,728 --> 00:17:27,684
+successfully and is acknowledged, but
+packet four is lost in the network.
+
+218
+00:17:27,684 --> 00:17:35,908
+So now we have this case where ack three
+has been sent, packet four is lost, then
+
+219
+00:17:35,908 --> 00:17:44,036
+packet five arrives at the receiver.
+Now the receiver is going to send another
+
+220
+00:17:44,036 --> 00:17:50,068
+acknowledgement three, again because of
+cumulative acknowledgements, and it's now
+
+221
+00:17:50,068 --> 00:18:00,212
+the sender heard ack three and then
+another ack three, waits, time's out, and
+
+222
+00:18:00,212 --> 00:18:05,774
+re-sends four.
+So it'll resend four.
+
+223
+00:18:05,774 --> 00:18:11,579
+And let's say four arrives.
+Now, this receiver can acknowledge four so
+
+224
+00:18:11,579 --> 00:18:17,237
+it can ack four, but because its receive
+window was a size two, it actually had
+
+225
+00:18:17,237 --> 00:18:21,907
+five buffered, and so it can also
+acknowledge five.
+
+226
+00:18:21,907 --> 00:18:28,470
+And so it'll send back five.
+So, a sliding window flow control
+
+227
+00:18:28,470 --> 00:18:34,119
+algorithm allows an unacknowledged, a
+whole window of unacknowledged packets to
+
+228
+00:18:34,119 --> 00:18:37,121
+be in flight.
+And so this allows, is if you can set that
+
+229
+00:18:37,121 --> 00:18:41,894
+window size appropriately, it allows a
+sender to be able to actually fully
+
+230
+00:18:41,894 --> 00:18:45,181
+utilize the capacity that the receiver
+has.
+
+231
+00:18:45,181 --> 00:18:49,424
+Unlike a stop and wait protocol where you
+can have at most one packet in flight.
+
+232
+00:18:49,424 --> 00:18:53,809
+When acknowledgements arrive for new data,
+the center advances the window.
+
+233
+00:18:53,809 --> 00:18:57,287
+Generally sliding window protocols use
+cumulative acknowledgements.
+
+234
+00:18:57,287 --> 00:19:02,085
+And the exact sequence number space you
+use depends on the window sizes.
+
+235
+00:19:02,085 --> 00:19:08,522
+So it turns out TCP uses a large sequence
+number space just for ease of use and to
+
+236
+00:19:08,522 --> 00:19:11,341
+really be robust against heavily delayed
+packets.
+
+237
+00:19:11,341 --> 00:19:15,112
+But if you're implementing your own
+protocol you may be able to get away with
+
+238
+00:19:15,112 --> 00:19:17,022
+something a little bit smaller.
+

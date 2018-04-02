@@ -1,0 +1,949 @@
+1
+00:00:00,000 --> 00:00:03,482
+So, this video is about how to read an
+RFC, or Request for Comments.
+
+2
+00:00:03,482 --> 00:00:06,191
+The standard document in the IETF of the
+Internet.
+
+3
+00:00:06,191 --> 00:00:10,061
+So, reading RFCs is critical.
+If you want to get a deeper understanding
+
+4
+00:00:10,061 --> 00:00:14,041
+of how the Internet works, how its
+protocols are specified. But, there are
+
+5
+00:00:14,041 --> 00:00:18,353
+documents that's evolved over several
+decade to have certain instructions and
+
+6
+00:00:18,353 --> 00:00:21,173
+approaches,
+And this video is going to explain what
+
+7
+00:00:21,173 --> 00:00:25,350
+that looks like and why.
+There's actually an RFC, or Request for
+
+8
+00:00:25,350 --> 00:00:29,145
+Comments 2555 which describes the history
+of RFC survey.
+
+9
+00:00:29,145 --> 00:00:34,538
+Historical retrospective of the first one.
+First RFC, RFC one was entitled, Host
+
+10
+00:00:34,538 --> 00:00:37,801
+Software.
+And, this quote from RFC one talks about
+
+11
+00:00:37,801 --> 00:00:41,996
+where that name came from.
+The idea that these documents aren't
+
+12
+00:00:41,996 --> 00:00:47,190
+statements of control, or assertion of
+control would rather part of a dialogue.
+
+13
+00:00:47,190 --> 00:00:51,851
+And while RFCs today are a bit more formal
+that this first one, some thoughts on how
+
+14
+00:00:51,851 --> 00:00:56,236
+to structure host software, that still
+remains. There's nobody who enforces RFCs,
+
+15
+00:00:56,236 --> 00:01:00,398
+rather there are statements of a group of
+people about what you need to do to
+
+16
+00:01:00,398 --> 00:01:03,395
+inter-operate.
+You can always do the right things that
+
+17
+00:01:03,395 --> 00:01:07,613
+don't follow RFCs, but if you want to
+inter-operate, this is what you do need to
+
+18
+00:01:07,613 --> 00:01:10,111
+do.
+So, over time, RFCs came to have, have
+
+19
+00:01:10,111 --> 00:01:15,089
+come to have a standardized format.
+So there's the structure of the document,
+
+20
+00:01:15,089 --> 00:01:20,382
+well, concerns of intellectual property,
+and also specific terms that RFC has used.
+
+21
+00:01:20,382 --> 00:01:25,234
+Often you see them in, in capital words
+that have very, capital letters have very
+
+22
+00:01:25,234 --> 00:01:28,070
+specific meaning, are all defined in RFC
+2119.
+
+23
+00:01:28,070 --> 00:01:33,198
+Modern RFCs for example, always have, or
+are required to have two sections.
+
+24
+00:01:33,406 --> 00:01:37,218
+security considerations, and
+considerations for IANA.
+
+25
+00:01:37,218 --> 00:01:42,346
+So, security has obvious reasons.
+Iana is if this RFC, it needs new value
+
+26
+00:01:42,346 --> 00:01:47,266
+registries, say, protocol fields, whether
+it allocates fields in, in other
+
+27
+00:01:47,266 --> 00:01:50,360
+protocols.
+Now, one thing that often a first time
+
+28
+00:01:50,360 --> 00:01:54,343
+reader doesn't quite realize, and it can
+be a bit confusing, is that there are
+
+29
+00:01:54,343 --> 00:01:58,377
+actually multiple types of RFCs.
+And they actually have different meanings
+
+30
+00:01:58,377 --> 00:02:02,360
+in very different implications towards the
+standards process of the Internet.
+
+31
+00:02:02,530 --> 00:02:06,915
+So, for example, there are proposed
+standards, standards track, informational,
+
+32
+00:02:06,915 --> 00:02:11,528
+experimental, and best current practice.
+And the way to think of those serves as a
+
+33
+00:02:11,528 --> 00:02:16,254
+spectrum of whether or not this is an idea
+a couple of people have proposed, say,
+
+34
+00:02:16,254 --> 00:02:20,867
+experimental. Or whether or not it's a
+specification or it's simply some valuable
+
+35
+00:02:20,867 --> 00:02:25,309
+information that's, an informational RFC
+can be not a protocol but rather some
+
+36
+00:02:25,309 --> 00:02:29,277
+valuable information for the community.
+Then, you have proposed standards.
+
+37
+00:02:29,277 --> 00:02:33,247
+So, here's something which a group of
+people believe should become a common
+
+38
+00:02:33,247 --> 00:02:36,265
+standard of the, of the Internet, and then
+standards track.
+
+39
+00:02:36,265 --> 00:02:40,606
+And the transition between proposed
+standards and standards track or standards
+
+40
+00:02:40,606 --> 00:02:45,212
+track is further along the process towards
+becoming a really stable standard of the
+
+41
+00:02:45,212 --> 00:02:49,183
+Internet, has to do with how many
+implementations there are, whether they
+
+42
+00:02:49,183 --> 00:02:53,260
+can inter-operate, and there's some formal
+process for making that transition.
+
+43
+00:02:53,260 --> 00:02:58,512
+There are also RFCs that are best current
+practice which state, based on the current
+
+44
+00:02:58,512 --> 00:03:03,523
+knowledge today, these are the things that
+you really want to do, best practice, best
+
+45
+00:03:03,523 --> 00:03:06,421
+practices.
+So, for example, there are best current
+
+46
+00:03:06,421 --> 00:03:10,948
+practices about how to implement TCP and
+its congestion control algorithms.
+
+47
+00:03:10,948 --> 00:03:13,147
+So,
+That's what an RFC looks like.
+
+48
+00:03:13,147 --> 00:03:17,990
+This is the basic process that an RFC
+takes, or document takes to run RFC.
+
+49
+00:03:17,990 --> 00:03:23,168
+This is a bit simplified and this is
+actually my personal experience when
+
+50
+00:03:23,370 --> 00:03:29,020
+working on the RFC for this algorithm or
+they came out of my research trickle.
+
+51
+00:03:29,020 --> 00:03:32,581
+So, generally, what happens is that the
+document starts as a draft.
+
+52
+00:03:32,581 --> 00:03:36,965
+And so, when you see documents in the ITF
+named draft, they are not RFCs, they are
+
+53
+00:03:36,965 --> 00:03:40,417
+not formal documents.
+Instead, there are works in progress and
+
+54
+00:03:40,417 --> 00:03:44,473
+correspondingly, they actually time out
+so people don't update the draft.
+
+55
+00:03:44,473 --> 00:03:46,938
+Eventually, it disappears off the IETF
+servers.
+
+56
+00:03:46,938 --> 00:03:50,500
+And so, you start with a draft, I mean,
+you know, it said draft-levis.
+
+57
+00:03:50,500 --> 00:03:55,049
+This means that this is a personal draft,
+it's a private, it's a personal submission
+
+58
+00:03:55,049 --> 00:03:59,378
+that somebody, just a person or maybe a
+few people, are suggesting this document
+
+59
+00:03:59,378 --> 00:04:03,588
+is might be of interest to the Internet.
+And then, there's some information, in
+
+60
+00:04:03,588 --> 00:04:07,188
+this case, Levis, that's me.
+Roll was the IETF working group, that was
+
+61
+00:04:07,188 --> 00:04:11,060
+the draft is being proposed for, the
+routing over on low power and lossy
+
+62
+00:04:11,170 --> 00:04:15,370
+links, and then the descriptive name,
+trickle, the trickle algorithm, and then a
+
+63
+00:04:15,370 --> 00:04:17,770
+number.
+So, this is version zero of this
+
+64
+00:04:17,769 --> 00:04:21,699
+draft, so the first version of it.
+Then, you can submit that to a working
+
+65
+00:04:21,700 --> 00:04:26,185
+group for some consideration, discussion.
+Maybe it iterates a couple of times, you
+
+66
+00:04:26,185 --> 00:04:30,166
+make some improvements, some
+modifications, and the numbers increment,
+
+67
+00:04:30,166 --> 00:04:35,896
+so trickle-00, trickle-01, trickle-02.
+Then, at some point, the chair of the working
+
+68
+00:04:35,896 --> 00:04:40,718
+group can say, or ask the working group,
+Do we think that this is something which
+
+69
+00:04:40,718 --> 00:04:45,278
+should become a working group work item?
+That is this, is this a document or an
+
+70
+00:04:45,278 --> 00:04:50,232
+idea or a protocol which the working group
+thinks is part of it's charter and should
+
+71
+00:04:50,401 --> 00:04:53,666
+make more formal.
+When it becomes a working group document,
+
+72
+00:04:53,666 --> 00:04:57,776
+then the name changes from draft to
+someone's name, draft-levis to draft-ietf,
+
+73
+00:04:57,776 --> 00:05:02,223
+to show that this is now a document under
+the full auspices of a working group.
+
+74
+00:05:02,223 --> 00:05:05,320
+And you can see then it's still the roll
+working group.
+
+75
+00:05:05,320 --> 00:05:08,585
+At this point, the version number resets
+to zero,
+
+76
+00:05:08,585 --> 00:05:13,910
+Zero. Then, it goes through revisions, you
+present it at working group meetings.
+
+77
+00:05:14,123 --> 00:05:19,021
+You get feedback, comments on the mailing
+lists, questions, concerns.
+
+78
+00:05:19,021 --> 00:05:22,642
+The document iterates over versions, 01,
+02, 03.
+
+79
+00:05:22,642 --> 00:05:28,180
+At some point, the working group chair,
+one of the working group chairs, they
+
+80
+00:05:28,180 --> 00:05:31,730
+decide that the document is ready for
+publication.
+
+81
+00:05:31,857 --> 00:05:35,166
+And so, the working group chair can say
+say, look, I feel that this document has
+
+82
+00:05:35,166 --> 00:05:37,966
+gone through a lot of revision.
+We agree, it seems like it's a good
+
+83
+00:05:37,966 --> 00:05:40,130
+position.
+It's something that's part of the working
+
+84
+00:05:40,130 --> 00:05:41,870
+group's work.
+We want to make this an RFC.
+
+85
+00:05:41,870 --> 00:05:46,307
+At that point, there's a last call issued.
+First, the working group, and then to the
+
+86
+00:05:46,307 --> 00:05:48,718
+IETF.
+So, the working group has given a chance,
+
+87
+00:05:48,718 --> 00:05:53,046
+a trade to respond any final comments to
+improve the document, after which, then,
+
+88
+00:05:53,046 --> 00:05:57,319
+it's given a last call to the entire IETF.
+Anyone can comment on it, and suggest
+
+89
+00:05:57,319 --> 00:06:00,490
+things to improve it.
+After it's passed to those last calls,
+
+90
+00:06:00,490 --> 00:06:04,531
+that is, all of the issues which people
+have seen have been addressed to the
+
+91
+00:06:04,690 --> 00:06:08,837
+satisfaction of the working group chair,
+It goes to the IESG, the steering group,
+
+92
+00:06:08,837 --> 00:06:13,357
+the Internet Enduring Steering Group which
+has representatives from all of the major
+
+93
+00:06:13,357 --> 00:06:16,547
+areas of the Internet.
+And so, you have both tremendous depth.
+
+94
+00:06:16,547 --> 00:06:20,162
+People, or say, experts in transport,
+experts in real time application
+
+95
+00:06:20,162 --> 00:06:25,234
+infrastructure. But then, because it's all
+of the experts, there is also a tremendous
+
+96
+00:06:25,234 --> 00:06:27,413
+breadth.
+Everything from the network, to
+
+97
+00:06:27,413 --> 00:06:31,709
+operations, to, to transport.
+It's the IESG reviews it,
+
+98
+00:06:31,891 --> 00:06:36,490
+Gets feedback, it gives comment.
+Sometimes they refuse to publish it as an
+
+99
+00:06:36,490 --> 00:06:38,850
+RFC.
+They say that this is not, this has
+
+100
+00:06:38,850 --> 00:06:44,054
+subsequent issues that we see you need to
+completely rework it. But, if things go
+
+101
+00:06:44,054 --> 00:06:48,895
+well, they actually gives you comments,
+they address these comments and then, they
+
+102
+00:06:48,895 --> 00:06:52,950
+document it approved, approved as an RFC
+or Request for Comments.
+
+103
+00:06:52,950 --> 00:06:58,392
+So, as described in RFC 2119, there are
+certain terms which are used in RFCs which
+
+104
+00:06:58,392 --> 00:07:03,445
+have a very specific meanings with respect
+to interoperability and proposed
+
+105
+00:07:03,445 --> 00:07:06,620
+standards.
+And so, these are those terms and there,
+
+106
+00:07:06,620 --> 00:07:09,471
+when they're used, they are used in all
+caps.
+
+107
+00:07:09,471 --> 00:07:12,322
+And so, the first is most required and
+shall.
+
+108
+00:07:12,322 --> 00:07:16,986
+If you see these terms used in RFC, then
+this is an absolute requirement.
+
+109
+00:07:16,986 --> 00:07:22,429
+If a protocol or implementation does not
+follow this statement, then it is not it
+
+110
+00:07:22,429 --> 00:07:25,280
+does not follow the RFC, it is not
+compliant.
+
+111
+00:07:25,280 --> 00:07:29,717
+Then, there should recommended. And so
+the, should recommended it, or things you
+
+112
+00:07:29,717 --> 00:07:33,529
+really generally want to do.
+It's really advised that you do it, but
+
+113
+00:07:33,529 --> 00:07:37,910
+it's understood that there might be times
+when you don't, for whatever reason.
+
+114
+00:07:37,910 --> 00:07:42,234
+And so, the, the terminology that's used
+in 2119 is that you really should
+
+115
+00:07:42,234 --> 00:07:46,899
+understand the implications of not doing
+this if you're going to choose to not do
+
+116
+00:07:46,899 --> 00:07:49,572
+it.
+And then finally, there's may optional.
+
+117
+00:07:49,572 --> 00:07:54,088
+And so, this is totally up to you, you can
+do it, you cannot do it. It is not
+
+118
+00:07:54,088 --> 00:07:58,669
+required interoperability in anyway.
+And so, when you read an RFC, it's
+
+119
+00:07:58,669 --> 00:08:03,790
+important to see these terms and how
+they're used, and then understand what the
+
+120
+00:08:03,790 --> 00:08:07,161
+RFC is really saying you have to do to be
+compliant.
+
+121
+00:08:07,161 --> 00:08:10,921
+So, I thought, as an example, we could
+walk through RFC 5681.
+
+122
+00:08:10,921 --> 00:08:15,653
+This is TCP congestion control.
+As you can see, it's standards track, so
+
+123
+00:08:15,653 --> 00:08:19,997
+this is pretty well along.
+And it's written back in 2009 by a bunch
+
+124
+00:08:19,997 --> 00:08:25,555
+of folks or, bigwigs in the internet.
+And so, one thing you can see is in fact,
+
+125
+00:08:25,555 --> 00:08:30,655
+the history of this document in terms of
+drafts, so it's draft-ietf, and it went
+
+126
+00:08:30,655 --> 00:08:34,894
+through all of this revisions and you can
+see what the revisions are.
+
+127
+00:08:34,894 --> 00:08:38,887
+The earlier revisions that this what, this
+obsoletes is 2581.
+
+128
+00:08:38,886 --> 00:08:43,863
+And so, this particular IETF draft went
+through seven revisions before becoming an
+
+129
+00:08:43,864 --> 00:08:45,830
+RFC.
+So, let's go back to the RFC.
+
+130
+00:08:45,830 --> 00:08:50,806
+So, as you can see, there's an abstract or
+stating what it's about, other copyright
+
+131
+00:08:50,806 --> 00:08:53,940
+notes for intellectual property some
+background.
+
+132
+00:08:54,151 --> 00:09:00,134
+It defines a bunch of terms which are used
+in this. But, if we jump forward, so here,
+
+133
+00:09:00,134 --> 00:09:05,484
+say in section three, it's defining the
+congestion control algorithms of TCP.
+
+134
+00:09:05,484 --> 00:09:10,553
+So it'll start, congestion avoidance,
+fast retransmit and faster recovery.
+
+135
+00:09:10,764 --> 00:09:16,536
+And so, you know, for example, one of the
+first requirements this document states is
+
+136
+00:09:16,536 --> 00:09:21,528
+that it's okay for TCP sender to send more
+slowly than what these algorithm say in
+
+137
+00:09:21,528 --> 00:09:24,934
+order, in order to back off more
+aggressively to congestion.
+
+138
+00:09:24,934 --> 00:09:29,192
+But, it must not be more aggressive.
+That these, what this document describes
+
+139
+00:09:29,192 --> 00:09:32,258
+are, is going to be upper bounds of what
+TCP should do.
+
+140
+00:09:32,258 --> 00:09:36,629
+They should never send faster than this
+because they do so might cause a problem.
+
+141
+00:09:36,629 --> 00:09:40,380
+So then, here's another specification.
+It says, the initial value of the
+
+142
+00:09:40,380 --> 00:09:43,281
+congestion window.
+So, when you start a TCP connection, what
+
+143
+00:09:43,281 --> 00:09:47,183
+the congestion window initial window is,
+It must be set following these are
+
+144
+00:09:47,183 --> 00:09:49,684
+parameters.
+So, basically, if you have large segment
+
+145
+00:09:49,684 --> 00:09:53,585
+sizes, then it should be two segments.
+If you have medium sized segments, it can
+
+146
+00:09:53,585 --> 00:09:57,637
+be up to three segments and if you have a
+small segments, it can be up to four
+
+147
+00:09:57,637 --> 00:09:59,937
+segments.
+And this statement is, if you want to
+
+148
+00:09:59,937 --> 00:10:03,789
+follow TCP congestion control properly,
+here's what your initial segment size can be, the
+
+149
+00:10:03,789 --> 00:10:07,613
+initial congestion window size.
+So, those are examples of must and must
+
+150
+00:10:07,613 --> 00:10:09,653
+nots.
+Here's an example of a should.
+
+151
+00:10:09,653 --> 00:10:14,142
+So, this ssthresh is saying, what is the
+initial slow start threshold.
+
+152
+00:10:14,142 --> 00:10:18,573
+The initial threshold at which we're going
+to transition from slow start to
+
+153
+00:10:18,573 --> 00:10:21,895
+congestion avoidance.
+And so, this document says, it's the
+
+154
+00:10:21,895 --> 00:10:26,442
+initial value should be very, very high.
+So, I choose to do slow start until you
+
+155
+00:10:26,442 --> 00:10:30,348
+essentially get a loss, and then you drop
+into congestion avoidance.
+
+156
+00:10:30,523 --> 00:10:33,189
+However,
+You know, it can be smaller if you'd like.
+
+157
+00:10:33,189 --> 00:10:37,267
+And so, it should be set arbitrarily high.
+But, if you cannot set it arbitrarily high,
+
+158
+00:10:37,267 --> 00:10:41,291
+you should understand whatever the
+implications of what will happen if you do
+
+159
+00:10:41,291 --> 00:10:44,112
+this.
+Finally, here is an example of in fact, a
+
+160
+00:10:44,112 --> 00:10:48,207
+may, a should, and a must not.
+So, it's talking about when is TCP is in
+
+161
+00:10:48,207 --> 00:10:51,590
+congestion avoidance and it's incrementing
+its congestion window.
+
+162
+00:10:51,590 --> 00:10:56,219
+It says, oh, you may increment congestion
+window by certain number of bytes, but you
+
+163
+00:10:56,219 --> 00:11:00,789
+don't have to, you could just not if you
+want to. You could not increase it.
+
+164
+00:11:00,967 --> 00:11:05,937
+But it should increment it once per RTT,
+by this equation, equation, and it must
+
+165
+00:11:05,937 --> 00:11:10,802
+not increment it more than this amount.
+So, that's basically saying, hey, here is
+
+166
+00:11:10,802 --> 00:11:16,229
+the upper bound, and you should not ever
+do it more than that upper bound, but you
+
+167
+00:11:16,229 --> 00:11:20,657
+generally want to follow this equation,
+you should follow this equation.
+
+168
+00:11:20,657 --> 00:11:23,931
+So, all this aside,
+Remember, so, this document is saying
+
+169
+00:11:23,931 --> 00:11:29,011
+something about how large the congestion,
+how large the initial window size should
+
+170
+00:11:29,011 --> 00:11:31,521
+be.
+It must be this number of segments, two
+
+171
+00:11:31,521 --> 00:11:36,003
+segments for a large size, three for
+medium size, four for small segments.
+
+172
+00:11:36,003 --> 00:11:38,090
+But remember,
+This is just an RFC, right?
+
+173
+00:11:38,090 --> 00:11:41,822
+There's, you can say that somebody isn't
+compliant but they, nobody is going to
+
+174
+00:11:41,822 --> 00:11:42,780
+enforce it.
+In fact,
+
+175
+00:11:42,780 --> 00:11:46,826
+If you look at this webpage here, there is
+this really interesting blog post
+
+176
+00:11:46,826 --> 00:11:50,822
+about two years ago about how Google and
+Microsoft are, were not following this
+
+177
+00:11:50,822 --> 00:11:52,845
+RFC.
+So, if you want, you can look this up.
+
+178
+00:11:52,845 --> 00:11:57,144
+This is Ben Strong's blog. If you search
+for "Google Microsoft congestion window
+
+179
+00:11:57,144 --> 00:11:59,369
+cheat".
+And essentially, what he found is that,
+
+180
+00:11:59,369 --> 00:12:02,000
+when you first connect to Google or
+Microsoft sites,
+
+181
+00:12:02,000 --> 00:12:04,887
+Their initial window is much, is
+significantly larger than two.
+
+182
+00:12:05,026 --> 00:12:08,705
+That is they will send you more than two
+segments, essentially, so they can send
+
+183
+00:12:08,705 --> 00:12:12,570
+you their whole webpage in just one round
+trip time and not having to wait for the
+
+184
+00:12:12,570 --> 00:12:16,156
+congestion window to increase.
+And so, he walks through and come, all the
+
+185
+00:12:16,156 --> 00:12:19,741
+experimental evidence that he gathered,
+and he shows that these guys were not
+
+186
+00:12:19,741 --> 00:12:22,628
+following the rules.
+And there has been a discussion in the IETF
+
+187
+00:12:22,628 --> 00:12:24,677
+about, maybe we need to increase these
+sizes.
+
+188
+00:12:24,677 --> 00:12:28,589
+Networks are getting faster. But the point
+here being that, just because it's written
+
+189
+00:12:28,589 --> 00:12:31,942
+in an RFC, that says you must do
+something, doesn't necessarily mean that
+
+190
+00:12:31,942 --> 00:12:32,920
+everyone always does.
+

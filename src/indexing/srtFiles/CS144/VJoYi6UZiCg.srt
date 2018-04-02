@@ -1,0 +1,431 @@
+1
+00:00:00,760 --> 00:00:04,390
+Nick: In this unit you learned how to answer
+the following question.
+
+2
+00:00:04,390 --> 00:00:10,750
+How should packets from A reach B? Or in the
+multicast case how should packets from A reach
+
+3
+00:00:10,750 --> 00:00:15,309
+B, C and perhaps other end hosts too?
+
+4
+00:00:15,309 --> 00:00:19,740
+We started by studying four basic approaches
+used when routing unicast packets from one
+
+5
+00:00:19,740 --> 00:00:21,570
+end host to another.
+
+6
+00:00:21,570 --> 00:00:26,440
+First, we can flood packets over every link
+in the network. When a packet arrives to a
+
+7
+00:00:26,440 --> 00:00:31,779
+router, it is replicated to all of the interfaces
+except the one it arrived on. This guarantees
+
+8
+00:00:31,779 --> 00:00:36,929
+that a packet will eventually traverse every
+link, and will therefore reach any (and every)
+
+9
+00:00:36,929 --> 00:00:41,710
+end host in the network. It is clearly very
+inefficient and expensive, and needs to be
+
+10
+00:00:41,710 --> 00:00:46,749
+coupled with a mechanism to prevent packets
+from looping forever. Flooding is used during
+
+11
+00:00:46,749 --> 00:00:51,280
+times of uncertainty, when the topology is
+changing and we have no other way to be sure
+
+12
+00:00:51,280 --> 00:00:56,799
+we can reach every other host. For example,
+when OSPF routers are exchanging link state,
+
+13
+00:00:56,799 --> 00:01:01,670
+they flood the link state packets throughout
+the OSPF domain, so the topology is known
+
+14
+00:01:01,670 --> 00:01:06,220
+to every router even when it has changed.
+
+15
+00:01:06,220 --> 00:01:12,170
+Second, we can use source routing. In source
+routing, the source host puts into the header
+
+16
+00:01:12,170 --> 00:01:17,000
+of every packet a list of hops the packet
+should traverse through the network. Clearly
+
+17
+00:01:17,000 --> 00:01:22,190
+this is possible if the end host knows the
+entire topology. Source routing means we don’t
+
+18
+00:01:22,190 --> 00:01:25,600
+need to exchange routing table information
+in the network – the routers don’t need
+
+19
+00:01:25,600 --> 00:01:31,180
+to contain a forwarding table at all. In fact,
+arguably, source routing is very much in keeping
+
+20
+00:01:31,180 --> 00:01:34,860
+with the strong end to end principle – we
+shouldn’t burden the network with having
+
+21
+00:01:34,860 --> 00:01:41,370
+to know all the paths. But in practice, source
+routing is rarely used for a number of reasons.
+
+22
+00:01:41,370 --> 00:01:45,940
+The biggest reason is security: Network operators
+don’t like source routing because it requires
+
+23
+00:01:45,940 --> 00:01:50,820
+them to expose the full topology of their
+network and open it up so end hosts can send
+
+24
+00:01:50,820 --> 00:01:56,240
+packets wherever they want. The Internet designers
+felt it was a worthwhile optimization for
+
+25
+00:01:56,240 --> 00:02:00,380
+the routers to maintain a forwarding table,
+to avoid having to distribute full up-to-date
+
+26
+00:02:00,380 --> 00:02:03,440
+topology information to all the end hosts.
+
+27
+00:02:03,440 --> 00:02:10,440
+Third, the routers can contain forwarding
+tables. Rather than relying on the source
+
+28
+00:02:11,109 --> 00:02:15,310
+to provide the routing information, the forwarding
+table in the router contains the address of
+
+29
+00:02:15,310 --> 00:02:20,040
+the destination, and an indication of which
+interface to exit the router in order to move
+
+30
+00:02:20,040 --> 00:02:25,340
+on step closer to the destination. Today,
+all Ethernet switches and Internet routers
+
+31
+00:02:25,340 --> 00:02:31,670
+use forwarding tables. The job of the routing
+algorithm is to populate the forwarding tables.
+
+32
+00:02:31,670 --> 00:02:38,189
+Finally, you learned how unicast routing algorithms
+usually build a spanning tree, with the destination
+
+33
+00:02:38,189 --> 00:02:44,290
+at the root of the tree. It is a tree because
+we don’t want loops. It is spanning, because
+
+34
+00:02:44,290 --> 00:02:50,739
+it provides a way for all source end hosts
+to reach a destination. Generally speaking,
+
+35
+00:02:50,739 --> 00:02:55,730
+routing algorithms used in the Internet – such
+as OSPF and RIP – populate the forwarding
+
+36
+00:02:55,730 --> 00:03:00,620
+tables so as to create a spanning tree across
+the network. Usually, the spanning tree we
+
+37
+00:03:00,620 --> 00:03:05,359
+build is a minimum cost spanning tree, where
+we are trying to minimize the hop count, delay
+
+38
+00:03:05,359 --> 00:03:07,799
+or distance traveled by packets.
+
+39
+00:03:07,799 --> 00:03:13,260
+Phil: You learned about two algorithms widely
+used to build the forwarding tables in routers.
+
+40
+00:03:13,260 --> 00:03:18,010
+The first is the Bellman-Ford algorithm, which
+is usually referred to as a distance vector
+
+41
+00:03:18,010 --> 00:03:22,349
+algorithm. Each router constructs a vector
+of distances from itself to every other router
+
+42
+00:03:22,349 --> 00:03:27,189
+in the network. In successive steps, the routers
+exchange their vectors so as to find the neighbor
+
+43
+00:03:27,189 --> 00:03:32,569
+that is closest to each destination. After
+a number of iterations – equal to no more
+
+44
+00:03:32,569 --> 00:03:36,980
+than the longest loop free path in the topology
+– the algorithm will settle on a set of
+
+45
+00:03:36,980 --> 00:03:41,249
+forwarding tables in each router that tells
+it how to route packets along the shortest
+
+46
+00:03:41,249 --> 00:03:46,549
+path to every destination. The Bellman Ford
+algorithm was the basis for RIP – the Routing
+
+47
+00:03:46,549 --> 00:03:50,450
+Information Protocol – which was the first
+widely used routing algorithm in the Internet.
+
+48
+00:03:50,450 --> 00:03:54,180
+The good thing about RIP is that its algorithm
+is distributed – the routers work together
+
+49
+00:03:54,180 --> 00:03:59,370
+to build a complete set of forwarding tables.
+This was important in the early days of the
+
+50
+00:03:59,370 --> 00:04:03,529
+Internet when the routers were assumed to
+have very little computing power. However,
+
+51
+00:04:03,529 --> 00:04:07,499
+RIP has many problems trying to converge on
+the right answer when the network topology
+
+52
+00:04:07,499 --> 00:04:11,659
+is changing. We saw examples of the so-called
+“counting to infinity” problem in which
+
+53
+00:04:11,659 --> 00:04:15,969
+bad news travels slowly, and methods such
+as “poison reverse” to try and overcome
+
+54
+00:04:15,969 --> 00:04:21,880
+it. Today, RIP is rarely used, and has been
+mostly replaced by OSPF and an algorithm called
+
+55
+00:04:21,880 --> 00:04:24,220
+IS-IS.
+
+56
+00:04:24,220 --> 00:04:31,220
+OSPF is based on the second algorithm, Dijkstra’s
+shortest path first algorithm. Dijkstra’s
+
+57
+00:04:31,450 --> 00:04:35,080
+algorithm assumes that every router has the
+computational power to construct its own routing
+
+58
+00:04:35,080 --> 00:04:40,230
+table, if it is given a complete topology.
+The routers learn the topology by exchanging
+
+59
+00:04:40,230 --> 00:04:44,190
+link-state information – basically a binary
+indication of which links are present and
+
+60
+00:04:44,190 --> 00:04:48,030
+working. Once they have the topology, every
+router sets about calculating its own local
+
+61
+00:04:48,030 --> 00:04:51,720
+forwarding tables so as to reach every end
+host in the network. Dijkstra’s algorithm
+
+62
+00:04:51,720 --> 00:04:56,970
+is deceptively simple and fast. As a result,
+OSPF is very widely used in enterprises and
+
+63
+00:04:56,970 --> 00:05:03,200
+college campuses today.
+
+64
+00:05:03,200 --> 00:05:07,980
+In addition to RIP and OSPF, we studied four
+other aspects of routing.
+
+65
+00:05:07,980 --> 00:05:12,410
+You learned how the Internet uses hierarchical
+routing to break routing down into more manageable,
+
+66
+00:05:12,410 --> 00:05:18,010
+locally controlled problems. Each autonomous
+system, or AS, chooses an intra-domain routing
+
+67
+00:05:18,010 --> 00:05:23,510
+algorithm to route packets inside its AS–
+for example, Stanford uses OSPF on campus.
+
+68
+00:05:23,510 --> 00:05:29,800
+Every AS is required to use BGP in order to
+exchange routing information with other AS’s
+
+69
+00:05:29,800 --> 00:05:31,100
+in the Internet.
+
+70
+00:05:31,100 --> 00:05:37,210
+BGP is the only sanctioned way to exchange
+routing information between autonomous systems
+
+71
+00:05:37,210 --> 00:05:44,080
+in the Internet today. Basically, every AS
+advertises to its neighbors the path packets
+
+72
+00:05:44,080 --> 00:05:50,270
+will take to reach every prefix in the Internet.
+The path is the set of AS’s the packet will
+
+73
+00:05:50,270 --> 00:05:55,410
+pass through along the way. We learned how
+every BGP router can use a locally-defined
+
+74
+00:05:55,410 --> 00:06:01,620
+policy to decide which route advertisement
+to accept and use to route packets.
+
+75
+00:06:01,620 --> 00:06:05,830
+You also learned briefly about multicast routing.
+Multicast routing is an optimization added
+
+76
+00:06:05,830 --> 00:06:11,580
+to a network to avoid the source having to
+send a packet multiple times to a set of destinations.
+
+77
+00:06:11,580 --> 00:06:15,140
+Multicast was all the rage in the 1990s because
+it was thought that many applications, such
+
+78
+00:06:15,140 --> 00:06:21,310
+as Internet TV, would use multicast delivery.
+Although many multicast routing algorithms
+
+79
+00:06:21,310 --> 00:06:24,840
+were invented and standardized – as you
+learned in the video – they are not widely
+
+80
+00:06:24,840 --> 00:06:30,090
+used today. This is because most big applications
+and services – such as video streaming–
+
+81
+00:06:30,090 --> 00:06:34,300
+offer us the convenience of streaming us what
+we want, when we want, using a single unicast
+
+82
+00:06:34,300 --> 00:06:38,860
+connection. Most of the time, there are too
+few people watching the same video at the
+
+83
+00:06:38,860 --> 00:06:43,560
+same time for it to be worth supporting the
+optimization in the network.
+
+84
+00:06:43,560 --> 00:06:48,140
+Finally, you learned about the spanning tree
+protocol. This isn’t actually an Internet
+
+85
+00:06:48,140 --> 00:06:52,200
+routing mechanism per-se, because it is a
+mechanism used by Ethernet networks to avoid
+
+86
+00:06:52,200 --> 00:06:57,240
+creating loops. The spanning tree protocol
+allows a set of switches to construct a single
+
+87
+00:06:57,240 --> 00:07:01,350
+spanning tree, with one switch at the root,
+in order to prevent packets looping in the
+
+88
+00:07:01,350 --> 00:07:01,600
+network.
+

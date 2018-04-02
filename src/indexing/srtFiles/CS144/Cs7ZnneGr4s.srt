@@ -1,0 +1,978 @@
+1
+00:00:00,000 --> 00:00:03,054
+So in this video, I'm going to go over all
+the different kinds of NATs.
+
+2
+00:00:03,054 --> 00:00:05,788
+Or not all of them.
+Many of the different kinds of NATs that
+
+3
+00:00:05,789 --> 00:00:08,022
+exist.
+So it seems like a very simple abstraction
+
+4
+00:00:08,022 --> 00:00:11,624
+of translating addresses from an internal
+to an external, in, eck, internal to an
+
+5
+00:00:11,624 --> 00:00:14,267
+external interface.
+Well, it turns out there's all kinds of
+
+6
+00:00:14,267 --> 00:00:18,005
+different ways you might implement that,
+and a lot of them are deployed out in the
+
+7
+00:00:18,005 --> 00:00:21,060
+wild, and understanding these differences
+gives you a sense, then, of
+
+8
+00:00:21,060 --> 00:00:26,111
+Why NATs can be such a complicating factor
+when building applications.
+
+9
+00:00:26,111 --> 00:00:31,885
+So recall, the model of a NAT is that, or
+generally the way it works is that, when
+
+10
+00:00:31,885 --> 00:00:38,235
+there's some kind of communication from a
+node behind the NAT to an external node on
+
+11
+00:00:38,235 --> 00:00:43,504
+the internet, the NAT sets up an internal
+mapping between the NAT being you know
+
+12
+00:00:43,504 --> 00:00:49,063
+internally to in its memory, between its
+internal IP address and associated port
+
+13
+00:00:49,063 --> 00:00:55,753
+to, an external IP address and port.
+And so, when this server A, tries to open
+
+14
+00:00:55,753 --> 00:01:03,247
+a connection to the web server on S at,
+ 18.181.0.31, so it's going to port 88 on
+
+15
+00:01:03,247 --> 00:01:09,670
+this host, and it's coming from port 4512.
+The NAt rewrites that, that say.
+
+16
+00:01:09,670 --> 00:01:14,330
+The, all of those packets, including TCP
+SYN, and all the data packets to be
+
+17
+00:01:14,330 --> 00:01:17,374
+coming from its own IP address and port
+ 6641.
+
+18
+00:01:17,374 --> 00:01:22,407
+That's what the server sees, and then when
+the server sends messages back, the NAT
+
+19
+00:01:22,407 --> 00:01:27,141
+translates them back to port 4512.
+So that's the simple model and there are
+
+20
+00:01:27,141 --> 00:01:31,935
+two basic questions that come up.
+First is, what packets does a NAT allow to
+
+21
+00:01:31,935 --> 00:01:35,422
+traverse these mappings.
+The second is how and when does a NAT
+
+22
+00:01:35,422 --> 00:01:37,785
+assign these mapping, when does it create
+them.
+
+23
+00:01:37,785 --> 00:01:41,587
+So I said when you generate packets but
+turns out it can be a little more
+
+24
+00:01:41,587 --> 00:01:44,566
+complicated than that, when does it tear
+down those mappings.
+
+25
+00:01:44,566 --> 00:01:48,419
+It doesn't keep the mapping for ever.
+So it turns out there's a nice RFC that soft of goes
+
+26
+00:01:48,419 --> 00:01:52,273
+through some of the classifications in
+terminology I'm going to use in rest of this
+
+27
+00:01:52,273 --> 00:01:54,944
+video RFC3489.
+So if you're going to read little bit more
+
+28
+00:01:54,944 --> 00:01:58,951
+about some details in really precise ways
+that are laid out, take a look at RFC3489.
+
+29
+00:01:59,260 --> 00:02:03,336
+So the first kind of NAT is what's called
+a full cone NAT.
+
+30
+00:02:03,336 --> 00:02:07,480
+And this in some ways is the, is the one
+that plays the nicest.
+
+31
+00:02:07,480 --> 00:02:13,253
+And full cone NAT is called, is called
+that because it is the least restrictive
+
+32
+00:02:13,253 --> 00:02:17,420
+in terms of what packets it allows to
+traverse a mapping.
+
+33
+00:02:18,760 --> 00:02:24,234
+In that way it's a full cone, and that's
+where the things which are allowed in are
+
+34
+00:02:24,234 --> 00:02:27,326
+large.
+And so the basic model of a full cone NAT
+
+35
+00:02:27,326 --> 00:02:31,336
+is that any packet.
+That, say, this is for the particular,
+
+36
+00:02:31,336 --> 00:02:35,902
+say, protocol TCP.
+Any TCP packet that comes into the NAT to
+
+37
+00:02:35,902 --> 00:02:41,629
+this IP address/port pair will be
+translated to this IP address, this port
+
+38
+00:02:41,629 --> 00:02:46,505
+pair, regardless of what the source
+address and source port are.
+
+39
+00:02:46,505 --> 00:02:52,232
+This is the least restrictive.
+So if I have some other server, let's say,
+
+40
+00:02:52,232 --> 00:02:58,655
+S2, that has, you know, some IP address,
+A, and it's sending a packet from port A
+
+41
+00:02:58,655 --> 00:03:03,345
+prime.
+And that packet with source A, source port
+
+42
+00:03:03,345 --> 00:03:10,200
+A prime, is sent to twelve, 128.34.22.8 port
+6641, then NAT will translate it.
+
+43
+00:03:10,200 --> 00:03:16,090
+And my server, my host here, will see
+something coming from A, A prime, arriving
+
+44
+00:03:16,090 --> 00:03:20,833
+at port 10.0.0.101, port 4512.
+It might discard that packet, it might
+
+45
+00:03:20,833 --> 00:03:25,117
+send an ICMP error.
+But the point is, the NAT will do the
+
+46
+00:03:25,117 --> 00:03:28,101
+translation.
+It's the least restrictive.
+
+47
+00:03:28,101 --> 00:03:32,385
+It's a full cone.
+So in addition to full cone nats, there
+
+48
+00:03:32,385 --> 00:03:37,740
+are also restricted cone nats.
+And what restricted cone NAT does, is it
+
+49
+00:03:37,740 --> 00:03:40,778
+filters.
+Based on the source IP address.
+
+50
+00:03:40,778 --> 00:03:47,229
+So in restricted cone NAT, the NAT will
+translate packets that come from the same
+
+51
+00:03:47,229 --> 00:03:51,529
+source address as intended on the external
+mapping.
+
+52
+00:03:51,529 --> 00:03:57,741
+So when the NAT sets up the mapping
+between the internal address in port pair
+
+53
+00:03:57,741 --> 00:04:04,032
+and the external address in port pair, it
+includes the address of the other end
+
+54
+00:04:04,032 --> 00:04:07,780
+point.
+And so, in this case, if I have S2, which
+
+55
+00:04:07,780 --> 00:04:13,650
+tries to send a packet from A colon, A
+prime, address A, A prime.
+
+56
+00:04:13,650 --> 00:04:17,255
+The net will not allow that packet to
+traverse.
+
+57
+00:04:17,255 --> 00:04:23,545
+It'll discard the, it'll either send an
+ICMP error or generally will not translate
+
+58
+00:04:23,545 --> 00:04:29,913
+that packet and host A will never see it.
+However, if server S were to send a packet
+
+59
+00:04:29,913 --> 00:04:34,515
+from IP address S.
+And then let's just say, port, let's say
+
+60
+00:04:34,515 --> 00:04:39,611
+port, you now, 10,099.
+That will be able to traverse the mapping,
+
+61
+00:04:39,611 --> 00:04:46,396
+in the sense of, it's coming from 18.181.0.31
+and so host A will see a packet
+
+62
+00:04:46,396 --> 00:04:52,700
+from eighteen 18.181.0.31 port 1099.
+It'll come in destined to 10.0.0.101, port
+
+63
+00:04:52,700 --> 00:04:56,290
+4512.
+So that's a restricted cone NAT.
+
+64
+00:04:56,290 --> 00:05:00,488
+It will filter it based on the IP address
+but not the port.
+
+65
+00:05:00,488 --> 00:05:05,667
+So the last kind of a NAT or of these
+three major classifications is a
+
+66
+00:05:05,667 --> 00:05:09,515
+port restricted NAT.
+Where it behaves like a restricted cone,
+
+67
+00:05:09,515 --> 00:05:14,414
+except it also filters on port.
+So in this case, when a packet comes in
+
+68
+00:05:14,414 --> 00:05:17,773
+from some external host to 128.34.22.8
+, 6641.
+
+69
+00:05:17,773 --> 00:05:22,461
+The NAT is storing also what the expected
+IP address and port are.
+
+70
+00:05:22,461 --> 00:05:27,920
+So in this case, if I again, I have some
+server S2 that tries to send something
+
+71
+00:05:27,920 --> 00:05:31,779
+from A, A prime.
+And that will not translate that which
+
+72
+00:05:31,779 --> 00:05:37,039
+seen as an error, by ICPM etc, not route to
+host, whatever error it thinks is correct
+
+73
+00:05:37,039 --> 00:05:42,802
+to specify, depending on the conditions.
+But similarly, if server S tries to send a
+
+74
+00:05:42,802 --> 00:05:48,615
+message from port 1099.
+That will not traverse either, because it
+
+75
+00:05:48,615 --> 00:05:56,723
+doesn't match the port in the mapping.
+So only packets from this IP address/port
+
+76
+00:05:56,723 --> 00:06:03,310
+pair 18.181.0.31, port 80, will be allowed to
+translate to 10.0.0.1:4512.
+
+77
+00:06:03,310 --> 00:06:08,770
+So only this particular pair.
+Can traverse the mapping.
+
+78
+00:06:08,770 --> 00:06:13,200
+So the last and the final kind of NAT is
+something called the symmetric NAT.
+
+79
+00:06:13,200 --> 00:06:18,535
+And what makes a symmetric NAT different
+is not only, is that first of all, it's
+
+80
+00:06:18,535 --> 00:06:24,597
+sort of by definition port restricted but
+there's the fact that packets coming from
+
+81
+00:06:24,597 --> 00:06:30,826
+the same source address and port internal
+to the NAT, that are going to different
+
+82
+00:06:30,826 --> 00:06:37,209
+destination addresses and ports are given
+different external address port mappings.
+
+83
+00:06:37,209 --> 00:06:41,746
+So when you look at this figure, you'll
+see what I'm saying.
+
+84
+00:06:41,746 --> 00:06:47,360
+So here, I have host A, and it's sending
+packets from 10.0.0.101, port 4512,
+
+85
+00:06:47,360 --> 00:06:51,178
+Right?
+And, first it's sending them to eighteen
+
+86
+00:06:51,178 --> 00:06:55,992
+18.181.0.31 port 3311.
+So the NAT sets up a mapping.
+
+87
+00:06:55,992 --> 00:07:02,134
+And the mapping between this internal
+address port pair and this internal
+
+88
+00:07:02,134 --> 00:07:06,616
+address port pair is 128.34.22.8:6641
+
+89
+00:07:06,616 --> 00:07:13,754
+So packets that A sends to Port 3311
+on this IP address will be translated to
+
+90
+00:07:13,754 --> 00:07:19,825
+have this IP address and this port.
+However, if A sends packets to a different
+
+91
+00:07:19,825 --> 00:07:25,225
+external IP address and port like let's
+say, even the same port and the IP address
+
+92
+00:07:25,225 --> 00:07:29,439
+differs in one bit.
+So it's also sending packets to S prime of
+
+93
+00:07:29,439 --> 00:07:34,312
+18.181.0.32 port 3311, the NAT sets
+up a completely different mapping.
+
+94
+00:07:34,312 --> 00:07:39,548
+So, even though.
+This port address pair is the same for
+
+95
+00:07:39,548 --> 00:07:45,121
+both of these streams of packets.
+The fact that the, that the
+
+96
+00:07:45,121 --> 00:07:52,522
+destination port address pair is different
+means the NAT sets of a separate mapping,
+
+97
+00:07:52,522 --> 00:08:02,230
+port 6641 and port 9821.
+So different destinations receive
+
+98
+00:08:05,680 --> 00:08:15,996
+different mappings .
+So, turns out that and this is just to
+
+99
+00:08:15,996 --> 00:08:20,622
+give you one concrete example in ways in
+which NATs can really disrupt
+
+100
+00:08:20,622 --> 00:08:24,270
+applications.
+So, let's pretend, that Host A is sending
+
+101
+00:08:24,270 --> 00:08:29,612
+UDP traffic and this UDP traffic is for
+massively multiplayer online game.
+
+102
+00:08:29,612 --> 00:08:34,889
+This is, this is a true story, a friend of
+mine that is working on the service for
+
+103
+00:08:34,889 --> 00:08:39,189
+this, when this happened.
+It's back in the late 90's and he made an
+
+104
+00:08:39,188 --> 00:08:43,301
+angry call to Linux, NAT developers.
+And so the issue is that this massively
+
+105
+00:08:43,302 --> 00:08:46,921
+multiplayer game runs on many servers, and
+there's times when, you know, somebody
+
+106
+00:08:46,921 --> 00:08:50,310
+runs from one island to another, or
+wherever, and they need to change which
+
+107
+00:08:50,310 --> 00:08:52,876
+server they're on.
+And so what the system would do is it
+
+108
+00:08:52,876 --> 00:08:54,504
+would tell.
+The, the client.
+
+109
+00:08:54,504 --> 00:08:57,877
+Oh, okay.
+Hey, you've been talking to, server
+
+110
+00:08:57,877 --> 00:09:01,774
+18.181.0.31.
+You should start talking to server S prime
+
+111
+00:09:01,774 --> 00:09:05,822
+18.181.0.32.
+On this port, even the same port.
+
+112
+00:09:05,822 --> 00:09:09,120
+Doesn't matter.
+Like here, I say, port 3311.
+
+113
+00:09:09,120 --> 00:09:14,666
+On both of them, I'm going to port 3311.
+So hey, please start trans-, talking on
+
+114
+00:09:14,666 --> 00:09:19,609
+this other, to this other host.
+And the issue is, that the NAT, this
+
+115
+00:09:19,609 --> 00:09:25,535
+symmetric NAT, would create a new mapping.
+And so S was seeing the client coming from
+
+116
+00:09:25,535 --> 00:09:29,980
+port 6641, but now, suddenly the client is
+coming from port 9821.
+
+117
+00:09:29,980 --> 00:09:33,866
+There is no way for the system back here
+to know that because the NAT just sets
+
+118
+00:09:33,866 --> 00:09:37,801
+this up and it can arbitrarily decide, so
+the connection, when it breaks, the biz-,
+
+119
+00:09:37,801 --> 00:09:40,704
+observed behavior with the, 'cause there
+was a symmetric NAT.
+
+120
+00:09:40,704 --> 00:09:44,688
+Then whenever someone would try to migrate
+from one server to another, they would
+
+121
+00:09:44,688 --> 00:09:47,576
+disconnect.
+Here's an example, by adding the smarts
+
+122
+00:09:47,576 --> 00:09:50,492
+into the network.
+Suddenly you're seeing a behavior
+
+123
+00:09:50,492 --> 00:09:54,556
+different from the simple, you know,
+strong end-to-end argument.
+
+124
+00:09:54,556 --> 00:09:59,288
+And there's this added behavior, which is
+really hard to manage and really hard to
+
+125
+00:09:59,288 --> 00:10:03,852
+take into consideraion because there's no
+way, really, for S prime to know that port
+
+126
+00:10:03,852 --> 00:10:06,970
+9821 is the port that A is going to start
+communicating on.
+
+127
+00:10:06,970 --> 00:10:11,162
+So this is just the most basic overview of
+some ways in which NATs can differ in
+
+128
+00:10:11,162 --> 00:10:13,698
+their behavior.
+It turns out that there is many more
+
+129
+00:10:13,698 --> 00:10:16,699
+complications, all kinds of different
+things NATs could do.
+
+130
+00:10:16,855 --> 00:10:20,995
+And that RFC I mentioned earlier in fact
+goes through all the really diverse
+
+131
+00:10:20,995 --> 00:10:24,773
+behaviors you saw when NATs first became
+popular, before there was really
+
+132
+00:10:24,773 --> 00:10:28,652
+standardization of what should happen.
+There's all kinds of things like static
+
+133
+00:10:28,652 --> 00:10:32,287
+mapping, as you can tell the NAT, Hey,
+just set up this static mapping between
+
+134
+00:10:32,287 --> 00:10:35,932
+the external host, IP port pair.
+My external IP address and port into an
+
+135
+00:10:35,932 --> 00:10:38,496
+internal one.
+This is say, if you have a web server
+
+136
+00:10:38,496 --> 00:10:41,362
+behind or not.
+You can tell hey, anything that comes to
+
+137
+00:10:41,362 --> 00:10:45,284
+port 80 forward to this server on port 80. If you
+have things like triggers, if you see
+
+138
+00:10:45,284 --> 00:10:49,105
+packets going out in one direction, then
+also set up this additional mapping.
+
+139
+00:10:49,105 --> 00:10:53,329
+This was really useful in some of the
+early days of first person shooters online
+
+140
+00:10:53,329 --> 00:10:55,843
+games where, again, they had to build NATs
+in miond.
+
+141
+00:10:55,843 --> 00:10:59,815
+There was really diverse NAT behavior.
+There's all kinds of more complex things
+
+142
+00:10:59,815 --> 00:11:03,837
+that happen but as it turns out, because
+of all of the headaches and messes that
+
+143
+00:11:03,837 --> 00:11:07,689
+NATs are creating applications, the IETF,
+went and came up with a bunch of
+
+144
+00:11:07,689 --> 00:11:10,694
+recommendations as to how NAT should
+behave.
+
+145
+00:11:10,694 --> 00:11:16,568
+So the general behavioral recommendations
+specified in RFC5382 for TCP, and RFC4787
+
+146
+00:11:16,568 --> 00:11:19,492
+for UDP.
+So, just to give you one example of kind
+
+147
+00:11:19,492 --> 00:11:24,010
+of, some of the weird edge cases that a
+NAT can consider, and some of the things
+
+148
+00:11:24,010 --> 00:11:27,270
+that are specified here, I'm going to talk
+about hairpinning.
+
+149
+00:11:27,270 --> 00:11:31,960
+Which is this process of what happens when
+you have a node that's behind your NAT.
+
+150
+00:11:31,960 --> 00:11:38,259
+And it sends a packet to one of the
+external interface port pairs that the NAT
+
+151
+00:11:38,259 --> 00:11:39,958
+has.
+One of its mappings.
+
+152
+00:11:39,958 --> 00:11:46,754
+So, basically, I have a node that's behind
+the NAT and it's trying to traverse one of
+
+153
+00:11:46,754 --> 00:11:49,939
+the nat's mappings.
+So, here's the, the example.
+
+154
+00:11:49,939 --> 00:11:54,965
+I have this NAT, 128.34.22.8.
+And I've host A and B that are behind the
+
+155
+00:11:54,965 --> 00:11:58,080
+NAT.
+And, they are both connected to a switch.
+
+156
+00:11:58,540 --> 00:12:02,573
+Alright.
+So A has port has address 10.0.0.101, B
+
+157
+00:12:02,573 --> 00:12:07,090
+has 10.0.0.99.
+Now, let's say we're doing some kind of IP
+
+158
+00:12:07,090 --> 00:12:14,108
+telephony which is coming from port, this
+is a UDP traffic so it's port 4512 on host
+
+159
+00:12:14,108 --> 00:12:16,413
+A.
+So it's using port 4512.
+
+160
+00:12:16,413 --> 00:12:20,880
+And this is translated to port 6641 on the
+NAT.
+
+161
+00:12:20,880 --> 00:12:28,822
+The question is what happens when B tries
+to send traffic to 128.34.22.8 port 6641.
+
+162
+00:12:28,822 --> 00:12:34,313
+Basic question is.
+So, the packet is going to arrive at the NAT
+
+163
+00:12:34,313 --> 00:12:41,667
+and the NAT is going to translate it.
+It's going to translate this, assuming
+
+164
+00:12:41,667 --> 00:12:48,629
+that it is a full-cone NAT
+It's going to translate this to 10.0.0.101
+
+165
+00:12:48,629 --> 00:12:52,499
+port 4512.
+One question you can ask is that, while
+
+166
+00:12:52,499 --> 00:12:58,575
+it's going to translate the destination IP
+address and port, what should it do to the
+
+167
+00:12:58,575 --> 00:13:03,021
+source IP address and port?
+Should it translate that as well?
+
+168
+00:13:03,021 --> 00:13:08,652
+That is, should this packet arrive at A
+seemingly coming from 128.34.22.8, or
+
+169
+00:13:08,652 --> 00:13:12,580
+should this packet arrive at A coming from
+10.0.0.99?
+
+170
+00:13:15,520 --> 00:13:21,509
+Well, so let's walk through what happens
+if the NAT doesn't translate the source
+
+171
+00:13:21,509 --> 00:13:25,925
+address and port.
+So this packet will go through the switch,
+
+172
+00:13:25,925 --> 00:13:32,064
+it'll go to the NAT, the NAT will rewrite
+it to be going to 10.0.0.101:4512, and
+
+173
+00:13:32,064 --> 00:13:38,278
+so what A will see is a packet with source
+10.0.0.99, let's just say port X, doesn't
+
+174
+00:13:38,278 --> 00:13:42,395
+really matter destination 10.0.0.101, port
+4512.
+
+175
+00:13:42,395 --> 00:13:48,310
+And let's say it likes this packet, it
+wants to respond, and it sends a response.
+
+176
+00:13:48,310 --> 00:13:50,884
+That packet is never going to reach the
+NAT.
+
+177
+00:13:50,884 --> 00:13:57,202
+It's going to possibly just go directly
+through the switch and because it doesn't
+
+178
+00:13:57,202 --> 00:14:01,554
+go through the NAT it's not going to be
+translated.
+
+179
+00:14:01,554 --> 00:14:07,868
+So B, is going to send a packet to
+128.34.22.8 port 6641 and we'll see in
+
+180
+00:14:07,868 --> 00:14:13,354
+response, a packet from, 10.0.0.101.
+4512, so this break, this is not
+
+181
+00:14:13,354 --> 00:14:18,048
+what you want to do.
+Instead, when this packet goes up to the
+
+182
+00:14:18,048 --> 00:14:23,669
+NAT, the NAT needs to translate it.
+So it comes in as a packet from, so
+
+183
+00:14:23,669 --> 00:14:29,760
+source.
+10.0.0.99 for X destination 128.34.22.8:6641
+
+184
+00:14:29,760 --> 00:14:39,880
+needs to be
+rewritten to be source 128.34.22.8 with
+
+185
+00:14:39,880 --> 00:14:46,320
+some port, let's just call it X prime.
+Destination.
+
+186
+00:14:46,320 --> 00:14:49,693
+10.0.0.101, port 4512.
+And by so doing then, because now, the
+
+187
+00:14:49,693 --> 00:14:54,580
+source is coming from the NAT when A sends
+a response, it will go back up to the NAT
+
+188
+00:14:54,580 --> 00:14:58,012
+where the NAT can re-translate it and
+forward it back to B.
+
+189
+00:14:58,012 --> 00:15:02,840
+So it's called hair-pinning through the
+model because you have to actually go back
+
+190
+00:15:02,840 --> 00:15:07,203
+through this device, sort of like a
+hairpin, it comes back from telephony
+
+191
+00:15:07,203 --> 00:15:10,984
+networks, as the terminology.
+And so here's this example of a very
+
+192
+00:15:10,984 --> 00:15:15,812
+specific behavior the NAT has to have, and
+if it doesn't, then this little edge case
+
+193
+00:15:15,812 --> 00:15:19,710
+where B ends up sending a packet to A
+based on an external mapping.
+
+194
+00:15:19,710 --> 00:15:24,126
+If you don't do this, it will break.
+So this is just one of the many tricky
+
+195
+00:15:24,126 --> 00:15:28,423
+edge cases that NAT introduce, NATs
+introduce, and which are specified in
+
+196
+00:15:28,423 --> 00:15:29,080
+these RFCs.
+

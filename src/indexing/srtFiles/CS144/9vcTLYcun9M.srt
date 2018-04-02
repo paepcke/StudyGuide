@@ -1,0 +1,1469 @@
+1
+00:00:00,000 --> 00:00:05,000
+So, in this video, Nick and I are going
+to present the end-to-end principle in
+
+2
+00:00:05,000 --> 00:00:08,214
+network design.
+So, if we look at how a network
+
+3
+00:00:08,214 --> 00:00:13,038
+application sees the world,
+it sees something like this.
+
+4
+00:00:13,038 --> 00:00:19,049
+There's one computer running the
+application, some other computer running
+
+5
+00:00:19,049 --> 00:00:23,076
+the application.
+And then, in the middle, there's the
+
+6
+00:00:23,076 --> 00:00:27,085
+internet.
+And, it's abstraction of the internet is
+
+7
+00:00:27,086 --> 00:00:34,006
+that it can send packets, each node A and
+B can send packets address to each other.
+
+8
+00:00:34,006 --> 00:00:38,082
+And, the internet somehow magically
+delivers them from one end to the other
+
+9
+00:00:38,082 --> 00:00:41,104
+end.
+And, all it does, this is all the internet
+
+10
+00:00:41,104 --> 00:00:44,398
+really does, it just forwards these
+packets along.
+
+11
+00:00:44,398 --> 00:00:48,465
+So, you can ask the question, why doesn't
+the internet do more than that?
+
+12
+00:00:48,465 --> 00:00:50,470
+Why doesn't the internet help these
+applications?
+
+13
+00:00:50,470 --> 00:00:53,599
+You know, they're just sending packets but
+maybe it's a simple application and maybe
+
+14
+00:00:53,599 --> 00:00:57,384
+it could do something much better and the
+network could help it do something much
+
+15
+00:00:57,384 --> 00:01:00,804
+better such as, the network could
+automatically compress data reducing the
+
+16
+00:01:00,804 --> 00:01:04,642
+capacity needed and therefore increasing the throughout of the application.
+
+17
+00:01:04,641 --> 00:01:08,456
+It could reformat, or translate, or
+improve requests, if it realizes that you
+
+18
+00:01:08,456 --> 00:01:12,038
+are requesting an HTML document in an
+inefficient way, it could reformat the
+
+19
+00:01:12,038 --> 00:01:14,642
+request for you, so that you get a better
+response.
+
+20
+00:01:14,642 --> 00:01:19,436
+Rather than give you that data from the
+other computers if it has a cache closer
+
+21
+00:01:19,436 --> 00:01:22,025
+to you, it could just give you the cache
+data.
+
+22
+00:01:22,042 --> 00:01:25,932
+It can add security, this will be really
+useful, for running an application which
+
+23
+00:01:25,932 --> 00:01:28,293
+is insecure, then it could automatically
+add securities.
+
+24
+00:01:28,293 --> 00:01:31,759
+There's confidentiality and integrity, so
+people can't eavesdrop on what you're
+
+25
+00:01:31,759 --> 00:01:34,192
+doing.
+There's all kinds of things that network
+
+26
+00:01:34,192 --> 00:01:38,433
+could possibly do to help you, right?
+So, you could just send simple packets and
+
+27
+00:01:38,433 --> 00:01:42,775
+the network does the smart things to make
+your application work better.
+
+28
+00:01:42,775 --> 00:01:46,378
+So, why doesn't it?
+Or, why do we have this model, the
+
+29
+00:01:46,378 --> 00:01:50,063
+internet just forwarding packets?
+>> So a, a, an early guiding principle for
+
+30
+00:01:50,063 --> 00:01:55,015
+the for, for the inventors and the early
+pioneers of the internet was to try and
+
+31
+00:01:55,015 --> 00:01:57,146
+create a network that was dumb and
+minimal.
+
+32
+00:01:57,146 --> 00:02:01,196
+And that it would do the least that it
+possibly needed to do, and then pushes
+
+33
+00:02:01,196 --> 00:02:05,806
+much of the functionality and the
+intelligence to the edges that's close to
+
+34
+00:02:05,806 --> 00:02:10,004
+the application as possible.
+And this is widely referred to as the
+
+35
+00:02:10,003 --> 00:02:12,819
+end-to-end principle.
+It's actually around, been around for, for
+
+36
+00:02:12,819 --> 00:02:16,444
+many years before the internet.
+But, when the internet came along, this
+
+37
+00:02:16,444 --> 00:02:21,009
+was the, the biggest application or the
+biggest use of this principle.
+
+38
+00:02:21,009 --> 00:02:26,049
+And so has become very widely used as a
+defining principle in many computer
+
+39
+00:02:26,049 --> 00:02:29,604
+systems since.
+>> And so, while this principle existed
+
+40
+00:02:29,604 --> 00:02:33,624
+for a long time before the internet, it
+was really sort of, written down and
+
+41
+00:02:33,624 --> 00:02:38,295
+codified in this very seminal paper by
+Saltzer, , Reed, and Clarke called
+
+42
+00:02:38,295 --> 00:02:42,063
+End-to-End Arguments in System Design.
+It was published in 1984.
+
+43
+00:02:42,063 --> 00:02:47,008
+This is the intent principle.
+The function in question can be completely
+
+44
+00:02:47,008 --> 00:02:51,090
+and correctly implemented only with the
+knowledge and help of the application
+
+45
+00:02:51,090 --> 00:02:55,024
+standing at the endpoints of the
+communication system.
+
+46
+00:02:55,024 --> 00:02:59,379
+And so, the, the idea is that, if I have
+some piece of application logic or some
+
+47
+00:02:59,379 --> 00:03:03,010
+application function, well, the network
+can possibly help.
+
+48
+00:03:03,010 --> 00:03:07,035
+Ultimately, the endpoints of that
+communication have to be responsible of
+
+49
+00:03:07,035 --> 00:03:11,044
+making sure it works correctly.
+And so, the communication system itself
+
+50
+00:03:11,044 --> 00:03:16,664
+providing, providing that questioned
+function as a feature of the communication
+
+51
+00:03:16,664 --> 00:03:20,246
+system itself is not possible.
+So, sometimes the communication layer of
+
+52
+00:03:20,246 --> 00:03:23,713
+the internet could, could help you.
+Could improve performance.
+
+53
+00:03:23,713 --> 00:03:28,235
+But, ultimately, it has to be up to the
+endpoints to ensure correctness.
+
+54
+00:03:28,235 --> 00:03:31,958
+They call this line of reasoning the end
+to end argument.
+
+55
+00:03:31,958 --> 00:03:36,251
+But, if you want to accomplish some
+application goal, ultimately, that goal
+
+56
+00:03:36,251 --> 00:03:40,745
+must be implemented end-to-end.
+Something in the middle might help you
+
+57
+00:03:40,745 --> 00:03:43,105
+out, but you can't assume that that will be
+there.
+
+58
+00:03:43,105 --> 00:03:48,247
+You can't assume that will be correct, and
+you must have the correctness implemented
+
+59
+00:03:48,247 --> 00:03:51,159
+end-to-end.
+>> So, lets take a look at certain
+
+60
+00:03:51,159 --> 00:03:55,579
+examples of where the end-to-end principle
+comes to, to, to, to help us.
+
+61
+00:03:55,579 --> 00:03:58,775
+So, the most classic example is file
+transfer.
+
+62
+00:03:58,775 --> 00:04:05,113
+File transfer where we are taking a file
+from one computer and delivering it intact
+
+63
+00:04:05,113 --> 00:04:08,748
+correctly in correct order and, to, to the
+other end.
+
+64
+00:04:08,748 --> 00:04:14,385
+So, what we would hope of the entire
+end-to-end connection is that file would
+
+65
+00:04:14,385 --> 00:04:20,562
+be delivered correctly such that every
+byte of one end is correctly delivered to
+
+66
+00:04:20,562 --> 00:04:24,538
+the other end in order.
+Such that if any are lost in transit, that
+
+67
+00:04:24,538 --> 00:04:29,652
+they will be re-transmitted so that we can
+be sure that they eventually correct,
+
+68
+00:04:29,652 --> 00:04:32,827
+eventually get them.
+Now, the network, the intervening network
+
+69
+00:04:32,827 --> 00:04:37,217
+could make sure that the file is
+transferred to some intermediate point.
+
+70
+00:04:37,217 --> 00:04:42,058
+And then, from that intermediate path,
+stored and forwarded along the path.
+
+71
+00:04:42,058 --> 00:04:46,033
+Or, on every link along the way, it could
+make sure that if there is data that's
+
+72
+00:04:46,033 --> 00:04:51,675
+dropped, it could retransmit that data.
+What the, the end-to-end argument says is,
+
+73
+00:04:51,675 --> 00:04:57,296
+even if the intervening network is trying
+to do that, the only way to ensure that
+
+74
+00:04:57,296 --> 00:05:02,215
+end-to-end, that the data is delivered
+correctly and in order is for the
+
+75
+00:05:02,215 --> 00:05:06,168
+end-to-end to be responsible for it.
+And, have the means to both check it and
+
+76
+00:05:06,168 --> 00:05:11,333
+that any missed data is filled in and the
+out of sequence data is put back into the
+
+77
+00:05:11,333 --> 00:05:15,002
+correct order.
+>> So, the original paper actually went
+
+78
+00:05:15,002 --> 00:05:19,068
+into a specific example that the authors
+encountered with the Multics operating
+
+79
+00:05:19,068 --> 00:05:24,051
+system which is the predecessor of UNIX.
+Where they had a file transfer protocol
+
+80
+00:05:24,073 --> 00:05:30,042
+which assumed on each hop that had
+re-transmissions, that had re-assembly such
+
+81
+00:05:30,042 --> 00:05:36,031
+that if I wanted to get the file from A to
+B, and it's traversing these intermediate
+
+82
+00:05:36,031 --> 00:05:41,086
+nodes C and D, these nodes would be
+responsible for the reliability along each
+
+83
+00:05:41,086 --> 00:05:45,018
+link.
+And the problem that occurred was that
+
+84
+00:05:45,018 --> 00:05:49,006
+there was some faulty memory in one of
+these nodes.
+
+85
+00:05:49,006 --> 00:05:53,831
+And so, the packets of data were
+transmitted, say, from A to C they were
+
+86
+00:05:53,831 --> 00:05:58,671
+transmitted correctly.
+But then, while in C's memory, C corrupted
+
+87
+00:05:58,671 --> 00:06:01,405
+them.
+And then C forwarded them along these
+
+88
+00:06:01,405 --> 00:06:05,958
+corrupted pieces of data and then
+eventually, when the data arrived at B, it
+
+89
+00:06:05,958 --> 00:06:09,550
+had been corrupted.
+So, the file was corrupted and they lost a
+
+90
+00:06:09,550 --> 00:06:13,576
+great deal of a big chunk of Multics source
+code because of this.
+
+91
+00:06:13,576 --> 00:06:18,365
+And so the argument, the end-to-end
+argument says that, while the fact that
+
+92
+00:06:18,365 --> 00:06:23,323
+the A to C link was doing retransmissions,
+and doing reassembly, and able to then
+
+93
+00:06:23,323 --> 00:06:29,422
+ensure this reliable transfer from A to C,
+the actual transfer from a to b requires
+
+94
+00:06:29,422 --> 00:06:33,503
+an end-to-end check.
+That is, when b receives the data, it
+
+95
+00:06:33,503 --> 00:06:39,621
+should somehow verify with A that the data
+it received is actually the data that A
+
+96
+00:06:39,621 --> 00:06:41,887
+sent.
+The network can help by doing
+
+97
+00:06:41,887 --> 00:06:47,002
+retransmissions in the middle, etc., but
+that help does not obviate A and B from
+
+98
+00:06:47,002 --> 00:06:52,471
+doing the end-to-end check for correctness
+because there can be errors within the
+
+99
+00:06:52,471 --> 00:06:56,610
+network.
+And so, another example of this and this
+
+100
+00:06:56,610 --> 00:07:01,182
+relates to the Multics example is link
+reliability.
+
+101
+00:07:01,182 --> 00:07:08,471
+So, if I have a, a set of nodes say, along
+a route, And so, here I have four nodes,
+
+102
+00:07:08,471 --> 00:07:14,029
+A, B, C, and D, and I want to ensure
+perfect reliability from A to D.
+
+103
+00:07:14,029 --> 00:07:21,030
+One question you can ask is that, will
+every packet that A sends will arrive at
+
+104
+00:07:21,030 --> 00:07:24,015
+D?
+On one approach is that, you could just
+
+105
+00:07:24,015 --> 00:07:28,607
+have each link be perfectly reliable.
+Such that when A sends a packet to B, B
+
+106
+00:07:28,607 --> 00:07:33,033
+either sends an acknowledgement.
+If A doesn't hear acknowledgement it'll
+
+107
+00:07:33,033 --> 00:07:38,029
+retransmit, such that along each link
+you'll have perfectly reliable transfer,
+
+108
+00:07:38,029 --> 00:07:41,026
+and same with B will do to C, and C will
+do to D.
+
+109
+00:07:41,026 --> 00:07:43,056
+So now, each link has 100 percent
+reliability.
+
+110
+00:07:43,074 --> 00:07:47,520
+And you could say, well, since each link
+is reliable, the overall route is
+
+111
+00:07:47,520 --> 00:07:51,195
+reliable.
+And so, we don't need for A to check with
+
+112
+00:07:51,195 --> 00:07:57,435
+D, whether it received all of the data.
+But, so what happens if A sends data to B,
+
+113
+00:07:57,435 --> 00:08:02,832
+B receives it, B acknowledges it.
+And then, B crashes and that data is lost
+
+114
+00:08:02,832 --> 00:08:07,206
+out of its memory.
+This link was perfectly reliable that the
+
+115
+00:08:07,206 --> 00:08:11,425
+data was delivered to B.
+But then, B lost it up above the link
+
+116
+00:08:11,425 --> 00:08:16,906
+layer, up above this communication layer.
+And now, suddenly not all data would be
+
+117
+00:08:16,906 --> 00:08:20,480
+delivered to D.
+And so the end-to-end principle in this
+
+118
+00:08:20,480 --> 00:08:25,777
+setup is that A needs an end-to-end check
+that the data actually arrives at D.
+
+119
+00:08:25,777 --> 00:08:31,326
+>> And so, you can take this example and,
+and use it then to think about how the
+
+120
+00:08:31,326 --> 00:08:35,551
+overall system is designed.
+One could imagine the way in which each
+
+121
+00:08:35,551 --> 00:08:40,338
+link, or a system in which each link was
+providing that, that retransmission.
+
+122
+00:08:40,337 --> 00:08:43,258
+And then, you did the end-to-end check as
+well.
+
+123
+00:08:43,259 --> 00:08:47,593
+It then begs the question of, if you're
+going to do the end-to-end check, should
+
+124
+00:08:47,593 --> 00:08:51,901
+you actually put in the checks and the
+re-transmission on each link along the
+
+125
+00:08:51,901 --> 00:08:54,652
+way?
+And that's a design choice when the system
+
+126
+00:08:54,652 --> 00:08:58,622
+is being, is being built.
+And, the basic thinking and the, the idea
+
+127
+00:08:58,622 --> 00:09:04,150
+behind the end-to-end argument is not only
+do you need to do it at the ends, but if
+
+128
+00:09:04,150 --> 00:09:08,481
+you are going to put it at the ends, then
+one can draw the conclusion that you don't
+
+129
+00:09:08,481 --> 00:09:13,006
+need to put it in the middle.
+Therefore, simplifying the network that
+
+130
+00:09:13,006 --> 00:09:16,416
+interconnects the end points.
+>> And so, the original end-to-end
+
+131
+00:09:16,416 --> 00:09:21,197
+principle described in that seminal paper
+said that you have to do an end-to-end
+
+132
+00:09:21,197 --> 00:09:26,000
+check and you can put some stuff in the
+network if you want to improve things.
+
+133
+00:09:26,017 --> 00:09:30,076
+A general philosophy today in the design
+of networks is that you should avoid
+
+134
+00:09:30,076 --> 00:09:35,012
+putting things into the network.
+So, if you look at RFC 1958, this is what
+
+135
+00:09:35,012 --> 00:09:37,078
+I, I like call it the strong end-to-end
+principle.
+
+136
+00:09:37,078 --> 00:09:41,497
+It's not that you have to do an end-to-end
+check, or you have to do end-to-end
+
+137
+00:09:41,497 --> 00:09:45,587
+correctness, but rather you should also
+avoid doing things inside the network.
+
+138
+00:09:45,587 --> 00:09:50,081
+And so, RFC 1958 says, the network's job
+is to transit datagrams as efficiently and
+
+139
+00:09:50,081 --> 00:09:52,637
+flexibly as possible, flexi, flexibly as
+possible.
+
+140
+00:09:52,637 --> 00:09:55,555
+Everything else should be done at the
+fringes.
+
+141
+00:09:55,555 --> 00:09:59,790
+This argument that you, it's not that
+everything has to be done at the, the
+
+142
+00:09:59,790 --> 00:10:03,967
+fringes but in fact, the network should do
+very, very little if anything to help.
+
+143
+00:10:03,967 --> 00:10:08,448
+It should just forward datagrams.
+>> So, throughout this course, we're going
+
+144
+00:10:08,448 --> 00:10:12,942
+to see lots and lots of examples of how
+the internet works, why it was designed
+
+145
+00:10:12,942 --> 00:10:16,274
+the way that it was.
+And you're going to see that there are,
+
+146
+00:10:16,274 --> 00:10:20,638
+that there is this general guiding
+principle in the way that the internet was
+
+147
+00:10:20,638 --> 00:10:24,806
+designed to make the intervening the, the,
+the network as simple as possible.
+
+148
+00:10:24,806 --> 00:10:28,933
+However, you're probably going to find
+yourself wondering on many occasions
+
+149
+00:10:28,933 --> 00:10:31,874
+during this course.
+And, in fact, we would encourage you to,
+
+150
+00:10:31,874 --> 00:10:35,010
+to think of it this way.
+Does the network need to be doing that
+
+151
+00:10:35,010 --> 00:10:37,217
+function?
+And, it's very, it's worth thinking
+
+152
+00:10:37,217 --> 00:10:39,702
+critically about this as we, as we go
+along.
+
+153
+00:10:39,702 --> 00:10:43,050
+So, I will give you some, I will give you
+some examples.
+
+154
+00:10:43,050 --> 00:10:50,005
+There've been many proposals to introduce
+link by link encryption in which data
+
+155
+00:10:50,005 --> 00:10:56,616
+along a particular link is, is secured so
+that it can't be listened to or interfered
+
+156
+00:10:56,616 --> 00:11:02,163
+with by, by another user.
+So, an interesting question to ask is, if
+
+157
+00:11:02,163 --> 00:11:06,397
+the, if the network is doing this and then
+I still have to do this end-to-end, what
+
+158
+00:11:06,397 --> 00:11:11,035
+is the point in the network, what is the
+purpose of the network doing this?
+
+159
+00:11:11,035 --> 00:11:16,002
+And so, this creates lots of debate and
+arguments among internet designers and people
+
+160
+00:11:16,002 --> 00:11:20,025
+who are building networking equipment as
+to such a feature or function.
+
+161
+00:11:20,025 --> 00:11:24,047
+And we'll see some examples and some very
+subtle, subtle points as we go.
+
+162
+00:11:24,047 --> 00:11:28,363
+For example, there's a very common,
+there's a very common desire for the
+
+163
+00:11:28,363 --> 00:11:30,771
+network to replicate packets on our
+behalf.
+
+164
+00:11:30,771 --> 00:11:35,147
+Imagine that your watching, listening to
+a, or watching broadcast TV over the
+
+165
+00:11:35,147 --> 00:11:39,581
+network, it will be natural to suggest
+that the network replicate the packets
+
+166
+00:11:39,581 --> 00:11:43,935
+from when they're being transmitted to
+receive every, to be received by everyone
+
+167
+00:11:43,935 --> 00:11:48,038
+who is watching that, that broadcast.
+And this is a very legitimate question,
+
+168
+00:11:48,038 --> 00:11:52,541
+should the network replicate the packet?
+Or should the sender replicate the
+
+169
+00:11:52,541 --> 00:11:55,356
+packets?
+And so, this is an area of, of lots of
+
+170
+00:11:55,356 --> 00:11:58,427
+controversy and some great debate over the
+years.
+
+171
+00:11:58,427 --> 00:12:02,999
+And so, we will see that, that, that it's
+a guiding principle that is a very
+
+172
+00:12:02,999 --> 00:12:07,739
+powerful principle and has served the
+internet well and keeping it minimal,
+
+173
+00:12:07,739 --> 00:12:12,817
+simple, flexible, and streamlined.
+Although there is a constant vigilance to
+
+174
+00:12:12,817 --> 00:12:17,069
+make sure that it stays that way.
+>> So, another good example of this
+
+175
+00:12:17,069 --> 00:12:21,630
+relates to, sometimes a network provider
+has a link that is very, very limited.
+
+176
+00:12:21,630 --> 00:12:26,433
+So, they have, say, some back-haul link
+and capacity on that link is very limited.
+
+177
+00:12:26,433 --> 00:12:31,308
+And so, what they do is they want to take
+the data that's going over the link.
+
+178
+00:12:31,308 --> 00:12:36,478
+Maybe it is just HTML, so it's ASCII text.
+Ascii text is very compressible by about a
+
+179
+00:12:36,478 --> 00:12:40,546
+factor of eight to one even.
+And so, if you were to take the data and
+
+180
+00:12:40,546 --> 00:12:45,698
+go across that link and compress it, then
+suddenly you would increase the effective
+
+181
+00:12:45,698 --> 00:12:50,824
+capacity of that link, assuming it's a
+mostly, mostly HTML traffic, HTTP by a
+
+182
+00:12:50,824 --> 00:12:54,388
+factor of eight.
+Now, to do this requires looking inside
+
+183
+00:12:54,388 --> 00:12:57,006
+the packets that are going across the
+link.
+
+184
+00:12:57,006 --> 00:13:01,072
+You get in a packet that is a certain
+length or say a TCP segment, some higher
+
+185
+00:13:01,072 --> 00:13:06,039
+level protocol, you have to actually start
+peering inside these transport layer
+
+186
+00:13:06,039 --> 00:13:08,837
+segments.
+Layers above which you're supposed to be
+
+187
+00:13:08,837 --> 00:13:12,732
+concerned with at the network and start
+changing the packets.
+
+188
+00:13:12,732 --> 00:13:16,388
+And so, there are situations where
+providers do this.
+
+189
+00:13:16,388 --> 00:13:22,279
+But now, the code that they have, that
+looks at these TCP segments, that looks at
+
+190
+00:13:22,279 --> 00:13:27,712
+these transport layer chunks of data, make
+certain assumptions about the way the
+
+191
+00:13:27,712 --> 00:13:31,062
+transport layer works.
+And if you try to do something new or
+
+192
+00:13:31,062 --> 00:13:35,625
+slightly different or something which that
+code doesn't expect, then everything
+
+193
+00:13:35,625 --> 00:13:38,662
+breaks.
+So, for example, there's one researcher,
+
+194
+00:13:38,662 --> 00:13:44,127
+there's a paper just as appeared this year
+where you showed how, if you start doing
+
+195
+00:13:44,127 --> 00:13:49,033
+things which are perfectly legal under the
+TCP specification but which are not
+
+196
+00:13:49,033 --> 00:13:53,895
+commonly what existing TCP stacks do,
+these kinds of links that are rewriting
+
+197
+00:13:53,895 --> 00:13:59,014
+packets and generating new packets and
+trying to simulate a link to compress data
+
+198
+00:13:59,014 --> 00:14:01,419
+fail.
+And so, you're doing something which
+
+199
+00:14:01,419 --> 00:14:06,008
+end-to-end should just work.
+The network shouldn't be looking at your
+
+200
+00:14:06,008 --> 00:14:08,746
+TCP segments.
+But, because it does, it then causes your
+
+201
+00:14:08,746 --> 00:14:12,704
+transport stream to fail.
+>> So, up until this point, Phil and I
+
+202
+00:14:12,704 --> 00:14:18,129
+have been talking about some of the
+technical and architectural aspects of the
+
+203
+00:14:18,129 --> 00:14:22,088
+end-to-end argument.
+But, turns out there are really interesting
+
+204
+00:14:22,088 --> 00:14:27,004
+business and political aspects to this
+discussion as well.
+
+205
+00:14:27,004 --> 00:14:31,304
+The debate about net neutrality is largely
+about the following problem.
+
+206
+00:14:31,304 --> 00:14:37,077
+If you are a user at home or in an
+enterprise who is using the network and
+
+207
+00:14:37,077 --> 00:14:42,235
+you're, you're using the service or an
+application that requires data to be
+
+208
+00:14:42,235 --> 00:14:46,505
+delivered to you, for example, your
+streaming video or you're, you're on a
+
+209
+00:14:46,505 --> 00:14:50,466
+Voice Over IP communication.
+Then, the question is, should that data,
+
+210
+00:14:50,466 --> 00:14:55,650
+should that data receive better treatment
+because of the application that you're
+
+211
+00:14:55,650 --> 00:15:00,469
+using depending on what the application is
+or where it's coming from decided by
+
+212
+00:15:00,469 --> 00:15:04,760
+somebody else so that they can make a
+decision on your behalf of which data is
+
+213
+00:15:04,760 --> 00:15:08,024
+more important?
+Because if your connection to the Internet
+
+214
+00:15:08,024 --> 00:15:11,093
+is in some way constrained, it doesn't
+have a sufficient, sufficient data rate.
+
+215
+00:15:11,093 --> 00:15:16,029
+Then, it seems reasonable to think that
+you will identify some traffic as more
+
+216
+00:15:16,029 --> 00:15:19,065
+important than others.
+So, it comes from a, comes from a sense
+
+217
+00:15:19,065 --> 00:15:23,196
+that if there is a constraint and a
+bottleneck, then it makes sense to
+
+218
+00:15:23,196 --> 00:15:27,061
+differentiate that traffic.
+However, the controversy comes from who
+
+219
+00:15:27,061 --> 00:15:30,015
+gets to decide.
+Who gets to decide that some data is more
+
+220
+00:15:30,015 --> 00:15:34,350
+important than others, and that some data
+should be delivered more reliably, or more
+
+221
+00:15:34,350 --> 00:15:37,064
+quickly than others.
+And that then enters a very, very
+
+222
+00:15:37,064 --> 00:15:40,008
+complicated economic and political
+discussion.
+
+223
+00:15:40,008 --> 00:15:44,043
+Because it then gets, it gets to the point
+of, who controls that connection that we
+
+224
+00:15:44,043 --> 00:15:47,071
+have with the outside world?
+So, it then brings in all sorts of
+
+225
+00:15:47,071 --> 00:15:52,011
+questions and fears about walled gardens
+and people preventing us from doing things
+
+226
+00:15:52,011 --> 00:15:56,030
+that we want to do, and takes us right in
+to the question of censorship as well.
+
+227
+00:15:56,030 --> 00:15:59,005
+So, it's a very, very complex and
+controversial topic.
+
+228
+00:15:59,005 --> 00:16:03,068
+>> So that, the end-to-end principle might
+seem like this abstract concept about
+
+229
+00:16:03,068 --> 00:16:08,037
+how we build networks and re-transmitting
+packets, but it has very real implications
+
+230
+00:16:08,037 --> 00:16:12,077
+today with respect to the politics of the
+internet and the economics of the
+
+231
+00:16:12,077 --> 00:16:14,895
+internet.
+In fact, in some ways, net neutrality is,
+
+232
+00:16:14,895 --> 00:16:19,030
+at some level, an articulation of the
+strong end-to-end principle.
+
+233
+00:16:19,030 --> 00:16:23,081
+That the network should just dumbly
+forward packets, it should not treat
+
+234
+00:16:23,081 --> 00:16:27,520
+packets differently, it shouldn't treat
+packets from some applications different
+
+235
+00:16:27,520 --> 00:16:31,034
+than any others.
+Because the network should just be this
+
+236
+00:16:31,034 --> 00:16:34,003
+simple, basic abstraction of delivering
+packets.
+
+237
+00:16:34,003 --> 00:16:36,095
+And that's one of the arguments for net
+neutrality.
+
+238
+00:16:36,095 --> 00:16:40,010
+And so, It's really about the strong
+end-to-end principle.
+
+239
+00:16:40,010 --> 00:16:42,551
+But of course, people don't completely agree
+about this.
+
+240
+00:16:42,551 --> 00:16:47,007
+And so, there are some people who are
+strongly in favor of net neutrality.
+
+241
+00:16:47,007 --> 00:16:51,019
+So, there are two of the pioneers of the
+internet, Vint Cerf and Bob Kahn.
+
+242
+00:16:51,019 --> 00:16:54,882
+And so, Vint Cerf testifying before
+congress basically said, hey, allowing
+
+243
+00:16:54,882 --> 00:16:59,889
+these broadband carriers to control
+what people see and do online, that is
+
+244
+00:16:59,889 --> 00:17:04,929
+control their packets, make some packets
+faster or slower, it undermines the basic
+
+245
+00:17:04,929 --> 00:17:08,937
+principles of the internet.
+In contrast, you know, Bob Kahn says that
+
+246
+00:17:08,936 --> 00:17:13,560
+he's totally opposed to mandating that
+nothing interesting can happen inside the
+
+247
+00:17:13,560 --> 00:17:16,257
+network.
+And, I mean, I think there's sort of this
+
+248
+00:17:16,258 --> 00:17:18,655
+tension, right?
+About you mentioned, you're a service
+
+249
+00:17:18,655 --> 00:17:22,305
+provider, you want to make your service,
+you're a carrier and to make your service
+
+250
+00:17:22,305 --> 00:17:24,916
+better to users you want to add some
+optimizations.
+
+251
+00:17:24,915 --> 00:17:27,735
+And there's a concern.
+By so doing, you're going to prevent
+
+252
+00:17:27,736 --> 00:17:31,099
+future users or existing users from doing
+new and interesting things, right?
+
+253
+00:17:31,099 --> 00:17:35,346
+So, what actually trigger, that the event
+that really triggered the whole, the net
+
+254
+00:17:35,346 --> 00:17:39,707
+neutrality debate, here's the interesting
+example of the end-to-end principle,
+
+255
+00:17:39,707 --> 00:17:42,195
+whether the network should be smart or dumb, was when
+BitTorrent really started to take off.
+
+256
+00:17:42,195 --> 00:17:45,681
+And so, as it turns out, that the way
+Comcast, a particular service provider
+
+257
+00:17:45,681 --> 00:17:50,846
+constructed its network.
+Nodes in Comcast's network had very large
+
+258
+00:17:50,846 --> 00:17:53,655
+download capacity.
+So, here's the internet.
+
+259
+00:17:53,655 --> 00:17:57,622
+Here's the intranet.
+There was very large download capacity to
+
+260
+00:17:57,622 --> 00:18:02,746
+these nodes to your, you know, machine at
+your house, and a small upload capacity.
+
+261
+00:18:02,746 --> 00:18:07,184
+So, it was an asymmetric capacity.
+So, you could download lots of stuff from
+
+262
+00:18:07,184 --> 00:18:11,581
+the web, but web requests are small.
+But now, the things that BitTorrent, just
+
+263
+00:18:11,581 --> 00:18:15,611
+cuz of the way it works, really tries to
+get symmetric traffic.
+
+264
+00:18:15,611 --> 00:18:19,023
+So, tries to be big, big uploads and big
+downloads.
+
+265
+00:18:19,023 --> 00:18:24,067
+And so, what BitTorrent started to do was
+to completely overload these small upload
+
+266
+00:18:24,067 --> 00:18:28,061
+links in Comcast's network.
+And from Comcast's standpoint, there are a
+
+267
+00:18:28,061 --> 00:18:32,085
+couple of BitTorrent users who are using
+BitTorrent and it is making the internet
+
+268
+00:18:32,085 --> 00:18:34,893
+amazingly slow for all of their other
+users.
+
+269
+00:18:34,893 --> 00:18:39,515
+Because the other users just want to use the
+web, but suddenly their web requests take
+
+270
+00:18:39,515 --> 00:18:41,897
+seconds rather than hundreds of
+milliseconds.
+
+271
+00:18:41,897 --> 00:18:46,295
+And so, they were just seeing terrible
+performance and they're trying to satisfy
+
+272
+00:18:46,295 --> 00:18:48,673
+the desires of, you know, their 95 percent
+customers.
+
+273
+00:18:48,673 --> 00:18:53,994
+So, what Comcast did was it deployed this
+technology which would detect that there
+
+274
+00:18:53,994 --> 00:18:59,433
+was a BitTorrent connection going on, a TCP
+connection for BitTorrent and it would
+
+275
+00:18:59,433 --> 00:19:04,048
+generate what is called a reset packet.
+And when we talk about TCP, we'll talk
+
+276
+00:19:04,048 --> 00:19:08,772
+about in more detail what this is.
+But essentially, it would forge a packet
+
+277
+00:19:08,772 --> 00:19:14,009
+and tell your BitTorrent client to shut
+down the connection that the transfer is
+
+278
+00:19:14,009 --> 00:19:15,623
+done.
+And so, BitTorrent would start up, it
+
+279
+00:19:15,623 --> 00:19:20,670
+would start trying to send some data.
+And then, these devices deployed in the
+
+280
+00:19:20,670 --> 00:19:25,010
+network by Comcast would shut down the
+BitTorrent connections.
+
+281
+00:19:25,010 --> 00:19:30,085
+And, the reason this became very political
+was that this is at the same time that
+
+282
+00:19:30,085 --> 00:19:35,053
+Comcast was starting to roll out it's own
+video streaming service.
+
+283
+00:19:35,053 --> 00:19:41,042
+So, people were using BitTorrent to
+exchange movies in some cases legally, in
+
+284
+00:19:41,042 --> 00:19:45,634
+some cases probably illegally.
+And, this was then seen as, aha, you know,
+
+285
+00:19:45,634 --> 00:19:50,685
+Comcast is claiming that it is just trying
+to protect its network, but it is also not
+
+286
+00:19:50,685 --> 00:19:53,090
+allowing people to use an alternative
+service.
+
+287
+00:19:53,090 --> 00:19:57,016
+It's forcing people to use their video
+streaming service.
+
+288
+00:19:57,016 --> 00:20:01,051
+And, this is what made the debate very
+political about the conflicting, sort of,
+
+289
+00:20:01,051 --> 00:20:05,087
+the, the, you could say, a conflict of
+interest on Comcast's part etc.
+
+290
+00:20:05,087 --> 00:20:09,396
+So, since then, people have figured out
+now the IETF is working on making
+
+291
+00:20:09,396 --> 00:20:14,054
+BitTorrent not kill connections, etc.
+But, it was this point where Comcast
+
+292
+00:20:14,054 --> 00:20:19,026
+started shutting down BitTorent, BitTorent
+only, even for people who were using it
+
+293
+00:20:19,026 --> 00:20:22,830
+for perfectly valid and legal uses,
+there's questions as to whether an ISP
+
+294
+00:20:22,830 --> 00:20:28,003
+could decide you can't run this
+application.
+

@@ -1,0 +1,1058 @@
+1
+00:00:06,359 --> 00:00:09,809
+The HyperText Transfer Protocol, or HTTP,
+is a cornerstone of the
+
+2
+00:00:09,809 --> 00:00:13,929
+modern Internet. Originally intended to transfer
+documents, it’s
+
+3
+00:00:13,929 --> 00:00:16,910
+now used for so much more, such as streaming
+media from
+
+4
+00:00:16,910 --> 00:00:20,060
+companies like Netflix and applications through
+scripts that your
+
+5
+00:00:20,060 --> 00:00:23,610
+browser downloads and runs. In this segment
+I’ll explain the basic
+
+6
+00:00:23,610 --> 00:00:28,779
+conceptual model behind HTTP, something called
+representational
+
+7
+00:00:28,779 --> 00:00:35,779
+state transfer, or REST. I’ll also explain
+some of the early
+
+8
+00:00:37,930 --> 00:00:38,180
+challenges HTTP encountered in version 1.0,
+released in 1995,
+
+9
+00:00:37,969 --> 00:00:38,219
+which were fixed in version 1.1, released
+in 1997. HTTP has
+
+10
+00:00:38,010 --> 00:00:38,260
+remained mostly unchanged for fifteen years
+since. In 2009,
+
+11
+00:00:38,050 --> 00:00:38,300
+Google proposed a new protocol, called SPDY,
+spelled S P D Y,
+
+12
+00:00:38,100 --> 00:00:38,430
+which is the basis for a new HTTP/2.0 standard.
+I
+
+13
+00:00:38,430 --> 00:00:43,760
+HTTP stands for HyperText Transfer Protocol
+-- so what’s HyperText? HyperText is a document
+
+14
+00:00:43,760 --> 00:00:49,380
+format that lets you include formatting
+and content information in a document. Whenever
+
+15
+00:00:49,380 --> 00:00:53,800
+you download a web page, you’re downloading
+a hypertext document. Unlike
+
+16
+00:00:53,800 --> 00:00:59,670
+many other document formats, like Microsoft
+Word or PDF, hypertext is all ASCII text.
+
+17
+00:00:59,670 --> 00:01:03,399
+If you look at a document, there generally
+speaking aren’t any characters your regular
+
+18
+00:01:03,399 --> 00:01:09,329
+text editor can’t display.
+So let’s take as an example this excerpt
+
+19
+00:01:09,329 --> 00:01:14,290
+from the Wikipedia page on HTTP’s history.
+It has the word “History” is a larger
+
+20
+00:01:14,290 --> 00:01:18,799
+font, some
+links, shown as blue, an embedded image, and
+
+21
+00:01:18,799 --> 00:01:22,250
+a few other nice bits of formatting, such
+as the line under history, that make it easier
+
+22
+00:01:22,250 --> 00:01:26,290
+to read.
+Under the covers, the document looks like
+
+23
+00:01:26,290 --> 00:01:32,710
+this: this is the hypertext my browser downloaded
+to display this section. All of the
+
+24
+00:01:32,710 --> 00:01:39,710
+formatting information is inside angle brackets.
+This less-than, H2, greater than, for example,
+
+25
+00:01:40,170 --> 00:01:45,490
+means this is a heading, so should be
+displayed bigger. You can see the word “History”
+
+26
+00:01:45,490 --> 00:01:49,880
+outside any such formatting information -- the
+word History on this snippet is
+
+27
+00:01:49,880 --> 00:01:55,570
+displayed as a header, as you can see. So
+at a basic level, a hypertext document is
+
+28
+00:01:55,570 --> 00:01:59,939
+just a text document, which your browser
+displays based on these special formatting
+
+29
+00:01:59,939 --> 00:02:06,939
+controls, called tags. A hypertext link, for
+example, is just a formatting tag that says
+
+30
+00:02:07,840 --> 00:02:10,420
+“the
+stuff inside this tag, if clicked, should
+
+31
+00:02:10,419 --> 00:02:17,380
+load this URL.” The tag that does this is
+the A tag -- see this example here of an A
+
+32
+00:02:17,380 --> 00:02:24,380
+tag for the
+HTTP V0.9 link on line 227. When you click
+
+33
+00:02:24,459 --> 00:02:31,459
+on that link, it takes you to this URL: http://www.w3.org/pub/”
+etc.
+
+34
+00:02:45,080 --> 00:02:50,379
+But there’s one way in which a hypertext
+document is more than just formatting. With
+
+35
+00:02:50,379 --> 00:02:54,700
+hypertext, you can embed
+documents, or files, inside other files. The
+
+36
+00:02:54,700 --> 00:02:59,340
+simplest example of this on this wikipedia
+page is the image. The bits
+
+37
+00:02:59,340 --> 00:03:03,430
+of the image aren’t stored in this hypertext
+document. That wouldn’t be human readable
+
+38
+00:03:03,430 --> 00:03:08,459
+ASCII text. Instead,
+there’s a way to, in a hypertext document,
+
+39
+00:03:08,459 --> 00:03:13,430
+say “load this other document and put it
+here.” Take a look at line 220
+
+40
+00:03:13,430 --> 00:03:20,430
+-- you’ll see an image, or IMG tag. The
+IMG tag says “load the image from this URL
+
+41
+00:03:22,599 --> 00:03:26,560
+and display it here.” When
+your browser loads the hypertext for the wikipedia
+
+42
+00:03:26,560 --> 00:03:29,180
+page, it sees tags like this one and automatically
+requests the
+
+43
+00:03:29,180 --> 00:03:33,920
+files they reference. So when you load the
+page your browser automatically requests the
+
+44
+00:03:33,920 --> 00:03:39,599
+image and displays it.
+There are all kinds of resources besides images
+
+45
+00:03:39,599 --> 00:03:44,200
+that a web page can reference: other pages,
+style sheets,
+
+46
+00:03:44,200 --> 00:03:49,670
+scripts, fonts, and more. Let’s look at
+an example: I’m going to request the web
+
+47
+00:03:49,670 --> 00:03:53,030
+page for the New York Times
+and use my browser’s developer tools to
+
+48
+00:03:53,030 --> 00:03:57,900
+see all of the requests this results in. As
+you can see, it requests
+
+49
+00:03:57,900 --> 00:04:02,610
+something on the order of 20 documents, ranging
+from hypertext to images to ads.
+
+50
+00:04:02,610 --> 00:04:06,220
+This turns out to be a really important property
+of hypertext: requesting one document can
+
+51
+00:04:06,220 --> 00:04:06,599
+lead to to request
+more documents.
+
+52
+00:04:06,599 --> 00:04:12,780
+In HTTP, a client opens a TCP connection to
+a server and sends commands to it. The most
+
+53
+00:04:12,780 --> 00:04:17,340
+common
+command is GET, which requests a page. HTTP
+
+54
+00:04:17,339 --> 00:04:20,779
+was designed to be a document-centric way
+for programs
+
+55
+00:04:20,779 --> 00:04:26,749
+to communicate. For example, if I type http://www.stanford.edu/
+in my browser, the browser opens a
+
+56
+00:04:26,749 --> 00:04:31,499
+connection to the server www.stanford.edu
+and sends a GET request for the root page
+
+57
+00:04:31,499 --> 00:04:35,039
+of the site. The
+server receives the request, checks if it’s
+
+58
+00:04:35,039 --> 00:04:38,599
+valid and the user can access that page, and
+sends a response.
+
+59
+00:04:38,599 --> 00:04:43,069
+The response has a numeric code associated
+with it. For example, if the server sends
+
+60
+00:04:43,069 --> 00:04:46,619
+a 200 OK response
+to a GET, this means that the request was
+
+61
+00:04:46,619 --> 00:04:53,619
+accepted and the rest of the response has
+the document data. In
+
+62
+00:04:55,189 --> 00:05:00,119
+the example of the www.stanford.edu web page,
+a 200 OK response would include the HyperText
+
+63
+00:05:00,119 --> 00:05:03,020
+that
+describes the main Stanford page. There are
+
+64
+00:05:03,020 --> 00:05:05,180
+other kinds of requests, such as PUT, DELETE,
+and INFO, as
+
+65
+00:05:05,180 --> 00:05:12,180
+well as other responses such as 400 Bad Request.
+Like hypertext itself, HTTP is all in ASCII
+
+66
+00:05:12,599 --> 00:05:16,069
+text: it’s human readable. For example,
+the beginning of a GET
+
+67
+00:05:16,069 --> 00:05:23,069
+request for the New York Times looks like
+this: GET / HTTP/1.1. The beginning of a response
+
+68
+00:05:30,550 --> 00:05:35,969
+to a
+successful request looks like this: HTTP/1.1
+
+69
+00:05:35,969 --> 00:05:42,969
+200 OK.
+But the basic model is simple: client sends
+
+70
+00:05:44,069 --> 00:05:46,909
+a request by writing to the connection, the
+server reads the
+
+71
+00:05:46,909 --> 00:05:50,789
+request, processes it, and writes a response
+to the connection, which the client then reads.
+
+72
+00:05:50,789 --> 00:05:52,830
+The data the
+client reads might cause it to then issue
+
+73
+00:05:52,830 --> 00:05:53,469
+more GET requests.
+
+74
+00:05:53,469 --> 00:05:54,909
+If some of these documents are on other servers,
+then the web
+
+75
+00:05:54,909 --> 00:05:56,240
+browser opens connections to them and issues
+GET requests. So let’s
+
+76
+00:05:56,240 --> 00:05:56,490
+say in this case the client requests a page
+from server A. The
+
+77
+00:05:56,490 --> 00:05:56,740
+hypertext references an image which is on
+server B. The client opens
+
+78
+00:05:56,580 --> 00:05:56,830
+a connection to server B and requests the
+image. This happens pretty
+
+79
+00:05:56,580 --> 00:05:56,830
+often with ad networks. The New York Times
+page, for example, has
+
+80
+00:05:56,580 --> 00:05:56,830
+some ads from Google embedded on it. So the
+New York Times page
+
+81
+00:05:56,580 --> 00:05:56,830
+tells your browser to contact a Google server
+to load a small document
+
+82
+00:05:56,580 --> 00:05:56,830
+with some ads on it. The Google server serves
+hypertext for the ads. It
+
+83
+00:05:56,580 --> 00:05:56,830
+might also be that the New York Times serves
+its images from a
+
+84
+00:05:56,580 --> 00:05:56,830
+different machine than its hypertext, so your
+client opens a connection
+
+85
+00:05:56,580 --> 00:05:56,830
+to its image server and requests the banner
+saying “New York Times.”
+
+86
+00:05:56,580 --> 00:05:56,830
+Here’s a sample URL for requesting a web
+page. This URL has a lot of information in
+
+87
+00:05:56,580 --> 00:05:56,930
+it. The first part,
+http:// tells a program what application level
+
+88
+00:05:56,930 --> 00:05:57,619
+protocol is being used. This tells the transport
+layer what
+
+89
+00:05:57,619 --> 00:05:57,869
+TCP port to connect to. In the case of http://,
+this means your program knows to use HTTP
+
+90
+00:05:57,619 --> 00:05:57,869
+and to
+connect over TCP port 80. So this specifies
+
+91
+00:05:57,619 --> 00:05:57,869
+a transport layer identifier.
+The second part, sing.stanford.edu, tells
+
+92
+00:05:57,619 --> 00:05:57,869
+your program what computer to contact. So
+it’s a network
+
+93
+00:05:57,619 --> 00:05:57,869
+layer identifier. Combined together, http://sing.stanford.edu
+tells your browser to open a TCP
+
+94
+00:05:57,619 --> 00:05:57,869
+connection to port 80 on the computer sing.stanford.edu.
+Using something called DNS, which we’ll
+
+95
+00:05:57,619 --> 00:05:57,869
+cover later, your computer can translate sing.stanford.edu
+into an IP address.
+
+96
+00:05:57,619 --> 00:05:57,869
+The third part, fullduplex/index.html, tells
+your HTTP client what document to request.
+
+97
+00:05:57,619 --> 00:05:57,869
+While http: says
+*which* application protocol to use, fullduplex/index.html
+
+98
+00:05:57,619 --> 00:05:57,869
+provides information for that application
+protocol.
+
+99
+00:05:57,619 --> 00:05:57,869
+So together, these three parts tell my client
+“request fullduplex/index.html from the
+
+100
+00:05:57,619 --> 00:05:57,869
+IP address for
+sing.stanford.edu using HTTP by opening a
+
+101
+00:05:57,619 --> 00:05:57,869
+connection to TCP port 80.”
+
+102
+00:05:57,619 --> 00:06:00,569
+This is what an HTTP request looks like. The
+first line, ASCII text, says the method, such
+
+103
+00:06:00,569 --> 00:06:03,990
+as GET, the
+URL for the method, and the version of HTTP
+
+104
+00:06:03,990 --> 00:06:07,189
+being used. The white boxes represent spaces.
+So
+
+105
+00:06:07,189 --> 00:06:11,699
+there’s a space between method and URL as
+well as a space between URL and version. The
+
+106
+00:06:11,699 --> 00:06:14,129
+left arrow
+means carriage return -- a way to say to go
+
+107
+00:06:14,129 --> 00:06:16,339
+to the beginning of the line, and the down
+arrow means
+
+108
+00:06:16,339 --> 00:06:20,899
+newline, a way to say to go to a new line.
+So, for example, in my prior example of requesting
+
+109
+00:06:20,899 --> 00:06:26,960
+this URL,
+the method will be GET, the URL will be fullduplex/index.html,
+
+110
+00:06:26,960 --> 00:06:31,210
+and the version will be most likely HTTP/
+1.1.
+
+111
+00:06:31,210 --> 00:06:35,360
+After this first line, the request itself,
+there’s zero or more headers. There’s
+
+112
+00:06:35,360 --> 00:06:39,059
+one header per line. Each
+header line starts with the header field name,
+
+113
+00:06:39,059 --> 00:06:44,099
+followed by the value.
+After the headers, there’s an empty line.
+
+114
+00:06:44,099 --> 00:06:49,279
+Followed by the body of the message.
+Wait -- why might a request have a body? What’s
+
+115
+00:06:49,279 --> 00:06:52,740
+the body of a request? In the case of the
+GET
+
+116
+00:06:52,740 --> 00:06:59,740
+method, to request a page, the body is empty.
+But HTTP supports other methods, such as POST,
+
+117
+00:06:59,749 --> 00:07:01,770
+which
+sends data, for example when you fill out
+
+118
+00:07:01,770 --> 00:07:06,839
+a form and submit it. POST requests often
+have a body.
+
+119
+00:07:06,839 --> 00:07:11,289
+So let’s see what this looks like. I’m
+going to request http://sing.stanford.edu/
+
+120
+00:07:11,289 --> 00:07:17,179
+fullduplex/index.html. This is a web page
+some of my now-graduated Ph.D.
+
+121
+00:07:17,179 --> 00:07:20,879
+students wrote to describe some neat research
+they did in wireless networks.
+
+122
+00:07:20,879 --> 00:07:25,659
+I open up the developer tools in Firefox,
+which lets me see the requests and
+
+123
+00:07:25,659 --> 00:07:31,509
+responses. You can see there’s a GET for
+fullduplex/index.html, HTTP/1.1,
+
+124
+00:07:31,509 --> 00:07:35,419
+followed by a bunch of headers.
+One header that’s important for this request
+
+125
+00:07:35,419 --> 00:07:40,119
+is “If-Modified-Since.” This is a
+way for the client to tell the server to only
+
+126
+00:07:40,119 --> 00:07:43,809
+give it the document if it’s been
+modified since that time. If the document
+
+127
+00:07:43,809 --> 00:07:47,369
+has been modified since that
+timestamp, the server responds with a 200
+
+128
+00:07:47,369 --> 00:07:51,830
+OK with a new copy of the
+document. Otherwise it responds with a 304
+
+129
+00:07:51,830 --> 00:07:55,459
+Not Modified. This header is
+useful when your client caches pages, which
+
+130
+00:07:55,459 --> 00:07:59,020
+most web browsers do. Rather
+than transfer the same document again, the
+
+131
+00:07:59,020 --> 00:08:03,169
+client can tell the server to
+transfer it conditionally. If the server responds
+
+132
+00:08:03,169 --> 00:08:06,699
+with a 304, the client can just
+use its cached copy.
+
+133
+00:08:06,699 --> 00:08:12,009
+An HTTP response looks similar. The first
+line has the HTTP version, the status code,
+
+134
+00:08:12,009 --> 00:08:14,259
+and the
+phrase associated with that status code. Such
+
+135
+00:08:14,259 --> 00:08:17,679
+as 200 OK or 404 Not Found. There’s then
+zero or
+
+136
+00:08:17,679 --> 00:08:20,639
+more headers, a blank line, and the body of
+the response.
+
+137
+00:08:20,639 --> 00:08:26,080
+Let’s see what the response to my GET request
+looks like. It’s a 304 -- this web page
+
+138
+00:08:26,080 --> 00:08:31,789
+has not been
+modified since my browser put it in its cache.
+
+139
+00:08:31,789 --> 00:08:33,760
+Now if I clear my browser cache, and request
+the
+
+140
+00:08:33,760 --> 00:08:39,339
+page again, the request doesn’t have a Modified-Since
+header and so the response is a 200 OK.
+
+141
+00:08:39,339 --> 00:08:44,449
+The developer tools on Firefox let you see
+the request/response pair but not their actual
+
+142
+00:08:44,449 --> 00:08:47,360
+formats.
+For that, I’ll do something much simpler.
+
+143
+00:08:47,360 --> 00:08:51,209
+I’ll use the telnet program to connect to
+a web server.
+
+144
+00:08:51,209 --> 00:08:55,029
+Telnet opens a TCP connection: it writes what
+you type to the socket and prints out what
+
+145
+00:08:55,029 --> 00:08:59,769
+it reads.
+So I’ll telnet to sing.stanford.edu port
+
+146
+00:08:59,769 --> 00:09:06,769
+80 and type GET /fullduplex/index.html HTTP/1.0.
+A lot of HTML comes back. If I scroll to the
+
+147
+00:09:10,129 --> 00:09:12,959
+top, I can see the HTTP response, 200 OK,
+with a
+
+148
+00:09:12,959 --> 00:09:18,250
+bunch of headers, a newline, then the body,
+the HTML of the page. The Content-Length header
+
+149
+00:09:18,250 --> 00:09:19,509
+tells me how long the body is.
+
+150
+00:09:19,509 --> 00:09:23,690
+HTTP is a cornerstone protocol of the modern
+Internet. While it
+
+151
+00:09:23,690 --> 00:09:26,480
+was originally document-centric, designed
+to fetch pages and
+
+152
+00:09:26,480 --> 00:09:29,149
+documents, today it’s used for much more.
+A document, for
+
+153
+00:09:29,149 --> 00:09:33,350
+example, can be a script that your browser
+executes as part of an
+
+154
+00:09:33,350 --> 00:09:36,769
+application. The basic model, however, of
+requesting URLs and
+
+155
+00:09:36,769 --> 00:09:41,389
+receiving responses, still holds. One nice
+thing about HTTP is that
+
+156
+00:09:41,389 --> 00:09:44,940
+it’s human readable text. You can type an
+HTTP request and read
+
+157
+00:09:44,940 --> 00:09:48,490
+the response, as you saw me do by telnetting
+to port 80. I
+
+158
+00:09:48,490 --> 00:09:50,829
+encourage you to play around a bit, use the
+developer tools in
+
+159
+00:09:50,829 --> 00:09:53,300
+your browser to see what’s requested, and
+learn more about the
+
+160
+00:09:53,300 --> 00:09:55,269
+details of the protocol.
+
+161
+00:09:55,269 --> 00:09:59,709
+So that’s the basics of the protocol. Request,
+response. HTTP/1.0
+
+162
+00:09:59,709 --> 00:10:02,949
+was very simple. A client wanting to request
+a document opens a
+
+163
+00:10:02,949 --> 00:10:07,199
+connection. It sends a GET request. The server
+responds with a
+
+164
+00:10:07,199 --> 00:10:10,769
+status code, such as 200 OK, the document,
+and closes the
+
+165
+00:10:10,769 --> 00:10:14,579
+connection once the response is complete.
+If the client wants to
+
+166
+00:10:14,579 --> 00:10:18,579
+request a second document, it must open a
+second connection.
+
+167
+00:10:18,579 --> 00:10:21,189
+When the web was mostly text, with maybe an
+image or two, this
+
+168
+00:10:21,189 --> 00:10:24,850
+approach worked just fine. People hand-wrote
+their web pages,
+
+169
+00:10:24,850 --> 00:10:26,910
+putting in all of the formatting.
+
+170
+00:10:26,910 --> 00:10:30,139
+So let's walk through how long this takes.
+Let's make some simplifying assumptions. The
+
+171
+00:10:30,139 --> 00:10:30,389
+latency
+between the client and server is 50 milliseconds.
+
+172
+00:10:30,139 --> 00:10:30,389
+An HTTP request is a full TCP segment. A
+response is 2 full segments, so the size of
+
+173
+00:10:30,139 --> 00:10:30,389
+a small initial slow start congestion window.
+That way we
+
+174
+00:10:30,139 --> 00:10:30,389
+don't have to worry about window sizes, etc.
+The packetization delay of a full segment
+
+175
+00:10:30,139 --> 00:10:30,389
+is 10ms. So
+the packetization delay of a request is 10
+
+176
+00:10:30,139 --> 00:10:30,389
+milliseconds and a reply is 20 milliseconds.
+Let's finally
+
+177
+00:10:30,139 --> 00:10:30,389
+assume that TCP segments with no data, such
+as the three-way handshake and ACK packets,
+
+178
+00:10:30,139 --> 00:10:30,389
+have
+a packetization delay of zero. Finally, we
+
+179
+00:10:30,139 --> 00:10:30,389
+can have up to 4 open connections.
+
+180
+00:10:30,139 --> 00:10:31,250
+So let's walk through how long this takes.
+Let's make some simplifying assumptions. The
+
+181
+00:10:31,250 --> 00:10:34,860
+web server
+can respond immediately, there’s no processing
+
+182
+00:10:34,860 --> 00:10:37,439
+delay. The latency between the client and
+server is
+
+183
+00:10:37,439 --> 00:10:44,439
+50 milliseconds. An HTTP request is a full
+TCP segment. A response is 2 full segments,
+
+184
+00:10:44,689 --> 00:10:48,560
+so the size
+of a small initial slow start congestion window.
+
+185
+00:10:48,560 --> 00:10:51,300
+That way we don't have to worry about window
+sizes,
+
+186
+00:10:51,300 --> 00:10:57,689
+etc. The packetization delay of a full segment
+is 10ms. So the total packetization delay
+
+187
+00:10:57,689 --> 00:11:02,139
+of a request
+is 10 milliseconds and a reply is 20 milliseconds.
+
+188
+00:11:02,139 --> 00:11:04,889
+You can assume that the links are full duplex,
+such
+
+189
+00:11:04,889 --> 00:11:09,750
+that a node can simultaneously receive and
+transmit on the same link. This means the
+
+190
+00:11:09,750 --> 00:11:12,569
+packetization
+delay of a request does not affect the packetization
+
+191
+00:11:12,569 --> 00:11:16,019
+delay of a response. Let's finally assume
+that
+
+192
+00:11:16,019 --> 00:11:20,069
+TCP segments with no data, such as the three-way
+handshake and ACK packets, have a
+
+193
+00:11:20,069 --> 00:11:26,899
+packetization delay of zero. Finally, we can
+have up to 4 open connections.
+
+194
+00:11:26,899 --> 00:11:33,439
+Let’s consider a first case. We want to
+load a single page. How long will this take?
+
+195
+00:11:33,439 --> 00:11:40,439
+First, there’s the latency of sending a
+SYN, so 50ms. There’s the latency of the
+
+196
+00:11:40,569 --> 00:11:44,910
+SYN-ACK, so
+another 50ms. On receiving the SYN/ACK, the
+
+197
+00:11:44,910 --> 00:11:50,240
+client can send the ACK of the three way handshake,
+followed by the request. The request has a
+
+198
+00:11:50,240 --> 00:11:55,240
+packetization delay of 10ms, so this takes
+60ms. The
+
+199
+00:11:55,240 --> 00:12:00,269
+server then needs to send the response back.
+The packetization delay of the response is
+
+200
+00:12:00,269 --> 00:12:04,189
+20ms, so
+this step is 70ms.
+
+201
+00:12:04,189 --> 00:12:10,009
+So the total delay is 50 milliseconds plus
+50 milliseconds plus 60 milliseconds plus
+
+202
+00:12:10,009 --> 00:12:14,850
+70 milliseconds,
+or 230 milliseconds.
+
+203
+00:12:14,850 --> 00:12:20,749
+Let’s look at a more complex example. There’s
+a page that loads 5 images.
+
+204
+00:12:20,749 --> 00:12:25,069
+We can break this into two steps. In the first
+step, the client requests the page. In the
+
+205
+00:12:25,069 --> 00:12:29,389
+second step, it
+uses 2 connections to request the images.
+
+206
+00:12:29,389 --> 00:12:35,079
+The first step will take the same length as
+our single page example. There’s 100 millisecond
+
+207
+00:12:35,079 --> 00:12:38,019
+for the
+setup, then 130 milliseconds for the request
+
+208
+00:12:38,019 --> 00:12:42,009
+and response.
+The second step is a bit trickier. Remember,
+
+209
+00:12:42,009 --> 00:12:45,350
+while we have separate TCP connections, they
+are
+
+210
+00:12:45,350 --> 00:12:49,819
+sharing the same link. This means that the
+packetization delay of one request affects
+
+211
+00:12:49,819 --> 00:12:53,769
+the other.
+Setting up the two connections will take 100
+
+212
+00:12:53,769 --> 00:12:56,810
+milliseconds. But how long will it take for
+the two
+
+213
+00:12:56,810 --> 00:12:58,199
+request/responses to complete?
+

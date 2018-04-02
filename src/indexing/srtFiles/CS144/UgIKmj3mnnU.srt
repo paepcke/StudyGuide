@@ -1,0 +1,333 @@
+1
+00:00:01,250 --> 00:00:04,100
+In this segment, I’m going to cover one
+very important optimization
+
+2
+00:00:04,100 --> 00:00:08,889
+that occurred in HTTP/1.1, something called
+the Keep Alive
+
+3
+00:00:08,889 --> 00:00:09,730
+header.
+
+4
+00:00:09,730 --> 00:00:13,540
+HTTP is a basic request, response protocol.
+HTTP/1.0 was
+
+5
+00:00:13,540 --> 00:00:17,510
+very simple. A client wanting to request a
+document opens a
+
+6
+00:00:17,510 --> 00:00:21,210
+connection. It sends a GET request. The server
+responds
+
+7
+00:00:21,210 --> 00:00:24,560
+with a status code, such as 200 OK, the document,
+and
+
+8
+00:00:24,560 --> 00:00:28,260
+closes the connection once the response is
+complete. If the
+
+9
+00:00:28,260 --> 00:00:30,980
+client wants to request a second document,
+it must open a
+
+10
+00:00:30,980 --> 00:00:34,469
+second connection.
+When the web was mostly text, with maybe an
+
+11
+00:00:34,469 --> 00:00:38,059
+image or two,
+this approach worked just fine. People hand-wrote
+
+12
+00:00:38,059 --> 00:00:45,059
+their web
+pages, putting in all of the formatting.
+
+13
+00:00:47,010 --> 00:00:54,010
+So the approach that HTTP/1.0 uses can be
+really wasteful.
+
+14
+00:01:03,879 --> 00:01:08,360
+Clients spend a lot of time opening connections.
+Furthermore, the TCP congestion control window
+
+15
+00:01:08,360 --> 00:01:10,920
+doesn’t
+get a chance to grow, since each connection
+
+16
+00:01:10,920 --> 00:01:13,240
+has a new
+window.
+
+17
+00:01:13,240 --> 00:01:18,310
+HTTP solved this problem by adding a few headers
+to
+
+18
+00:01:18,310 --> 00:01:21,450
+requests and responses. A request can include
+a Connection
+
+19
+00:01:21,450 --> 00:01:23,650
+header, which tells the server whether it
+would like the
+
+20
+00:01:23,650 --> 00:01:27,380
+connection to be kept open after the response
+or closed.
+
+21
+00:01:27,380 --> 00:01:29,700
+The server can do whatever it wants, but the
+client can give
+
+22
+00:01:29,700 --> 00:01:33,400
+a hint. For example, if you’re requesting
+a basic text file,
+
+23
+00:01:33,400 --> 00:01:36,079
+there’s no reason to keep the connection
+open, as the text
+
+24
+00:01:36,079 --> 00:01:41,630
+file won’t reference other things to load.
+A response includes a Connection header, which
+
+25
+00:01:41,630 --> 00:01:44,549
+tells the
+client what the server decided to do. If it
+
+26
+00:01:44,549 --> 00:01:46,970
+decided to keep-
+alive the connection, then the keep-alive
+
+27
+00:01:46,970 --> 00:01:50,829
+header tells the
+client for how long. Now, the client can send
+
+28
+00:01:50,829 --> 00:01:53,790
+further
+requests on the same connection. It can also
+
+29
+00:01:53,790 --> 00:01:55,869
+open more
+connections, if it wants, but it doesn’t
+
+30
+00:01:55,869 --> 00:01:56,950
+have to.
+
+31
+00:01:56,950 --> 00:02:02,649
+So how big a deal is this? Let’s consider
+a more realistic case than before, where the
+
+32
+00:02:02,649 --> 00:02:07,909
+packetization delay is only 1 millisecond
+and the page loads 11 images. Browsers today
+
+33
+00:02:07,909 --> 00:02:10,360
+usually
+have more than 2 open connections, but they
+
+34
+00:02:10,360 --> 00:02:14,150
+also load more than 11 images, we’ll just
+keep
+
+35
+00:02:14,150 --> 00:02:18,550
+these numbers small for simplicity. We’re
+going to use the same analysis we used when
+
+36
+00:02:18,550 --> 00:02:21,620
+looking
+at HTTP/1.0 in the HTTP/1.0 video.
+
+37
+00:02:21,620 --> 00:02:28,170
+The slow start window is big enough so we
+will never hit congestion control.
+
+38
+00:02:28,170 --> 00:02:35,170
+For HTTP/1.0, this will take 1,421 milliseconds.
+There are seven rounds. In the first round,
+
+39
+00:02:35,280 --> 00:02:39,010
+we
+request a page. This takes 203 milliseconds.
+
+40
+00:02:39,010 --> 00:02:44,069
+In the next 6 rounds, we request 2 images
+each. Except for the last round, where we
+
+41
+00:02:44,069 --> 00:02:48,900
+only download one image.
+Each round takes 203 milliseconds. So the
+
+42
+00:02:48,900 --> 00:02:54,970
+total time is 203 milliseconds plus 1218 milliseconds,
+for 1.421 seconds.
+
+43
+00:02:54,970 --> 00:03:01,970
+For HTTP/1.1, this will take 326 milliseconds!
+We setup the connection, that takes 100
+
+44
+00:03:06,610 --> 00:03:12,739
+milliseconds. Requesting the page takes another
+103 milliseconds. Requesting the 11 images,
+
+45
+00:03:12,739 --> 00:03:19,739
+however, only takes 123 milliseconds! That’s
+51 milliseconds for the first request, and
+
+46
+00:03:19,930 --> 00:03:24,170
+72
+milliseconds for the 11 responses, 50 milliseconds
+
+47
+00:03:24,170 --> 00:03:31,170
+of latency plus 22 milliseconds of
+packetization delay. It’s over four times
+
+48
+00:03:32,099 --> 00:03:35,450
+faster, because we can send these requests
+back-to-
+
+49
+00:03:35,450 --> 00:03:40,260
+back in a single connection and don’t have
+to open new connections.
+
+50
+00:03:40,260 --> 00:03:47,260
+HTTP/1.1 has been around for a while, since
+1997 or so. Very recently, Google has developed
+
+51
+00:03:49,599 --> 00:03:54,480
+a new protocol, called SPDY,
+that improves on HTTP. It does things like
+
+52
+00:03:54,480 --> 00:04:00,599
+allow request pipelining. One issue HTTP sometimes
+runs into is that the order in
+
+53
+00:04:00,599 --> 00:04:06,689
+which a client requests resources is the same
+that the server responds. This can be a problem
+
+54
+00:04:06,689 --> 00:04:11,549
+if some resources require a lot
+of processing. Say you have a dynamically
+
+55
+00:04:11,549 --> 00:04:15,860
+generated web page through something like
+Ruby on Rails or Django. Your
+
+56
+00:04:15,860 --> 00:04:22,860
+database is overloaded, so it takes a while
+to generate the page. But most of the resources
+
+57
+00:04:23,300 --> 00:04:27,780
+are just images that can be send
+quickly. If the client requested the slow
+
+58
+00:04:27,780 --> 00:04:33,300
+page first, it won’t receive any of the
+images until after it receives the page. It
+
+59
+00:04:33,300 --> 00:04:35,120
+would
+be nice if the server could respond in a different
+
+60
+00:04:35,120 --> 00:04:39,389
+order, and say start sending the images while
+the page is being generated.
+
+61
+00:04:39,389 --> 00:04:45,979
+SPDY also removes redundant headers. Open
+up Wireshark and look at some HTTP requests
+
+62
+00:04:45,979 --> 00:04:49,699
+and responses. Very often,
+there’s a lot of redundant information in
+
+63
+00:04:49,699 --> 00:04:53,860
+each response and request. If you could just
+set some parameters (such as browser
+
+64
+00:04:53,860 --> 00:04:57,850
+type) for the duration of the session, rather
+than send it each time, that would speed things
+
+65
+00:04:57,850 --> 00:05:02,410
+up.
+SPDY has been in use for a while, and it’s
+
+66
+00:05:02,410 --> 00:05:07,139
+becoming the basis of HTTP/2.0. In a few years,
+I suspect most sites will be using
+
+67
+00:05:07,139 --> 00:05:11,440
+HTTP/2.0 because of the speed benefits it
+will bring, especially for mobile devices.
+

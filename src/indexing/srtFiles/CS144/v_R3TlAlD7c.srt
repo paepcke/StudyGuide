@@ -1,0 +1,1109 @@
+1
+00:00:00,000 --> 00:00:05,269
+So in this video, I'm going to talk with
+the details of how a NAT operates.
+
+2
+00:00:05,269 --> 00:00:11,107
+And that is the rules and recommendations
+that are given in terms of NAT behavior
+
+3
+00:00:11,107 --> 00:00:16,375
+for handling both incoming and outgoing
+connections, possible packets that
+
+4
+00:00:16,376 --> 00:00:21,290
+traverse, as well as how a NAT responds
+when it's not acting as a NAT.
+
+5
+00:00:21,290 --> 00:00:26,772
+Recall that a NAT, a network address
+translation box will set up mappings from
+
+6
+00:00:26,772 --> 00:00:32,326
+internal IP address port pairs for
+transport protocols to external IP address
+
+7
+00:00:32,326 --> 00:00:36,344
+port pairs.
+So here, we have a NAT whose external IP
+
+8
+00:00:36,344 --> 00:00:42,649
+address is 128.34.22.8.
+And so, that's an internal interface and
+
+9
+00:00:42,649 --> 00:00:49,502
+an external interface.
+To the external world, this NAT appears as
+
+10
+00:00:49,502 --> 00:00:53,585
+128.34.22.8,
+To the internal world, it has another IP
+
+11
+00:00:53,585 --> 00:00:55,300
+address,
+Say, 10.0.0.1.
+
+12
+00:00:55,300 --> 00:01:00,607
+Now, host A, can, by issuing, by sending a
+TCP connection open
+
+13
+00:01:00,852 --> 00:01:07,466
+SYN message to server S on port 80.
+Then that will observe that, will
+
+14
+00:01:07,466 --> 00:01:13,753
+translate host A's internal address and
+port 10.0.0.101, 4512, to the external
+
+15
+00:01:13,753 --> 00:01:19,265
+address in port 128.34.22.8.
+And it's going to assign an external port,
+
+16
+00:01:19,265 --> 00:01:23,730
+in this case 6641, for this mapping. I'll
+set up this mapping.
+
+17
+00:01:23,730 --> 00:01:30,384
+So, one question you can ask is that, if
+some arbitrary packet comes into the NAT,
+
+18
+00:01:30,384 --> 00:01:35,878
+how should the NAT respond?
+So now, if the NAT is,  starts
+
+19
+00:01:35,878 --> 00:01:43,047
+receiving TCP packets from 128.34.22.8,
+Sorry, packets to 128.34.22.8:6641, It
+
+20
+00:01:43,047 --> 00:01:46,115
+should translate them, that's what the
+mapping says.
+
+21
+00:01:46,115 --> 00:01:50,566
+Now, it might have restrictions on that
+based on whether it's  cone, port
+
+22
+00:01:50,566 --> 00:01:56,097
+restricted, et cetera.
+But generally speaking, packets which
+
+23
+00:01:56,097 --> 00:02:03,236
+match this will traverse.
+But what happens if it receives a packet
+
+24
+00:02:03,236 --> 00:02:12,747
+destined to it's external address, so,
+128.34.22.8:55127.
+
+25
+00:02:12,756 --> 00:02:17,249
+What should that do?
+Well, in the end, the NAT is itself an IP
+
+26
+00:02:17,249 --> 00:02:20,219
+device,
+And the fact that some of its ports happen
+
+27
+00:02:20,219 --> 00:02:24,761
+to result in translation is independent of
+the fact and how it would respond.
+
+28
+00:02:24,761 --> 00:02:29,536
+So imagine that there are no port mapping
+set up that, there are no internal nodes
+
+29
+00:02:29,536 --> 00:02:32,506
+to the NAT, that nobody had opened any
+connections.
+
+30
+00:02:32,506 --> 00:02:36,350
+How would the NAT respond if you tried to
+open a connection to it?
+
+31
+00:02:36,350 --> 00:02:39,246
+In this case, it responds as it always
+would.
+
+32
+00:02:39,444 --> 00:02:44,908
+So for this particular case, it might do a
+connection refuse, like a reset packet.
+
+33
+00:02:45,105 --> 00:02:50,108
+Or, you know, depending on what message,
+what packet comes in, it could send an
+
+34
+00:02:50,108 --> 00:02:53,071
+ICMP error.
+And so, generally speaking, the NAT
+
+35
+00:02:53,071 --> 00:02:58,535
+behaves like a normal IP device or an IP
+router with the exception of, when packets
+
+36
+00:02:58,535 --> 00:03:04,178
+come to the internal, the external
+interface that have a mapping or when
+
+37
+00:03:04,178 --> 00:03:09,250
+packets traverse from the internal
+interface and generate a mapping.
+
+38
+00:03:09,250 --> 00:03:14,009
+So besides that, if you imagine, if you
+had no such A or B or any node behind it,
+
+39
+00:03:14,009 --> 00:03:17,863
+then that behaved just like a normal IP,
+Inter, IP device.
+
+40
+00:03:17,863 --> 00:03:21,000
+So for example, many NATs, such as your
+home router,
+
+41
+00:03:21,000 --> 00:03:25,831
+In fact, run a web server on port 80.
+So if you have a home wireless router, it
+
+42
+00:03:25,831 --> 00:03:30,097
+runs a web server in port 80 which is what
+lets you configure it.
+
+43
+00:03:30,286 --> 00:03:33,423
+Or sometimes it's not port 80 but some
+other port.
+
+44
+00:03:33,423 --> 00:03:37,187
+But the idea that the NAT itself can
+respond to connections,
+
+45
+00:03:37,376 --> 00:03:41,893
+Whether they'd be for a web management
+interface or for other services.
+
+46
+00:03:41,893 --> 00:03:45,470
+That's a perfectly reasonable and
+allowed behavior.
+
+47
+00:03:45,470 --> 00:03:51,806
+So one question that comes up was, we have
+a NAT, is what causes you to set up these
+
+48
+00:03:51,806 --> 00:03:56,233
+mappings?
+So you can imagine in the case of UDP .
+
+49
+00:03:56,233 --> 00:04:03,151
+This is generally when a packet comes from
+the internal interface going to something
+
+50
+00:04:03,151 --> 00:04:06,574
+external.
+The NAT sets up a mapping, mapping that IP
+
+51
+00:04:06,574 --> 00:04:09,417
+address port to an external IP address
+port.
+
+52
+00:04:09,417 --> 00:04:14,520
+Of course the NAT needs to be careful
+about these allocations so that it's not
+
+53
+00:04:14,520 --> 00:04:15,780
+reusing them.
+TCP,
+
+54
+00:04:15,780 --> 00:04:20,892
+Well, if you see a TCP SYN then your node may
+set up a mapping or, you know, you could
+
+55
+00:04:20,892 --> 00:04:25,762
+even be a little more a little more con, a
+little more liberal, and say, look,
+
+56
+00:04:25,762 --> 00:04:30,453
+If we see any TCP packets coming from
+inside, then we assume there should be a
+
+57
+00:04:30,453 --> 00:04:34,962
+mapping and just set up the mapping.
+There's of course, a question, then, this
+
+58
+00:04:34,962 --> 00:04:38,029
+is how you create mappings when you tear
+them down.
+
+59
+00:04:38,029 --> 00:04:40,675
+Well, UDP, since there is no control
+sequence,
+
+60
+00:04:40,675 --> 00:04:44,977
+Generally, these are on a time out.
+The mappings are torn down on a timeout.
+
+61
+00:04:44,977 --> 00:04:49,548
+You do need to reclaim them, otherwise you
+could run out of external ports to use.
+
+62
+00:04:49,548 --> 00:04:53,723
+TCP, well, if you see a, a proper FIN,
+packets change to tear down the
+
+63
+00:04:53,723 --> 00:04:58,633
+connection, then you know that you can,
+garbage collect the conection state, the,
+
+64
+00:04:58,802 --> 00:05:01,116
+intern, the mapping, a little more
+quickly.
+
+65
+00:05:01,116 --> 00:05:05,461
+Of course, there are some edge cases here.
+You need to be sure it actually was
+
+66
+00:05:05,461 --> 00:05:08,339
+discarded.
+You want to be sure you don't enter some
+
+67
+00:05:08,339 --> 00:05:14,172
+state where it's possible to lose data.
+So turns out there are RFCs that go into
+
+68
+00:05:14,172 --> 00:05:19,308
+detail on exactly how NAT should behave
+and these behavior recommendations came
+
+69
+00:05:19,308 --> 00:05:24,654
+out after, you know, almost a decade of
+experience with these devices and how they
+
+70
+00:05:24,654 --> 00:05:27,889
+can possibly disrupt applications through
+strange behavior.
+
+71
+00:05:27,889 --> 00:05:32,549
+So there were some early documents that
+tried to, that tried to state based on you
+
+72
+00:05:32,549 --> 00:05:36,880
+know, somebody went out and actually Colin
+Jennings, went out basically to Fry's
+
+73
+00:05:36,880 --> 00:05:41,187
+Electronics and bought you know, 25
+different NAT boxes and just measured them
+
+74
+00:05:41,187 --> 00:05:44,662
+and saw what they did and they did all
+kinds of crazy things.
+
+75
+00:05:44,662 --> 00:05:49,504
+So based on that, and based on application
+behavior, the ITF came up with a pair of
+
+76
+00:05:49,504 --> 00:05:51,782
+recommendations,
+One for UDP one for TCP.
+
+77
+00:05:51,782 --> 00:05:56,339
+There's also, you know, for other, other
+behavioral recommendations on how NATs
+
+78
+00:05:56,339 --> 00:05:58,675
+should behave,
+So UPD is specified in RFC4787.
+
+79
+00:05:59,240 --> 00:06:04,811
+So here's, RFC 4787.
+As you can see, it's a best common
+
+80
+00:06:04,811 --> 00:06:09,090
+practices, number 127.
+Best current practice.
+
+81
+00:06:09,388 --> 00:06:17,547
+And so generally speaking, these documents
+have, there's stuff about terminology.
+
+82
+00:06:17,846 --> 00:06:22,721
+They have, a set of behavioral
+recommendations.
+
+83
+00:06:22,721 --> 00:06:29,122
+So,
+Here, for example is recommendation one or
+
+84
+00:06:29,122 --> 00:06:32,530
+requirement one.
+A NAT must have an end point
+
+85
+00:06:32,530 --> 00:06:36,939
+independent mapping behavior.
+So, what this means, is that if we were to
+
+86
+00:06:36,939 --> 00:06:41,410
+turn to the terminologies to describe
+NATs, what this essentially is saying in
+
+87
+00:06:41,410 --> 00:06:46,683
+terms of that classification terminology,
+if you were to read through the details of
+
+88
+00:06:46,683 --> 00:06:49,320
+the document, is that NATs cannot be
+symmetric.
+
+89
+00:06:49,320 --> 00:06:53,351
+In that, the mapping a NAT creates,
+between, for UDP, between an
+
+90
+00:06:53,351 --> 00:06:57,894
+internal IP address port, and an external
+IP address port must be independent of
+
+91
+00:06:57,894 --> 00:07:01,471
+what the end point is.
+It can't be a symmetric NAT where it
+
+92
+00:07:01,471 --> 00:07:05,105
+sets up a new mapping for every external,
+IP address and port,
+
+93
+00:07:05,105 --> 00:07:09,080
+Because of all the ways in that, that,
+that tends to break applications.
+
+94
+00:07:09,080 --> 00:07:16,419
+So here's a, a second recommendation.
+Here's a recommendation that NATs have an
+
+95
+00:07:16,419 --> 00:07:22,715
+IP address pooling behavior of paired.
+So this is for NATs that happen to
+
+96
+00:07:22,715 --> 00:07:27,710
+actually have multiple external addresses
+and the idea is, hey, if we can, then,
+
+97
+00:07:27,710 --> 00:07:32,991
+Can I, UDP packets coming from the same
+internal IP address, should appear to have
+
+98
+00:07:32,991 --> 00:07:37,770
+the same external IP address.
+So here's the third here's the third, som
+
+99
+00:07:37,770 --> 00:07:42,560
+s-, recommendation, that requirement.
+Which is, has to do with how ports are
+
+100
+00:07:42,560 --> 00:07:45,654
+assigned.
+So it turns out historically, ports zero
+
+101
+00:07:45,655 --> 00:07:50,140
+to 1023 were considered system services.
+So these were ports which only
+
+102
+00:07:50,140 --> 00:07:55,130
+administrators or super-users could bind
+to, basically the root on Unix systems.
+
+103
+00:07:55,130 --> 00:08:00,183
+So that's why you see things like HTTP,
+SMTP, they're all running on the low port
+
+104
+00:08:00,183 --> 00:08:04,541
+numbers as opposed to lots of
+applications, stuff like Bit Torrent or
+
+105
+00:08:04,541 --> 00:08:09,784
+Skype which are on high port numbers and
+that's a historical artifact but there are
+
+106
+00:08:09,784 --> 00:08:12,698
+some, sort of,
+assumptions that applications
+
+107
+00:08:12,698 --> 00:08:17,525
+have made historically, based on this.
+And so what one of this requirement says,
+
+108
+00:08:17,525 --> 00:08:20,186
+is just to kind of say, we don't break
+things.
+
+109
+00:08:20,186 --> 00:08:25,384
+That if the internal port is between zero
+and 1023, then the external port should be
+
+110
+00:08:25,384 --> 00:08:29,097
+between zero and 1023.
+And the opposite is also true, that if
+
+111
+00:08:29,097 --> 00:08:32,080
+it's not, if it's in 1024 to
+65535
+
+112
+00:08:32,089 --> 00:08:34,802
+Then the external should be between
+65535
+
+113
+00:08:36,244 --> 00:08:37,680
+So I'm not going to go through all of
+these requirements,
+
+114
+00:08:37,679 --> 00:08:41,809
+What's nice actually, as you read through
+these documents, is it really gives you a
+
+115
+00:08:41,809 --> 00:08:45,790
+sense of all of the different kinds of
+application expectations that there are.
+
+116
+00:08:45,790 --> 00:08:48,359
+What's nice is that there are these
+justifications.
+
+117
+00:08:48,359 --> 00:08:52,086
+It'll even explain, hey, there are
+applications that make these assumptions,
+
+118
+00:08:52,086 --> 00:08:56,267
+or protocols that make these assumptions.
+And therefore, the NAT needs to do this so
+
+119
+00:08:56,267 --> 00:08:59,340
+it doesn't break those applications.
+Gives you just this nice,
+
+120
+00:08:59,540 --> 00:09:04,940
+Sort of a couple of points of interesting
+protocol approaches that happen on the
+
+121
+00:09:04,940 --> 00:09:08,344
+internet.
+Now the TCP requirements are specified in
+
+122
+00:09:08,344 --> 00:09:10,815
+RFC5382.
+And so we can see the, the first,
+
+123
+00:09:11,016 --> 00:09:14,822
+requirement for TCP NAT behaviour is very
+similar to UDP.
+
+124
+00:09:14,822 --> 00:09:19,898
+This end point independent mapping.
+Symmetric NATs are really bad, they break
+
+125
+00:09:19,898 --> 00:09:23,304
+all kinds of things.
+So never build a symmetric NAT.
+
+126
+00:09:23,304 --> 00:09:28,113
+So that's requirement number one.
+But unlike UDP, TCP has connections, and
+
+127
+00:09:28,113 --> 00:09:32,587
+so, and connection set up.
+And so there are a couple of requirements
+
+128
+00:09:32,587 --> 00:09:35,860
+that come out for TCP that aren't present
+in UDP.
+
+129
+00:09:37,680 --> 00:09:41,805
+For example, and this one's kind of
+interesting, is requirement two.
+
+130
+00:09:41,805 --> 00:09:47,119
+A NAT must support all valid sequences of
+TCP packets for connections initiated both
+
+131
+00:09:47,119 --> 00:09:52,370
+internally as well as externally when the
+connection's permitted by the NAT and the
+
+132
+00:09:52,370 --> 00:09:54,995
+basic point here is this, this sub point
+A,
+
+133
+00:09:54,995 --> 00:09:58,621
+That a NAT must handle TCP simultaneous
+open.
+
+134
+00:09:58,621 --> 00:10:03,622
+So this gets back to the case we talked
+about, NAT hole-punching, where it can be
+
+135
+00:10:03,622 --> 00:10:09,350
+that two nodes behind NATs, say, A and B
+
+136
+00:10:11,013 --> 00:10:13,557
+They want to open connections to one
+another.
+
+137
+00:10:13,557 --> 00:10:18,410
+They want to open a connection through the
+NAT, so what they do is they talk to some
+
+138
+00:10:18,410 --> 00:10:23,025
+external server, and there are servers
+that, provide this abstraction, things
+
+139
+00:10:23,025 --> 00:10:28,173
+like, ICE, that allow them basically to do
+some query responses to figure out what
+
+140
+00:10:28,173 --> 00:10:32,848
+kind of NAT they're behind, and also to
+figure out what the external IP address
+
+141
+00:10:32,848 --> 00:10:36,399
+and port is associated with their local IP
+address and port.
+
+142
+00:10:36,399 --> 00:10:41,014
+So based on this, both A and B can figure
+out, given their internal address and
+
+143
+00:10:41,014 --> 00:10:43,500
+port, what's the external address and
+port.
+
+144
+00:10:43,500 --> 00:10:48,894
+They somehow exchange this information
+through a rendezvous service,
+
+145
+00:10:48,894 --> 00:10:54,845
+And then both A and B simultaneously
+try to open TCP connections to one
+
+146
+00:10:54,845 --> 00:10:58,448
+another.
+Now, it could be that, you know, these
+
+147
+00:10:58,448 --> 00:11:03,851
+connections, these connections are there
+or that this state is there.
+
+148
+00:11:03,851 --> 00:11:10,853
+But the basic point is that, it can very
+well be that, B sends a SYN which sets up
+
+149
+00:11:10,853 --> 00:11:14,887
+the state,
+And that SYN reaches A before A has set up
+
+150
+00:11:14,887 --> 00:11:20,367
+its translation state and so the SYN is not
+going to transverse.
+
+151
+00:11:20,367 --> 00:11:26,280
+However, the state now exists on B.
+So B now has a translation entry.
+
+152
+00:11:26,468 --> 00:11:32,007
+Now A then opens a connection back and its
+SYN does traverse this translation and now
+
+153
+00:11:32,007 --> 00:11:35,847
+A can open a connection on B.
+But the thing is that this is a
+
+154
+00:11:35,847 --> 00:11:38,783
+simultaneous open.
+B has sent a SYN and the SYN is
+
+155
+00:11:38,783 --> 00:11:41,658
+outstanding.
+In terms of the TCP state diagram, it's,
+
+156
+00:11:41,658 --> 00:11:45,153
+it's already sent a SYN.
+So this is the simultaneous open when A
+
+157
+00:11:45,153 --> 00:11:47,859
+and B sends SYNs to each other at the same
+time.
+
+158
+00:11:47,859 --> 00:11:52,199
+So, for peer-to-peer applications,
+where A and B want to open in connection
+
+159
+00:11:52,199 --> 00:11:56,754
+directly to one another, it's important
+that a NAT allow this kind of TCP open.
+
+160
+00:11:56,754 --> 00:12:01,146
+That it's not just that, aha, we don't
+support simultaneous open and so,
+
+161
+00:12:01,146 --> 00:12:05,965
+therefore, we're not going to allow this
+SYN to traverse because that's an
+
+162
+00:12:05,965 --> 00:12:09,198
+incoming SYN.
+That if you have a mapping, the incoming
+
+163
+00:12:09,198 --> 00:12:13,163
+SYN must be able to traverse,
+That's what here, requirement two is
+
+164
+00:12:13,163 --> 00:12:15,946
+saying.
+But even more generally, it's saying that,
+
+165
+00:12:15,946 --> 00:12:20,370
+Look, TCP has a state diagram, and that
+you're supposed to be able to traverse
+
+166
+00:12:20,370 --> 00:12:25,025
+this state diagram to open a connection
+anyway that you want and then NAT should
+
+167
+00:12:25,025 --> 00:12:28,233
+not restrict that.
+That is that NAT should not be
+
+168
+00:12:28,233 --> 00:12:31,836
+somehow limiting the, limit the TCP
+implementation options.
+
+169
+00:12:31,836 --> 00:12:37,054
+So here, requirement three, states that it
+should have an end point independent
+
+170
+00:12:37,054 --> 00:12:40,780
+filtering behavior.
+So this is basically, this is, back to the
+
+171
+00:12:40,780 --> 00:12:44,694
+terminology.
+We talked about classification of NATs.
+
+172
+00:12:44,694 --> 00:12:48,917
+This means a full cone NAT.
+That it's recommended that NATs, in terms
+
+173
+00:12:48,917 --> 00:12:52,377
+of TCP be full cone.
+And again, like the UDP, recommendations,
+
+174
+00:12:52,377 --> 00:12:56,336
+each of these behavioral recommendations,
+each of these has a justification.
+
+175
+00:12:56,336 --> 00:13:00,453
+And so, it can be really, sort of, very,
+very, sort of, insightful and illuminating
+
+176
+00:13:00,453 --> 00:13:03,145
+to read through and what are the kinds of
+applications,
+
+177
+00:13:03,145 --> 00:13:06,999
+What are the, sort of the edge cases that
+can make, that NATs can break?
+
+178
+00:13:06,999 --> 00:13:10,694
+And see a lot of them relate to
+peer-to-peer, in particular, voice over
+
+179
+00:13:10,694 --> 00:13:13,280
+IP.
+All these kinds of applications where NATs
+
+180
+00:13:13,280 --> 00:13:17,556
+work fine when simply you have a client
+behind the NAT, opening a conn, connection
+
+181
+00:13:17,556 --> 00:13:20,248
+to a server.
+But anything peer-to-peer, where things
+
+182
+00:13:20,248 --> 00:13:24,114
+behind NATs want to open connections to
+one another, you have to, have an
+
+183
+00:13:24,114 --> 00:13:27,534
+intelligent behavior on the NAT,
+otherwise you can break those
+
+184
+00:13:27,534 --> 00:13:31,009
+applications.
+So this one requirement four, is kind of,
+
+185
+00:13:31,009 --> 00:13:36,886
+of an interesting edge case which is that,
+so, a NAT must not respond to an unsolicited
+
+186
+00:13:36,886 --> 00:13:42,019
+inbound SYN for at least six seconds.
+So, here's the, here's the case why this
+
+187
+00:13:42,019 --> 00:13:44,992
+is important.
+Again, let's go to this example.
+
+188
+00:13:44,992 --> 00:13:50,531
+We have A and B that are both behind NATs
+and they're trying to do a simultaneous
+
+189
+00:13:50,531 --> 00:13:53,726
+open.
+Now, it turns out that A ends up sending
+
+190
+00:13:53,726 --> 00:14:00,524
+its simultaneous open well before B does,
+Such that its SYN arrives before B has
+
+191
+00:14:00,524 --> 00:14:07,245
+tried to open, its, its connection to A.
+So if B's NAT responds with responds to
+
+192
+00:14:07,245 --> 00:14:12,653
+this an, you know, unsolicited in bound
+SYN by saying you know?
+
+193
+00:14:12,653 --> 00:14:17,365
+Sorry, connection refused.
+Or by, you saying ICPM, ICPM error,
+
+194
+00:14:17,365 --> 00:14:22,155
+whatever it wants to do,
+Depending on the circumstances.
+
+195
+00:14:22,155 --> 00:14:26,250
+The problem, then, is that this might come
+back to the NAT.
+
+196
+00:14:26,250 --> 00:14:30,782
+It caused them not to tear down the state.
+And then, when B tries to do it's own
+
+197
+00:14:30,782 --> 00:14:35,709
+simultaneous open, so here be the error.
+If B tries to do its own simultaneous
+
+198
+00:14:35,709 --> 00:14:39,514
+open, that state is now torn down and
+that's going to fail.
+
+199
+00:14:39,514 --> 00:14:44,828
+And so the idea here is that if B has to
+wait at least six seconds, the assumtion
+
+200
+00:14:44,828 --> 00:14:49,683
+is that B and A, if they're doing
+simultaneous open, are going to try to do
+
+201
+00:14:49,683 --> 00:14:53,948
+so within six seconds of each other,
+That's what it sort of means,
+
+202
+00:14:53,948 --> 00:14:57,556
+simultaneously.
+And so, the NAT will wait before issuing
+
+203
+00:14:57,556 --> 00:15:02,804
+that, response, such that B has a chance
+to do its own open, which could then set
+
+204
+00:15:02,804 --> 00:15:06,816
+up a state for A.
+Note that in the second sentence, if
+
+205
+00:15:06,816 --> 00:15:11,627
+during this interval, the NAT receives and
+translates an outbound SYN, it must
+
+206
+00:15:11,627 --> 00:15:16,062
+suddenly drop the original the original
+unsolicited inbound SYN.
+
+207
+00:15:16,062 --> 00:15:19,489
+So in this case you know, inbound SYN came
+in, it was unsolicited,
+
+208
+00:15:19,489 --> 00:15:22,427
+But then, suddenly, something showed that
+maybe it was solicited.
+
+209
+00:15:22,427 --> 00:15:25,040
+You should just drop it.
+You shouldn't issue an error.
+
+210
+00:15:25,180 --> 00:15:29,005
+You can ask the question as to whether or
+not you should have it traverse the NAT.
+
+211
+00:15:29,005 --> 00:15:32,317
+That'd be another approach.
+I actually went back and looked through
+
+212
+00:15:32,317 --> 00:15:35,209
+some of the archives and this just seemed
+to work pretty well.
+
+213
+00:15:35,209 --> 00:15:37,448
+The mailing list archives about this
+discussion.
+
+214
+00:15:37,448 --> 00:15:41,366
+This seemed to work pretty well.
+It means the NAT doesn't have to buffer these
+
+215
+00:15:41,366 --> 00:15:43,690
+SYNs.
+It, it solves the problem, and serve as
+
+216
+00:15:43,690 --> 00:15:46,954
+the least complicated answer.
+So that's just a brief overview of
+
+217
+00:15:47,566 --> 00:15:51,748
+some of the internals in NATs and their
+policies and the algorithms that they use
+
+218
+00:15:51,748 --> 00:15:55,878
+and some of the rules that there are for
+their behavior to allow applications to
+
+219
+00:15:55,878 --> 00:15:58,173
+work.
+If this is something that's interesting, I
+
+220
+00:15:58,173 --> 00:16:01,284
+totally recommend, reading these RFCs in a
+bit more detail.
+
+221
+00:16:01,284 --> 00:16:05,058
+Especially, because they give these really
+nice descriptions as to why these
+
+222
+00:16:05,058 --> 00:16:07,557
+behaviors exist.
+Particularly for peer-to-peer applications
+

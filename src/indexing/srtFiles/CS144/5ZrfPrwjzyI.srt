@@ -1,0 +1,1400 @@
+1
+00:00:00,000 --> 00:00:04,040
+Now that we've learned about the basics of
+routing, flooding, shortest paths,
+
+2
+00:00:04,040 --> 00:00:08,033
+spanning trees, and so on.
+We've also learned about the distance
+
+3
+00:00:08,032 --> 00:00:12,085
+vector protocol, Bellman-Ford Algorithm,
+the link state protocol or Dijkstra's
+
+4
+00:00:12,085 --> 00:00:16,084
+Shortest Path First Algorithm.
+In this video, I'm going to put it all
+
+5
+00:00:16,084 --> 00:00:18,093
+together and tell you about the structure
+of the Internet.
+
+6
+00:00:18,093 --> 00:00:23,299
+How hierarchical routing works.
+About interior and exterior routing
+
+7
+00:00:23,299 --> 00:00:28,017
+protocols and the breakdown of the
+internet into autonomous systems.
+
+8
+00:00:28,017 --> 00:00:31,038
+I'm going to be talking about three main
+things.
+
+9
+00:00:31,038 --> 00:00:35,063
+First of all, hierarchy and the
+decomposition of the Internet to
+
+10
+00:00:35,064 --> 00:00:39,058
+autonomous systems.
+The second is within those autonomous
+
+11
+00:00:39,058 --> 00:00:43,071
+systems, how we use the distance vector
+and link state algorithms that we've
+
+12
+00:00:43,071 --> 00:00:47,085
+already seen.
+And the third one is the resulting
+
+13
+00:00:47,085 --> 00:00:51,057
+structure of the Internet.
+Let me start with the hierarchy.
+
+14
+00:00:51,057 --> 00:00:56,076
+When we learned about distance vector and
+link state algorithms, we were considering
+
+15
+00:00:56,077 --> 00:00:59,081
+the network to be a single collection of
+routers.
+
+16
+00:00:59,278 --> 00:01:02,041
+This is really, this is really
+impractical.
+
+17
+00:01:02,041 --> 00:01:07,025
+The Internet is made up of millions of
+routers interconnecting over a billion
+
+18
+00:01:07,025 --> 00:01:09,059
+different users.
+And so simply for reasons of scale, we
+
+19
+00:01:09,059 --> 00:01:12,085
+need to decompose routing into smaller
+set.
+
+20
+00:01:12,085 --> 00:01:17,552
+So we do this for, for scale with a large
+number of routers, the sheer scale of
+
+21
+00:01:17,552 --> 00:01:22,332
+exchanging routing, routing information
+between the routers and keeping it up to
+
+22
+00:01:22,332 --> 00:01:27,031
+date makes it too hard.
+I mean, imagine, exchanging the link state
+
+23
+00:01:27,031 --> 00:01:30,096
+information with million other routers.
+The network would just be flooded with
+
+24
+00:01:30,096 --> 00:01:35,020
+updates all the time.
+And the distance-vector algorithm would
+
+25
+00:01:35,020 --> 00:01:38,283
+never converge.
+So, that decomposition takes place into
+
+26
+00:01:38,283 --> 00:01:42,092
+different autonomous systems and there's
+example shown here.
+
+27
+00:01:42,092 --> 00:01:47,378
+This would be one autonomous system.
+And this autonomous system contains
+
+28
+00:01:47,378 --> 00:01:50,214
+different routers.
+They, that's these.
+
+29
+00:01:50,214 --> 00:01:55,645
+This particular one has one exit point and
+we'll see the significance of that in a
+
+30
+00:01:55,645 --> 00:01:59,021
+minute.
+And within that autonomous system, the,
+
+31
+00:01:59,021 --> 00:02:03,647
+the, the system is free to pick its own
+interior routing protocol.
+
+32
+00:02:03,647 --> 00:02:09,455
+In other words, they decide how packets
+are routed around within this autonomous
+
+33
+00:02:09,455 --> 00:02:12,678
+system.
+So, this particular type of autonomous
+
+34
+00:02:12,678 --> 00:02:16,903
+system is called a single-exit or a stub
+autonomous system.
+
+35
+00:02:16,903 --> 00:02:22,020
+There's another type of autonomous system
+called a multi-exit or multi-exit
+
+36
+00:02:22,020 --> 00:02:25,518
+autonomous system.
+For example, this one here, this is one
+
+37
+00:02:25,518 --> 00:02:30,013
+where in this particular case, there are
+three exit points.
+
+38
+00:02:30,013 --> 00:02:35,328
+And again, it's an autonomous system, so
+they are to determine the way in which
+
+39
+00:02:35,328 --> 00:02:40,579
+packets are routed within that autonomous
+system using the interior routing protocol
+
+40
+00:02:40,579 --> 00:02:45,294
+of that choice.
+This is because they're trying to the
+
+41
+00:02:45,294 --> 00:02:49,046
+Internet was designed to give
+administrative autonomy.
+
+42
+00:02:49,284 --> 00:02:53,090
+The internet was build up by many
+different entities.
+
+43
+00:02:53,090 --> 00:02:58,027
+And so, an entity over here might be
+Stanford's network.
+
+44
+00:02:58,027 --> 00:03:04,005
+Whereas, this here, might be, for example,
+like provider, like AT&T who is who is
+
+45
+00:03:04,005 --> 00:03:08,760
+routing our packets to, to other networks.
+And, because of the different entities
+
+46
+00:03:08,760 --> 00:03:13,005
+that grew up over time and there are tens
+of thousands of them all in our own
+
+47
+00:03:13,005 --> 00:03:17,048
+individual goals and desires.
+One of the original goals of the Internet
+
+48
+00:03:17,048 --> 00:03:22,016
+is to allow each organization to
+independently decide how it would run its
+
+49
+00:03:22,016 --> 00:03:26,401
+own piece of the network, to allow it to
+organically grow and in many ways, this
+
+50
+00:03:26,401 --> 00:03:30,794
+was a big factor in the success of the
+organic growth of the Internet,
+
+51
+00:03:30,794 --> 00:03:36,949
+particularly during the 1990s and allowed
+each one to decide what routing protocol
+
+52
+00:03:36,949 --> 00:03:41,354
+it would use inside its network.
+So it means that, for example, at
+
+53
+00:03:41,354 --> 00:03:47,235
+Stanford, we might use the Interior
+Routing Protocol, OSPF, in order to route
+
+54
+00:03:47,235 --> 00:03:52,589
+our packets, whereas inside AT&T, they
+might use RIP or they might use another
+
+55
+00:03:52,589 --> 00:03:56,718
+one that's called ISIS.
+It leads to local customization.
+
+56
+00:03:56,718 --> 00:04:01,624
+It leads to differentiation.
+So, AT&T here might compete with Verizon
+
+57
+00:04:01,624 --> 00:04:06,576
+here and they can differentiate and
+provide a different service, hopefully for
+
+58
+00:04:06,576 --> 00:04:11,441
+me, the end customer of better service as
+a result through competition amongst the
+
+59
+00:04:11,441 --> 00:04:14,533
+operators.
+And by allowing for local customization,
+
+60
+00:04:14,533 --> 00:04:19,847
+it means the vendors of the routers can
+also offer different types of features and
+
+61
+00:04:19,846 --> 00:04:24,682
+functionality and so it leads to
+competition amongst the router vendors as
+
+62
+00:04:24,682 --> 00:04:27,089
+well.
+So, for all these reasons, the Internet
+
+63
+00:04:27,089 --> 00:04:33,299
+was divided into autonomous systems.
+Autonomous systems or ASs are the basic
+
+64
+00:04:33,299 --> 00:04:39,223
+unit of hierarchy in the Internet.
+Within an AS, the owner decides how
+
+65
+00:04:39,223 --> 00:04:45,747
+routing is done, and between ASs, we must
+use BGP4, this is the Border Gateway
+
+66
+00:04:45,747 --> 00:04:49,639
+Protocol, and its defined by Internet RFC
+1771.
+
+67
+00:04:49,639 --> 00:04:56,704
+And this allows for consistent a, a
+consistent method for all of the different
+
+68
+00:04:56,704 --> 00:05:02,072
+ASs to communicate and we'll be learning
+about BGP4 in a later video.
+
+69
+00:05:02,072 --> 00:05:06,651
+If you want to find an AS number, you can
+do this in a number of ways.
+
+70
+00:05:06,824 --> 00:05:11,970
+One way to do it, actually the simplest,
+is to, just do a traceroute to a
+
+71
+00:05:11,970 --> 00:05:17,808
+particular destination, with the -a
+option, and this should give you the AS
+
+72
+00:05:17,808 --> 00:05:23,227
+numbers of the ones in between.
+Most or many enterprises will have a
+
+73
+00:05:23,227 --> 00:05:28,043
+single AS, for example, Stanford's.
+If you if you find it will, will be 32.
+
+74
+00:05:28,043 --> 00:05:32,380
+At&T is 797.
+Some enterprises choose to breakdown their
+
+75
+00:05:32,380 --> 00:05:35,087
+own network into multiple autonomous
+systems.
+
+76
+00:05:35,087 --> 00:05:42,545
+For example, Google has three that are
+reported and some networks even, even have
+
+77
+00:05:42,545 --> 00:05:45,079
+dozens.
+There's slightly more complicated way of
+
+78
+00:05:45,079 --> 00:05:50,068
+finding it but, but specifically querying
+would be this way.
+
+79
+00:05:50,068 --> 00:05:55,043
+And that is to query using netcat, and see
+if you perform this.
+
+80
+00:05:55,043 --> 00:06:00,072
+So it's essentially going to this
+particular, whois provider, and then
+
+81
+00:06:00,072 --> 00:06:06,016
+entering a particular IP address.
+It will tell you the autonomous system
+
+82
+00:06:06,016 --> 00:06:10,075
+that, that IP address belongs to.
+So, if you wanted to find the AS number
+
+83
+00:06:10,075 --> 00:06:16,702
+for Stanford, you would first do a DNS
+lookup for stanford.edu, find the, and in
+
+84
+00:06:16,702 --> 00:06:24,000
+its A record, this is the primary address.
+Then, you can find the autonomous system
+
+85
+00:06:24,000 --> 00:06:28,087
+for that particular IP address by doing
+this, by entering it here.
+
+86
+00:06:28,087 --> 00:06:33,088
+And then that will return AS32.
+Let me show you a couple of examples of
+
+87
+00:06:33,088 --> 00:06:38,088
+those right now.
+Let say, I wanted to find the AS number
+
+88
+00:06:38,088 --> 00:06:45,018
+for Stanford, I could start by, looking up
+the record for Stanford and we can see it
+
+89
+00:06:45,018 --> 00:06:53,003
+here, the primary A record address.
+And then, I can do the look up to the,
+
+90
+00:06:53,003 --> 00:06:59,097
+using netcat to the, whois this is just
+folks that provide a particular one that I
+
+91
+00:06:59,097 --> 00:07:06,085
+like If I put in the address here for
+Stanford and then, we'll see it returns
+
+92
+00:07:06,085 --> 00:07:12,037
+the AS of 32 down here in the left hand
+corner for Stanford.
+
+93
+00:07:13,067 --> 00:07:19,055
+Similarly, if I wanted to find the AS
+numbers for the routers along, in the
+
+94
+00:07:19,055 --> 00:07:26,020
+networks along the path from my computer
+to say, netflix.com, I could use the,
+
+95
+00:07:26,020 --> 00:07:31,221
+traceroute -a option, and here
+we go.
+
+96
+00:07:31,221 --> 00:07:35,700
+Let's look at this here.
+So, at the top, we see, or near the top,
+
+97
+00:07:35,700 --> 00:07:38,836
+we see the AS32, corresponding to
+Stanford.
+
+98
+00:07:38,836 --> 00:07:44,793
+Then on the bottom, we see the AS2906,
+corresponding to Netflix.
+
+99
+00:07:45,119 --> 00:07:51,654
+We'll see one here which is AS65534.
+This is basically saying that it's a
+
+100
+00:07:51,654 --> 00:07:56,701
+private address, 10.33.0.2, because it
+begins with a ten as a private IP address
+
+101
+00:07:56,701 --> 00:08:01,220
+used inside Stanford.
+So given it's a private address, it's not
+
+102
+00:08:01,220 --> 00:08:06,540
+able to return an AS number.
+And in the middle here we see 2152, which
+
+103
+00:08:06,540 --> 00:08:12,001
+is of Cenic which is the California
+network that connects us between
+
+104
+00:08:12,001 --> 00:08:17,549
+Stanford and some outside providers.
+Now we know the basic structure.
+
+105
+00:08:17,549 --> 00:08:20,472
+Let's look at the interior routing
+protocols.
+
+106
+00:08:20,472 --> 00:08:25,764
+I've already mentioned RIP or the Routing
+Information Protocol and this was the
+
+107
+00:08:25,764 --> 00:08:29,498
+first widely-used interior routing
+protocol in the Internet.
+
+108
+00:08:29,498 --> 00:08:34,604
+It uses distance vector in particular the
+distributed Bellman-Ford algorithm.
+
+109
+00:08:34,604 --> 00:08:39,696
+It's described by an Internet RFC.
+This is actually a version two of, of RIP,
+
+110
+00:08:39,696 --> 00:08:44,609
+which is the one most widely used.
+It sends updates every 30 seconds and will
+
+111
+00:08:44,609 --> 00:08:49,598
+determine that a, a router has become
+unavailable, if it hasn't heard within 180
+
+112
+00:08:49,598 --> 00:08:53,074
+seconds or three minutes.
+So, there are no authentication for
+
+113
+00:08:53,074 --> 00:09:00,987
+updates meaning that there were definitely
+some, some security implications of using,
+
+114
+00:09:00,987 --> 00:09:04,968
+of using RIP.
+RIP became popular to start with, because
+
+115
+00:09:05,182 --> 00:09:11,691
+it was originally in the BSD version of
+Unix and there was a, a daemon that was
+
+116
+00:09:11,691 --> 00:09:17,206
+widely used, widely available for routers
+that were, that were using RIP.
+
+117
+00:09:17,424 --> 00:09:23,334
+And, and that was, it's pronounced "route"-
+"dee" and you can find many references to this
+
+118
+00:09:23,334 --> 00:09:27,575
+on the web.
+So, it was widely used for many years many
+
+119
+00:09:27,575 --> 00:09:31,244
+years.
+It's used a little less now because the,
+
+120
+00:09:31,244 --> 00:09:34,085
+the convergence problems that people have
+found with, with RIP.
+
+121
+00:09:34,085 --> 00:09:42,072
+And it tends to being mostly replaced by
+OSPF or ISIS, which is a which is very
+
+122
+00:09:42,072 --> 00:09:47,072
+similar to OSPF.
+So, OSPF is defined in Internet RFC 2328
+
+123
+00:09:47,072 --> 00:09:53,237
+and it's a link state algorithm.
+So link state updates is sent using
+
+124
+00:09:53,237 --> 00:09:56,285
+flooding.
+And, just in case I didn't say this
+
+125
+00:09:56,285 --> 00:10:01,035
+before, we use flooding because during the
+time that we're trying to find the
+
+126
+00:10:01,035 --> 00:10:05,774
+topology of the network, we don't know how
+to reach anyone so we don't have any
+
+127
+00:10:05,774 --> 00:10:09,044
+topology information that's why we're
+flooding the link state information.
+
+128
+00:10:09,044 --> 00:10:15,061
+So, we can't route the link state
+information to every router, because we
+
+129
+00:10:15,061 --> 00:10:19,070
+don't know the path.
+So, flooding is the simplest routing table
+
+130
+00:10:19,070 --> 00:10:23,753
+free way of making sure that every router
+in the network finds out the, the link
+
+131
+00:10:23,753 --> 00:10:27,020
+state.
+So that's why flooding is used.
+
+132
+00:10:27,020 --> 00:10:31,098
+It runs Dijkstra's algorithm, as we know.
+The updates are authenticated, meaning
+
+133
+00:10:31,098 --> 00:10:36,095
+that we're sure they belong to the router
+that we that we are communicating with.
+
+134
+00:10:36,095 --> 00:10:40,052
+Because some autonomous systems are very
+big, it's quite common to partition them
+
+135
+00:10:40,052 --> 00:10:46,065
+down into areas, so of our own campus
+network here at Stanford is partitioned
+
+136
+00:10:46,065 --> 00:10:49,084
+into OSPF areas.
+It's widely used, it's quite complex.
+
+137
+00:10:49,084 --> 00:10:54,075
+This is a gross simplification here, but
+it gives us the basic ideas of how OSPF
+
+138
+00:10:54,075 --> 00:10:58,025
+works.
+So, once we know how to route packets
+
+139
+00:10:58,025 --> 00:11:03,005
+within an autonomous system, it's whether
+asking the question of how do we route
+
+140
+00:11:03,005 --> 00:11:07,030
+them from within an autonomous system to a
+different autonomous system.
+
+141
+00:11:07,030 --> 00:11:10,078
+So, how do they make it first out of the
+autonomous system?
+
+142
+00:11:10,078 --> 00:11:15,046
+How does the Interior Routing Protocol
+isn't going to tell us directly how we
+
+143
+00:11:15,046 --> 00:11:20,031
+exit from an autonomous system 'cause it's
+dealing with the addresses of, of routers
+
+144
+00:11:20,031 --> 00:11:22,089
+that are outside of this autonomous
+system.
+
+145
+00:11:22,089 --> 00:11:26,042
+So, there are already two cases that we
+need to think about.
+
+146
+00:11:26,042 --> 00:11:29,008
+One is when we're routing to a single exit
+point.
+
+147
+00:11:29,008 --> 00:11:33,671
+So, this would be from a stub autonomous
+system that's actually only has one exit
+
+148
+00:11:33,671 --> 00:11:34,772
+point.
+It's much easier in this case than in the
+
+149
+00:11:34,772 --> 00:11:39,074
+more general case where, where there are
+multiple exit points.
+
+150
+00:11:39,074 --> 00:11:42,842
+So, if there's only one exit point,
+routers within the, within the autonomous
+
+151
+00:11:42,842 --> 00:11:46,064
+system can use what's called default
+routing.
+
+152
+00:11:46,064 --> 00:11:51,067
+Each router knows all of the prefixes
+within its autonomous system.
+
+153
+00:11:51,067 --> 00:11:56,094
+So, it knows all of the prefixes inside
+the autonomous system and packets for
+
+154
+00:11:56,094 --> 00:12:00,583
+another autonomous system are sent to, to
+what's called a default router and the
+
+155
+00:12:00,583 --> 00:12:04,097
+default router is the boarder gateway to
+the next autonomous system.
+
+156
+00:12:04,097 --> 00:12:08,253
+So, it was nice and simple.
+Essentially, it says, if you see an
+
+157
+00:12:08,253 --> 00:12:13,835
+address in a packet that you don't know
+what to do with, then just forward it to
+
+158
+00:12:13,835 --> 00:12:17,650
+the default router.
+And default routing means that the routing
+
+159
+00:12:17,650 --> 00:12:23,167
+tables in the single-exit AS tend to be
+very small, because each router only needs
+
+160
+00:12:23,167 --> 00:12:27,825
+to hold the addresses for the prefixes
+within its autonomous system.
+
+161
+00:12:27,825 --> 00:12:31,077
+Otherwise, it just forwards them out.
+Nice and easy.
+
+162
+00:12:31,077 --> 00:12:35,505
+Life is more complicated when we need to
+route the multiple exit points.
+
+163
+00:12:35,505 --> 00:12:39,697
+So, this would in the transit with
+autonomous system or one way or the other,
+
+164
+00:12:39,697 --> 00:12:44,010
+multiple exit points.
+This has actually become much more common
+
+165
+00:12:44,225 --> 00:12:49,644
+in the last few years 'cause nearly all
+sizable enterprises like Stanford will
+
+166
+00:12:49,644 --> 00:12:53,496
+connect at multiple exit points to
+different providers.
+
+167
+00:12:53,496 --> 00:12:59,250
+So, we might provide, we might connect to
+an educational backbone, a research and
+
+168
+00:12:59,250 --> 00:13:03,425
+education network, and then we will
+connect to one or two commercial
+
+169
+00:13:03,425 --> 00:13:06,384
+providers.
+Just in case one of them goes down, one of
+
+170
+00:13:06,384 --> 00:13:10,794
+them is temporarily unavailable, one of
+them is perhaps too expensive for a
+
+171
+00:13:10,794 --> 00:13:14,002
+particular route,
+It allows us to choose and have control.
+
+172
+00:13:14,002 --> 00:13:17,074
+So multihoming is very common.
+Now we need to choose for each outgoing
+
+173
+00:13:17,074 --> 00:13:24,032
+packet, which exit point it will take.
+So, the problem here is that, each
+
+174
+00:13:24,032 --> 00:13:28,051
+internal router must be told which exit
+point to use for a given destination
+
+175
+00:13:28,051 --> 00:13:30,055
+prefix.
+This is the essence of the problem.
+
+176
+00:13:30,055 --> 00:13:36,022
+That means that when it sees a prefix
+which is not inside the autonomous system,
+
+177
+00:13:36,022 --> 00:13:41,041
+it has to know which exit point to use.
+So, this means, it requires very large
+
+178
+00:13:41,041 --> 00:13:45,057
+routing tables, so that it potentially
+routes to every prefix.
+
+179
+00:13:45,057 --> 00:13:51,037
+And so, the routing tables in a autonomous
+system with multiple exit points tend to
+
+180
+00:13:51,037 --> 00:13:54,099
+be very, very big.
+Tens or hundreds of thousands of, of
+
+181
+00:13:54,099 --> 00:13:58,853
+prefix enteries.
+This can maybe, can, can actually be made
+
+182
+00:13:58,853 --> 00:14:03,587
+a, a little simpler if the autonomous
+system uses what's called hot-potato
+
+183
+00:14:03,587 --> 00:14:07,650
+routing.
+Hot-potato routing is when instead of
+
+184
+00:14:07,650 --> 00:14:12,540
+making a, a smart choice in the best
+interest of the packet and its
+
+185
+00:14:12,540 --> 00:14:16,115
+destination, it simply sends to the
+closest exit point.
+
+186
+00:14:16,115 --> 00:14:21,922
+In other words, it says, for any given
+router, it sends it to the exit point
+
+187
+00:14:21,922 --> 00:14:26,347
+closest to it if it decides it's not from,
+for within the autonomous system.
+
+188
+00:14:26,558 --> 00:14:32,232
+Hot-potato routing is also seen as
+offloading a somewhat selfish act by the
+
+189
+00:14:32,232 --> 00:14:36,739
+autonomous system, 'cause it's offloading
+the packets as quickly as it can to become
+
+190
+00:14:36,739 --> 00:14:40,794
+somebody else's problem, and is not very,
+not very popular with its neighboring
+
+191
+00:14:40,794 --> 00:14:44,683
+autonomous systems.
+But is actually very widely used today,
+
+192
+00:14:44,683 --> 00:14:49,061
+in, in the Internet for both commercial
+reasons and reasons of simplicity.
+
+193
+00:14:49,061 --> 00:14:53,090
+The more elaborate way would be to pick
+the exit, which is closest to the
+
+194
+00:14:53,090 --> 00:14:56,037
+destination, or is on the lowest cost
+path.
+
+195
+00:14:56,037 --> 00:15:00,054
+To the eventual destination and that
+requires the dissemination of more
+
+196
+00:15:00,054 --> 00:15:04,072
+information within the autonomous system
+in order to make that decision.
+
+197
+00:15:08,079 --> 00:15:13,545
+Now, we've learned a little bit about how
+routing goes on within the autonomous
+
+198
+00:15:13,545 --> 00:15:16,061
+system.
+And now I wanted to explain a little bit
+
+199
+00:15:16,061 --> 00:15:22,027
+about the Exterior Routing Protocol, BGP4.
+Every autonomous system on the Internet
+
+200
+00:15:22,027 --> 00:15:26,026
+must interconnect to other autonomous
+systems using BGP4.
+
+201
+00:15:26,026 --> 00:15:30,095
+Just like we're required to use IP, in
+order to deliver our packets.
+
+202
+00:15:30,095 --> 00:15:36,012
+That's what the Internet uses, the thin
+waste of routing protocols is BGP4.
+
+203
+00:15:36,012 --> 00:15:39,055
+In other words, it's the one that we must
+all use.
+
+204
+00:15:39,055 --> 00:15:44,073
+So, I'm going to describe BGP4 in a
+separate video, but I just want to tell
+
+205
+00:15:44,073 --> 00:15:49,076
+you a little about the problems that BGP4
+was designed to try and solve.
+
+206
+00:15:49,076 --> 00:15:56,092
+First of all, it's It has a much, as a
+very different problem for a, an exterior
+
+207
+00:15:56,092 --> 00:16:01,045
+routing protocol than, than for an
+interior routing protocol.
+
+208
+00:16:01,045 --> 00:16:06,012
+Specifically, when, when we were
+considering that topology, the, the
+
+209
+00:16:06,012 --> 00:16:09,071
+Internet is a,
+Is a very complex mesh of different
+
+210
+00:16:09,071 --> 00:16:13,056
+autonomous systems and has very little
+structure to it.
+
+211
+00:16:13,076 --> 00:16:19,029
+You've seen the picture which is the, the
+logo for this, for this class and have
+
+212
+00:16:19,029 --> 00:16:23,041
+seen that it's a very unstructured
+interconnection mesh.
+
+213
+00:16:23,041 --> 00:16:29,000
+And so, trying to exploit that, and the
+structure is not going to get us very far.
+
+214
+00:16:29,097 --> 00:16:33,051
+Each of the autonomous systems is
+autonomously controlled.
+
+215
+00:16:33,051 --> 00:16:37,012
+So they might define the link costs in
+very different ways.
+
+216
+00:16:37,012 --> 00:16:40,024
+So it's not possible to find the lowest
+cost paths.
+
+217
+00:16:40,024 --> 00:16:45,038
+We're simply going to have to find a set
+of paths based on the number of autonomous
+
+218
+00:16:45,038 --> 00:16:48,781
+systems that they pass through.
+Another thing that we need to consider is
+
+219
+00:16:48,781 --> 00:16:51,490
+trust.
+When we're going between autonomous
+
+220
+00:16:51,490 --> 00:16:56,046
+systems we'll find that some autonomous
+systems aren't willing to trust others.
+
+221
+00:16:56,280 --> 00:17:02,027
+Perhaps they don't trust them to advertise
+good routes e.g., they might be uh, they
+
+222
+00:17:02,027 --> 00:17:06,088
+might be a competitor or they, they may
+want to protect the privacy of the
+
+223
+00:17:06,088 --> 00:17:09,081
+traffic.
+So, they might not want to send traffic
+
+224
+00:17:09,080 --> 00:17:14,047
+through another autonomous system, for
+example, it might be a, a warring nation.
+
+225
+00:17:14,080 --> 00:17:19,858
+Another reason that or another thing that
+BGP4 was set out to solve was the question
+
+226
+00:17:19,858 --> 00:17:25,037
+of independent policies.
+So, different autonomous system have
+
+227
+00:17:25,038 --> 00:17:29,079
+different objectives.
+Some might try to route over the fewest
+
+228
+00:17:29,079 --> 00:17:30,089
+hops.
+They may prefer one provider over another,
+
+229
+00:17:30,089 --> 00:17:35,084
+they might have a lower cost arrangement
+with one provider compared to another.
+
+230
+00:17:35,084 --> 00:17:40,055
+So, they have local policies that they
+perhaps don't want to share with others.
+
+231
+00:17:40,055 --> 00:17:43,033
+And in general, these policies are kept
+secret.
+
+232
+00:17:43,033 --> 00:17:48,028
+And so, BGP-4 is designed to work in a way
+that will allow for that policy to be a
+
+233
+00:17:48,028 --> 00:17:52,028
+local, private matter for the autonomous
+system.
+
+234
+00:17:52,028 --> 00:17:57,090
+We will see we will see BGP4 in more
+detail in a different video.
+
+235
+00:18:00,058 --> 00:18:06,059
+Finally, I want to just tell you a little
+bit about the structure of the Internet as
+
+236
+00:18:06,059 --> 00:18:11,029
+we've seen it so far.
+So first, at the, at the, at the top-level
+
+237
+00:18:11,029 --> 00:18:17,224
+there are what we would, what we would all
+recognize as Internet service providers.
+
+238
+00:18:17,562 --> 00:18:25,346
+They might be companies like AT&T they
+might be, in Japan, it might be NTT.
+
+239
+00:18:25,346 --> 00:18:31,355
+There's about a dozen of these what I
+so-called tier one.
+
+240
+00:18:31,355 --> 00:18:36,918
+Tier one ISPs.
+And they are defined as ISPs that are
+
+241
+00:18:36,918 --> 00:18:43,216
+fully mesh interconnected with each other
+and who peer each other without charging
+
+242
+00:18:43,216 --> 00:18:46,995
+each other.
+It's called settlement-free peering.
+
+243
+00:18:46,995 --> 00:18:53,159
+In other words, there's, there's no, no
+money that goes across this, this
+
+244
+00:18:53,159 --> 00:18:59,161
+interface between them.
+They then connect down to what are called,
+
+245
+00:18:59,161 --> 00:19:06,874
+what are usually called regional ISP's,
+which might correspond to a state, or a
+
+246
+00:19:06,874 --> 00:19:14,199
+county, or a region of a country.
+And those in turn connect to below them,
+
+247
+00:19:14,510 --> 00:19:21,966
+to what are call the access ISP's, so
+there will be many access ISP's along the
+
+248
+00:19:21,966 --> 00:19:25,637
+bottom here.
+And these would be the ones that we
+
+249
+00:19:25,637 --> 00:19:31,117
+connect to as users.
+So users are down below these access ISP's
+
+250
+00:19:31,117 --> 00:19:37,699
+down here.
+And they will connect up here and the next
+
+251
+00:19:37,699 --> 00:19:44,424
+ISP might connect to multiple regional
+ISPs, and the regional ISPs will generate
+
+252
+00:19:44,424 --> 00:19:49,578
+connect to multiple tier one ISPs.
+So, this hierarchy is one in which there's a,
+
+253
+00:19:49,578 --> 00:19:56,625
+does a well-defined relationship between
+each of these each of these entities.
+
+254
+00:19:56,625 --> 00:20:03,399
+So, in general, up above is the provider
+and below is the customer.
+
+255
+00:20:03,399 --> 00:20:09,264
+So, the provider is providing service to
+the customer and that goes on down, all
+
+256
+00:20:09,264 --> 00:20:11,868
+the way down.
+So, in going down, this is the provider
+
+257
+00:20:11,868 --> 00:20:15,342
+and this is the customer.
+And generally, the provider will charge
+
+258
+00:20:15,342 --> 00:20:18,372
+the customer.
+So, in other words, in order to send
+
+259
+00:20:18,372 --> 00:20:23,661
+packet from packets from the regional to
+the tier, their money is charge, a
+
+260
+00:20:23,661 --> 00:20:27,144
+settlement charge.
+Generally, they keep track of all the data
+
+261
+00:20:27,144 --> 00:20:31,147
+that sent over there, over some period
+like a month and then they will settle
+
+262
+00:20:31,147 --> 00:20:34,063
+after that time.
+So, there would be money charged in that
+
+263
+00:20:34,063 --> 00:20:38,169
+direction but, there's no money going in
+this direction across here.
+
+264
+00:20:38,169 --> 00:20:43,575
+So, in order to save money, it's quite
+common for the regional ISP's to have
+
+265
+00:20:43,575 --> 00:20:48,541
+connections across here, so that the
+packets between access ISP's, if there's a
+
+266
+00:20:48,541 --> 00:20:53,667
+lot of traffic, it can actually go through
+the region ISP without going to the tier
+
+267
+00:20:53,667 --> 00:20:57,098
+one, and therefore they don't need to, to
+pay for that.
+
+268
+00:21:00,013 --> 00:21:02,327
+So, this is the basic Internet
+infrastructure.
+
+269
+00:21:02,327 --> 00:21:05,262
+Tier one ISPs, about a dozen of them
+around the world.
+
+270
+00:21:05,262 --> 00:21:10,451
+And then, regional ISPs, generally, within
+a country or within the region of a
+
+271
+00:21:10,451 --> 00:21:15,464
+country and then, access, access ISPs to
+the ones that we connect to in order to
+
+272
+00:21:15,464 --> 00:21:23,239
+get access to the Internet.
+So in summary, the Internet consists of
+
+273
+00:21:23,239 --> 00:21:27,337
+multiple autonomous systems, ASs.
+Each are managed independently.
+
+274
+00:21:27,337 --> 00:21:30,366
+An AS runs its own interior routing
+protocol.
+
+275
+00:21:30,366 --> 00:21:32,625
+In other words, it chooses the one that it
+will run.
+
+276
+00:21:32,625 --> 00:21:37,866
+And in, in the case of stub ASs, they use
+simple default routing, and so they're
+
+277
+00:21:37,866 --> 00:21:42,007
+very simple.
+ASs with multiple exit points must decide
+
+278
+00:21:42,007 --> 00:21:46,074
+the best exit to use when routing packets
+to other autonomous systems.
+
+279
+00:21:46,074 --> 00:21:52,027
+ASs must connect to each other using the
+BGP4 protocol, which we're going to learn
+
+280
+00:21:52,027 --> 00:21:56,012
+about in a future video.
+That's the end of this video.
+

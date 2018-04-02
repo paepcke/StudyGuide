@@ -1,0 +1,939 @@
+1
+00:00:01,620 --> 00:00:04,230
+In the last video, I explained how
+additive-increase/multiplicative-decrease
+
+2
+00:00:06,234 --> 00:00:10,666
+could be used to modulate the window size
+in the sliding window protocol.
+
+3
+00:00:10,848 --> 00:00:18,030
+For example, for modulating a TCP flow.
+And I explained how the, the window size
+
+4
+00:00:18,046 --> 00:00:20,502
+is essentially varying to probe how much
+capacity the network has for additional
+
+5
+00:00:20,502 --> 00:00:24,145
+bytes to be placed into it.
+Now, in the case of a single flow,
+
+6
+00:00:24,145 --> 00:00:29,366
+This is, this is interesting when, we're
+looking at a router with, one predominant
+
+7
+00:00:29,366 --> 00:00:32,037
+flow.
+So, for example, in a home network, we're
+
+8
+00:00:32,037 --> 00:00:36,679
+probably, at any one time, there's one
+dominant network flow for, for example,
+
+9
+00:00:36,679 --> 00:00:39,327
+for streaming video or downloading a
+webpage.
+
+10
+00:00:39,504 --> 00:00:44,212
+But out in the wilds of the Internet, it's
+very common for a router to have many,
+
+11
+00:00:44,212 --> 00:00:47,273
+many, many flows passing through it at the
+same time.
+
+12
+00:00:47,273 --> 00:00:50,804
+So, in this video, we're going to look at
+the multiple flow case.
+
+13
+00:00:50,981 --> 00:00:54,747
+As an example, a backbone router in the
+backbone of the Internet,
+
+14
+00:00:54,747 --> 00:00:59,691
+It'd be pretty common for it to have ten
+or even 50,000 flows passing through it at
+
+15
+00:00:59,691 --> 00:01:02,928
+any one time.
+And there, we could expect the dynamics to
+
+16
+00:01:02,928 --> 00:01:07,722
+be very different indeed.
+So if we look at that if we look at that
+
+17
+00:01:07,722 --> 00:01:10,516
+case.
+So for example, if we look at the case
+
+18
+00:01:10,516 --> 00:01:15,000
+again of a source and a destination
+sending packets through a packet buffer,
+
+19
+00:01:15,170 --> 00:01:19,767
+in this particular case the bottleneck
+link is the one on the right again, and so
+
+20
+00:01:19,767 --> 00:01:22,434
+packets will tend to accumulate in that
+router.
+
+21
+00:01:22,434 --> 00:01:27,258
+Here I show any one source and we saw the
+dynamics before where we have a handful of
+
+22
+00:01:27,258 --> 00:01:32,139
+packets corresponding to the those in the
+window that could not be placed onto the
+
+23
+00:01:32,139 --> 00:01:34,488
+links.
+But in the backbone of the Internet we
+
+24
+00:01:34,488 --> 00:01:36,805
+might see thousands and thousands of
+packets.
+
+25
+00:01:36,805 --> 00:01:41,027
+It's not uncommon for a router buffer to
+be able to, to hold hundreds of thousands
+
+26
+00:01:41,027 --> 00:01:44,168
+of packets, and they will come from many,
+many different flows.
+
+27
+00:01:44,168 --> 00:01:47,052
+I've tried to represent that here with
+different colors.
+
+28
+00:01:47,052 --> 00:01:51,222
+I didn't have enough colors to show all
+the different flows that, that, that would
+
+29
+00:01:51,222 --> 00:01:55,546
+make up the, the buffer at any one time.
+But you can see immediately that the
+
+30
+00:01:55,546 --> 00:01:59,830
+packets belonging to any one individual
+flow are only going to make up a small
+
+31
+00:01:59,830 --> 00:02:04,276
+fraction of the occupancy of the buffer.
+So each one of them will be going through
+
+32
+00:02:04,276 --> 00:02:08,831
+that window, changing and they will all be
+doing that independently of each other.
+
+33
+00:02:08,830 --> 00:02:13,007
+And occasionally one of them will
+experience a, a packet drop and so it will
+
+34
+00:02:13,007 --> 00:02:16,803
+go back again and then, it might go for a
+long period without actually seeing a
+
+35
+00:02:16,803 --> 00:02:21,358
+drop, while somebody else sees it, another
+flow sees a drop and it will back down and
+
+36
+00:02:21,358 --> 00:02:25,858
+so they will all be expanding and
+contracting somewhat independently of each
+
+37
+00:02:25,858 --> 00:02:27,540
+other.
+The more flows there are,
+
+38
+00:02:27,540 --> 00:02:31,831
+The more independent they will be, and the
+more steady the occupancy of the queue
+
+39
+00:02:31,831 --> 00:02:34,860
+will be for anyone over the load in the
+network.
+
+40
+00:02:34,860 --> 00:02:39,975
+So the consequence of this is that the
+occupancy of the buffer is more determined
+
+41
+00:02:39,975 --> 00:02:43,968
+by the overall load than the dynamics of
+the individual windows.
+
+42
+00:02:43,968 --> 00:02:48,709
+And so that occupancy tends to be pretty
+constant, pretty steady.
+
+43
+00:02:48,709 --> 00:02:53,700
+And it's quite reasonable to think of the
+RTT, the round trip time, as being quite
+
+44
+00:02:53,700 --> 00:02:58,628
+constant when there are many flows.
+So just to contrast the single flow case
+
+45
+00:02:58,628 --> 00:03:03,806
+with the multiple, multiple flow case that
+we saw before, the window size in red, the
+
+46
+00:03:03,806 --> 00:03:09,283
+buffer occupancy, and the RTT, because
+they are so strongly related is the dotted
+
+47
+00:03:09,283 --> 00:03:13,699
+line, and they move in lockstep.
+And as we saw before, they, they, the, the
+
+48
+00:03:13,699 --> 00:03:16,664
+rate will tend to be, will tend to be
+constant.
+
+49
+00:03:16,664 --> 00:03:21,322
+Because W of T and the RTT, which is also
+varying with time, will be moving in
+
+50
+00:03:21,322 --> 00:03:23,863
+lockstep and thefore, the rate is
+constant.
+
+51
+00:03:23,863 --> 00:03:28,582
+If we look at the multiple flow case,
+because of this aggregation of many, many
+
+52
+00:03:28,582 --> 00:03:32,151
+flows, and the packets of many flows into
+the router buffer.
+
+53
+00:03:32,151 --> 00:03:36,568
+Each one of them making a small,
+representing a small change in variation
+
+54
+00:03:36,568 --> 00:03:40,863
+in the occupancy of the queue.
+The buffer occupancy in the RTT tends to
+
+55
+00:03:40,863 --> 00:03:44,157
+be much smoother.
+And is representative of the
+
+56
+00:03:44,157 --> 00:03:49,051
+overall load of the network.
+So there are many fewer perturbations in the
+
+57
+00:03:49,051 --> 00:03:52,883
+occupancy of the buffer.
+If we zoom in on any one individual flow,
+
+58
+00:03:52,883 --> 00:03:57,423
+as I've done here in red, then you can see
+that it will still go through this
+
+59
+00:03:57,423 --> 00:04:02,671
+additive increase and multiplicative
+decrease, but the drops will, will happen
+
+60
+00:04:02,671 --> 00:04:07,152
+at more random times, than with the single
+flow, because it really depends on who,
+
+61
+00:04:07,152 --> 00:04:12,046
+which flow encounters the drop and backs
+off, and they all do it at, at different
+
+62
+00:04:12,046 --> 00:04:15,342
+times.
+So, as a consequence, the RTT is staying
+
+63
+00:04:15,342 --> 00:04:20,850
+pretty constant and so the rate will be
+proportional to the window size.
+
+64
+00:04:20,850 --> 00:04:26,132
+So, the rate will W of T over RTT, RTT
+will now be pretty much constant.
+
+65
+00:04:26,132 --> 00:04:29,678
+So the rate will be a function of windows
+size.
+
+66
+00:04:29,678 --> 00:04:33,375
+So the rate will move according to that
+sawtooth.
+
+67
+00:04:33,375 --> 00:04:38,959
+You may have noticed that the shape of the
+sawtooth has changed in, in, in, in a
+
+68
+00:04:38,959 --> 00:04:43,673
+different way and that is that the,
+When I was drawing this before for a
+
+69
+00:04:43,673 --> 00:04:47,931
+single flow, you can see it's curved,
+It's not straight, whereas for multiple
+
+70
+00:04:47,931 --> 00:04:51,573
+floors it's, I drew it as a straight line
+and that's for a reason.
+
+71
+00:04:51,573 --> 00:04:56,227
+When we have only got one flow,
+The way in which the RTT will increase
+
+72
+00:04:56,227 --> 00:05:02,063
+each time we place more buffer, packets in
+the buffer, it will increase in the
+
+73
+00:05:02,063 --> 00:05:06,328
+following ways.
+Always the horizontal, the horizontal step
+
+74
+00:05:06,328 --> 00:05:12,388
+here will, will increase by RTT each time
+and then it will go up by one, go by RTT,
+
+75
+00:05:12,388 --> 00:05:17,850
+and then it will go up by one and so on.
+But the RTT itself is increasing,
+
+76
+00:05:17,850 --> 00:05:22,115
+So the step is getting longer and longer,
+hence the curve,
+
+77
+00:05:22,115 --> 00:05:28,062
+Whereas down here the RTT is constant, and
+so each step is the same size, so it will
+
+78
+00:05:28,062 --> 00:05:33,100
+be RTT in the horizontal direction one on
+the vertical direction, RTT one RTT.
+
+79
+00:05:33,100 --> 00:05:36,700
+And so, it'll be a straight line when it's
+smoothed out.
+
+80
+00:05:37,020 --> 00:05:42,749
+So this equation here tells us that the
+rate is, proportional to the window size.
+
+81
+00:05:42,749 --> 00:05:47,166
+Notice that it also tells us it's
+inversely proportional to RTT.
+
+82
+00:05:47,166 --> 00:05:52,481
+It's worth asking, what actually is the
+relationship between the rate, RTT, and
+
+83
+00:05:52,481 --> 00:05:57,727
+the drop probability in the network.
+So in the next, in the next slide, I'm
+
+84
+00:05:57,727 --> 00:06:03,180
+going to explain the relationship between
+them by offering you a sort of a simple
+
+85
+00:06:03,180 --> 00:06:08,633
+geometric model to start with and then
+explaining how this fits, in the, fits
+
+86
+00:06:08,633 --> 00:06:11,415
+with practice.
+Here is our familiar AIMD model.
+
+87
+00:06:11,585 --> 00:06:15,669
+The sawtooth that's going through the
+additive increase, multi, additive
+
+88
+00:06:15,669 --> 00:06:19,639
+increase up here, and then the
+multiplicative decrease, and I'm showing
+
+89
+00:06:19,639 --> 00:06:22,419
+here the drops taking place at each of the
+peaks.
+
+90
+00:06:22,419 --> 00:06:26,049
+These were the drops that led to the
+halving of the window size.
+
+91
+00:06:26,049 --> 00:06:30,813
+So we're not going to worry about, how we
+know that the drops took place or how long
+
+92
+00:06:30,813 --> 00:06:34,444
+it takes us to find out.
+We're just going to assume that every time
+
+93
+00:06:34,444 --> 00:06:38,981
+there's a drop, we halve the window size
+and see if we can figure out a function
+
+94
+00:06:38,981 --> 00:06:44,570
+for the rate of the flow, as a function of
+the drop probability and the RTT.
+
+95
+00:06:44,570 --> 00:06:50,636
+So the first thing to note, is there is
+one drop every time we send this number of
+
+96
+00:06:50,636 --> 00:06:56,555
+bytes, because this represents the, the
+area under that line, represents the bytes
+
+97
+00:06:56,555 --> 00:07:00,965
+integrated over time.
+The width here is W max over two times
+
+98
+00:07:00,965 --> 00:07:04,085
+RTT,
+Remember RTT we are going to assume is a
+
+99
+00:07:04,085 --> 00:07:07,759
+constant because there are many flows in
+the network.
+
+100
+00:07:07,759 --> 00:07:12,612
+And so if we find this area A, and one
+over that will tell us the, the, that for
+
+101
+00:07:12,612 --> 00:07:17,880
+every drop that we take, that's how many
+bytes we had that we had sent. So we
+
+102
+00:07:17,880 --> 00:07:22,386
+will do that in a moment.
+And then from there, we are going to try
+
+103
+00:07:22,386 --> 00:07:26,407
+and deduce the rate as a function of the
+drop probability.
+
+104
+00:07:26,407 --> 00:07:31,453
+So let's work though this.
+From the sawtooth, we know that, what the
+
+105
+00:07:31,453 --> 00:07:34,999
+area A is.
+The packet drop rate is going to be one
+
+106
+00:07:34,999 --> 00:07:41,110
+for every I, A bytes that we send, where A
+is just simply three over eight times W
+
+107
+00:07:41,110 --> 00:07:44,806
+max squared.
+Three-eighths because the horizontal
+
+108
+00:07:44,806 --> 00:07:50,126
+distance down here,
+The distance here is Wmax over two because
+
+109
+00:07:50,126 --> 00:07:55,367
+it's just a square.
+That's the number of RTTs times RTT, so
+
+110
+00:07:55,367 --> 00:07:59,615
+that's the time because each step is of
+RTT wide.
+
+111
+00:07:59,615 --> 00:08:03,682
+So the area is three-eighths of W, Wmax
+squared.
+
+112
+00:08:03,682 --> 00:08:10,280
+So therefore the throughput is A, that's
+the number of bytes that we send,
+
+113
+00:08:10,280 --> 00:08:14,410
+Divided by the time that it took us to
+send it, which is the width.
+
+114
+00:08:14,410 --> 00:08:19,542
+Because we know A is a function of P, we
+can substitute P into the equation, and we
+
+115
+00:08:19,542 --> 00:08:22,609
+end up with a rate equation that looks
+like this.
+
+116
+00:08:22,609 --> 00:08:26,740
+Root three over two times one over RTT
+times the square root of P.
+
+117
+00:08:26,740 --> 00:08:31,414
+So look at that for a moment.
+It's more than just an equation.
+
+118
+00:08:31,414 --> 00:08:35,169
+It tells us something about the property
+of AIMD.
+
+119
+00:08:35,169 --> 00:08:41,220
+It tells us first that the rate that a
+flow experiences is proportional to one
+
+120
+00:08:41,222 --> 00:08:45,130
+over its RTT.
+In other words, the bigger the RTT, the
+
+121
+00:08:45,130 --> 00:08:48,370
+lower the rate.
+You think about that for a moment.
+
+122
+00:08:48,370 --> 00:08:53,290
+It means that when we're communicating
+with a server that's further away, we can
+
+123
+00:08:53,290 --> 00:08:57,164
+expect a lower rate.
+This is not really the probability that we
+
+124
+00:08:57,164 --> 00:09:02,022
+want from a congesting control algorithm.
+We don't necessarily want to penalize
+
+125
+00:09:02,022 --> 00:09:06,081
+flows that are further away.
+And so, this is generally considered a
+
+126
+00:09:06,081 --> 00:09:08,971
+weakness or a, a poor characteristic of
+AIMD.
+
+127
+00:09:08,971 --> 00:09:13,891
+The second thing to notice is that it's
+quite sensitive to the drop probability,
+
+128
+00:09:13,891 --> 00:09:18,212
+one over square root of p.
+So we look at the equation in a little bit
+
+129
+00:09:18,212 --> 00:09:21,758
+more detail.
+First of all, it tells us that, it appears
+
+130
+00:09:21,758 --> 00:09:25,811
+to tell us that, not only if we double the
+RTT, we halve the rate.
+
+131
+00:09:25,811 --> 00:09:30,433
+But also, as the RTT tends to zero,
+doesn't that mean that the rate tends to
+
+132
+00:09:30,433 --> 00:09:32,459
+infinity?
+That can't be the case.
+
+133
+00:09:32,459 --> 00:09:37,715
+Well, of course, the rate is the, the, the
+minimum of this value and the link speed.
+
+134
+00:09:37,715 --> 00:09:40,438
+So it can't possibly exceed the link
+speed.
+
+135
+00:09:40,438 --> 00:09:45,060
+So at some point, with a very small RTT,
+the, the, the rate will actually be
+
+136
+00:09:45,060 --> 00:09:50,490
+determined by the speed of the link.
+Also, it appears to say, as the,
+
+137
+00:09:50,678 --> 00:09:54,380
+Drop probability goes to zero, the rate
+will go to infinity.
+
+138
+00:09:54,610 --> 00:10:00,149
+If you think about it, this is, is
+actually true, this is actually correct
+
+139
+00:10:00,380 --> 00:10:04,592
+because in the sawtooth,
+If the probability of drop is tending to
+
+140
+00:10:04,592 --> 00:10:07,884
+zero it means that there aren't any drops
+in the window size.
+
+141
+00:10:07,884 --> 00:10:11,662
+In other words we were able to increase
+the window size without limit.
+
+142
+00:10:11,662 --> 00:10:16,087
+We were able to put more and more bytes or
+packets into the network without there
+
+143
+00:10:16,087 --> 00:10:19,218
+ever being a drop.
+Well, if that was the case it means that
+
+144
+00:10:19,218 --> 00:10:23,643
+we've continued to increase the rate and
+we've encountered no drops, it means that
+
+145
+00:10:23,643 --> 00:10:27,691
+we haven't found the upper limit yet.
+So in fact, this is this is correct.
+
+146
+00:10:27,691 --> 00:10:32,008
+So in practice, there will always be some
+drops, there must be some drops for the
+
+147
+00:10:32,008 --> 00:10:34,814
+mechanism to work and for the rates to be
+controlled.
+
+148
+00:10:34,814 --> 00:10:39,239
+It also tells us what the what the
+sensitivity is to the, the drop
+
+149
+00:10:39,239 --> 00:10:42,600
+probability.
+So for example, we can rewrite this
+
+150
+00:10:42,600 --> 00:10:48,534
+equation here by saying that if you wanted
+to understand the ratio of two rates,
+
+151
+00:10:48,534 --> 00:10:53,575
+Say R1 and R2 as a function of the drop
+probability, we can say that the
+
+152
+00:10:53,575 --> 00:10:57,826
+relationship between them is P.
+The square root of P2 over P1.
+
+153
+00:10:57,826 --> 00:11:01,282
+That's simply by taking two values for R
+and P.
+
+154
+00:11:01,282 --> 00:11:07,165
+If we keep the RTT constant, then the
+ratio of those would be the square root of
+
+155
+00:11:07,165 --> 00:11:10,180
+P2 over P1.
+So if we were to increase the,
+
+156
+00:11:10,401 --> 00:11:14,152
+probability,
+Let's say that, the drop probability,
+
+157
+00:11:14,593 --> 00:11:19,667
+increased from one percent to four%.
+Then it tells us that the, the ratio of
+
+158
+00:11:19,667 --> 00:11:24,300
+the rates would be 2x.
+In other words, we would, by increasing
+
+159
+00:11:24,300 --> 00:11:28,860
+the probability, by a factor of four, we
+would have the rate.
+
+160
+00:11:28,860 --> 00:11:34,266
+What this tells us is that, that AIMD is
+quite sensitive to the drop probability.
+
+161
+00:11:34,266 --> 00:11:39,267
+So we want to make sure that our networks
+don't encounter too high of  a drop
+
+162
+00:11:39,267 --> 00:11:42,038
+probability.
+So what have we learned here?
+
+163
+00:11:42,038 --> 00:11:47,511
+We've learnt that TCP, which uses AIMD, is
+going to be very sensitive to the drop
+
+164
+00:11:47,511 --> 00:11:54,134
+probability, very sensitive to the RTT.
+Other observations that we can make about
+
+165
+00:11:54,395 --> 00:12:00,137
+the multiple flow cases,
+As before, the window is going to contract
+
+166
+00:12:00,137 --> 00:12:04,400
+and expand according to the AIMD
+equations.
+
+167
+00:12:04,400 --> 00:12:09,300
+And it's doing this just before as to
+probe how many bytes it can place into the
+
+168
+00:12:09,300 --> 00:12:12,143
+pipe.
+How many, how many bytes can the pipe hold
+
+169
+00:12:12,143 --> 00:12:16,318
+overall including the buffer?
+The bottleneck is going to contain packets
+
+170
+00:12:16,318 --> 00:12:20,855
+belonging to many, many different flows,
+Thousands, tens of thousands, or even
+
+171
+00:12:20,855 --> 00:12:25,634
+hundreds of thousands of different flows.
+And ascending rate is going to vary with
+
+172
+00:12:25,634 --> 00:12:28,599
+window size,
+Unlike before, when it tended to stay
+
+173
+00:12:28,599 --> 00:12:31,563
+constant.
+Aimd is very sensitive to the loss rate.
+
+174
+00:12:31,563 --> 00:12:36,040
+We saw one over the square root of P.
+And AMD, AIMD is going to penalize flows
+
+175
+00:12:36,040 --> 00:12:40,089
+that have long RTTs.
+What this means is that the, it can take a
+
+176
+00:12:40,089 --> 00:12:45,156
+very long time to climb back up that
+additive increase for long RTTs.
+
+177
+00:12:45,156 --> 00:12:51,105
+So it's very high, it takes them a long
+time to regain their rate after they have
+
+178
+00:12:51,105 --> 00:12:53,733
+a drop.
+So, we've now learned about the AIMD
+
+179
+00:12:53,733 --> 00:12:57,257
+process and, we're going to find out that
+this is underlying.
+
+180
+00:12:57,257 --> 00:13:01,602
+It's one of the main mechanisms that
+underlies the TCP congestion control
+
+181
+00:13:01,602 --> 00:13:04,538
+mechanisms.
+There are quite a few other mechanisms
+
+182
+00:13:04,538 --> 00:13:08,062
+that we're going to be learning about over
+the next few videos.
+
+183
+00:13:08,062 --> 00:13:11,937
+Aimd is one of them.
+There's also the question of how we detect
+
+184
+00:13:11,937 --> 00:13:14,404
+drops quickly?
+How we react to those drops?
+
+185
+00:13:14,580 --> 00:13:17,809
+How do we get into the AIMD process in the
+first place?
+
+186
+00:13:17,809 --> 00:13:21,509
+And, we'll see that there are lots of
+tricks in the TCP toolbox.
+
+187
+00:13:21,509 --> 00:13:26,585
+And there are many variations of TCP that
+have evolved over the years to turn it
+
+188
+00:13:26,585 --> 00:13:29,920
+into an extremely effective mechanism.
+

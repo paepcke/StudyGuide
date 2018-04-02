@@ -1,0 +1,713 @@
+1
+00:00:00,000 --> 00:00:03,810
+So in this video, I'm going to dig into
+the details of AA211, or WiFi.
+
+2
+00:00:03,810 --> 00:00:08,440
+What it's packet formats look like, how it
+used different, how it used different
+
+3
+00:00:08,440 --> 00:00:12,601
+media access control algorithms, and sort
+of an overview of WiFi itself.
+
+4
+00:00:12,602 --> 00:00:17,833
+So recall when we were talking about
+physical layers, and coding, and different
+
+5
+00:00:17,833 --> 00:00:22,913
+modulation schemes that something like
+802.11n has a whole bunch of different
+
+6
+00:00:22,913 --> 00:00:26,989
+speeds it can operate at.
+So here's just a limited set of very,
+
+7
+00:00:26,989 --> 00:00:32,069
+actually a reasonably small subset of the
+ways in which an 802.11n link can work.
+
+8
+00:00:32,069 --> 00:00:37,023
+And so there's a thing NCS index, this is
+actually a field in the packet, and it
+
+9
+00:00:37,023 --> 00:00:39,720
+tells you for the data portion of a
+packet,
+
+10
+00:00:39,720 --> 00:00:43,096
+How that data portion is modulated and how
+it's coded.
+
+11
+00:00:43,096 --> 00:00:48,097
+And so in practice, 802.11N is used in
+everything from Binary Phase Shift Keying
+
+12
+00:00:48,097 --> 00:00:52,599
+up to 64 Quadrature Ought Amplitude
+Modulation, with coding schemes from
+
+13
+00:00:52,599 --> 00:00:56,288
+one-half to 5/6ths.
+And this means that the actual range of
+
+14
+00:00:56,288 --> 00:01:01,414
+data speeds that you see for an 802.11N
+link, which is going to adapt based on the
+
+15
+00:01:01,414 --> 00:01:05,478
+observed signal to noise ratio is from,
+and this is just a subset.
+
+16
+00:01:05,477 --> 00:01:09,542
+Actually, it goes faster as we'll see in
+the future video on MIMO.
+
+17
+00:01:09,730 --> 00:01:15,598
+From 6.5 Mb/s to a 150 Mb/s.
+
+18
+00:01:16,207 --> 00:01:21,920
+And this is a factor of, you know, over
+twenty difference between the speeds.
+
+19
+00:01:21,920 --> 00:01:28,004
+And so, WiFi 802.11n is able to, depending
+on what the spectrum is like, depending on
+
+20
+00:01:28,004 --> 00:01:33,146
+what the timing is like, is able to adapt
+across a huge range of speeds.
+
+21
+00:01:33,146 --> 00:01:37,420
+So it can adapt its length based on the
+channel conditions.
+
+22
+00:01:37,420 --> 00:01:41,470
+Compare this to a wired system, where
+because the signal-to-noise ratio is fixed
+
+23
+00:01:41,470 --> 00:01:44,711
+based on the medium.
+You just have a fixed speed that you can
+
+24
+00:01:44,711 --> 00:01:47,748
+operate at, which is the fastest speed the
+other side can do.
+
+25
+00:01:47,748 --> 00:01:49,926
+So you imagine this is kind of a
+challenge.
+
+26
+00:01:49,926 --> 00:01:53,875
+Which is that WiFi depending on the
+signal-to-noise ratio that it oberves the
+
+27
+00:01:53,875 --> 00:01:57,723
+channel conditions, wants to be able to
+operate this huge range of bit rates.
+
+28
+00:01:57,723 --> 00:02:05,503
+And so how does this work?
+This is not occurring at the physical and
+
+29
+00:02:05,503 --> 00:02:08,518
+link layer.
+And so what happens is, this is what the
+
+30
+00:02:08,518 --> 00:02:12,656
+802.11b physical layer looks like.
+So here, there's this physical layer
+
+31
+00:02:12,656 --> 00:02:15,672
+header which starts with some
+synchronization bits.
+
+32
+00:02:15,672 --> 00:02:19,988
+This is what allows the other side to
+detect oh, this is actually a Wi-Fi
+
+33
+00:02:19,988 --> 00:02:24,126
+signal, this isn't just junk.
+So there's this series of synchronization
+
+34
+00:02:24,126 --> 00:02:28,738
+bits, followed by sixteen bits that denote
+okay, it's no longer synchronization.
+
+35
+00:02:28,738 --> 00:02:32,108
+This is what's called the SFD, or Starter
+Frame Delimiter.
+
+36
+00:02:32,108 --> 00:02:35,360
+So there's this particular sequence of
+bits you expect.
+
+37
+00:02:35,490 --> 00:02:38,940
+Then there's the start of frame delimiter,
+denoting that the synchronization is
+
+38
+00:02:38,940 --> 00:02:42,476
+over.'Cause it might be, you started, say,
+in the middle of the synchronization, you
+
+39
+00:02:42,476 --> 00:02:47,089
+don't know when it's going to end.
+And then after that, there's a series of
+
+40
+00:02:47,089 --> 00:02:54,341
+48 bits denoting the signal, the service,
+the length, and the CRC of this physical
+
+41
+00:02:54,341 --> 00:02:58,905
+layer chunk.
+All of this is being scrambled by the
+
+42
+00:02:58,905 --> 00:03:04,853
+physical layer using forward error
+correction, coding, interleaving, all
+
+43
+00:03:04,853 --> 00:03:09,580
+those kinds of techniques that'll be
+robust to bit errors.
+
+44
+00:03:09,580 --> 00:03:14,050
+Now, of course, you need to get this in
+its entirety before you can start, let's
+
+45
+00:03:14,050 --> 00:03:18,354
+say, pulling the link from, apart, because
+you just need to say, know what the length
+
+46
+00:03:18,354 --> 00:03:23,050
+is.
+So that's the physical layer.
+
+47
+00:03:23,050 --> 00:03:26,248
+Then in the link frame, we have a whole
+bunch of fields.
+
+48
+00:03:26,248 --> 00:03:30,610
+There's the frame control field, this
+gives you sort of control information
+
+49
+00:03:30,610 --> 00:03:34,797
+about the frame, what it's like.
+There's duration, this tells you how long
+
+50
+00:03:34,797 --> 00:03:37,647
+this packet or things about it are going
+to take.
+
+51
+00:03:37,647 --> 00:03:42,300
+This is really important if say, the data
+rate is higher than you can demodulate,
+
+52
+00:03:42,300 --> 00:03:45,557
+like you don't have a high enough signal
+to noise ratio.
+
+53
+00:03:45,557 --> 00:03:50,268
+So this duration is sent, you know how
+long this packet or this exchange is going
+
+54
+00:03:50,268 --> 00:03:53,001
+to be.
+It's a way to tell the nodes, hey, this is
+
+55
+00:03:53,001 --> 00:03:57,343
+how long it's going to take.
+There can be up to four addresses embedded
+
+56
+00:03:57,343 --> 00:04:00,610
+in the header.
+Often you just have a two addressing mode.
+
+57
+00:04:00,610 --> 00:04:04,985
+Oh, there's the source and there's the
+destination but there's other things you
+
+58
+00:04:04,985 --> 00:04:07,421
+can do.
+Say you want to bridge across networks
+
+59
+00:04:07,421 --> 00:04:09,969
+etcetera.
+There's a sequence number then, there's
+
+60
+00:04:09,969 --> 00:04:14,454
+the network data, what's coming in from
+network layer, and then finally, a frame
+
+61
+00:04:14,454 --> 00:04:17,610
+check sequence.
+So think of this like a CRC, it's a 4-byte
+
+62
+00:04:17,777 --> 00:04:22,033
+frame check sequence.
+So let's look at these first two fields,
+
+63
+00:04:22,033 --> 00:04:25,898
+the frame control and duration.
+Now what these are used for, as I was
+
+64
+00:04:25,898 --> 00:04:30,161
+saying, is the duration field tells
+listeners other nodes that can hear the
+
+65
+00:04:30,161 --> 00:04:34,821
+packet and also the recipient how long
+this packet or packet exchange is going to
+
+66
+00:04:34,821 --> 00:04:36,924
+take.
+And that way, even if they can't
+
+67
+00:04:36,924 --> 00:04:41,244
+understand those packets'cuz they're too
+fast, they know how long it's going to
+
+68
+00:04:41,244 --> 00:04:45,222
+take, and they can use this for something
+called virtual carrier sense.
+
+69
+00:04:45,222 --> 00:04:49,542
+The idea here is a call that, in the
+CSMACA algorithm, a node will count down
+
+70
+00:04:49,542 --> 00:04:54,669
+while the channel is busy.
+Now it could detect the channel is busy
+
+71
+00:04:54,669 --> 00:04:58,434
+directly by listening.
+Or it could detect the channel is busy
+
+72
+00:04:58,434 --> 00:05:02,940
+virtually by being told that it is.
+So this duration field, for example, is
+
+73
+00:05:02,940 --> 00:05:05,841
+what a CTS packet uses to tell nodes
+around it.
+
+74
+00:05:05,841 --> 00:05:09,360
+Hey, clear to send.
+I you know, you're channel was busy for
+
+75
+00:05:09,360 --> 00:05:13,804
+this long because I'm going to be
+receiving something, and so you shouldn't
+
+76
+00:05:13,804 --> 00:05:16,679
+transmit.
+So another thing the 802 eleven header can
+
+77
+00:05:16,679 --> 00:05:20,726
+do is essentially virtualize a link.
+So think, we have these three addresses.
+
+78
+00:05:20,726 --> 00:05:24,502
+So I'm not going to go to the fourth one,
+let's just consider these three.
+
+79
+00:05:24,502 --> 00:05:27,200
+So this is the case where, if I want to
+have an AP.
+
+80
+00:05:29,180 --> 00:05:34,898
+Act more like a switch, say, than an
+independent link layered device to which a
+
+81
+00:05:34,898 --> 00:05:39,064
+packet is destined.
+So in this case, I can tell, hey, I'd like
+
+82
+00:05:39,064 --> 00:05:43,300
+to send, this is, you know I'd like to
+send a packet from outer one.
+
+83
+00:05:44,100 --> 00:05:53,042
+Two adder two, via adder three.
+This a way of telling the AP, a-ha, I
+
+84
+00:05:53,042 --> 00:05:59,351
+would like to send a package to this other
+link letter address through you.
+
+85
+00:05:59,351 --> 00:06:04,042
+So you can sort of virtualize that link of
+the access point.
+
+86
+00:06:04,042 --> 00:06:10,513
+And so give the nodes that are connected
+wirelessly, virtual access to the wired
+
+87
+00:06:15,439 --> 00:06:17,849
+network sitting behind the AP.  
+So one of the things we saw in RTS/CTS
+
+88
+00:06:17,849 --> 00:06:20,259
+is that depending on the speed that
+you use RTS/CTS, these control packets
+
+89
+00:06:20,259 --> 00:06:24,960
+could have a significant overhead, up to
+25% at eleven megabits for 802.11b.
+
+90
+00:06:24,960 --> 00:06:30,198
+And this all comes down to the fact that
+because 802.11 has this huge range of
+
+91
+00:06:30,198 --> 00:06:34,994
+bit rates, but it needs to be backwards
+compatible, this means that, say these,
+
+92
+00:06:34,994 --> 00:06:38,150
+this physical region, the physical frame
+header.
+
+93
+00:06:38,150 --> 00:06:43,030
+Needs to be comprehensible why everyone
+listening, so I can't, if I'm a
+
+94
+00:06:43,030 --> 00:06:47,632
+transmitter, I can't transmit the physical
+header at my full speed.
+
+95
+00:06:47,632 --> 00:06:53,280
+So if I'm operating at 1Mb/s or 600Mb/s, 
+I still need to transmit this
+
+96
+00:06:53,280 --> 00:06:57,463
+header at the same speed so that everyone
+can understand it.
+
+97
+00:06:57,673 --> 00:07:03,181
+Same with things like the duration field.
+And so the way to think about this is
+
+98
+00:07:03,181 --> 00:07:05,552
+that:
+Because the slowest link is say, 1 Mb/s,
+
+99
+00:07:05,552 --> 00:07:10,047
+I need to transmit
+this that everyone operating perhaps even
+
+100
+00:07:10,047 --> 00:07:12,520
+at 1Mb/s can understand it.
+
+101
+00:07:12,520 --> 00:07:17,620
+Then the data region may, maybe will save
+you 600 Mb/s, so tiny,
+
+102
+00:07:17,620 --> 00:07:20,866
+tiny, tiny.
+But, this original, this initial control
+
+103
+00:07:20,866 --> 00:07:23,980
+sequence is still going to remain the same
+length.
+
+104
+00:07:23,980 --> 00:07:30,483
+So in practice what this means is that, as
+Wi-Fi speeds get faster and faster and
+
+105
+00:07:30,483 --> 00:07:31,527
+faster,
+Right?
+
+106
+00:07:31,527 --> 00:07:37,468
+So you can imagine, if I have a slow
+speed, then the data, this is at 1Mb/s
+
+107
+00:07:37,468 --> 00:07:40,600
+so this is slow.
+Here's control.
+
+108
+00:07:41,020 --> 00:07:48,227
+Here's data.
+The control is small compared to the data.
+
+109
+00:07:48,227 --> 00:07:55,830
+But as I make the data region faster and
+faster, there's data, which is faster
+
+110
+00:07:55,830 --> 00:07:59,020
+control or faster.
+.
+
+111
+00:07:59,560 --> 00:08:06,320
+It can be, in fact, that the control,
+here's data, here's control.
+
+112
+00:08:06,820 --> 00:08:09,705
+Can be the dominant duration of the
+packet.
+
+113
+00:08:09,705 --> 00:08:15,139
+These bits are sent so slowly compared to
+the data region, the network layer, that
+
+114
+00:08:15,139 --> 00:08:18,628
+all my airtime is consumed by these
+control headers.
+
+115
+00:08:18,628 --> 00:08:24,331
+And some people at Microsoft Research have
+done some analysis of this and have shown
+
+116
+00:08:24,331 --> 00:08:29,766
+that, look when you're operating up to 600Mb/s 
+at some of the fastest
+
+117
+00:08:29,766 --> 00:08:37,220
+802.11 speed, 802.11n we can do today.
+This control sequence is 92% of your
+
+118
+00:08:37,220 --> 00:08:39,395
+airtime.
+That is, you're only spending
+
+119
+00:08:39,395 --> 00:08:41,806
+eight percent of your time actually
+sending data.
+
+120
+00:08:41,806 --> 00:08:45,921
+So you can imagine, even if you double
+your data rate, you're not going to
+
+121
+00:08:45,921 --> 00:08:50,095
+actually double your throughput because
+you're going to go from consuming
+
+122
+00:08:50,095 --> 00:08:52,330
+eight percent of the time to four percent
+of the time.
+
+123
+00:08:52,330 --> 00:08:55,761
+It's still then 96% of your autonomy
+consumed with control traffic.
+
+124
+00:08:55,761 --> 00:08:59,557
+And so, there's this diminishing return.
+So, 802.11 is the basic MAC format.
+
+125
+00:08:59,557 --> 00:09:03,457
+It's designed to work on top of many
+physical layers, many modulations, many
+
+126
+00:09:03,457 --> 00:09:06,005
+speeds.
+But part of that is that it needs to have
+
+127
+00:09:06,005 --> 00:09:09,384
+backwards compatibility.
+So rather than say, talk about the number
+
+128
+00:09:09,384 --> 00:09:13,128
+of bytes that this packet is going to
+last, you talk about how long this
+
+129
+00:09:13,128 --> 00:09:16,820
+packet's going to last in time.
+So that even if you don't know what the
+
+130
+00:09:16,820 --> 00:09:20,980
+modulation scheme is, because it's some
+future version of wi-fi that your device
+
+131
+00:09:20,980 --> 00:09:23,580
+doesn't talk, it knows how long the packet
+will be.
+
+132
+00:09:23,743 --> 00:09:26,515
+Mac control things like the control
+descent packet.
+
+133
+00:09:26,678 --> 00:09:30,591
+Are done in terms of durations.
+There's this duration field where it can
+
+134
+00:09:30,591 --> 00:09:33,472
+say, hey.
+The channel run mean needs to be clear for
+
+135
+00:09:33,472 --> 00:09:37,657
+this number of microseconds.
+It also allows you to virtualize a link,
+
+136
+00:09:37,657 --> 00:09:42,060
+right, by embedding additional addresses.
+That you can actually bridge between the
+
+137
+00:09:42,060 --> 00:09:45,908
+wired and the wireless Ethernet.
+And so, while you read all those about
+
+138
+00:09:45,908 --> 00:09:50,569
+faster and faster WiFi in a 600Mb/s, 
+in practice, it's not actually
+
+139
+00:09:50,569 --> 00:09:53,344
+getting that fast.
+And, the reason being that, these
+
+140
+00:09:53,344 --> 00:09:57,228
+controlled headers that are needed for
+backward compatibility and for
+
+141
+00:09:57,228 --> 00:10:00,558
+interoperability just end up consuming all
+of your air time.
+
+142
+00:10:00,558 --> 00:10:05,163
+As, the actual observed data throughput on
+a 600 Mb/s Wi-Fi link is
+
+143
+00:10:05,163 --> 00:10:09,492
+far, far, far below 600 Mb/s, 
+probably closer to at most 50 Mb/s.
+

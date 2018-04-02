@@ -1,0 +1,161 @@
+1
+00:00:00,849 --> 00:00:04,110
+Nick: In this unit you will learn a lot about
+packet switching – it is quite an intense
+
+2
+00:00:04,110 --> 00:00:09,020
+unit and your head might be spinning with
+packets by the end of it. But that’s why
+
+3
+00:00:09,020 --> 00:00:13,700
+we have videos! You can cover the material
+at your own pace and review it several times.
+
+4
+00:00:13,700 --> 00:00:19,360
+Phil: We will start out with a leisurely look
+at why the Internet – and almost all modern
+
+5
+00:00:19,360 --> 00:00:24,780
+networks – are built on a foundation of
+packet switching. Packet switching is simple
+
+6
+00:00:24,780 --> 00:00:30,560
+in the sense that each packet is a self-contained
+unit of data that carries information necessary
+
+7
+00:00:30,560 --> 00:00:35,809
+for it to reach its destination. Packet switching
+is efficient in the sense that it keeps a
+
+8
+00:00:35,809 --> 00:00:40,679
+link busy whenever there is work to be done,
+rather than have dedicated capacity reserved
+
+9
+00:00:40,679 --> 00:00:42,350
+for each user or application.
+
+10
+00:00:42,350 --> 00:00:47,069
+Nick: After a leisurely introduction to packet
+switching, we will dive deeply into some of
+
+11
+00:00:47,069 --> 00:00:51,338
+the consequences. We will take a journey that
+includes more math than you will see in any
+
+12
+00:00:51,339 --> 00:00:56,460
+other unit of this course. The math might
+seem daunting at first, but it’s actually
+
+13
+00:00:56,460 --> 00:01:01,299
+quite simple. Once you learn the math, so
+many other details or complex questions become
+
+14
+00:01:01,299 --> 00:01:06,310
+really easy to answer and understand. For
+example, you will learn why two packets traveling
+
+15
+00:01:06,310 --> 00:01:12,170
+between the same two end hosts might encounter
+a different delay. While the time they spend
+
+16
+00:01:12,170 --> 00:01:15,969
+traversing each link is the same, the packets
+might take different paths and experience
+
+17
+00:01:15,969 --> 00:01:18,189
+different queueing delays in the router buffers.
+
+18
+00:01:18,189 --> 00:01:24,590
+Phil: Make sure you fully understand the three
+main components of packet delay: the packetization
+
+19
+00:01:24,590 --> 00:01:30,609
+delay, the propagation delay, and the queueing
+delay; and that you understand the physical
+
+20
+00:01:30,609 --> 00:01:35,140
+processes that cause them. By the end of this
+unit you will be able to answer questions
+
+21
+00:01:35,140 --> 00:01:40,380
+like: “How long does it take for a packet
+to get from here to London?” or “How many
+
+22
+00:01:40,380 --> 00:01:44,359
+packets can I fit in space between the moon
+and Mars?”. You’ll understand why routers
+
+23
+00:01:44,359 --> 00:01:49,490
+have buffers, and how queueing delay leads
+to uncertainty about when packets will arrive.
+
+24
+00:01:49,490 --> 00:01:54,289
+For most applications, this isn’t an issue.
+But for real time streaming applications,
+
+25
+00:01:54,289 --> 00:01:59,770
+like Skype and YouTube, they need to playback
+smooth, hiccup-free audio and video to the
+
+26
+00:01:59,770 --> 00:02:04,359
+user, and so they need to absorb the variation
+in delay across the Internet. You’ll learn
+
+27
+00:02:04,359 --> 00:02:06,789
+how playback buffers are designed.
+
+28
+00:02:06,789 --> 00:02:12,470
+Nick: Finally, you’ll learn about how packet
+switches work in practice. At the end of the
+
+29
+00:02:12,470 --> 00:02:17,170
+unit you’ll also be able to answer the question:
+“How does an Internet router actually work?”,
+
+30
+00:02:17,170 --> 00:02:21,250
+and “How is it different from an Ethernet
+switch?”. “How does a router arrange its
+
+31
+00:02:21,250 --> 00:02:26,200
+lookup tables?” and so on. It’s quite
+a whistle-stop tour of packet switching, and
+
+32
+00:02:26,200 --> 00:02:30,810
+by the end of the unit you should have a good
+intuition for how packet switching works in
+
+33
+00:02:30,810 --> 00:02:31,170
+the Internet.
+

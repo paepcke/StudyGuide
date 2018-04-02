@@ -1,0 +1,965 @@
+1
+00:00:00,000 --> 00:00:04,054
+By now you know how to calculate the end
+to end delay of a packet across a network,
+
+2
+00:00:04,054 --> 00:00:08,047
+and you know that the queuing delay makes
+the end to end delay variable.
+
+3
+00:00:08,090 --> 00:00:13,051
+Most of the applications that we use don't
+particularly care about this variability
+
+4
+00:00:13,051 --> 00:00:17,077
+in end to end delay, for example when
+we're downloading a webpage or sending a
+
+5
+00:00:17,077 --> 00:00:22,025
+email we want it to complete quickly but
+we don't particularly mind if individual
+
+6
+00:00:22,026 --> 00:00:25,071
+packets take ten or twelve milliseconds to
+reach the other end.
+
+7
+00:00:25,071 --> 00:00:28,098
+But there are some applications that
+really do care.
+
+8
+00:00:28,098 --> 00:00:33,089
+They have to care about the queuing delay,
+particularly what we call real time
+
+9
+00:00:33,089 --> 00:00:38,096
+applications like streaming video and
+voice.  So let's take a look at an example.
+
+10
+00:00:39,015 --> 00:00:44,457
+Over the next few minutes, I'm gonna
+explain why queuing delay makes life hard
+
+11
+00:00:44,457 --> 00:00:49,010
+for these applications.
+It serves as a good illustration of
+
+12
+00:00:49,010 --> 00:00:53,055
+queuing delay and, and how we might
+mitigate the problem in practice.
+
+13
+00:00:53,055 --> 00:00:58,099
+Basically, because the applications don't
+know precisely when the packets are gonna
+
+14
+00:00:58,099 --> 00:01:04,055
+show up, they can't be sure they will have
+a voice or video sample in time to deliver
+
+15
+00:01:04,055 --> 00:01:08,043
+it to the user.
+And so they build up a reserve of packets
+
+16
+00:01:08,043 --> 00:01:13,066
+in something called the playback buffer.
+So we're gonna take a look at playback
+
+17
+00:01:13,066 --> 00:01:17,071
+buffers.
+You've actually all seen a playback buffer
+
+18
+00:01:17,071 --> 00:01:21,957
+before.
+This is a little screenshot from the
+
+19
+00:01:21,957 --> 00:01:28,410
+bottom of a YouTube client.
+And, the red line on the left over here,
+
+20
+00:01:28,410 --> 00:01:32,307
+This shows the video that we've already
+watched.
+
+21
+00:01:32,307 --> 00:01:37,960
+This here is the point of playback.
+This dot shows where we've got to.
+
+22
+00:01:37,960 --> 00:01:44,243
+And this area over here is, this grey
+line, shows the video that has been
+
+23
+00:01:44,243 --> 00:01:47,488
+buffered.
+All the packets that have been buffered,
+
+24
+00:01:47,488 --> 00:01:50,368
+that have not yet been played back to the
+user.
+
+25
+00:01:50,368 --> 00:01:53,927
+And this is the part that we're going to
+be interested in.
+
+26
+00:01:53,927 --> 00:01:59,678
+This right here is the play back buffer.
+So the client deliberately tries to build
+
+27
+00:01:59,678 --> 00:02:04,500
+up that playback buffer to try and get
+ahead, in case some of the packets are
+
+28
+00:02:04,500 --> 00:02:09,651
+delayed, or they don't arrive in time, and
+in case there is some kind of temporary
+
+29
+00:02:09,651 --> 00:02:13,026
+outage.
+So when designing the playback buffer, we
+
+30
+00:02:13,026 --> 00:02:17,240
+have to think about how far ahead we want
+the buffer to get.
+
+31
+00:02:17,240 --> 00:02:22,418
+So, if we were to build up the buffer all
+the way over to here, and build up more
+
+32
+00:02:22,418 --> 00:02:27,294
+packets, then we've absorbed more data and
+we can write out more variability in the
+
+33
+00:02:27,294 --> 00:02:30,431
+queuing delay.
+If we make it very short down here if
+
+34
+00:02:30,431 --> 00:02:35,680
+there's a big change or big change in the
+queing delay or sudden increase in queing
+
+35
+00:02:35,680 --> 00:02:40,024
+delay we may have run out of packets,
+because they may not show up in time.
+
+36
+00:02:40,024 --> 00:02:44,598
+So designing this playback buffer is
+pretty key to make this application work.
+
+37
+00:02:44,598 --> 00:02:49,170
+So how much we wanna accumulate in the
+buffer when we start playing the back,
+
+38
+00:02:49,170 --> 00:02:54,096
+back the video to the user is key.
+So let's take a closer look at this.
+
+39
+00:02:55,031 --> 00:03:00,049
+This is the point that we're playing.
+This is the amount that we've buffered.
+
+40
+00:03:00,049 --> 00:03:03,058
+This is the contents in the pipeline
+buffer.
+
+41
+00:03:03,058 --> 00:03:06,074
+We look down and do a little bit more
+detail.
+
+42
+00:03:06,074 --> 00:03:11,030
+So we are going to take this as an example
+this set up here.
+
+43
+00:03:11,030 --> 00:03:16,098
+So imagine we are watching the you tube
+video on the laptop on the right so over
+
+44
+00:03:16,098 --> 00:03:22,388
+here and it's streaming the video from the
+server, the you tube server over here.
+
+45
+00:03:22,388 --> 00:03:27,612
+So, we are going to assume that the video
+is being streamed at one megabit per
+
+46
+00:03:27,612 --> 00:03:30,376
+second.
+Now this is just a made up number.
+
+47
+00:03:30,376 --> 00:03:35,619
+There's all sorts of rate that could be
+streamed out, this is just gonna make,
+
+48
+00:03:35,619 --> 00:03:40,364
+make it easy for us to think about.
+And it's gonna pass through several
+
+49
+00:03:40,364 --> 00:03:44,068
+routers along the path, one two and three
+in the figure here.
+
+50
+00:03:44,068 --> 00:03:48,530
+But it could be many more than that.
+Be very common for our packets to go
+
+51
+00:03:48,530 --> 00:03:53,535
+through ten or fifteen routers on the path
+from You Tube to our client.
+
+52
+00:03:53,535 --> 00:03:59,188
+And the thing that we're gonna be
+concerned mostly about is the queuing
+
+53
+00:03:59,188 --> 00:04:02,452
+delay here.
+So there's three places where we can
+
+54
+00:04:02,452 --> 00:04:06,686
+experience queuing delay.
+And that variable queuing delay, is going
+
+55
+00:04:06,686 --> 00:04:10,744
+to mean that our packets show up at
+slightly unpredictable times.
+
+56
+00:04:10,744 --> 00:04:14,130
+So let's look at a graph of what this
+might look like.
+
+57
+00:04:14,130 --> 00:04:19,820
+This graph shows the cumulative number of
+bytes sent by the server over time, as a
+
+58
+00:04:19,820 --> 00:04:23,567
+function of time.
+Because it's sending at a fixed rate of
+
+59
+00:04:23,567 --> 00:04:27,403
+one megabit per second.
+It means that the line is straight.
+
+60
+00:04:27,403 --> 00:04:32,978
+The cumulative number of bits or bytes
+that it sent as a function of time is a
+
+61
+00:04:32,978 --> 00:04:36,625
+straight line.
+And so after one second it will have sent
+
+62
+00:04:36,625 --> 00:04:41,701
+a megabit, a million bits, and after ten
+seconds it will have sent ten million
+
+63
+00:04:41,701 --> 00:04:45,133
+bits.
+Because of the variable queuing delay in
+
+64
+00:04:45,133 --> 00:04:51,022
+the network, the cumulative arrivals at
+the laptop look a little bit different.
+
+65
+00:04:51,022 --> 00:04:54,861
+They might look like this.
+So you see this wiggly line that I got
+
+66
+00:04:54,861 --> 00:04:56,416
+here.
+What does this mean?
+
+67
+00:04:56,416 --> 00:05:01,394
+It means if we take the first byte here,
+because they're arriving in first come first
+
+68
+00:05:01,394 --> 00:05:04,664
+sever order.
+We can just draw horizontally across here
+
+69
+00:05:04,664 --> 00:05:09,653
+and see when a particular byte arrived.
+So this one arrived here after that delay.
+
+70
+00:05:09,653 --> 00:05:14,646
+So the x axis is going to tell you how
+long that particular that, that particular
+
+71
+00:05:14,646 --> 00:05:18,460
+byte took to get there.
+Notice I'm saying bits and bytes it,
+
+72
+00:05:18,460 --> 00:05:23,409
+doesn't matter what our units are here.
+So if we were to take any point here,
+
+73
+00:05:23,409 --> 00:05:28,989
+let's say this particular byte and we draw
+horizontally, I'm not really good at
+
+74
+00:05:28,989 --> 00:05:31,722
+drawing straight lines, but that's
+supposed to be horizontal.
+
+75
+00:05:31,722 --> 00:05:36,359
+And right here is the time at which that
+particular byte arrived at a laptop.
+
+76
+00:05:36,359 --> 00:05:40,666
+So you can see that the delay is measured
+by the horizontal distance.
+
+77
+00:05:40,666 --> 00:05:42,791
+Right.
+The horizontal distance here.
+
+78
+00:05:42,791 --> 00:05:47,011
+And you can see that it's a variable
+number, depending on the cuing delay
+
+79
+00:05:47,011 --> 00:05:50,306
+encountered by each of the individual,
+packets.
+
+80
+00:05:50,306 --> 00:05:59,721
+We can also see foray at a given time.
+By the given time, how big is the buffer,
+
+81
+00:05:59,721 --> 00:06:05,037
+the amount of buffering along the path?
+Basically, how may bytes are in the path
+
+82
+00:06:05,037 --> 00:06:10,040
+from the server to the client?
+And that would be showing by the vertical
+
+83
+00:06:10,040 --> 00:06:13,061
+distance here.
+Because, it says that at a particular
+
+84
+00:06:13,061 --> 00:06:18,027
+time, this is the number that have been
+sent, and this is the number that have
+
+85
+00:06:18,027 --> 00:06:21,000
+been received.
+So, you can take quite a lot of
+
+86
+00:06:21,000 --> 00:06:24,087
+information from this graph.
+We are going to be seeing some more
+
+87
+00:06:24,087 --> 00:06:29,503
+examples of this type of graph later.
+Horizontal axis is the delayed, vertical
+
+88
+00:06:29,503 --> 00:06:33,083
+axis tells us how many bytes are buffered
+right now in the network.
+
+89
+00:06:34,013 --> 00:06:38,182
+Okay.
+So let's get back to our example.
+
+90
+00:06:38,182 --> 00:06:45,035
+So the biggest component in the delay is
+the propagation and packetization delay.
+
+91
+00:06:45,035 --> 00:06:50,728
+That's the fixed component.
+So we actually know quite a bit about the
+
+92
+00:06:50,728 --> 00:06:57,003
+shape of this of this lane, to the actual
+shape could look very different.
+
+93
+00:06:57,021 --> 00:07:01,008
+I just made up this shape, however we do
+know a couple of things.
+
+94
+00:07:01,008 --> 00:07:05,066
+First, the overall end to end delay can't
+be less than the packetization and
+
+95
+00:07:05,066 --> 00:07:08,068
+propagation delay.
+There are a lower bound.
+
+96
+00:07:08,068 --> 00:07:13,746
+So this has a lower bound in the
+horizontal distance between the two here.
+
+97
+00:07:13,746 --> 00:07:21,069
+What it also has an upper bound.
+So the buffers in the routers, the packet
+
+98
+00:07:21,069 --> 00:07:25,796
+buffers here, they're of finite size.
+So there's a maximum delay that any packet
+
+99
+00:07:25,796 --> 00:07:29,125
+can experience going through one of those
+buffers.
+
+100
+00:07:29,125 --> 00:07:32,388
+So if we add up the maximum of each of
+these.
+
+101
+00:07:32,388 --> 00:07:37,257
+Add it to the packatization delay and the
+propagation delay, it's going to represent
+
+102
+00:07:37,257 --> 00:07:40,615
+an upper bound.
+So we have a lower bound and an upper
+
+103
+00:07:40,615 --> 00:07:43,226
+bound.
+But the upper bound is not very useful
+
+104
+00:07:43,226 --> 00:07:47,724
+cause it can be very, very large.
+In practice these routers may have half a
+
+105
+00:07:47,724 --> 00:07:51,137
+second of buffering.
+So if we're going through many hops, it
+
+106
+00:07:51,137 --> 00:07:56,036
+would mean a ridiculous difference between
+the lower bound and the upper bound.
+
+107
+00:07:56,036 --> 00:08:05,067
+So that's of not much use to us.
+We also know that the cumulative arrivals
+
+108
+00:08:05,067 --> 00:08:11,017
+on the right-hand side are non-decreasing.
+In other words, its value is always
+
+109
+00:08:11,017 --> 00:08:16,095
+increasing, cuz it's the cumulative number
+of bytes and obviously we can't have a
+
+110
+00:08:16,095 --> 00:08:21,077
+negative number of bytes show up.
+Finally, one more thing that we know is
+
+111
+00:08:21,077 --> 00:08:27,013
+because we know how fast, or there is an
+upper bound on the rate of that of that
+
+112
+00:08:27,013 --> 00:08:30,042
+last link.
+It could be a 100 megabit per second link
+
+113
+00:08:30,042 --> 00:08:34,084
+or gigabit per second link.
+It tells us that the instantaneous arrival
+
+114
+00:08:34,083 --> 00:08:39,094
+rate here, the gradient of this line here,
+can't exceed the speed, the data rate of
+
+115
+00:08:39,095 --> 00:08:43,057
+that link.
+Okay so with all of those caveats.
+
+116
+00:08:43,057 --> 00:08:50,012
+Let's look at what the client actually
+needs to do to make all of this work.
+
+117
+00:08:50,012 --> 00:08:56,024
+So this red line here shows the playback
+rate of the video to the user.
+
+118
+00:08:56,024 --> 00:09:04,017
+So this what this tells us is that at this
+time here it's playing back the first byte
+
+119
+00:09:04,017 --> 00:09:09,037
+that was sent by the server.
+Which is, of course, the first byte
+
+120
+00:09:09,037 --> 00:09:14,071
+received by the receiver.
+So if at any point we take a horizontal
+
+121
+00:09:14,071 --> 00:09:21,052
+line across here it will tell us the time
+that a particular byte was sent, received,
+
+122
+00:09:21,052 --> 00:09:26,044
+and then played back.
+What that means is that the horizontal
+
+123
+00:09:26,044 --> 00:09:35,189
+distance here tells us so in for example,
+in the horizontal distance here tells us
+
+124
+00:09:35,189 --> 00:09:39,013
+how long a particular byte has been
+buffered.
+
+125
+00:09:39,013 --> 00:09:44,051
+So at any one time, we can tell how long
+it sat in the playback buffer before it
+
+126
+00:09:44,051 --> 00:09:49,041
+was played back to the receiver.
+We also know how many bytes there are in
+
+127
+00:09:49,041 --> 00:09:52,090
+the playback buffer.
+It's the vertical distance here.
+
+128
+00:09:52,090 --> 00:09:57,000
+At any one time it tells us what the
+occupancy of the playback buffer is.
+
+129
+00:09:57,000 --> 00:10:01,691
+So you can see that the playback buffer
+was very small to start with.
+
+130
+00:10:01,691 --> 00:10:08,971
+It accumulates to a very large value here.
+Then it gets smaller as we fall behind, as
+
+131
+00:10:08,971 --> 00:10:14,062
+we fall behind, almost goes empty here,
+we're very lucky that there must have been
+
+132
+00:10:14,062 --> 00:10:19,009
+some bytes that showed up late.
+We just avoided underrunning the buffer.
+
+133
+00:10:19,009 --> 00:10:23,055
+And then at some time, we built up a
+little bit more as we go up here.
+
+134
+00:10:23,055 --> 00:10:26,023
+Okay.
+So, playing back at a constant one
+
+135
+00:10:26,023 --> 00:10:30,027
+megabits per second.
+That's what's being played back to the
+
+136
+00:10:30,027 --> 00:10:32,039
+user.
+So this is a good example.
+
+137
+00:10:32,039 --> 00:10:37,046
+We picked the right value, we waited long
+enough, we built up enough buffer,
+
+138
+00:10:37,046 --> 00:10:42,934
+everything worked out fine in the end.
+So, if we take a look inside the client,
+
+139
+00:10:42,934 --> 00:10:48,065
+it looks roughly like this.
+So the playback buffer, is a buffer held
+
+140
+00:10:48,065 --> 00:10:53,082
+in the memory of the client.
+The client is picking the playback point,
+
+141
+00:10:53,082 --> 00:10:58,557
+that's this here.
+This is the point at which it has reached,
+
+142
+00:10:58,557 --> 00:11:02,061
+and that's that dot that we see on the
+YouTube client.
+
+143
+00:11:02,061 --> 00:11:08,033
+After the bytes have been taken out of the
+playback buffer, they're put into a video
+
+144
+00:11:08,033 --> 00:11:13,037
+decoder to turn them back into, to video
+and then played out on the screen.
+
+145
+00:11:13,037 --> 00:11:17,093
+Okay, let us look at an example of when
+things don't quite work out fine.
+
+146
+00:11:17,093 --> 00:11:22,087
+So the same example again, byte sent by
+the server on the left, received by the
+
+147
+00:11:22,087 --> 00:11:27,018
+laptop on the right, but in this
+particular case, we didn't wait long
+
+148
+00:11:27,018 --> 00:11:31,063
+enough before playing out the first byte.
+You can see that here.
+
+149
+00:11:31,063 --> 00:11:37,033
+We have waited a very less time from when
+the first pipe was received until we play
+
+150
+00:11:37,033 --> 00:11:41,061
+out that first byte.
+Because once we stop playing out the bites
+
+151
+00:11:41,061 --> 00:11:46,077
+we committed, we got to play them one
+megabits per second, otherwise we can't
+
+152
+00:11:46,077 --> 00:11:51,094
+keep putting the video on the screen.
+So on this particular case here everything
+
+153
+00:11:51,094 --> 00:11:55,076
+looks fine to start with.
+The buffer has a nice occupancy, nice
+
+154
+00:11:55,076 --> 00:11:59,077
+occupancy, nice occupancy.
+It gets smaller and smaller and smaller
+
+155
+00:11:59,077 --> 00:12:03,010
+until eventually at this point here we
+have a problem.
+
+156
+00:12:03,010 --> 00:12:07,091
+The buffer goes empty, which means we've
+got no bytes to decode and put on the
+
+157
+00:12:07,091 --> 00:12:10,069
+screen.
+So all of this area here is a time in
+
+158
+00:12:10,069 --> 00:12:13,010
+which we're in deficit.
+This is not good.
+
+159
+00:12:13,010 --> 00:12:16,040
+What does the client do?
+Well we've all seen this before.
+
+160
+00:12:16,040 --> 00:12:20,028
+It has to make the buffer bigger and it
+does this by re-buffering.
+
+161
+00:12:20,028 --> 00:12:24,092
+By freezing the screen, waiting for some
+bytes to accumulate, and so that it can
+
+162
+00:12:24,092 --> 00:12:28,051
+continue.
+'Kay, so if you've been watching the video
+
+163
+00:12:28,051 --> 00:12:34,717
+over this particular video right now over
+a slow link or if you're a long way away
+
+164
+00:12:34,717 --> 00:12:40,301
+and you have, you're packets are going
+through many routers, you might experience
+
+165
+00:12:40,301 --> 00:12:45,531
+a re-buffering event watching this video.
+You can fix the problem by streaming at a
+
+166
+00:12:45,531 --> 00:12:49,947
+slower rate or just simply by downloading
+the video ahead of time.
+
+167
+00:12:49,947 --> 00:12:55,407
+So in summary, with a play back buffer,
+when we have packet switching, end to end
+
+168
+00:12:55,407 --> 00:12:58,085
+delay is variable.
+We use a playback buffer to absorb the
+
+169
+00:12:58,085 --> 00:13:01,066
+variation.
+We could just make the playback buffer
+
+170
+00:13:01,066 --> 00:13:04,099
+very big, but then the video would be
+delayed at the start.
+
+171
+00:13:04,099 --> 00:13:09,006
+That was the time that we were waiting
+from the first byte to arrive until we
+
+172
+00:13:09,006 --> 00:13:12,066
+play it down on the screen.
+We could make the buffer bigger but if we
+
+173
+00:13:12,066 --> 00:13:16,052
+would have make that buffer bigger, then
+we would have to delay the up at the
+
+174
+00:13:16,052 --> 00:13:20,902
+starting point of the video which would be
+kind of annoying, when we're watching our
+
+175
+00:13:20,902 --> 00:13:24,004
+videos.
+So therefore, applications try to estimate
+
+176
+00:13:24,004 --> 00:13:28,016
+the delay, they try to estimate the delay
+from the server to the laptop, set the
+
+177
+00:13:28,016 --> 00:13:31,055
+play back valley and then resize the
+buffer, if the delay changes.
+
+178
+00:13:32,051 --> 00:13:38,023
+Okay, so now let's go back to our original
+expression for the antwin delay.
+
+179
+00:13:38,023 --> 00:13:42,048
+So now we see that it has these three
+components to it.
+
+180
+00:13:42,075 --> 00:13:48,018
+Packetization delay, propagation delay,
+and then the variable queuing delay.
+
+181
+00:13:48,018 --> 00:13:53,054
+And the queuing adds variable and
+unpredictable delay to the path, and to
+
+182
+00:13:53,054 --> 00:13:58,000
+the packets from end to end.
+Okay so in summary, end to end delay
+
+183
+00:13:58,000 --> 00:14:03,035
+consists of three components, the first
+two are fixed, propagation delay, which is
+
+184
+00:14:03,035 --> 00:14:08,044
+the time that it takes for a bit to
+propagate over a link, the packetization
+
+185
+00:14:08,044 --> 00:14:13,072
+delay, which is the time that it takes to
+put a packet onto a link, and then the
+
+186
+00:14:13,072 --> 00:14:19,027
+queuing delay, which is variable which is
+dictated by the time that a packet spends
+
+187
+00:14:19,027 --> 00:14:22,028
+in the buffers in the routers along the
+path.
+
+188
+00:14:22,028 --> 00:14:27,086
+Some applications as we saw, use playback
+buffers, to absorb this variable queuing
+
+189
+00:14:27,086 --> 00:14:31,037
+delay.
+To help the applications, stream the video
+
+190
+00:14:31,037 --> 00:14:35,062
+back to us, at a fixed rate.
+So this is the end if packet switching
+
+191
+00:14:35,062 --> 00:14:38,038
+two.
+I will see you again in packet switching
+
+192
+00:14:38,038 --> 00:14:41,020
+three.
+Where I'm gonna tell you about a simple
+
+193
+00:14:41,020 --> 00:14:45,068
+deterministic model that helps us
+understand this variable queuing delay.
+

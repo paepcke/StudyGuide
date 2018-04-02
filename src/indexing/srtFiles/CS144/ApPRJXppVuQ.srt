@@ -1,0 +1,1345 @@
+1
+00:00:00,000 --> 00:00:04,185
+In the next few videos we're going to be
+looking at congestion control.
+
+2
+00:00:04,185 --> 00:00:09,195
+Congestion control is a really important
+topic, for networking because whenever we
+
+3
+00:00:09,195 --> 00:00:13,616
+have a network, particularly a packet
+switched network like the internet, it
+
+4
+00:00:13,616 --> 00:00:17,978
+will always encounter congestion.
+Either for short periods or long periods.
+
+5
+00:00:17,978 --> 00:00:22,752
+Controlling that congestion to stop the
+network from collapsing is really, really
+
+6
+00:00:22,752 --> 00:00:27,535
+important and so we're going to be
+learning about what congestion is and how
+
+7
+00:00:27,535 --> 00:00:31,046
+to control it.
+Basic, basic approaches to congestion
+
+8
+00:00:31,046 --> 00:00:34,102
+control.
+And then we're going to look specifically
+
+9
+00:00:34,102 --> 00:00:39,369
+at what happens in the Internet, and
+congestion control happens inside the TCP
+
+10
+00:00:39,369 --> 00:00:42,100
+protocol.
+And TCP has explicit support for
+
+11
+00:00:42,100 --> 00:00:46,912
+congestion control, and we're going to be
+looking at how it does that, and how
+
+12
+00:00:46,912 --> 00:00:51,919
+that's evolved over time, and then what
+some of the consequences are of those
+
+13
+00:00:51,919 --> 00:00:54,651
+decisions.
+Let's start by thinking about what
+
+14
+00:00:54,651 --> 00:00:58,041
+congestion is.
+Congestion can take place at multiple time
+
+15
+00:00:58,041 --> 00:01:00,717
+scales.
+I'm going to offer you three examples
+
+16
+00:01:00,717 --> 00:01:03,512
+here.
+And the first one is at a very short time
+
+17
+00:01:03,512 --> 00:01:06,367
+scale, when packets are colliding at a
+router.
+
+18
+00:01:06,367 --> 00:01:09,341
+So for example, imagine that we've got two
+packets.
+
+19
+00:01:09,341 --> 00:01:13,563
+The first one arriving here, in red, and
+the second one arriving shortly
+
+20
+00:01:13,563 --> 00:01:16,418
+afterwards.
+Both destined to the same output and
+
+21
+00:01:16,418 --> 00:01:20,938
+because they've both arrived at the same
+time, one of them will get to leave.
+
+22
+00:01:20,938 --> 00:01:25,695
+The other one will be queued and there
+will be a temporary build up of queue in
+
+23
+00:01:25,695 --> 00:01:29,066
+the router.
+A second form of congestion at a slightly
+
+24
+00:01:29,066 --> 00:01:34,306
+longer time scale is at the flow level
+operating at the time scale of round trip
+
+25
+00:01:34,306 --> 00:01:39,218
+times or multiple round trip times.
+If you think of a flow as a communication
+
+26
+00:01:39,218 --> 00:01:44,390
+like a TCP flow, where the communication
+is taking place over a fairly long period.
+
+27
+00:01:44,390 --> 00:01:49,246
+Over multiple round trip times, for
+example downloading a web page, or sending
+
+28
+00:01:49,246 --> 00:01:52,400
+an e-email then the rate of the flow might
+change.
+
+29
+00:01:52,400 --> 00:01:55,742
+And I've shown one here in red and one
+here in green.
+
+30
+00:01:55,931 --> 00:02:01,166
+And these made both be passing through the
+buffer of a router trying to get to the
+
+31
+00:02:01,166 --> 00:02:04,320
+same outgoing link.
+If their combined rates exceed
+
+32
+00:02:04,320 --> 00:02:08,245
+the outgoing link rate, 
+as seems to be the case here.
+
+33
+00:02:08,245 --> 00:02:12,212
+Then the buffer will build up, and
+eventually it will overflow.
+
+34
+00:02:12,212 --> 00:02:17,075
+And so we'll need to do something to
+prevent those flows from continuing to
+
+35
+00:02:17,075 --> 00:02:20,723
+overwhelm that link.
+Otherwise, we're just going to drop a
+
+36
+00:02:20,723 --> 00:02:25,970
+whole lot of packets, and have a collapse
+in the, in the performance of the network.
+
+37
+00:02:25,970 --> 00:02:28,790
+The third type is at a much longer time
+scale.
+
+38
+00:02:28,790 --> 00:02:33,573
+Which is at a very human time scale.
+When there are just simply too many users
+
+39
+00:02:33,573 --> 00:02:38,601
+using a link at a peak hour. This might be
+a link connecting to a very busy web
+
+40
+00:02:38,601 --> 00:02:43,813
+server like cnn.com or google.com and in
+the morning people might come in and all
+
+41
+00:02:43,813 --> 00:02:48,534
+want to access the same link while they're
+reading their coffee and it might
+
+42
+00:02:48,534 --> 00:02:51,662
+overwhelm it.
+And so this would be at a longer time
+
+43
+00:02:51,662 --> 00:02:53,974
+scale.
+The one that we're going to be most
+
+44
+00:02:53,974 --> 00:02:58,689
+interested in, when we're talking about
+congestion control is this one in the
+
+45
+00:02:58,689 --> 00:03:01,399
+middle.
+We're going to look at how congestion can
+
+46
+00:03:01,399 --> 00:03:06,055
+be controlled for TCP flows in particular
+that are lasting multiple round trip
+
+47
+00:03:06,055 --> 00:03:08,942
+times, where we have the 
+opportunity to communicate
+
+48
+00:03:08,942 --> 00:03:13,892
+to the sender or send information back to
+the sender, or for the sender simply to
+
+49
+00:03:13,892 --> 00:03:18,371
+learn that it should, should change the
+amount of data that it puts into the
+
+50
+00:03:18,371 --> 00:03:22,850
+network, so as to prevent sustained
+congestion from happening at the routers.
+
+51
+00:03:22,850 --> 00:03:29,325
+Let's take this a little bit further and
+think about what congestion is by way of
+
+52
+00:03:29,325 --> 00:03:32,982
+an example.
+So we look at the example here where
+
+53
+00:03:32,982 --> 00:03:38,771
+sources A and B are trying to send to the
+same destination X. And the flows are,
+
+54
+00:03:38,771 --> 00:03:43,782
+they're both wanting to send at twelve
+megabits per second at a sustained rate.
+
+55
+00:03:43,782 --> 00:03:49,110
+But the link from the router to x is only
+capable of sending at twelve megabits per
+
+56
+00:03:49,110 --> 00:03:52,154
+second.
+By the way, there's nothing magical about
+
+57
+00:03:52,154 --> 00:03:56,784
+the numbers twelve here, other than it's
+going to make the math a little bit
+
+58
+00:03:56,784 --> 00:03:59,828
+easier.
+So, A has a, consented a sustained rate of
+
+59
+00:03:59,828 --> 00:04:02,746
+twelve.
+B consented a sustained rate of twelve.
+
+60
+00:04:02,746 --> 00:04:07,440
+And this link here, which is the, the
+departure rate from the router buffer.
+
+61
+00:04:07,440 --> 00:04:13,220
+And the, just before the outgoing link, is
+only able to send at rate twelve.
+
+62
+00:04:14,080 --> 00:04:21,147
+So if we look at one of our deterministic
+queue models, and just assume that this is at
+
+63
+00:04:21,147 --> 00:04:26,736
+a sustained rate.
+So, this will be T and this will be the
+
+64
+00:04:26,736 --> 00:04:33,146
+cumulative, the cumulative data sent.
+So we'll just think of this as the
+
+65
+00:04:33,146 --> 00:04:37,420
+cumulative bits sent on a link.
+We will have A1(t).
+
+66
+00:04:38,520 --> 00:04:42,864
+It will accumulate at twelve megabits per
+second.
+
+67
+00:04:42,864 --> 00:04:48,096
+So the gradient of this will be twelve
+megabits per second.
+
+68
+00:04:48,096 --> 00:04:52,706
+And so will A2 of T.
+I'm not going to try and draw that,
+
+69
+00:04:52,706 --> 00:04:57,760
+superimpose that.
+But so will d(t). So if we look at the
+
+70
+00:04:57,760 --> 00:05:01,130
+sum of A1 + A2.
+So this would be A1 + A2.
+
+71
+00:05:01,130 --> 00:05:06,635
+And of course this here, let me draw this
+in a different color.
+
+72
+00:05:06,635 --> 00:05:11,963
+This would be d(t).
+Then we can see that there will be a queue
+
+73
+00:05:11,963 --> 00:05:17,268
+that we'll build up.
+Q(t), and Q(t) is just going to grow
+
+74
+00:05:17,268 --> 00:05:22,612
+and grow and grow, just going to keep
+growing as, because the arrival rate is
+
+75
+00:05:22,612 --> 00:05:28,173
+exceeding the departure rate, so hence
+eventually packets will be dropped and
+
+76
+00:05:28,173 --> 00:05:30,340
+retransmitted.
+Notice that the,
+
+77
+00:05:30,340 --> 00:05:35,345
+The transmissions are going to add to the
+traffic in the network because there's
+
+78
+00:05:35,345 --> 00:05:39,732
+going to be more traffic sent down here
+because of these re-transmissions.
+
+79
+00:05:39,732 --> 00:05:42,575
+And it's going to make it even more
+congested.
+
+80
+00:05:42,575 --> 00:05:47,456
+So congestion can actually have a feedback
+effective of making things worse by
+
+81
+00:05:47,456 --> 00:05:51,040
+causing even more traffic to be sent in,
+in to the network.
+
+82
+00:05:51,040 --> 00:05:56,085
+Also it means that the, the that the
+arrival rate here, although it will be a
+
+83
+00:05:56,085 --> 00:06:01,055
+sustained arrival rate into the queue, it
+must at some, in some sense be truncated,
+
+84
+00:06:01,055 --> 00:06:05,840
+because the departure rate obviously can't
+exceed twelve megabits per second.
+
+85
+00:06:06,780 --> 00:06:12,510
+Now, let's assume for a moment that the,
+that, that the buffers are infinite and
+
+86
+00:06:12,730 --> 00:06:17,800
+think about what the, what we would
+actually like to have happen here.
+
+87
+00:06:17,800 --> 00:06:21,746
+Let's say that instead of A1(t), this is
+rate R1.
+
+88
+00:06:21,746 --> 00:06:25,692
+That the first that A would like to send
+in it.
+
+89
+00:06:25,692 --> 00:06:30,801
+And we'll call this one R2.
+And we'll say that the rate here is R
+
+90
+00:06:30,801 --> 00:06:35,130
+because then of course these could be any
+values in, in practice.
+
+91
+00:06:35,130 --> 00:06:40,974
+It's reasonable to expect that if R1 and
+R2 are both larger than R over two, then
+
+92
+00:06:40,974 --> 00:06:46,745
+we would give each one of them, we would
+actually assign to each one of them, the
+
+93
+00:06:46,745 --> 00:06:51,407
+rate R over two, Right? So, if they're
+both want more than half of that outgoing
+
+94
+00:06:51,407 --> 00:06:55,932
+link, then it would seem to make sense
+that they would both get R2, R over two.
+
+95
+00:06:55,932 --> 00:07:01,646
+So this example is very simple.
+In general congestion can happen at any
+
+96
+00:07:01,646 --> 00:07:05,492
+point in the network, with one flow, two
+flows or any number of flows.
+
+97
+00:07:05,492 --> 00:07:09,678
+Some of the flows might have that
+bottleneck at this particular congested
+
+98
+00:07:09,678 --> 00:07:11,206
+router.
+Others might not.
+
+99
+00:07:11,206 --> 00:07:15,844
+They might have flows that are, that they
+might be congested at a different router,
+
+100
+00:07:15,844 --> 00:07:19,408
+somewhere else in the network.
+So let's look at a slightly more
+
+101
+00:07:19,408 --> 00:07:25,292
+complicated example.
+Let's first look at what's going on.
+
+102
+00:07:25,640 --> 00:07:31,723
+We've got our sources A and B again
+wanting to send at twelve megabits per
+
+103
+00:07:31,723 --> 00:07:34,961
+second.
+And we've got a third source now wanting
+
+104
+00:07:34,961 --> 00:07:39,547
+to send at twelve megabits per second.
+And we've got a second router.
+
+105
+00:07:39,547 --> 00:07:45,010
+And all the links both of the links here
+are twelve megabits per second again.
+
+106
+00:07:45,010 --> 00:07:49,501
+First, notice that there are definitely
+going to be packets dropped if the flow is
+
+107
+00:07:49,501 --> 00:07:53,083
+from A B and C run at the sustained twelve
+megabits per second.
+
+108
+00:07:53,083 --> 00:07:57,632
+Clearly there's congestion in the network
+and they all going to contribute to that
+
+109
+00:07:57,632 --> 00:08:00,645
+congestion.
+Second, notice that any packets from A and
+
+110
+00:08:00,645 --> 00:08:06,811
+B that make it through the first router
+and then dropped at the second router.
+
+111
+00:08:06,811 --> 00:08:11,408
+So if they are then dropped because of the
+congestion at the second link are going to
+
+112
+00:08:11,408 --> 00:08:14,936
+be a waste of network traffic.
+In other words, they've used this precious
+
+113
+00:08:14,936 --> 00:08:18,357
+congested resource here.
+If they're then dropped here then there
+
+114
+00:08:18,357 --> 00:08:20,709
+was no, not really any point in sending
+them.
+
+115
+00:08:20,709 --> 00:08:25,199
+So, it's worth while thinking about how we
+get the information back to the source so
+
+116
+00:08:25,199 --> 00:08:29,422
+that it isn't going to send unnecessary
+traffic through the network only to be
+
+117
+00:08:29,422 --> 00:08:34,915
+dropped at a downstream router.
+Third, notice that it's not obvious what
+
+118
+00:08:34,914 --> 00:08:41,423
+the split of the last link should be.
+If the routers simply split the usage at
+
+119
+00:08:41,424 --> 00:08:47,519
+each bottleneck, in other words we split
+it 50-50, then at this point here, over
+
+120
+00:08:47,519 --> 00:08:53,613
+this link here, we would see six megabits
+from A and six megabits from, per second
+
+121
+00:08:53,613 --> 00:08:56,862
+from B.
+And then if we were to split here 50-50,
+
+122
+00:08:56,862 --> 00:08:59,941
+then we could see six mega bits per second
+from c.
+
+123
+00:08:59,941 --> 00:09:05,113
+And we would see half of whatever came in
+through the second router, so we would see
+
+124
+00:09:05,113 --> 00:09:08,068
+three from a and three from b summing to
+twelve.
+
+125
+00:09:08,068 --> 00:09:13,117
+It's not clear that that's what we want.
+It might be that we actually want each of
+
+126
+00:09:13,117 --> 00:09:16,688
+them to get four.
+That might be a more reasonable thing so
+
+127
+00:09:16,688 --> 00:09:20,260
+that they each get equal access of that
+last router.
+
+128
+00:09:20,260 --> 00:09:25,124
+So, it's going to be important to think
+about how we divide up the capacity that's
+
+129
+00:09:25,124 --> 00:09:28,332
+available.
+Now let's make it slightly more
+
+130
+00:09:28,332 --> 00:09:32,627
+complicated.
+Imagine that we've got an extra sender, D
+
+131
+00:09:32,627 --> 00:09:36,760
+that wants to send just at one megabits
+per second.
+
+132
+00:09:36,760 --> 00:09:41,419
+So D wants to send a less than at, at a
+rate which is less than the others.
+
+133
+00:09:41,419 --> 00:09:44,315
+So what rate should it be allowed to send
+out?
+
+134
+00:09:44,315 --> 00:09:49,605
+We might say that everyone should send at,
+at less than their requested rate because
+
+135
+00:09:49,605 --> 00:09:53,572
+the link is congested.
+In other words because the, the link over
+
+136
+00:09:53,572 --> 00:09:58,168
+here is going to be congested because
+there's twelve, 24, 36, 37 megabytes per
+
+137
+00:09:58,168 --> 00:10:02,324
+second that wants to flow over it.
+Everyone should run slower as a
+
+138
+00:10:02,324 --> 00:10:05,178
+consequence.
+On the other hand, we might say that
+
+139
+00:10:05,178 --> 00:10:08,259
+because D is asking for less than its fair
+share of the link.
+
+140
+00:10:08,259 --> 00:10:12,401
+So there's one link here and four of them.
+Because it's asking for less than three
+
+141
+00:10:12,401 --> 00:10:15,280
+megabits per second, maybe we should give
+it its full one.
+
+142
+00:10:15,540 --> 00:10:20,162
+So we are going to see some more examples
+of this in a definition of fairness in a
+
+143
+00:10:20,162 --> 00:10:23,263
+little while.
+Something else to note is congestion is
+
+144
+00:10:23,263 --> 00:10:27,709
+unavoidable in a packet switch network.
+I mean arguably it's actually a good
+
+145
+00:10:27,709 --> 00:10:30,459
+thing.
+We use packet switching because it makes
+
+146
+00:10:30,459 --> 00:10:34,145
+efficient use of the links because of
+statistical multiplexing.
+
+147
+00:10:34,145 --> 00:10:39,119
+Therefore the buffers and the routers are
+frequently occupied and quite likely to,
+
+148
+00:10:39,119 --> 00:10:42,220
+to overflow.
+In fact if the buffers were always empty,
+
+149
+00:10:42,220 --> 00:10:46,860
+then the links would be, quiet much of the
+time.
+
+150
+00:10:46,860 --> 00:10:50,142
+So delay would be low, but our usage of
+the network would be low.
+
+151
+00:10:50,142 --> 00:10:53,373
+And so therefore, we'd be using the
+network quite inefficiently.
+
+152
+00:10:53,373 --> 00:10:57,579
+If buffers are always occupied while the
+delay is high, we'd be seeing the network
+
+153
+00:10:57,579 --> 00:11:00,707
+used very efficiently, 'cause it would be
+busy all of the time.
+
+154
+00:11:00,707 --> 00:11:04,964
+So we're going to see congestion is, is a
+really inevitable property of the network.
+
+155
+00:11:04,964 --> 00:11:09,273
+And having a little bit of congestion is a
+good thing because it keeps the usage of
+
+156
+00:11:09,273 --> 00:11:12,247
+the network high.
+We just need to be able to control it to
+
+157
+00:11:12,247 --> 00:11:16,248
+stop us, making the delay so high, the
+drop so high, that the network becomes
+
+158
+00:11:16,248 --> 00:11:16,883
+unusable.
+So.
+
+159
+00:11:16,883 --> 00:11:19,433
+Some observations of what we've seen so
+far.
+
+160
+00:11:19,433 --> 00:11:22,214
+Congestion is inevitable, and arguably
+desirable.
+
+161
+00:11:22,214 --> 00:11:26,211
+Congestion happens at different
+timescales, from packets colliding, to
+
+162
+00:11:26,211 --> 00:11:30,673
+some flows sending too quickly, to flash
+crow, crowds appearing in the network.
+
+163
+00:11:30,673 --> 00:11:34,960
+If packets are dropped, then tran,
+retransmissions can make congestion even
+
+164
+00:11:34,960 --> 00:11:37,394
+worse.
+When packets are dropped, they waste
+
+165
+00:11:37,394 --> 00:11:41,218
+resources upstream, before they were
+dropped, so that's a bad thing.
+
+166
+00:11:41,218 --> 00:11:45,679
+And we're going to need a definition of
+fairness to decide how we want flows to
+
+167
+00:11:45,679 --> 00:11:49,738
+share a bottleneck link.
+Next we're going to explore the kind of
+
+168
+00:11:49,738 --> 00:11:54,741
+fairness that we would like in the network
+because this is going to help us think
+
+169
+00:11:54,741 --> 00:11:58,143
+about how to design a congesting control
+mechanism.
+
+170
+00:11:58,143 --> 00:12:03,080
+So let's consider an example of when I
+have three routers in a network.
+
+171
+00:12:03,480 --> 00:12:09,984
+Here are the three routers, connected by
+links and the first link I'm going to
+
+172
+00:12:09,984 --> 00:12:14,494
+assume is of rate two, the second one of
+rate one.
+
+173
+00:12:14,494 --> 00:12:18,918
+And then I'm going to have three sources
+A, B and C.
+
+174
+00:12:18,918 --> 00:12:25,076
+All connected and they're going to be
+sending flows like this through the
+
+175
+00:12:25,076 --> 00:12:28,242
+network.
+First one goes, the, B goes through the
+
+176
+00:12:28,242 --> 00:12:32,692
+second router and then stops.
+C comes in at the second router, and then
+
+177
+00:12:32,692 --> 00:12:36,833
+goes out through the third.
+So the question is, what would be a fair
+
+178
+00:12:36,833 --> 00:12:41,840
+allocation of rates if they all want to
+send at maximum, maximum rate through the
+
+179
+00:12:41,840 --> 00:12:44,745
+network?
+Let's think about the rates that we're
+
+180
+00:12:44,745 --> 00:12:48,021
+going to assign to each of these, each of
+these flows.
+
+181
+00:12:48,206 --> 00:12:51,730
+The first allocation is one in which I'm
+going to give, A.
+
+182
+00:12:51,730 --> 00:12:57,538
+A flow of .25, B a flow, a, a rate of 1.75,
+and C a rate of .75.
+
+183
+00:12:57,538 --> 00:13:02,546
+See I've not exceeded the rate on any one
+of them.
+
+184
+00:13:02,546 --> 00:13:07,754
+There's a total of one here and a total of
+two here.
+
+185
+00:13:07,754 --> 00:13:16,400
+And the total throughput here is.
+1.75 plus .75 is 2.5 (and plus .25) is 2.75.
+
+186
+00:13:17,830 --> 00:13:26,778
+Now let me consider a different rate
+allocation and I'll call that one two, and
+
+187
+00:13:26,778 --> 00:13:31,988
+in this rate allocation I give A,
+.5. I give C, .5.
+
+188
+00:13:31,988 --> 00:13:37,187
+And I'm going to give B 1.5.
+This has a total of 1.5 plus .5.
+
+189
+00:13:37,187 --> 00:13:40,553
+Is two, (plus .5) is 2.5.
+So essentially lower overall throughput,
+
+190
+00:13:40,553 --> 00:13:45,797
+but if you look at this link here, which
+kind of the bottleneck link of the
+
+191
+00:13:45,797 --> 00:13:49,153
+network.
+I've given the same to C as I have to A.
+
+192
+00:13:49,153 --> 00:13:52,440
+And so we might say that this one is more
+fair.
+
+193
+00:13:52,440 --> 00:13:57,824
+So there's a trade off here between
+fairness, one in which we're giving equal
+
+194
+00:13:57,824 --> 00:14:01,460
+usage of the bottleneck links versus the
+throughput.
+
+195
+00:14:01,460 --> 00:14:04,632
+Where we're trying to maximize the overall
+throughput.
+
+196
+00:14:04,632 --> 00:14:09,216
+And, essentially, we can see here that A
+is being penalized in the second, in, in
+
+197
+00:14:09,216 --> 00:14:13,799
+the first one, where it the first
+allocation where it only has a rate of .25.
+
+198
+00:14:13,799 --> 00:14:17,560
+Because it's going through multiple links
+in the, in the network.
+
+199
+00:14:17,560 --> 00:14:21,480
+We can therefore see the fairness in
+throughput can be at odds with each other.
+
+200
+00:14:21,480 --> 00:14:25,103
+So, before you start designing or
+comparing ways to control congestion, we
+
+201
+00:14:25,103 --> 00:14:29,172
+could, we could do with a definition of
+the kind of fairness that we would like to
+
+202
+00:14:29,172 --> 00:14:32,135
+achieve.
+So the definition that we are going to use
+
+203
+00:14:32,135 --> 00:14:35,655
+is, is called max-min fairness or
+maximizing the minimum.
+
+204
+00:14:35,655 --> 00:14:38,399
+And it's a widely used definition of
+fairness.
+
+205
+00:14:38,399 --> 00:14:41,204
+Well it's not the only definition we could
+use.
+
+206
+00:14:41,204 --> 00:14:46,275
+It makes sense cause it tries to maximize
+the rates of the little flows while making
+
+207
+00:14:46,275 --> 00:14:50,928
+sure that every flow that would like it
+would get a share of it's bottleneck
+
+208
+00:14:50,928 --> 00:14:53,554
+link.
+So the formal definition is shown here
+
+209
+00:14:53,554 --> 00:14:57,790
+allocation is max-min fair if you cannot
+increase the rate of one flow.
+
+210
+00:14:57,790 --> 00:15:02,180
+Without decreasing the rate of another
+flow with a lower rate.
+
+211
+00:15:02,900 --> 00:15:07,757
+Let's look at what that would mean in my
+example before.
+
+212
+00:15:07,757 --> 00:15:13,915
+Here is the second allocation that I showed
+you was in facts max-min fair.
+
+213
+00:15:13,915 --> 00:15:21,115
+Because, if we increase the rate of B, so
+if we are trying to increase this one here
+
+214
+00:15:21,115 --> 00:15:26,492
+beyond 1.5, we would have to decrease R of
+A, the rate of A.
+
+215
+00:15:26,492 --> 00:15:33,605
+And so this is a, we can only increase
+whenever we increase one, we will decrease
+
+216
+00:15:33,605 --> 00:15:39,850
+one that's lower. And therefore this is the
+max-min fair allocation.
+
+217
+00:15:39,850 --> 00:15:46,362
+What it essentially means is that links
+that share a bottleneck, say for example
+
+218
+00:15:46,362 --> 00:15:50,969
+here will have an equal share.
+If they want to use all of that link or
+
+219
+00:15:50,969 --> 00:15:55,601
+more, more than their fair share, they
+will be curtailed to their fair share.
+
+220
+00:15:55,601 --> 00:16:00,295
+So they're each getting half of that.
+Let me show you an example on a single
+
+221
+00:16:00,295 --> 00:16:04,865
+link, which will be easier to understand.
+So in a very simple and intuitive
+
+222
+00:16:04,865 --> 00:16:08,324
+definition on a, on a single link.
+So, if we have a router.
+
+223
+00:16:08,324 --> 00:16:18,204
+Let me draw a router here.
+And I have A and B that want to connect to
+
+224
+00:16:18,204 --> 00:16:23,250
+that router at .5 megabits per second.
+I'll just say .5.
+
+225
+00:16:23,250 --> 00:16:27,019
+And one.
+And then it has a link of rate one coming
+
+226
+00:16:27,019 --> 00:16:30,714
+out of it.
+And then, let's consider that there's a
+
+227
+00:16:30,714 --> 00:16:34,709
+third one, C, that wants to connect to it
+at point two.
+
+228
+00:16:34,709 --> 00:16:40,967
+So the combined rate that we would like to
+send through here from A, B, and C is 1.7,
+
+229
+00:16:40,967 --> 00:16:45,867
+but we've only got a rate of one.
+So what would be the fair share?
+
+230
+00:16:45,867 --> 00:16:50,466
+Well, C is the minimum.
+So we're going to start by allocating the
+
+231
+00:16:50,466 --> 00:16:53,411
+minimum.
+And C wants less than its fair share.
+
+232
+00:16:53,411 --> 00:16:56,701
+In other words the fair share would be a
+third each.
+
+233
+00:16:56,701 --> 00:16:59,105
+It wants .2.
+Which is less than a third.
+
+234
+00:16:59,105 --> 00:17:03,270
+So we're going to allocate to it .2.
+That's going to leave .8.
+
+235
+00:17:03,270 --> 00:17:08,176
+On this link.
+And the fair share of the other two would
+
+236
+00:17:08,175 --> 00:17:10,315
+now be .4, half of .8.
+Each.
+
+237
+00:17:10,316 --> 00:17:17,270
+A wants more than that so it's going to be
+curtailed to .4. And B, also wants more,
+
+238
+00:17:17,270 --> 00:17:22,698
+then, then the .4, so its going to
+get .4 as well.
+
+239
+00:17:22,698 --> 00:17:29,058
+So the total is going to sum to one.
+If we increase the rate of any of them,
+
+240
+00:17:29,058 --> 00:17:33,213
+then it would be at the expense of a
+slower flow.
+
+241
+00:17:33,213 --> 00:17:36,860
+And so this is the max-min fair
+allocation.
+
+242
+00:17:37,820 --> 00:17:41,948
+Now that you understand what congestion
+is, in the next few videos I am going to look at
+
+243
+00:17:41,948 --> 00:17:44,598
+different ways to design congestion control
+algorithms.
+
+244
+00:17:44,598 --> 00:17:48,421
+So, we are going to stop from, start
+looking at different techniques and end up
+
+245
+00:17:48,421 --> 00:17:52,294
+with how TCP works, look at that in some
+detail and then look at some of the
+
+246
+00:17:52,294 --> 00:17:55,862
+consequences of those designs.
+So, worthwhile having some goals, so that
+
+247
+00:17:55,862 --> 00:18:00,143
+can we bear them in mind when we designing
+the algorithms and when we are comparing
+
+248
+00:18:00,143 --> 00:18:03,150
+one against another.
+So, we've got a list here, some of which
+
+249
+00:18:03,150 --> 00:18:07,380
+we have seen and some of which will be new
+but pretty obvious in why we are, why we
+
+250
+00:18:07,380 --> 00:18:11,612
+are considering the, The first one is, we
+want high through put. We want to keep
+
+251
+00:18:11,612 --> 00:18:14,549
+lengths busy.
+Because we want to make efficient use of
+
+252
+00:18:14,549 --> 00:18:17,957
+the network and we want flows to be fast
+and to complete quickly.
+
+253
+00:18:17,957 --> 00:18:20,421
+Second one is that we would like it to be
+fair.
+
+254
+00:18:20,421 --> 00:18:24,144
+And we're going to, we're going to
+typically use our max-min fairness goal.
+
+255
+00:18:24,144 --> 00:18:27,866
+Because it gives a nice balance between
+pretty good throughput through the
+
+256
+00:18:27,866 --> 00:18:30,383
+network.
+But also making sure that all the flows
+
+257
+00:18:30,383 --> 00:18:33,581
+that are contending for a bottleneck link
+get treated fairly.
+
+258
+00:18:33,581 --> 00:18:36,360
+And the little ones get a, a good access
+to that link.
+
+259
+00:18:36,360 --> 00:18:40,660
+We would like the congestion control
+mechanism to respond quickly to changing
+
+260
+00:18:40,660 --> 00:18:43,969
+network conditions.
+If other flows arrive, and the congestion
+
+261
+00:18:43,969 --> 00:18:48,435
+increases, we need to be able to back off
+a little bit, so that we don't cause too
+
+262
+00:18:48,435 --> 00:18:52,460
+much congestion in the network.
+And if other flows go away and finish and
+
+263
+00:18:52,460 --> 00:18:56,982
+more capacity becomes available, we'd like
+to be able to use that, use that quickly,
+
+264
+00:18:56,982 --> 00:18:59,960
+so that we can make efficient usage of the
+network.
+
+265
+00:18:59,960 --> 00:19:02,402
+And finally, we want the control to be
+distributed.
+
+266
+00:19:02,402 --> 00:19:06,359
+We can't rely on there being some central
+arbiter that is going to decide the rates
+
+267
+00:19:06,359 --> 00:19:09,486
+for the entire network.
+We need this to operate in a distributed
+
+268
+00:19:09,486 --> 00:19:13,345
+fashion in order for it to be scalable.
+And these are the sorts if things we're
+
+269
+00:19:13,345 --> 00:19:15,300
+going to consider over the next few
+videos.
+

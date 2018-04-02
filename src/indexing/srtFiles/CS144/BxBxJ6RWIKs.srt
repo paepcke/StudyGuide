@@ -1,0 +1,904 @@
+1
+00:00:02,360 --> 00:00:08,480
+>> Phil: Here I have Dan Boneh, who some of
+you I hope know, fellow faculty, in fact senior
+
+2
+00:00:08,480 --> 00:00:14,059
+to me in the department, who researches cryptography
+and security. So Dan, how did you get into
+
+3
+00:00:14,059 --> 00:00:16,690
+crytopgraphy and security of computer systems.
+What's your background? >> Dan: Thanks Phil.
+
+4
+00:00:16,690 --> 00:00:22,180
+First of all it is a pleasure to do this.
+I am happy to help the class. Let's see. I
+
+5
+00:00:22,180 --> 00:00:29,180
+fell in love with crypto at a very very young
+age. I think it's one of those things for
+
+6
+00:00:30,460 --> 00:00:36,920
+god knows why but my Dad taught me the RSA
+algorithm when I was 9 years old and I was
+
+7
+00:00:36,920 --> 00:00:41,050
+completely fascinated by this. These big numbers,
+and all of these suddens there are these codes.
+
+8
+00:00:41,050 --> 00:00:46,980
+Then I went and encrypted a message to my
+friend with RSA, and he thought I was completley
+
+9
+00:00:46,980 --> 00:00:51,999
+nuts. But it stuck with me. Then when I got
+to college and I learned about crypto I just
+
+10
+00:00:52,000 --> 00:00:57,420
+realized that its such a fantastic field.
+It's an area where you get to use really deep
+
+11
+00:00:57,420 --> 00:01:04,030
+math, literally 20th century math, as advanced
+as mathematics that's used in computer science
+
+12
+00:01:04,030 --> 00:01:07,310
+gets, and at the same time you get to use
+it for real world applications, so people
+
+13
+00:01:07,310 --> 00:01:13,170
+really care about the results. In fact, when
+you communicate with Google these days, the
+
+14
+00:01:13,170 --> 00:01:17,590
+key exchange that you're doing is using what's
+called elliptic curve Diffie-Hellman, that
+
+15
+00:01:17,590 --> 00:01:24,540
+is using extremely advanced Mathematics, as
+I've said, 20th century Mathematics, and it's
+
+16
+00:01:24,540 --> 00:01:29,299
+amazing. People use it all day long, every
+day, without even realizing that they are
+
+17
+00:01:29,299 --> 00:01:35,920
+doing it. So for me it is a lot of fun to
+work in an area that involves both deep math,
+
+18
+00:01:35,920 --> 00:01:42,200
+and yet has real world applications. I should
+say more broadly, there are two parts to my
+
+19
+00:01:42,200 --> 00:01:47,540
+work: I work on cryptography as one half,
+and I also do a lot of work on computer security
+
+20
+00:01:47,540 --> 00:01:53,259
+more broadly. Cryptography is just a small
+part of computer security. The problem of
+
+21
+00:01:53,259 --> 00:02:00,259
+security software is much much larger than
+just cryptography. I should tell you that
+
+22
+00:02:00,530 --> 00:02:06,979
+computer security in general is also a fantastic
+fantastic area to work in. As a career path,
+
+23
+00:02:06,979 --> 00:02:08,200
+it's a terrific career path.
+
+24
+00:02:08,199 --> 00:02:10,148
+>> Phil: There's tremendous job security in
+security.
+
+25
+00:02:10,149 --> 00:02:14,680
+>> Dan: Yeah. You know if I go to sleep now
+and you wake me up in a hundred years, the
+
+26
+00:02:14,680 --> 00:02:19,260
+first thing I'll ask is: "Is computer security
+still a problem?", and I guarantee you compuer
+
+27
+00:02:19,260 --> 00:02:23,370
+security will only be worse than it is today
+because we will be depending on computers
+
+28
+00:02:23,370 --> 00:02:27,020
+and networks so much more than we do today.
+
+29
+00:02:27,020 --> 00:02:32,680
+>> Phil: Students in the class have covered
+actually Network Address Translators a bit,
+
+30
+00:02:32,680 --> 00:02:36,980
+or NATs, on wireless routers. You've done
+some work on the security of these wireless
+
+31
+00:02:36,980 --> 00:02:41,090
+NAT's today and some of the issues. Do you
+want to say a little bit about some of the
+
+32
+00:02:41,090 --> 00:02:42,400
+crazy holes that you've found?
+
+33
+00:02:42,400 --> 00:02:49,020
+>> Dan: Sure. We've done a lot of work on
+security, for example, of embedded devices.
+
+34
+00:02:49,020 --> 00:02:52,709
+When you build an embedded device these days
+- So what is an embedded device? I'm talking
+
+35
+00:02:52,709 --> 00:02:57,550
+about things like security cameras, photo
+frames - these are frames that you put on
+
+36
+00:02:57,550 --> 00:03:02,930
+grandma's desk and you can upload pictures
+to it so that she can see grand kids. Photo
+
+37
+00:03:02,930 --> 00:03:09,930
+frames, printers, routers, all of these embedded
+devices that need to be configured somehow.
+
+38
+00:03:10,870 --> 00:03:15,580
+These days they are configured through a web
+interface. When companies do this, they have
+
+39
+00:03:15,580 --> 00:03:20,480
+to build a small web application that sits
+in the embedded device. Well traditionally
+
+40
+00:03:20,480 --> 00:03:26,830
+when you build a web application you would
+use Rails or Django, or a lamp stack in general.
+
+41
+00:03:26,830 --> 00:03:30,900
+But a LAMP stack doesn't fit on a tiny little
+security camera. There's no SQL server running
+
+42
+00:03:30,900 --> 00:03:36,300
+there. So what they end up doing is they end
+up building their own web application and
+
+43
+00:03:36,300 --> 00:03:43,300
+their own infrascture basically for making
+configuration possible. And as you, well hopefully
+
+44
+00:03:44,060 --> 00:03:47,560
+you will take one of our security classes,
+which I'll plot in just a minute,
+
+45
+00:03:47,560 --> 00:03:48,810
+>> Phil: Yeah You teach 155.
+
+46
+00:03:48,810 --> 00:03:53,400
+>> Dan: I'll plot those in just a minute.
+You'll learn from those that building a secure
+
+47
+00:03:53,400 --> 00:03:58,810
+web application is non-trivial. It actually
+takes quite an effort to secure web applications
+
+48
+00:03:58,810 --> 00:04:05,810
+even from basic attacks. Things like cross-site
+scripting, things like request forgeries,
+
+49
+00:04:06,269 --> 00:04:13,269
+and so on. We bought like 20 of these embedded
+devices and we started looking one by one
+
+50
+00:04:13,430 --> 00:04:17,810
+at the different web applications embedded
+in these devices, and it turns out that they
+
+51
+00:04:17,810 --> 00:04:23,400
+basically all have various sorts of vulnerabilities.
+All. Again it's bascially a hardware company...
+
+52
+00:04:23,400 --> 00:04:25,669
+>> Phil: So somebody hacked my picture frame.
+Why should I care?
+
+53
+00:04:25,669 --> 00:04:29,550
+>> Dan: Ah. Ok. So you should really care
+about that. Because, if you're an enterprise
+
+54
+00:04:29,550 --> 00:04:34,839
+and one of your employees put a picture frame
+on their desk in their office, that picture
+
+55
+00:04:34,839 --> 00:04:36,759
+frame is going to be connected to your corporate
+network.
+
+56
+00:04:36,759 --> 00:04:37,770
+>> Phil: So I'm glad I'm not an enterprise.
+
+57
+00:04:37,770 --> 00:04:38,660
+>> Dan: There you go.
+
+58
+00:04:38,660 --> 00:04:40,439
+>> Phil: I don't care.
+
+59
+00:04:40,439 --> 00:04:42,669
+>> Dan: You can pretty much guess the rest.
+
+60
+00:04:42,669 --> 00:04:46,539
+>> Phil: Stanford's computer systems were
+hacked all the time back then so I'm not concerend
+
+61
+00:04:46,539 --> 00:04:51,039
+about network vlunerabilities. I'm not the
+kind of person you care to.
+
+62
+00:04:51,039 --> 00:04:55,099
+>> Dan: I see. Ok. Well anyhow, bascially
+these devices are used as stepping stones
+
+63
+00:04:55,099 --> 00:04:59,770
+to larger attacks. If you have a security
+camera at home, that security camera... or
+
+64
+00:04:59,770 --> 00:05:05,369
+even think of the Nest, like a thermostat
+that is controlled remotely.Those devices,
+
+65
+00:05:05,369 --> 00:05:08,969
+if they're not properly secured - the Nest
+we haven't looked at so I don't know what
+
+66
+00:05:08,969 --> 00:05:14,639
+the security status of that is - but those
+devices can be used as stepping stones to
+
+67
+00:05:14,639 --> 00:05:18,110
+a larger attack on your home network, on your
+corporate network.
+
+68
+00:05:18,110 --> 00:05:19,949
+>> Phil: chink in the armor.
+
+69
+00:05:19,949 --> 00:05:26,020
+>> Dan: Exactly. And by the way all the attacks,
+they way all the attacks work today, is basically
+
+70
+00:05:26,020 --> 00:05:30,249
+using stepping stones. They break into one
+machine. From that machine they start to do
+
+71
+00:05:30,249 --> 00:05:36,089
+a lateral traversal to try and find other
+machines that can be broken into. From that
+
+72
+00:05:36,089 --> 00:05:39,729
+other machine that they've now taken control
+they try to get into administrator accounts.
+
+73
+00:05:39,729 --> 00:05:44,789
+And so on and so on. They move slowly from
+one machine to another until they get the
+
+74
+00:05:44,789 --> 00:05:49,559
+crown jewels, like the database or the active
+directory, and then they just dump all the
+
+75
+00:05:49,559 --> 00:05:52,229
+data from there and, you know, away they go.
+
+76
+00:05:52,229 --> 00:05:56,469
+>> Phil: So, this past weekend there was the
+CS faculty retreat and you gave a talk about
+
+77
+00:05:56,469 --> 00:06:01,599
+some of the revelations from the Snowden's
+leaks, etc. And one of the things you talked
+
+78
+00:06:01,599 --> 00:06:06,669
+about is how there might be some suggestions
+that certain crytpo systems might be weaker
+
+79
+00:06:06,669 --> 00:06:12,039
+than we thought. So without going into details,
+going forward, given what we've learn from
+
+80
+00:06:12,039 --> 00:06:16,699
+snowden, if I want to design a secure system
+then what... are there some extra steps I
+
+81
+00:06:16,699 --> 00:06:20,369
+should take, are there some things which we
+thought might be ok but aren't now and when
+
+82
+00:06:20,369 --> 00:06:22,639
+I'm going forward do something slightly differently?
+
+83
+00:06:22,639 --> 00:06:28,259
+>> Dan: Yeah. Bascially there are two advice
+to keep in mind. Well first, there is a zeroth
+
+84
+00:06:28,259 --> 00:06:32,819
+advice bit which you will learn - will be
+drilled into you - once you take the crypto
+
+85
+00:06:32,819 --> 00:06:37,599
+class, 255, which is you never design your
+own crypto. And not only should you not design
+
+86
+00:06:37,599 --> 00:06:41,199
+your own crypto, you should not even implement
+your own crypto, because I guarantee you if
+
+87
+00:06:41,199 --> 00:06:44,770
+you implement your own crypto its going to
+be vulnerable to timing attacks, its probably
+
+88
+00:06:44,770 --> 00:06:49,029
+going to have bad randomness and its going
+to be vulnerable to other side channel attacks
+
+89
+00:06:49,029 --> 00:06:50,960
+and so on. So you should use existing...
+
+90
+00:06:50,960 --> 00:06:52,479
+>> Phil: Don't innovate.
+
+91
+00:06:52,479 --> 00:06:57,189
+>> Dan: I wouldn't quite say it that way.
+I would say use existing standards and existing
+
+92
+00:06:57,189 --> 00:07:03,490
+open source well vetted implementations. So
+that's the zeroth rule. The first rule that
+
+93
+00:07:03,490 --> 00:07:09,169
+I would say that is the result of the revelations
+from the summer is make sure that whatever
+
+94
+00:07:09,169 --> 00:07:15,909
+you build is crypto agile in the sense that
+if we discover at some point that there is
+
+95
+00:07:15,909 --> 00:07:20,580
+a vulnerability in a particular algorithm
+its not going to take you six months to then
+
+96
+00:07:20,580 --> 00:07:26,800
+and under fire go ahead and build a new crypto
+algorithm into your system, QA test it, and
+
+97
+00:07:26,800 --> 00:07:31,589
+then deploy it. That's a long process which
+when you do under fire is a bad idea from
+
+98
+00:07:31,589 --> 00:07:38,589
+a security point of view. The idea is to make
+your system crypto agile to begin with so
+
+99
+00:07:38,999 --> 00:07:44,899
+that the system will support multiple algorithms
+at deployment time and if one algorithm turns
+
+100
+00:07:44,899 --> 00:07:48,959
+out to be insecure then all you have to do
+is just flip a configuration switch and your
+
+101
+00:07:48,959 --> 00:07:53,619
+system moves to the other algorithm and everything
+works fine. Now in the client/server model
+
+102
+00:07:53,619 --> 00:07:58,309
+that is actually more difficult because you
+have to change both the clients and the servers,
+
+103
+00:07:58,309 --> 00:08:03,770
+but you have to start somewhere. For example,
+if you build a web server, make sure that
+
+104
+00:08:03,770 --> 00:08:10,770
+the web server can support multiple algorithms.
+The algorithm being used is not baked in,
+
+105
+00:08:11,969 --> 00:08:17,709
+somehow hardwired into the web server. When
+you build, a very common example is a software
+
+106
+00:08:17,709 --> 00:08:22,649
+upgrade mechanism. So when you ship software
+upgrades to your clients, those software updates
+
+107
+00:08:22,649 --> 00:08:28,379
+need to be signed, so that not anyone can
+ship updates on your behalf. You cannot imagine
+
+108
+00:08:28,379 --> 00:08:32,789
+how many companies, when they build software
+upgrade mechanisms they just hardwire RSA
+
+109
+00:08:32,789 --> 00:08:39,209
+as a signature mechanism. My point is, try
+to make it so that even a software update
+
+110
+00:08:39,208 --> 00:08:43,568
+mechanism, something that is benign as that,
+actually is agile in the sense that there
+
+111
+00:08:43,568 --> 00:08:50,110
+is an easy way to update the algorithm on
+the fly so that just matter of simple configuration
+
+112
+00:08:50,110 --> 00:08:56,069
+and you move to signatures using a different
+algorithm. So that's the first piece of advice.
+
+113
+00:08:56,069 --> 00:09:03,069
+Be agile. The second piece of advice, in particular
+when you build an SSL based server. Today
+
+114
+00:09:04,870 --> 00:09:11,870
+many websites use what's called the RSA mechanism,
+which is the browser chooses a premaster secret,
+
+115
+00:09:13,589 --> 00:09:18,329
+encrypts the premaster secret using its server
+public RSA key, and sends the result over
+
+116
+00:09:18,329 --> 00:09:21,640
+to the server. The server decrypts and recovers
+the premaster secret.
+
+117
+00:09:21,640 --> 00:09:26,009
+>> Phil: That's what I taught when we covered
+how TLS works and its basic exchange.
+
+118
+00:09:26,009 --> 00:09:31,920
+>> Dan: Fantastic. So this is what I would
+call the basic RSA key exchange. The problem
+
+119
+00:09:31,920 --> 00:09:36,800
+with that mechanism is that it doesn't provide
+what's called forward secrecy. What do I mean
+
+120
+00:09:36,800 --> 00:09:42,420
+by that? Imagine that today someone recorded
+the interaction between you and the webserver.
+
+121
+00:09:42,420 --> 00:09:48,790
+So they recorded the RSA encryption of the
+premaster secret. Now a year from now somehow
+
+122
+00:09:48,790 --> 00:09:53,959
+they were able to break into the webserver
+and recover the RSA secret key. What that
+
+123
+00:09:53,959 --> 00:09:59,560
+key would allow them to do then is go back
+to what they recorded a year before, decrypt
+
+124
+00:09:59,560 --> 00:10:03,350
+the encrypted premaster secret, and now they
+can recover the entire session.
+
+125
+00:10:03,350 --> 00:10:04,170
+>> Phil: Game over.
+
+126
+00:10:04,170 --> 00:10:08,589
+>> Dan: Exactly. The basic RSA mechanism doesn't
+have what's called forward secrecy. There
+
+127
+00:10:08,589 --> 00:10:14,420
+is another key exchange mechanism in SSL.
+It's a mechanism that supports forward secrecy,
+
+128
+00:10:14,420 --> 00:10:19,360
+and it's a mechanism that's based on Diffie-Hellman.
+There are multiple names for it. It's called
+
+129
+00:10:19,360 --> 00:10:26,029
+ephemral Diffie-Hellman, in open SSL it's
+called DHE, or ECDHE, we'll get to the difference
+
+130
+00:10:26,029 --> 00:10:31,269
+between those in a second. The idea there
+is that the key exchange actually uses the
+
+131
+00:10:31,269 --> 00:10:36,290
+Diffie-Hellman protocol instead using RSA.
+So what happens is each side: the browser
+
+132
+00:10:36,290 --> 00:10:41,279
+says to the server its part of the Diffie-Hellman
+exchange, the server says to the browser its
+
+133
+00:10:41,279 --> 00:10:46,649
+part of the Diffie-Hellman exchange, and the
+server's RSA key - it's only purpose is just
+
+134
+00:10:46,649 --> 00:10:49,130
+to authenticate the server's Diffie-Hellman
+message.
+
+135
+00:10:49,130 --> 00:10:50,050
+>> Phil: It's just for signing.
+
+136
+00:10:50,050 --> 00:10:53,959
+>> Dan: Yeah exactly. The server's RSA key
+is used for signing, not for encryption. So
+
+137
+00:10:53,959 --> 00:10:58,259
+even if the server's RSA key is stolen a year
+from now, it doesn't matter.
+
+138
+00:10:58,259 --> 00:11:03,019
+>> Phil: So forward secrecy means that even
+if somebody in the future cracks something
+
+139
+00:11:03,019 --> 00:11:05,739
+that I'm still secure going forward in time.
+
+140
+00:11:05,739 --> 00:11:10,160
+>> Dan: If the session was secure today, it
+will be secure a year from now even if you
+
+141
+00:11:10,160 --> 00:11:15,579
+lose your secret key. Forward secrecty is
+a pretty important concept. It's a good thing
+
+142
+00:11:15,579 --> 00:11:20,769
+to do. Especially it protects you from keys
+being stolen and such. It also limits the
+
+143
+00:11:20,769 --> 00:11:25,389
+amount of time in which a particular key is
+used because your session really now depends
+
+144
+00:11:25,389 --> 00:11:27,360
+only on that particular Diffie-Hellman exchange.
+
+145
+00:11:27,360 --> 00:11:31,389
+>> Phil: Unlike with the RSA key, where the
+server has to get a new certificate, etc.
+
+146
+00:11:31,389 --> 00:11:35,759
+>> Dan: It's a long process. It takes a whole
+year. The point is if someone breaks your
+
+147
+00:11:35,759 --> 00:11:41,389
+RSA key somehow not by stealing the private
+key, but by a brute force attack, if they
+
+148
+00:11:41,389 --> 00:11:45,250
+break your RSA key they would recover all
+session. With Diffie-Hellman they would have
+
+149
+00:11:45,250 --> 00:11:49,610
+to break every single individual Diffie-Hellman
+exchange to recover the session which is a
+
+150
+00:11:49,610 --> 00:11:50,249
+lot more work.
+
+151
+00:11:50,249 --> 00:11:55,529
+>> Phil: So its clear going forward that network
+applications, the internet, are increasingly
+
+152
+00:11:55,529 --> 00:12:01,749
+more and more applications are on the internet,
+interconnected and correspondigly security
+
+153
+00:12:01,749 --> 00:12:07,749
+is increasingly important. So in terms of
+the classes going forward, what are the classes
+
+154
+00:12:07,749 --> 00:12:13,459
+that students can take to learn more about
+this? Because in 10 years not knowing something
+
+155
+00:12:13,459 --> 00:12:17,100
+about security is going to make you dead in
+the water.
+
+156
+00:12:17,100 --> 00:12:23,459
+>> Dan: Exactly. Excellent question. The security
+classes are kind of vital to undergraduate
+
+157
+00:12:23,459 --> 00:12:29,290
+education in computer science. We get many
+complaints from industry about universities,
+
+158
+00:12:29,290 --> 00:12:34,749
+not us, but other universities graduating
+students who know nothing about security and
+
+159
+00:12:34,749 --> 00:12:38,850
+as a result the code they write causes a lot
+of problems down the road. The classes that
+
+160
+00:12:38,850 --> 00:12:45,850
+we offer are 1. CS155 - I would argue that
+needs to be a required class - the point of
+
+161
+00:12:46,279 --> 00:12:53,279
+CS155 is A. to teach you a lot of defensive
+programming, but more importantly is to get
+
+162
+00:12:53,949 --> 00:12:58,230
+you into the security mindset. The way we
+do that is we teach you a lot of attacks.
+
+163
+00:12:58,230 --> 00:13:02,209
+The only way to learn how to defend against
+attacks is to know how to do the attacks yourself.
+
+164
+00:13:02,209 --> 00:13:06,509
+So we teach you how to break things, but more
+importantly we then draw lessons and then
+
+165
+00:13:06,509 --> 00:13:10,019
+teach you how to defend against those attacks,
+and get into the security mindset. Whenever
+
+166
+00:13:10,019 --> 00:13:14,709
+you write code, think about how that code
+can be exploited, and what can go wrong if
+
+167
+00:13:14,709 --> 00:13:21,709
+the code is exploited. The security mindset,
+general principles for writing secure code,
+
+168
+00:13:21,819 --> 00:13:26,160
+things like defense in depth, least privilege,
+and so on. These are things that we just go
+
+169
+00:13:26,160 --> 00:13:33,120
+on and on and give many many examples of those
+issues in CS155. So that's offered in the
+
+170
+00:13:33,120 --> 00:13:38,579
+spring. It's co-taught by myself and John
+Mitchel. Another class that's worth taking
+
+171
+00:13:38,579 --> 00:13:42,290
+is the crypto class. If you're more interested
+in learning how cryptography works, and I
+
+172
+00:13:42,290 --> 00:13:45,629
+can tell you the interesting thing is that
+there are many companies that actually use
+
+173
+00:13:45,629 --> 00:13:52,629
+crypto but they have very little crypto expertise.
+By taking that class you'll know what needs
+
+174
+00:13:53,059 --> 00:13:58,309
+to be known about crypto in order to use it
+properly, and whatever job you go to you would
+
+175
+00:13:58,309 --> 00:14:04,059
+actually become the goto person in that company
+to deal with any crypto-like issues. So its
+
+176
+00:14:04,059 --> 00:14:06,089
+a valuable knowledge to have.
+
+177
+00:14:06,089 --> 00:14:10,110
+>> Phil: You're convicing me I should go back
+to school. I haven't taken 155.
+
+178
+00:14:10,110 --> 00:14:14,029
+>> Dan: Please do! It's a fun class.
+
+179
+00:14:14,029 --> 00:14:17,809
+>> Phil: Awesome. Any other last comments
+you think, or thoughts about what's going
+
+180
+00:14:17,809 --> 00:14:19,930
+on in security today, or computer systems?
+
+181
+00:14:19,930 --> 00:14:22,949
+Dan: We can be talking about this for hours.
+
+182
+00:14:22,949 --> 00:14:24,779
+Phil: Of course, it's Dan Boneh.
+
+183
+00:14:24,779 --> 00:14:27,509
+Dan: How long do you want to make this?
+
+184
+00:14:27,509 --> 00:14:32,019
+Phil: Why don't we be nice to these students
+and make them in fact find out in 155 or 255?
+
+185
+00:14:32,019 --> 00:14:32,269
+Thanks a lot Dan.
+
+186
+00:14:32,160 --> 00:14:32,410
+Dan: See you in future courses.
+

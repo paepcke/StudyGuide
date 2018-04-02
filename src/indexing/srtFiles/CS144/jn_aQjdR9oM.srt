@@ -1,0 +1,1065 @@
+1
+00:00:00,080 --> 00:00:06,028
+This is the first of three videos about
+the domain name system or DNS.
+
+2
+00:00:06,028 --> 00:00:11,087
+So, let's look at the URL for a second.
+If we look at a basic URL like you would
+
+3
+00:00:11,088 --> 00:00:15,036
+put in your web browser, it has three
+basic parts.
+
+4
+00:00:15,036 --> 00:00:19,047
+It has, first, the front the application
+protocol and port.
+
+5
+00:00:19,047 --> 00:00:24,042
+So, this is saying that we're going to be
+requesting a file over HTTP and by
+
+6
+00:00:24,042 --> 00:00:26,738
+default, that means port 80,  TCP
+port 80.
+
+7
+00:00:26,738 --> 00:00:32,097
+You could also tell this URL after the
+host to do some other things say port 1001
+
+8
+00:00:32,097 --> 00:00:35,338
+or something.
+But by default, this means port 80.
+
+9
+00:00:35,338 --> 00:00:38,651
+The middle part of a name is specifying a
+host.
+
+10
+00:00:38,651 --> 00:00:44,420
+So, in this case, cs144.scs.stanford.edu.
+This is a human-readable name, delimited
+
+11
+00:00:44,421 --> 00:00:48,811
+by periods into four parts.
+And it's specifying the actual node that
+
+12
+00:00:48,811 --> 00:00:52,668
+we want to contact.
+The last is, then the file, so this is the
+
+13
+00:00:52,668 --> 00:00:58,215
+application level for HTTP the application
+level specification of what file we want
+
+14
+00:00:58,215 --> 00:01:01,659
+to request, HTTP.
+And so, the question is, so far, we've
+
+15
+00:01:01,659 --> 00:01:07,020
+been talking about the internet in terms
+of IP addresses, usually IPv4 addresses.
+
+16
+00:01:07,020 --> 00:01:11,367
+But when we type the URL, we have this
+human-readable name describing the
+
+17
+00:01:11,367 --> 00:01:14,204
+computer, the host that we want to
+contact.
+
+18
+00:01:14,204 --> 00:01:19,731
+And the question is, how do we translate
+this human-readable name to an IP address?
+
+19
+00:01:19,731 --> 00:01:24,509
+Well, it turns out, you can of course
+enter a URL without using a host name,
+
+20
+00:01:24,509 --> 00:01:29,034
+instead just by entering an IP address.
+So you could rather type in
+
+21
+00:01:29,034 --> 00:01:34,459
+CS144.scs.stanford.edu, you could actually
+write the IP address that's associated
+
+22
+00:01:34,459 --> 00:01:39,071
+with that name if you'd like.
+But, these human readable names are very, very
+
+23
+00:01:39,071 --> 00:01:43,302
+useful.
+And people realized that human-readable
+
+24
+00:01:43,302 --> 00:01:47,013
+names were useful even from the beginnings of the Internet. 
+beginning of the internet.
+
+25
+00:01:47,013 --> 00:01:51,084
+And so, way back when, when internet was
+tiny, there was a file called hosts.txt
+
+26
+00:01:51,084 --> 00:01:56,086
+and it turns out that every single host on
+the internet was in this file hosts.txt,
+
+27
+00:01:56,086 --> 00:02:00,024
+and it was maintained by the Network
+Information Center.
+
+28
+00:02:00,024 --> 00:02:04,078
+So, it's maintained at SRI, so, the
+SRI-NIC.ARPA at this particular IP
+
+29
+00:02:04,078 --> 00:02:07,073
+address.
+So if you go and read this particular RFC, RFC952, it talks a
+
+30
+00:02:07,073 --> 00:02:11,096
+little bit about this.
+And essentially, if you are a node on the
+
+31
+00:02:11,096 --> 00:02:16,974
+internet, what you'd do is periodically
+contact this node at SRI and use a File
+
+32
+00:02:16,974 --> 00:02:20,014
+Transfer Protocol to download a new
+version of it.
+
+33
+00:02:20,014 --> 00:02:24,383
+And this new version, would have all the new
+hosts and then you'd be able to map those
+
+34
+00:02:24,383 --> 00:02:28,021
+host names to IP addresses.
+Of course, if you don't have too many
+
+35
+00:02:28,021 --> 00:02:31,977
+hosts, this isn't bad, but, generally
+speaking, the network capacity required by this
+
+36
+00:02:31,977 --> 00:02:35,975
+scales as n squared, in that
+periodically end nodes, are going through
+
+37
+00:02:35,975 --> 00:02:38,237
+across the file, this in order n in
+length.
+
+38
+00:02:38,237 --> 00:02:41,161
+So this was not seen as a scalable, good,
+long term solution.
+
+39
+00:02:41,161 --> 00:02:45,374
+It's fine with just a couple of hosts, but
+as the Internet grew, it clearly, it
+
+40
+00:02:45,374 --> 00:02:48,954
+quickly became a problem.
+And this is what led to the birth of
+
+41
+00:02:48,954 --> 00:02:51,329
+what's called the Domain Name System or
+DNS.
+
+42
+00:02:51,329 --> 00:02:56,645
+The basic problem DNS is trying to solve,
+the basic tasks it's trying to complete is
+
+43
+00:02:56,645 --> 00:03:01,346
+to map names, human-neadable names to
+addresses or more generally these days,
+
+44
+00:03:01,346 --> 00:03:03,995
+to values.
+Originally, it was to map IP addresses, it
+
+45
+00:03:03,995 --> 00:03:06,973
+turns out nowadays, you can use it
+for much more.
+
+46
+00:03:06,973 --> 00:03:11,503
+And there are a couple of design
+considerations for the Domain Name System.
+
+47
+00:03:11,503 --> 00:03:15,432
+The first is we'd like it to be able to handle a
+huge number of records.
+
+48
+00:03:15,432 --> 00:03:20,959
+In theory, there are two to the 32 IP addresses,
+we should be able to map names on that
+
+49
+00:03:20,959 --> 00:03:24,579
+kind of order.
+Furthermore, we'd like to have distributed
+
+50
+00:03:24,579 --> 00:03:27,238
+control.
+One of the problems with hosts.txt is
+
+51
+00:03:27,238 --> 00:03:31,517
+there's a single, centralized repository.  It should be that  that we can say, this set of
+
+52
+00:03:31,517 --> 00:03:35,672
+names, you can manage them, this other set of names, you can manage them.
+
+53
+00:03:35,672 --> 00:03:40,378
+So, Stanford, you can manage names under
+Stanford but Amazon you can manage names
+
+54
+00:03:40,378 --> 00:03:43,066
+under Amazon.
+Furthermore, we'd like this system to be
+
+55
+00:03:43,066 --> 00:03:46,988
+robust to individual node failures.
+It shouldn't be that if one node goes
+
+56
+00:03:46,988 --> 00:03:51,427
+down, the entire domain name system comes
+down, because if that's the case, then
+
+57
+00:03:51,427 --> 00:03:55,669
+suddenly we can no longer map names to
+addresses and lots of things would grind to
+
+58
+00:03:55,669 --> 00:04:04,050
+a halt, so we want to be robust.
+And this might seem like an amazingly
+
+59
+00:04:04,050 --> 00:04:06,012
+challenging problem.
+We want to handle, you know, billions of
+
+60
+00:04:06,012 --> 00:04:10,048
+records distributed hierarchically across
+the entire Internet and which is robust to
+
+61
+00:04:10,048 --> 00:04:12,096
+failures.
+But, there are two things
+
+62
+00:04:12,096 --> 00:04:16,097
+which turn out to make this problem
+tractable, to make the design
+
+63
+00:04:16,096 --> 00:04:19,083
+feasible.
+The first is that this database that maps
+
+64
+00:04:19,084 --> 00:04:23,095
+names to values is read-only or read
+mostly.  There are updates to it, but
+
+65
+00:04:23,095 --> 00:04:28,056
+we generally expect that it is going to be
+read much more than it's written.
+
+66
+00:04:28,056 --> 00:04:33,007
+There are nodes
+coming in and out all the time, but
+
+67
+00:04:33,007 --> 00:04:35,031
+nothing compared to the way which we're
+looking nodes up.
+
+68
+00:04:35,031 --> 00:04:38,021
+Furthermore, we don't need perfect
+consistency.
+
+69
+00:04:38,021 --> 00:04:40,083
+We can have, have something called loose
+consistency.
+
+70
+00:04:40,083 --> 00:04:46,030
+So, if a node connects to the internet or
+if say, a node, a mapping between a name
+
+71
+00:04:46,030 --> 00:04:48,889
+and an address changes, it's okay if
+there's some delay before everyone sees
+
+72
+00:04:48,889 --> 00:04:51,002
+that.
+It might be some people see it a little
+
+73
+00:04:51,002 --> 00:04:54,019
+earlier than others, but it's okay if
+there's some delay.
+
+74
+00:04:55,092 --> 00:04:59,347
+And so, it turns out that these two
+properties together, that it's a read
+
+75
+00:04:59,347 --> 00:05:04,797
+mostly database and that it's okay if things
+are slightly out of date, allows DNS to,
+
+76
+00:05:04,797 --> 00:05:10,001
+to have extensive caching.
+The idea is that once you have a result,
+
+77
+00:05:10,001 --> 00:05:15,000
+you can hold onto it for a long time, and
+then, maybe when it expires, request a new
+
+78
+00:05:15,000 --> 00:05:19,085
+result, but rather than have one place
+that has to be asked for everything,
+
+79
+00:05:19,085 --> 00:05:23,346
+You can ask some place once, and then
+cache that result  and answer it for
+
+80
+00:05:23,346 --> 00:05:27,061
+other people.
+So you can look up a name and then keep
+
+81
+00:05:27,061 --> 00:05:31,068
+the result for a long time and then use it
+to answer other queries.
+
+82
+00:05:31,068 --> 00:05:36,034
+So, recall that one of the requirements is
+that names be hierarchically administered, so
+
+83
+00:05:36,034 --> 00:05:39,034
+that you can distribute the administration
+of names.
+
+84
+00:05:39,034 --> 00:05:43,057
+And to accomplish that, DNS uses a
+hierarchy of names and we're all familiar
+
+85
+00:05:43,057 --> 00:05:46,035
+with this.
+So, at the top, there's implicitly what's
+
+86
+00:05:46,035 --> 00:05:49,057
+called dot or what's called the root of
+the DNS namespace.
+
+87
+00:05:49,057 --> 00:05:52,041
+It's an
+empty name.
+
+88
+00:05:52,308 --> 00:05:56,019
+So these are called the root servers, just
+dot.
+
+89
+00:05:56,019 --> 00:06:00,718
+Then beneath them are what's called the
+top-level domains, or TLDs
+
+90
+00:06:00,718 --> 00:06:05,075
+TLDs such as EDU, COM, ORG, US, France, and
+China.
+
+91
+00:06:05,075 --> 00:06:10,854
+And underneath each of those top-level
+domains, there are what we often think of
+
+92
+00:06:10,854 --> 00:06:15,087
+as domain names, say stanford.edu, or
+cisco.com, or buydoo.cn.
+
+93
+00:06:15,087 --> 00:06:21,006
+And, of course, within those domains the
+owner of those domains can hand out
+
+94
+00:06:21,006 --> 00:06:25,942
+additional names, additional domains.
+So, for example, Stanford, generally,
+
+95
+00:06:25,942 --> 00:06:29,060
+there's just one level of names below
+Stanford.
+
+96
+00:06:29,060 --> 00:06:33,006
+So, there's cs.stanford.edu, www.stanford.edu.
+
+97
+00:06:33,198 --> 00:06:37,060
+Berkeley has another layer.
+So, there is cs.berkeley, there is the cs
+
+98
+00:06:37,060 --> 00:06:42,040
+domain, and there are names under the cs
+domain like www.cs.berkeley.edu.
+
+99
+00:06:42,040 --> 00:06:47,287
+Similarly, Google has maps.google.com.
+So, now the way DNS servers work is that
+
+100
+00:06:47,287 --> 00:06:51,004
+there are these hierarchical zones.
+There's the root zone, then the TLDs, then
+
+101
+00:06:51,004 --> 00:06:53,065
+the domains, and then there can be
+subdomains.
+
+102
+00:06:53,065 --> 00:06:58,010
+So Stanford for example, as you may have seen
+so far, it does have a subdomain SCS
+
+103
+00:06:58,184 --> 00:07:02,024
+managed by David Mazieres.
+And the key thing is that, each of these
+
+104
+00:07:02,024 --> 00:07:07,018
+zones can be separately administered.
+So, Stanford can grant David Mazieres the
+
+105
+00:07:07,018 --> 00:07:10,023
+domain SCS, so it'll answer questions
+about SCS.
+
+106
+00:07:10,023 --> 00:07:15,011
+But then, David can completely control all
+of the host names underneath SCS.
+
+107
+00:07:15,011 --> 00:07:20,043
+Similarly, EDU can grant Stanford the name
+Stanford, but then it's completely up to
+
+108
+00:07:20,043 --> 00:07:23,087
+Stanford to manage all of the names
+beneath Stanford.
+
+109
+00:07:23,087 --> 00:07:27,037
+Furthermore, each zone can be served from
+several replicated servers.
+
+110
+00:07:27,037 --> 00:07:31,039
+And so, rather than there's being one
+server that serves Stanford's name, there
+
+111
+00:07:31,039 --> 00:07:35,035
+are in fact many servers, replicated, and
+there's some rules as to how they're
+
+112
+00:07:35,035 --> 00:07:37,378
+replicated.
+The idea is that if one server goes down,
+
+113
+00:07:37,378 --> 00:07:41,048
+there are others that can still answer
+questions about Stanford.
+
+114
+00:07:41,048 --> 00:07:46,389
+So, it turns out the root zone, so the
+zone you'd ask for, hey, who do I ask about
+
+115
+00:07:46,389 --> 00:07:49,083
+EDU?
+There are thirteen servers labeled A to M
+
+116
+00:07:49,083 --> 00:07:54,080
+and they're highly replicated.
+And so there's, sort of this bootstrapping
+
+117
+00:07:54,080 --> 00:08:00,171
+process of your computer comes up for the
+first time and wants to ask a name and it
+
+118
+00:08:00,171 --> 00:08:03,040
+knows nothing.
+Well, it needs to talk to a root server in
+
+119
+00:08:03,040 --> 00:08:06,003
+order to contact, say a top-level domain
+server.
+
+120
+00:08:06,003 --> 00:08:10,019
+But how does it find the root servers?
+It turns out that these are generally just
+
+121
+00:08:10,019 --> 00:08:13,092
+IPs that are stored in a name, in the
+file in the name servers.
+
+122
+00:08:13,092 --> 00:08:18,367
+So, the name server comes up and it has
+some IP addresses for root servers.
+
+123
+00:08:18,367 --> 00:08:22,542
+And then, the first query that comes in,
+let's say, it's for stanford.edu, it knows
+
+124
+00:08:22,542 --> 00:08:26,606
+that it needs to talk to the EDU servers,
+and so, it can ask the root servers, hey,
+
+125
+00:08:26,606 --> 00:08:29,221
+who has EDU?
+Then, when it gets the response who has
+
+126
+00:08:29,221 --> 00:08:32,436
+EDU, it can contact the EDU server, hey,
+who has Stanford?
+
+127
+00:08:32,630 --> 00:08:36,683
+In addition to having these thirteen
+different servers, they're highly
+
+128
+00:08:36,683 --> 00:08:40,663
+replicated through something called
+anycast, IP Anycast, where it turns out
+
+129
+00:08:40,663 --> 00:08:44,750
+that there are many machines that have the
+same IP address, which basically causes
+
+130
+00:08:44,750 --> 00:08:47,080
+you to contact the one that is closest to
+you.
+
+131
+00:08:47,080 --> 00:08:50,073
+So this makes the root servers highly,
+highly robust.
+
+132
+00:08:50,073 --> 00:08:55,436
+Often, when you hear about large-scale
+distributed denial-of-service or DDoS
+
+133
+00:08:55,436 --> 00:08:59,050
+attacks against the root servers.
+This is exactly what they're talking
+
+134
+00:08:59,050 --> 00:09:02,002
+about.
+It's when people are trying to attack the DNS
+
+135
+00:09:02,002 --> 00:09:05,643
+root servers to try to cause the DNS system to
+
+136
+00:09:05,643 --> 00:09:09,078
+grind to a halt.
+As of yet, nobody has yet succeeded.
+
+137
+00:09:09,078 --> 00:09:13,355
+There are so many of these servers, that
+is so robust and it turns out their job is
+
+138
+00:09:13,355 --> 00:09:16,030
+so simple that people haven't been able to do it. But they
+
+139
+00:09:16,030 --> 00:09:20,061
+keep on trying.
+So, here is a map of the DNS root server.
+
+140
+00:09:20,061 --> 00:09:23,094
+So, A, B, C, D, E, F, G, H, I, J, K, L J,
+K, L, M.
+
+141
+00:09:23,094 --> 00:09:31,070
+So I colored, all these
+different A servers or A server, A, B A,
+
+142
+00:09:34,087 --> 00:09:37,104
+B, D, E, G, H, L.
+And then for the anycast instances for C,
+
+143
+00:09:37,104 --> 00:09:39,080
+F, I, J, K, M you can see that they're
+spread all over the world.
+
+144
+00:09:39,080 --> 00:09:47,311
+So, this means, let's say, if you're
+somebody in Saudi
+
+145
+00:09:47,311 --> 00:09:51,671
+Arabia and you want to issue a DNS query, you
+
+146
+00:09:51,671 --> 00:09:57,005
+don't have to go very far.
+There's some that are very close by.
+
+147
+00:09:59,021 --> 00:10:02,377
+Okay.
+So, that's the basic naming architecture
+
+148
+00:10:02,377 --> 00:10:07,015
+and it gives a sense as to what DNS servers are
+and how they are structured into these
+
+149
+00:10:07,015 --> 00:10:11,037
+hierarchies.
+So, what does a query actually look like?
+
+150
+00:10:11,037 --> 00:10:16,073
+So, there are two kinds of DNS queries,
+recursive and non-recursive.
+
+151
+00:10:16,073 --> 00:10:23,596
+A recursive query asks the server you
+contact to resolve the entire
+
+152
+00:10:23,596 --> 00:10:25,991
+query.
+So, you're asking it a question, and then
+
+153
+00:10:25,991 --> 00:10:31,022
+if there's many steps to the question, then
+it should ask each of those steps.
+
+154
+00:10:31,158 --> 00:10:34,485
+As opposed to a non-recursive query, where
+you're going to contact the server, it's
+
+155
+00:10:34,485 --> 00:10:36,060
+just going to answer one step of the
+query.
+
+156
+00:10:36,060 --> 00:10:39,010
+And, I'll show why this difference occurs
+in a second.
+
+157
+00:10:39,013 --> 00:10:42,663
+And you  specify just a bit in the query, to say
+whether it's a recursive or nonrecursive
+
+158
+00:10:42,663 --> 00:10:47,292
+query.
+So, DNS usually uses UDP port 53 and
+
+159
+00:10:47,292 --> 00:10:53,181
+there's a 512 byte message limit.
+You can use TCP port 53 and then
+
+160
+00:10:53,181 --> 00:10:57,601
+all the DNS messages have a sixteen bit
+length field so you know how long
+
+161
+00:10:57,601 --> 00:11:00,891
+they are since they are not datagrams, they're a stream.
+
+162
+00:11:00,891 --> 00:11:04,174
+So, let's say that I'm a client.
+So, here is me.
+
+163
+00:11:04,426 --> 00:11:09,935
+And I want to ask the question, hey, what
+is the IP address associated with
+
+164
+00:11:09,935 --> 00:11:15,574
+www.stanford.edu?
+So, using DHCP I have an address for a DNS
+
+165
+00:11:15,574 --> 00:11:21,033
+server and so, let's just, let's call this
+here a resolver and it has some address R.
+
+166
+00:11:21,033 --> 00:11:27,046
+And so, I send a DNS request or DNS query
+saying I need the IP address for
+
+167
+00:11:27,046 --> 00:11:32,036
+www.stanford.edu and I send this message
+to the resolver.
+
+168
+00:11:32,036 --> 00:11:41,012
+So, I'm asking for the  address of
+www.stanford.edu.
+
+169
+00:11:42,045 --> 00:11:46,932
+And I asked this as a recursive query.
+So the resolver is going to, resolve this
+
+170
+00:11:46,932 --> 00:11:51,549
+entire query recursively for me.
+Let's say, my resolver has nothing cached.
+
+171
+00:11:51,549 --> 00:11:56,570
+It doesn't know anything about the world.
+It just has the IP address of some root
+
+172
+00:11:56,570 --> 00:11:59,679
+servers.
+Well, the first thing it's going to do is
+
+173
+00:11:59,679 --> 00:12:03,380
+it needs to figure out whom to ask a
+question about EDU.
+
+174
+00:12:03,380 --> 00:12:06,466
+So, where are the servers for
+EDU?
+
+175
+00:12:06,466 --> 00:12:13,703
+So, it sends a query to one of the root
+servers saying, hey, who do I ask about
+
+176
+00:12:13,703 --> 00:12:18,057
+EDU?
+This is a non-recursive query.
+
+177
+00:12:21,056 --> 00:12:24,773
+I can't ask the root
+servers to answer the whole query for me
+
+178
+00:12:24,773 --> 00:12:28,063
+and start contacting other people.
+They're just going to answer one step,
+
+179
+00:12:28,063 --> 00:12:31,015
+they'll answer, hey, who shall I talk to
+about EDU?
+
+180
+00:12:33,033 --> 00:12:37,064
+And the root will send a response saying,
+here's some information for who you should
+
+181
+00:12:37,064 --> 00:12:42,024
+talk about EDU.
+Now, the resolver knows, okay, now
+
+182
+00:12:42,024 --> 00:12:46,029
+I can cache the entry for EDU, great, I
+can put it in my cache.
+
+183
+00:12:46,029 --> 00:12:48,093
+This is the IP address I should contact
+for the question about EDU, now let me
+
+184
+00:12:48,093 --> 00:12:54,034
+contact that IP address.
+That's going to ask EDU, hey, who should I
+
+185
+00:12:54,034 --> 00:13:00,026
+ask about Stanford?
+Again, this is a non-recursive query.
+
+186
+00:13:00,026 --> 00:13:07,020
+The edu sever is going to say, okay, 
+here's your information about whom you
+
+187
+00:13:07,020 --> 00:13:14,041
+should ask about Stanford.
+I can then cache that result, and ask that
+
+188
+00:13:14,041 --> 00:13:18,795
+server, that's the domain server.
+So now I'm going to say, Stanford, what's
+
+189
+00:13:18,795 --> 00:13:25,028
+the address for WWW?
+And Stanford can respond, say aha!, here
+
+190
+00:13:25,028 --> 00:13:36,539
+is the address for www.stanford.edu.
+And then the resolver can cache this
+
+191
+00:13:36,539 --> 00:13:44,823
+result.
+Www.stanford.edu.
+
+192
+00:13:44,823 --> 00:13:50,098
+Now, the resolver can cache these values, so that  if I want to ask the question about
+
+193
+00:13:50,098 --> 00:13:52,958
+EDU, what DNS server should I talk to.
+If I want to ask a question about
+
+194
+00:13:52,958 --> 00:13:59,093
+stanford.edu, what DNS server should I
+talk to and what's the address for
+
+195
+00:13:59,093 --> 00:14:04,007
+www.stanford.edu?
+And then, it can return this result to the
+
+196
+00:14:04,007 --> 00:14:07,077
+client.
+Here is the IP address for
+
+197
+00:14:07,077 --> 00:14:14,245
+www.stanford.edu.
+And that's the basic operation of a DNS
+
+198
+00:14:14,245 --> 00:14:16,995
+query.
+It starts with the client asking recursive
+
+199
+00:14:16,995 --> 00:14:20,734
+query of the resolver.
+The resolver may then ask non-recursive
+
+200
+00:14:20,734 --> 00:14:26,181
+queries to servers in the network in order
+to generate the response, which it then sends
+
+201
+00:14:26,181 --> 00:14:29,286
+to the client.
+It could also be that the resolver had
+
+202
+00:14:29,286 --> 00:14:33,094
+answered this question before.
+And so, rather than go and ask all the
+
+203
+00:14:33,094 --> 00:14:36,484
+servers, it can just answer from its cache.
+So, if a couple minutes later, another
+
+204
+00:14:36,484 --> 00:14:41,107
+client asks the same question, "hey, what's
+the address of www.stanford.edu," this
+
+205
+00:14:41,107 --> 00:14:46,306
+resolver, rather than contact
+anyone, can just return the cached result.
+
+206
+00:14:46,306 --> 00:14:50,974
+And so, if you ever hear in the, the news, about
+
+207
+00:14:50,974 --> 00:14:57,602
+DNS cache poisoning.
+There's this aspect of DNS, attacks
+
+208
+00:14:57,602 --> 00:15:02,860
+try to take advantage of, which is that, if you can
+
+209
+00:15:02,860 --> 00:15:08,166
+get a bad record into the resolver,
+somehow convince it that
+
+210
+00:15:08,166 --> 00:15:14,576
+www.stanford.edu actually points at
+www.evil.com, or something, such that if
+
+211
+00:15:14,576 --> 00:15:19,025
+you try to go to Stanford, instead you'll
+go to evil hacker's server.
+
+212
+00:15:19,025 --> 00:15:24,067
+So if you can get that cache entry into
+the resolver, and poison the cache, then
+
+213
+00:15:24,067 --> 00:15:28,072
+anybody who asks that question is going to
+get that answer.
+
+214
+00:15:28,072 --> 00:15:33,041
+And so, later in the course we talked
+about security, we'll see some of the ways
+
+215
+00:15:33,041 --> 00:15:37,034
+in which that can happen and some ways in
+which DNS can help solve it.
+

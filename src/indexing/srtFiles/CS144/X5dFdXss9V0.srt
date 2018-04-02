@@ -1,0 +1,1433 @@
+1
+00:00:00,000 --> 00:00:04,019
+This video is going to dig into the
+details of TCP connection setup and
+
+2
+00:00:04,019 --> 00:00:06,815
+teardown.
+This is a deeper look than sort of, the
+
+3
+00:00:06,816 --> 00:00:11,303
+initial service model we presented.
+Looking at a couple of edge cases and the
+
+4
+00:00:11,303 --> 00:00:14,283
+entire TCP state diagram.
+So, we're going to look at 3-way
+
+5
+00:00:14,474 --> 00:00:17,998
+handshake, something called simultaneous
+open which turns out to be really
+
+6
+00:00:17,998 --> 00:00:21,427
+important today in peer to peer
+applications, and actually show the full
+
+7
+00:00:21,427 --> 00:00:23,951
+TCP state machine for connection setup and
+teardown.
+
+8
+00:00:23,951 --> 00:00:27,856
+So, the high level problem here is, if we
+want to communicate reliably, it turns out
+
+9
+00:00:27,856 --> 00:00:31,190
+it's very helpful to have state on one or
+both ends of the connection.
+
+10
+00:00:31,190 --> 00:00:35,095
+You can, in fact, turn, turns out you can
+communicate reliably with having something
+
+11
+00:00:35,095 --> 00:00:38,096
+stateless on one end or the other, but
+it's much less efficient.
+
+12
+00:00:38,096 --> 00:00:41,429
+Having a little bit of state is great,
+it'll make you have much better
+
+13
+00:00:41,429 --> 00:00:44,739
+throughput, etc..
+But, if we have this state, there's this
+
+14
+00:00:44,739 --> 00:00:47,699
+problem of, how do we set up that state?
+What is it?
+
+15
+00:00:47,699 --> 00:00:51,666
+So, connection establishment.
+But then, also, given the state's going to
+
+16
+00:00:51,666 --> 00:00:55,691
+us to take, take up RAM in your machine,
+when can you tear it down?
+
+17
+00:00:55,692 --> 00:00:59,481
+When is, can you, sort of, garbage collect
+this state, and reuse it?
+
+18
+00:00:59,481 --> 00:01:03,921
+So, for example, the memory structures
+using for your TCP connection, the buffers
+
+19
+00:01:03,921 --> 00:01:08,776
+are also the port numbers that you used.
+So, there are these problems of connection
+
+20
+00:01:08,776 --> 00:01:12,684
+establishment and teardown.
+So, here's the standard TCP header with
+
+21
+00:01:12,684 --> 00:01:16,000
+its standard twenty byte payload, and then
+options.
+
+22
+00:01:17,640 --> 00:01:22,084
+So, for connection set up, as we've seen
+before, there are four parts of the header
+
+23
+00:01:22,084 --> 00:01:24,991
+that are used.
+The sequence number, the acknowledgment
+
+24
+00:01:24,991 --> 00:01:29,106
+number, the ACK bit and the SYN bit. So,
+here, I'm going to walk through the 3-way
+
+25
+00:01:29,326 --> 00:01:33,770
+handshake in a little bit more detail as
+to what happens in the packets that are
+
+26
+00:01:33,770 --> 00:01:36,842
+exchanged.
+So, recall in the standard 3-way handshake
+
+27
+00:01:36,842 --> 00:01:39,695
+model, we have an active opener and a
+passive opener.
+
+28
+00:01:39,695 --> 00:01:44,139
+The passive opener is sitting, listening,
+waiting for a connection request, such as
+
+29
+00:01:44,139 --> 00:01:47,211
+a web server.
+The active opener is the one who initiates
+
+30
+00:01:47,211 --> 00:01:50,010
+the request, the request to start the
+connection.
+
+31
+00:01:50,010 --> 00:01:55,908
+So, in the first step, the active opener
+sends a TCP segment with the SYN bit set
+
+32
+00:01:55,908 --> 00:02:01,364
+to indicate that its synchronizing the
+passive side to the beginning of its stream
+
+33
+00:02:01,364 --> 00:02:05,566
+it saying what is the first sequence
+number of my stream?
+
+34
+00:02:05,566 --> 00:02:12,540
+And so, let's call it S sub a. So, you do
+this rather than just say assume zero for
+
+35
+00:02:12,540 --> 00:02:15,957
+a bunch of reasons.
+Number one, it's very helpful to randomize
+
+36
+00:02:15,957 --> 00:02:18,814
+your starting sequence number for security
+reasons.
+
+37
+00:02:18,814 --> 00:02:23,351
+It means that people can't guess where
+your stream starts and try to insert data
+
+38
+00:02:23,351 --> 00:02:26,096
+on you.
+Also, it's useful if there happen to be
+
+39
+00:02:26,096 --> 00:02:30,073
+old packets flying around the internet,
+which sometimes happens, you get
+
+40
+00:02:30,073 --> 00:02:33,882
+tremendous delays somewhere.
+If you randomize your starting sequence
+
+41
+00:02:33,882 --> 00:02:38,083
+number, then it becomes very unlikely that
+some random segment, or perhaps a
+
+42
+00:02:38,083 --> 00:02:41,780
+corrupted segment is going to overlap your
+own sequence window.
+
+43
+00:02:41,780 --> 00:02:46,694
+So, the active side sends a SYN saying,
+This is my starting sequence number, S sub
+
+44
+00:02:46,694 --> 00:02:50,526
+a.
+The passive side responds, also with the
+
+45
+00:02:50,526 --> 00:02:53,932
+SYN saying, okay, that's, I'm going to
+synchronize you.
+
+46
+00:02:53,932 --> 00:02:59,173
+My starting sequence number is let's say,
+S sub p, for passive. But, I'm also going
+
+47
+00:02:59,173 --> 00:03:04,283
+to set the ACK bit which means that the
+acknowledgement sequence number in the
+
+48
+00:03:04,283 --> 00:03:07,622
+packet is valid.
+And I'm going to ACK S(a+1).
+
+49
+00:03:07,624 --> 00:03:12,865
+Recall that a node acknowledges not the
+last byte received, but rather the first
+
+50
+00:03:12,865 --> 00:03:17,582
+byte that hasn't been received.
+So, by sending ACK S(a+1), the passive
+
+51
+00:03:17,582 --> 00:03:23,020
+side has acknowledged that it has received
+the SYN which is effectively by S sub a.
+
+52
+00:03:23,380 --> 00:03:29,875
+The active side then responds.
+It doesn't need to send the SYN because it's
+
+53
+00:03:29,875 --> 00:03:35,129
+synchronized.
+So, it sends a packet with sequence number
+
+54
+00:03:35,129 --> 00:03:40,597
+S(p+1), that's commonly what's used.
+and ACK S, I'm sorry,
+
+55
+00:03:40,597 --> 00:03:43,302
+It sends the packet with S(a+1) and ACK
+S(p+1)
+
+56
+00:03:43,302 --> 00:03:47,670
+And, so now, it's acknowledging saying, I
+
+57
+00:03:47,670 --> 00:03:52,263
+have received your SYN and I'm
+acknowledging that.
+
+58
+00:03:52,263 --> 00:03:58,877
+Now, this initial packet, the sequence
+number is S(a+1) but it tends to be of
+
+59
+00:03:58,877 --> 00:04:03,183
+zero length.
+So, if there were a byte in the packet, it
+
+60
+00:04:03,183 --> 00:04:07,286
+would be Sa(a+1) but it's not, and this
+is of length zero.
+
+61
+00:04:07,286 --> 00:04:10,089
+This is a, just a, a simple control
+packet.
+
+62
+00:04:10,089 --> 00:04:15,628
+And so, there's a sequence number of which
+the bytes would start, but there are no
+
+63
+00:04:15,628 --> 00:04:18,569
+bytes.
+So, that's the basic connection setup.
+
+64
+00:04:18,569 --> 00:04:23,150
+SYN, SYN ACK, ACK, A, A + one, P, P + one,
+and then an empty segment just for
+
+65
+00:04:23,150 --> 00:04:27,343
+connection establishment.
+So, turns out TCP also supports another
+
+66
+00:04:27,343 --> 00:04:31,776
+way of opening connections, one that's called
+simultaneous open, which I said is used a
+
+67
+00:04:31,776 --> 00:04:36,156
+lot, as you'll see later, in the course in
+peer to peer applications to reverse
+
+68
+00:04:36,156 --> 00:04:38,720
+things called network address translation
+boxes.
+
+69
+00:04:39,220 --> 00:04:43,441
+And so, the way simultaneous open works is
+this happens if both the active, if the
+
+70
+00:04:43,441 --> 00:04:47,455
+two sides, we call them active and passive
+but now they're really both active,
+
+71
+00:04:47,455 --> 00:04:51,364
+Both know each other's port numbers.
+So, the node on the left knows that the
+
+72
+00:04:51,364 --> 00:04:55,794
+port that the node on the right is issuing
+a connection request from, the node on the
+
+73
+00:04:55,794 --> 00:04:58,192
+right knows the same for the node on the
+left.
+
+74
+00:04:58,192 --> 00:05:00,589
+And so, they're using the correct port
+numbers.
+
+75
+00:05:00,589 --> 00:05:03,300
+And they do this, they negotiate this, say,
+beforehand.
+
+76
+00:05:03,940 --> 00:05:10,107
+So, what happens with simultaneous open is
+both sides send SYNs at the same time.
+
+77
+00:05:10,107 --> 00:05:19,117
+And so, here the one on the left sends a
+SYN. Let's call this S sub a again. But,
+
+78
+00:05:19,117 --> 00:05:25,331
+at the same time, then on the right sends
+a SYN S sub p.
+
+79
+00:05:25,331 --> 00:05:33,600
+Well then, on the left, responds and it
+sends SYN S sub a,
+
+80
+00:05:34,220 --> 00:05:43,401
+Ack S sub p + one.
+Similarly, the one on the right responds
+
+81
+00:05:43,401 --> 00:05:48,192
+with SYN S sub p, ACK S sub a + one. At
+this point, we have now established the
+
+82
+00:05:48,192 --> 00:05:53,145
+connection. Both sides are synchronized we
+know the starting sequence numbers
+
+83
+00:05:53,145 --> 00:05:58,411
+that acknowledged that. but note that this
+takes four messages rather than three.
+
+84
+00:05:58,411 --> 00:06:02,800
+So, let's see this just a standard 3-way
+handshake and practice.
+
+85
+00:06:02,800 --> 00:06:07,957
+So, here I've opened up Wireshark, filtering
+on port 80 and a certain IP address.
+
+86
+00:06:08,148 --> 00:06:13,179
+And so, I'm just going to telnet to a port
+80 on that host and we'll see the SYN, SYN
+
+87
+00:06:13,179 --> 00:06:15,598
+ACK, ACK set up.
+And so, there it is.
+
+88
+00:06:15,598 --> 00:06:19,674
+So, here's the first packet sent from my
+host to the destination.
+
+89
+00:06:19,674 --> 00:06:23,558
+And we see that it's an HTTP port 80 SYN
+sequence number zero.
+
+90
+00:06:23,749 --> 00:06:26,551
+And there's no ACK sent,
+There's no ACK bit.
+
+91
+00:06:26,551 --> 00:06:30,690
+And so, the acknowledgement field's
+invalid, so it's not displayed.
+
+92
+00:06:30,690 --> 00:06:34,028
+Now, it turns out the sequence in this
+packet isn't actually zero.
+
+93
+00:06:34,028 --> 00:06:38,277
+What tools like Wireshark do, just to make
+things easier to read is they use relative
+
+94
+00:06:38,277 --> 00:06:41,262
+sequence numbers.
+They show you what the sequence number is
+
+95
+00:06:41,414 --> 00:06:45,460
+relative to the beginning of the stream.
+And since were just starting the stream,
+
+96
+00:06:45,460 --> 00:06:49,001
+we see sequence number zero.
+We dig inside the packet, down here at the
+
+97
+00:06:49,001 --> 00:06:53,104
+bottom we see.
+Wireshark tells you, sequence number zero
+
+98
+00:06:53,104 --> 00:06:58,549
+relative sequence number.
+And if we then look at the actual field,
+
+99
+00:06:58,549 --> 00:07:02,750
+it's ccbd1dbb.
+And so, it's much larger than zero.
+
+100
+00:07:02,750 --> 00:07:08,789
+Now, we do then see is for the second
+packet that's acknowledging this.
+
+101
+00:07:08,789 --> 00:07:14,858
+It's going to acknowledge with ccbd1dbc.
+Here again, it's using relative ACK
+
+102
+00:07:14,858 --> 00:07:17,720
+numbers but that's what we see,
+Ccbd1dbc.
+
+103
+00:07:18,448 --> 00:07:22,196
+And, it's also sending a, a SYN, so here's
+the SYN ACK.
+
+104
+00:07:22,196 --> 00:07:27,846
+And so, the sequence number again, a
+relative sequence number of zero but it's
+
+105
+00:07:27,846 --> 00:07:31,808
+341135ae. So, this is from my host to the
+server.
+
+106
+00:07:31,808 --> 00:07:36,871
+This is server back or the SYN ACK.
+Then, my host responds with an ACK. And
+
+107
+00:07:36,871 --> 00:07:41,107
+so, you can see sequence number one.
+Acknowledgment number one, so it's
+
+108
+00:07:41,107 --> 00:07:45,101
+acknowledging the SYN that was sent from
+the server and it gives a sequence
+
+109
+00:07:45,101 --> 00:07:48,740
+number one but it's a length of zero.
+And so, it's saying a-ha, you know, I,
+
+110
+00:07:48,740 --> 00:07:52,885
+this packet contains the stream starting
+at byte one, but there's nothing in it so
+
+111
+00:07:52,885 --> 00:07:55,918
+there's actually no data yet.
+So, there we see a simple 3-way
+
+112
+00:07:55,918 --> 00:08:00,013
+handshake..so So now, let's look at a TCP
+connection when there is data, so we're
+
+113
+00:08:00,013 --> 00:08:03,096
+going to see the SYN, SYN ACK, and then
+some data communication.
+
+114
+00:08:03,096 --> 00:08:07,342
+So, we do the same thing as before except
+this time rather than tellnetting to port
+
+115
+00:08:07,342 --> 00:08:11,437
+80 where there's no data transferred, I'm
+just going to do a standard web, web
+
+116
+00:08:11,437 --> 00:08:20,310
+request to port 80. And so, here we
+see a TCP connection.
+
+117
+00:08:20,310 --> 00:08:25,219
+And so, here we have the SYN, SYN ACK,
+Ack. Now, the connection has been
+
+118
+00:08:25,219 --> 00:08:28,747
+established and then data transmission
+starts.
+
+119
+00:08:28,786 --> 00:08:33,120
+And so, here's a packet shown as HTTP.
+And if we look inside,
+
+120
+00:08:33,400 --> 00:08:39,964
+This particular TCP segment, see sequence
+number one, just the start of the data
+
+121
+00:08:39,964 --> 00:08:43,748
+stream.
+Length 474, so this particular chunk of
+
+122
+00:08:43,748 --> 00:08:48,768
+data was 474 bytes long.
+So, the next sequence number would be 475,
+
+123
+00:08:48,768 --> 00:08:52,199
+still ACK one.
+And so, there's the data that we're
+
+124
+00:08:52,199 --> 00:08:55,086
+sending a request to the web
+server,
+
+125
+00:08:55,086 --> 00:08:59,182
+Then the web server responds. And it
+responds with ACK 475,
+
+126
+00:08:59,182 --> 00:09:04,351
+Right? So, the next byte it will expect is
+475 but sequence number one.
+
+127
+00:09:04,351 --> 00:09:07,977
+So, this is just length zero, this ACK, it
+has no data in it.
+
+128
+00:09:07,977 --> 00:09:11,200
+This is what we call sort of just ACK
+packet.
+
+129
+00:09:11,420 --> 00:09:17,077
+And so, it has no TCP segment data, but
+it's acknowledging the data that is
+
+130
+00:09:17,077 --> 00:09:20,604
+received.
+The next packet, though, from the server
+
+131
+00:09:20,825 --> 00:09:25,233
+actually has data in it.
+So, you can see here, length 1448,
+
+132
+00:09:25,233 --> 00:09:28,540
+but sequence number one.
+So, it's one  to 1449.
+
+133
+00:09:30,560 --> 00:09:34,546
+And here's the next TCP segment. And then
+we see here, putting that together,
+
+134
+00:09:34,546 --> 00:09:38,475
+there's the HTTP response which is put
+together. And so, there we see the
+
+135
+00:09:38,475 --> 00:09:42,974
+connection establishment and now the
+sequence and acknowledged number of spaces
+
+136
+00:09:42,974 --> 00:09:46,163
+are walking forward according to the data
+communication.
+
+137
+00:09:46,163 --> 00:09:50,263
+So, next we're going to look at how TCP
+tears down a connection. Like a, a
+
+138
+00:09:50,263 --> 00:09:54,534
+connection setup, the uses the sequence
+number, acknowledgement number fields. But
+
+139
+00:09:54,534 --> 00:09:58,260
+unlike connection setup which use the
+synchronization bit to synchronize
+
+140
+00:09:58,260 --> 00:10:02,109
+sequence numbers, connection teardown uses
+the FIN bits to denote there's no more
+
+141
+00:10:02,109 --> 00:10:04,330
+data to send, so it uses the ACK in FIN
+bits.
+
+142
+00:10:04,330 --> 00:10:07,247
+And so, when TCP sends a packet with the
+FIN bit.
+
+143
+00:10:07,247 --> 00:10:10,956
+What this means is that, that sender has
+no more data to send,
+
+144
+00:10:10,956 --> 00:10:15,272
+This is the end of the stream.
+This is causing you to say, call close or
+
+145
+00:10:15,272 --> 00:10:19,457
+shut down, in the application.
+But, TCP connections, like most reliable
+
+146
+00:10:19,457 --> 00:10:23,045
+connections, are bidirectional.
+And so, it's not until both sides have
+
+147
+00:10:23,045 --> 00:10:26,845
+nothing to send that you actually
+terminate the connection because it could
+
+148
+00:10:26,845 --> 00:10:29,800
+be one side is done but the other side has
+more to send.
+
+149
+00:10:30,300 --> 00:10:34,287
+And so, it's not until both sides have,
+have FINed and you've acknowledged those
+
+150
+00:10:34,287 --> 00:10:38,946
+that you can tear things down.
+So, a typical teardown exchange looks like
+
+151
+00:10:38,946 --> 00:10:43,368
+this where we say, if A and B who are
+communicating, and A closes first.
+
+152
+00:10:43,368 --> 00:10:48,648
+And so, it sends a packet with a FIN bit
+with sequence number S sub A and
+
+153
+00:10:48,648 --> 00:10:52,581
+acknowledging S sub B.
+B then sends a packet to aknowledge this
+
+154
+00:10:52,581 --> 00:10:56,333
+FIN, so ACK S sub A + one.
+Then, at some point later, B decides it
+
+155
+00:10:56,333 --> 00:11:01,417
+needs to close it's side of the connection
+so it sends a FIN, sequence number S sub B
+
+156
+00:11:01,417 --> 00:11:05,835
+Acknowledgment S sub one is still
+acknowledging Sa + one, which then A
+
+157
+00:11:05,835 --> 00:11:08,798
+responds saying, I'll acknowledge Sb +
+one.
+
+158
+00:11:08,800 --> 00:11:12,553
+So, FIN like SYN represents of the last
+byte of the connection.
+
+159
+00:11:12,553 --> 00:11:17,273
+The way that you, like SYN represents the
+first byte, the way you acknowledge by is
+
+160
+00:11:17,273 --> 00:11:21,268
+acknowledging plus one with FIN, you
+acknowledge you receive it by
+
+161
+00:11:21,268 --> 00:11:24,480
+acknowledging plus one.
+Of course, you, you can have also
+
+162
+00:11:24,480 --> 00:11:29,201
+simultaneous close, where they send the
+FINs in parallel and the same exchange
+
+163
+00:11:29,201 --> 00:11:32,302
+occurs.
+Great. So now, we've exchanged these
+
+164
+00:11:32,302 --> 00:11:36,851
+messages and we've acknowledged them.
+When can we actually tear down the
+
+165
+00:11:36,851 --> 00:11:39,823
+connection?
+When can we actually delete the state?
+
+166
+00:11:39,823 --> 00:11:43,463
+When can we reuse the ports?
+This turns out to be nontrivial.
+
+167
+00:11:43,463 --> 00:11:47,526
+You can't do it immediately.
+So, for example, what happens if this
+
+168
+00:11:47,526 --> 00:11:51,772
+final ACK is lost in the network?
+So, I've sent FIN, then I receive a FIN
+
+169
+00:11:51,772 --> 00:11:55,169
+then I ACK it,
+I can't immediately teardown my connection
+
+170
+00:11:55,169 --> 00:11:59,839
+because, what happens if that ACK is lost?
+The other side's never going to hear it.
+
+171
+00:11:59,839 --> 00:12:03,600
+It's never going to know whether the
+connection was, torn down.
+
+172
+00:12:03,600 --> 00:12:07,976
+Another issue is it could be that we do a
+FIN, FIN ACK, and an acknowledgement
+
+173
+00:12:07,976 --> 00:12:12,622
+teardown and then the same port pair, the
+same port pair is used immediately for a
+
+174
+00:12:12,622 --> 00:12:15,486
+new connection.
+We want to make sure that we don't, by
+
+175
+00:12:15,486 --> 00:12:19,430
+accident, then corrupt the data because
+the sequence number of spaces overlap.
+
+176
+00:12:19,430 --> 00:12:23,768
+So, the solution is used is the active closer
+goes to something called, time wait.
+
+177
+00:12:23,768 --> 00:12:28,227
+And what this means is that, if I'm the
+person who sends the FIN first, then, once
+
+178
+00:12:28,227 --> 00:12:33,048
+the connection is torn down, I have to
+wait a little while before I can reuse my
+
+179
+00:12:33,048 --> 00:12:35,652
+state.
+And so, you keep the socket around for
+
+180
+00:12:35,652 --> 00:12:38,543
+two, what's, sort of the maximum segment
+lifetimes.
+
+181
+00:12:38,543 --> 00:12:43,913
+So, two times what you expect to be the
+longest time, segments might live in the
+
+182
+00:12:43,913 --> 00:12:47,100
+network which is on the order of a, say a
+minute or so.
+
+183
+00:12:47,100 --> 00:12:52,295
+So, this approach of two maximum segment
+lifetimes can pose problems with servers.
+
+184
+00:12:52,295 --> 00:12:57,553
+In particular, if I have a server and it
+has tons and tons of sockets which is in
+
+185
+00:12:57,553 --> 00:13:02,561
+this time wait state, this can slow things
+down, the server, when closing first.
+
+186
+00:13:02,561 --> 00:13:06,254
+There are tricks.
+You can send a reset, delete the socket,
+
+187
+00:13:06,442 --> 00:13:10,010
+you can set an option to make the, the
+linger time to be zero.
+
+188
+00:13:10,175 --> 00:13:14,528
+Another issue is the OS might not let you
+reuse a port because it's still in use.
+
+189
+00:13:14,528 --> 00:13:18,937
+There is an option you can do called
+SO<u>REUSEADDR that'll let you to rebind a</u>
+
+190
+00:13:18,937 --> 00:13:21,472
+port number.
+So, this is useful if say, you're just
+
+191
+00:13:21,472 --> 00:13:25,633
+de-bugging something and gosh, I don't
+want to have to wait two hours just
+
+192
+00:13:25,633 --> 00:13:28,085
+because I happened to have FINed in this
+order.
+
+193
+00:13:28,085 --> 00:13:30,951
+So, let's see what a connection teardown
+looks like.
+
+194
+00:13:30,951 --> 00:13:34,754
+So, here's a basic connection set up, SYN,
+SYN ACK, ACK, and then here's the
+
+195
+00:13:34,754 --> 00:13:37,945
+teardown.
+So, because we are, are exchanging
+
+196
+00:13:37,945 --> 00:13:41,299
+data, we have acknowledgement  bit set.
+So, here's the FIN,
+
+197
+00:13:41,299 --> 00:13:45,507
+Here's the initial FIN from my host when I
+close the connection.
+
+198
+00:13:45,507 --> 00:13:49,650
+And so, it sets the FIN bit ACK one
+sequence number one, ACK one.
+
+199
+00:13:49,650 --> 00:13:55,506
+Then, the server, in response, is also,
+closing, so it sends a FIN sequence number
+
+200
+00:13:55,506 --> 00:13:58,364
+one, ACK two.
+So, it's acknowledging my FIN.
+
+201
+00:13:58,364 --> 00:14:04,081
+And then, my host responds with an ACK,
+for that FIN sequence number two, ACK two.
+
+202
+00:14:04,081 --> 00:14:09,031
+So, here's a simple 3-way handshake for
+tearing down the connection.
+
+203
+00:14:09,031 --> 00:14:11,520
+FIN,
+Acknowledging some prior data,
+
+204
+00:14:12,140 --> 00:14:16,300
+Acknowledging the FIN, sending your own
+FIN, and then acknowledging the FIN.
+
+205
+00:14:16,300 --> 00:14:20,239
+So now, if we put all of this together, we
+can see what the full TCP finite state
+
+206
+00:14:20,239 --> 00:14:22,947
+machine looks like.
+And so, this something you're going to
+
+207
+00:14:22,947 --> 00:14:26,147
+come across many, many times.
+This is well-established finite state
+
+208
+00:14:26,147 --> 00:14:29,988
+machine that really sort of, lays the
+ground for how you want to set up reliable
+
+209
+00:14:29,988 --> 00:14:32,203
+connections.
+And so, I'm going to walk through it.
+
+210
+00:14:32,203 --> 00:14:36,339
+It looks pretty complicated when you first
+see but it's because there are a couple of
+
+211
+00:14:36,339 --> 00:14:38,604
+cases.
+And actually, given what we've presented
+
+212
+00:14:38,604 --> 00:14:40,672
+before, it should all, all be pretty
+simple.
+
+213
+00:14:40,672 --> 00:14:42,789
+So first, we're starting in the close
+state.
+
+214
+00:14:42,789 --> 00:14:46,728
+So, this is when there are no connections
+open, you know, I'm just sitting there.
+
+215
+00:14:46,876 --> 00:14:49,240
+My application's now tried to open a
+connection.
+
+216
+00:14:50,100 --> 00:14:53,305
+So then, the first transition here to the
+listen state,
+
+217
+00:14:53,305 --> 00:14:55,779
+This is the passive opener.
+This is a server.
+
+218
+00:14:55,779 --> 00:15:00,109
+Server's listening to connections.
+So, you can see, the action is listen and
+
+219
+00:15:00,109 --> 00:15:03,933
+there's no packets exchanged.
+If you close it, you then return to the
+
+220
+00:15:03,933 --> 00:15:06,408
+close state.
+So, that is if I'm listening for
+
+221
+00:15:06,408 --> 00:15:09,670
+connections, I hear nothing and return to
+the closed state.
+
+222
+00:15:09,670 --> 00:15:15,095
+The other transition out of the closed
+state is the active open. So, here's the
+
+223
+00:15:15,095 --> 00:15:20,320
+connect. And connect causes a SYN packet
+to be sent so this is step one of the
+
+224
+00:15:20,320 --> 00:15:24,406
+3-way handshake..
+So, you send a SYN and you're now in the
+
+225
+00:15:24,406 --> 00:15:28,023
+SYN send state, SYN send state, this is
+the active side.
+
+226
+00:15:28,023 --> 00:15:33,449
+These red lines are showing the active
+opener of the 3-way connection. So, SYN
+
+227
+00:15:33,449 --> 00:15:36,329
+sent.
+Then, if you receive a SYN in ACK, so this
+
+228
+00:15:36,329 --> 00:15:40,884
+is the stage two.. You send an ACK, and
+now the connection's established.
+
+229
+00:15:40,884 --> 00:15:43,680
+So, this path here,
+This is the active opener.
+
+230
+00:15:43,680 --> 00:15:48,390
+Now, let's watch the passive opener.
+The passive opener is in the listen state,
+
+231
+00:15:48,390 --> 00:15:52,978
+and it receives a SYN from an active
+opener. In response, it sends a SYN ACK
+
+232
+00:15:52,978 --> 00:15:57,138
+enters the SYN receive state.
+Then, if it receives an acknowledgement
+
+233
+00:15:57,138 --> 00:16:02,031
+for it's SYN in stage three on the 3-way
+handshake, a reflection of this step here,
+
+234
+00:16:02,031 --> 00:16:07,068
+then the connection has been established.
+Now, if you're in the listen state, it's
+
+235
+00:16:07,068 --> 00:16:12,557
+possible that you can also call send to
+them results in sending a SYN message. or
+
+236
+00:16:12,557 --> 00:16:17,511
+you can also, in that way you are then
+going to, even though, you're in listen
+
+237
+00:16:17,511 --> 00:16:21,060
+state, you can actively open and active an
+open state.
+
+238
+00:16:21,660 --> 00:16:29,864
+So now, there's one more path here which I
+mentioned, the 4-way simultaneous open,
+
+239
+00:16:29,864 --> 00:16:35,070
+Which is this.
+And so, this is when both sides have sent
+
+240
+00:16:35,070 --> 00:16:37,752
+SYN.
+So, we're just looking at one side of the
+
+241
+00:16:37,752 --> 00:16:40,783
+connection.
+And in response to a SYN, you get a SYN
+
+242
+00:16:40,783 --> 00:16:44,164
+from the other side.
+And so, this is the two SYNs crossing.
+
+243
+00:16:44,164 --> 00:16:47,954
+So, in response you send SYN + ACK, SYN
+received, then you ACK.
+
+244
+00:16:47,954 --> 00:16:51,102
+And so, there's the four messages.
+Each has sent a SYN,
+
+245
+00:16:51,102 --> 00:16:55,391
+Each had received a SYN,
+And then received the SYN and sent a
+
+246
+00:16:55,391 --> 00:16:58,038
+SYN/ACK and there is an ACK data exchange can
+occur.
+
+247
+00:16:58,038 --> 00:16:58,038
+So now we are in the established state.
+Now, of course, you can always transition
+
+248
+00:04:51,975 --> 00:17:06,841
+out. In fact, it closes and resets.
+So now, at this point, we've gone through
+
+249
+00:17:06,840 --> 00:17:18,848
+connection establishment.
+Now, we're going to go into connection
+
+250
+00:17:18,848 --> 00:17:24,899
+teardown.
+And so, there are two cases here.
+
+251
+00:17:24,900 --> 00:17:31,178
+One is that, if we're the active closer
+here we call close that results in a FIN
+
+252
+00:17:31,178 --> 00:17:34,977
+message being sent,
+A FIN, packet with a FIN bit.
+
+253
+00:17:34,977 --> 00:17:40,268
+We now enter a FIN wait one.
+The other is, if we receive a FIN, then we
+
+254
+00:17:40,268 --> 00:17:43,101
+acknowledge it.
+And we're now on the passive close state
+
+255
+00:17:43,101 --> 00:17:46,546
+with the other side is closed, and then we
+call, when we actually call close,
+
+256
+00:17:46,546 --> 00:17:49,601
+We'll send FIN, send the last ACK and be
+closed.
+
+257
+00:17:49,601 --> 00:17:53,990
+And so, here in closed wait we're still
+allowed to send data right until we call
+
+258
+00:17:53,990 --> 00:17:56,545
+close.
+This is the other side is closed but we
+
+259
+00:17:56,545 --> 00:17:59,169
+haven't.
+So now, when close is called, we're in the
+
+260
+00:17:59,169 --> 00:18:02,411
+FIN one state and there's a bunch of
+transitions out of that.
+
+261
+00:18:02,411 --> 00:18:05,812
+One is that, we receive a FIN. So, we've
+sent a FIN, received a FIN.
+
+262
+00:18:05,812 --> 00:18:10,117
+So, this is the example I showed with the
+TCP teardown. So, we've sent a FIN, we've
+
+263
+00:18:10,117 --> 00:18:13,944
+received a FIN, we acknowledge it.
+We're now in the closing state, we then
+
+264
+00:18:13,944 --> 00:18:18,691
+transition to time wait.
+Another is that we receive a FIN plus an
+
+265
+00:18:18,691 --> 00:18:22,671
+ACK.
+So, we can just acknowledge that and enter
+
+266
+00:18:22,671 --> 00:18:26,905
+time wait.
+Final one is that, we receive an ACK, but
+
+267
+00:18:26,905 --> 00:18:30,716
+no FIN.
+So, this is, we have closed our side of
+
+268
+00:18:30,716 --> 00:18:36,295
+the connection, but the other side hasn't.
+And so it's sort of this state here is
+
+269
+00:18:36,295 --> 00:18:40,442
+correlated with this state here.
+Then, when we do receive the FIN, we
+
+270
+00:18:40,442 --> 00:18:45,332
+acknowledge it into the time wait state.
+And then, we have the time out before we
+
+271
+00:18:45,332 --> 00:18:49,743
+can actually close and recover the state.
+So, you can ask, what's the difference
+
+272
+00:18:49,743 --> 00:18:52,578
+between this transition to closing and
+time wait?
+
+273
+00:18:52,578 --> 00:18:56,477
+The reason is that this transition to
+closing is when the two FINs pass each
+
+274
+00:18:56,477 --> 00:18:57,591
+other.
+So, I send a FIN,
+
+275
+00:18:57,591 --> 00:19:00,983
+The other side sends me a FIN,
+But hasn't acknowledged my FIN.
+
+276
+00:19:00,983 --> 00:19:04,780
+This is the difference between FIN/ACK and
+FIN + ACK/ACK. And so, then I wait for
+
+277
+00:19:04,780 --> 00:19:08,223
+that FIN to be acknowledged, and then
+transition to time wait.
+
+278
+00:19:08,223 --> 00:19:10,906
+So, this is the full TCP finite
+state machine.
+
+279
+00:19:10,906 --> 00:19:13,944
+It looks really complicated.
+I mean, it does have, one, two, three,
+
+280
+00:19:13,944 --> 00:19:16,780
+four, five, six, seven, eight, nine, ten,
+eleven, twelve states.
+
+281
+00:19:16,780 --> 00:19:20,858
+But when you realize it breaks down into
+these two parts, connection establishment,
+
+282
+00:19:20,858 --> 00:19:24,837
+connection tear down, and really there's
+just a bunch of different possible ways
+
+283
+00:19:24,837 --> 00:19:28,021
+that FINs can be exchanged, it's actually
+not that complicated.
+
+284
+00:19:28,021 --> 00:19:31,702
+So, I encourage you to open up Wireshark
+and just open up a couple of web
+
+285
+00:19:31,702 --> 00:19:35,482
+connections to see what, what's happening
+with your TCP connections, and you'll be
+
+286
+00:19:35,482 --> 00:19:39,063
+able to see how those different
+connections are traversing this finite
+
+287
+00:19:39,063 --> 00:19:39,760
+state machine.
+

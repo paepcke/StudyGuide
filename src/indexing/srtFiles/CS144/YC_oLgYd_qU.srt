@@ -1,0 +1,142 @@
+1
+00:00:00,960 --> 00:00:05,620
+In the following demo we’re going to show
+a MAC table overflow attack.
+
+2
+00:00:05,620 --> 00:00:11,290
+In the demo, Eve the Attacker is going to
+eavesdrop on Alice's traffic to Bob, even
+
+3
+00:00:11,290 --> 00:00:16,679
+though Alice and Eve are not connected to
+the same switch. AS you’ll remember, and
+
+4
+00:00:16,679 --> 00:00:21,210
+just as we saw in the last video, Eve is going
+to send lots of Ethernet packets with new
+
+5
+00:00:21,210 --> 00:00:25,949
+addresses to force the forwarding table in
+the switches to overflow, so that Alice’s
+
+6
+00:00:25,949 --> 00:00:32,949
+traffic to Bob is going to be broadcast. Eve
+will then eavesdrop on the traffic.
+
+7
+00:00:35,239 --> 00:00:39,530
+Let’s see how it works.
+
+8
+00:00:39,530 --> 00:00:44,030
+The demo I’m going to show you runs on the
+Mininet emulation system, which means you
+
+9
+00:00:44,030 --> 00:00:47,739
+can easily and safely run it yourself on your
+own computer, and I’ll tell you shortly
+
+10
+00:00:47,739 --> 00:00:54,739
+how. It also means the same code can easily
+be replicated into a real network. The demo
+
+11
+00:00:54,820 --> 00:00:58,699
+was created by TY Huang, a PhD student here
+at Stanford.
+
+12
+00:00:58,699 --> 00:01:05,699
+First, let's verify that under normal conditions
+Eve can't eavesdrop on Alice.. Alice is sending
+
+13
+00:01:11,549 --> 00:01:15,829
+pings to Bob while Eve is running tcpdump
+on her machine, listening for traffic from
+
+14
+00:01:15,829 --> 00:01:22,409
+Alice's IP address 10.0.0.1. AS you can see,
+tcpdump doesn’t capture any traffic and
+
+15
+00:01:22,409 --> 00:01:26,810
+Eve doesn't hear anything, so we know the
+learning mechanism is working fine and no
+
+16
+00:01:26,810 --> 00:01:29,520
+traffic is being broadcast.
+
+17
+00:01:29,520 --> 00:01:35,759
+Next, Eve runs an attack in which she overwhelms
+the network with new, randomly generated Ethernet
+
+18
+00:01:35,759 --> 00:01:40,270
+addresses. The switch dutifully learns them
+all until its forwarding table fills up and
+
+19
+00:01:40,270 --> 00:01:44,140
+overflows, evicting the learned Ethernet address
+of Alice's server.
+
+20
+00:01:44,140 --> 00:01:49,759
+Alice is still sending pings to Bob, and they
+are now being broadcast. The tcpdump running
+
+21
+00:01:49,759 --> 00:01:54,880
+on Eve’s machine can see the packets and
+reports them. It doesn’t see all of them,
+
+22
+00:01:54,880 --> 00:01:59,210
+because occasionally the switch will successfully
+learn Alice’s address, but it is quickly
+
+23
+00:01:59,210 --> 00:02:05,250
+evicted again because of the onslaught of
+new Ethernet packets from Eve.
+
+24
+00:02:05,250 --> 00:02:09,740
+When Eve stops generating new ethernet addresses,
+the switch relearns Alice's ethernet address
+
+25
+00:02:09,740 --> 00:02:15,500
+and can stop broadcasting the traffic between
+Alice and Bob. Thus, Eve will no longer be
+
+26
+00:02:15,500 --> 00:02:18,170
+able to hear their traffic. <We can refer
+to the code repo after both demo are shown,
+
+27
+00:02:18,170 --> 00:02:18,910
+since the url to the place holder is the same.
+Up to you > If you would like, you can reproduce
+
+28
+00:02:18,910 --> 00:02:23,710
+this demo by downloading the Mininet script
+from here "https://github.com/mininet/mininet/wiki/Assignments"
+
+29
+00:02:23,710 --> 00:02:26,670
+and run it in a Mininet instance.
+

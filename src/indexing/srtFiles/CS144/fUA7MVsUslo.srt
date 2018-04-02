@@ -1,0 +1,64 @@
+1
+00:00:00,640 --> 00:00:07,640
+The answer for A, 63.19.5.3, is link 3. 63.19.5.3
+matches two prefixes: the default route and
+
+2
+00:00:09,230 --> 00:00:16,230
+prefix 63.19.5.0/30. The prefix is 30 bits
+long and 63.19.5.3 differs in only the last
+
+3
+00:00:17,330 --> 00:00:24,150
+two bits. /30 is a longer prefix than /0 so
+the router will pick link 3.
+
+4
+00:00:24,150 --> 00:00:31,150
+The answer for B,171.15.15.0, is link 4. 171.15.15.0
+matches three entries. It matches the default
+
+5
+00:00:32,590 --> 00:00:39,590
+route, 171.0.0.0/8 and 171.0.0.0/10. It does
+not match 171.0.15.0/24 because B’s second
+
+6
+00:00:47,019 --> 00:00:54,019
+octet is 15, not 0. The third match, 171.0.0.0/10,
+is the longest prefix, so the router sends
+
+7
+00:00:56,960 --> 00:00:59,249
+the packet along link 4.
+
+8
+00:00:59,249 --> 00:01:05,610
+The answer for C, 63.19.5.32, is link 1. The
+longest prefix match is the default route.
+
+9
+00:01:05,610 --> 00:01:11,670
+It does not match 63.19.5.0/30 because it
+differs in the 26th bit.
+
+10
+00:01:11,670 --> 00:01:18,670
+The answer for D, 44.199.230.1, is link 1.
+The longest prefix match is the default route.
+
+11
+00:01:19,360 --> 00:01:26,360
+The answer for E, 171.128.16.0, is link 2.
+This address matches two prefixes, the default
+
+12
+00:01:26,950 --> 00:01:33,950
+route and 171.0.0.0/8. It does not match 171.0.0.0/10
+because it differs on the 9th bit. 171.0.0.0/8
+
+13
+00:01:36,409 --> 00:01:42,619
+is the longest prefix, so the router will
+forward the packet on link 2.
+

@@ -1,0 +1,1114 @@
+1
+00:00:01,120 --> 00:00:05,770
+>> Phil: So Here I am with Jon Peterson Who's
+an old friend of mine and kind of an important
+
+2
+00:00:05,770 --> 00:00:09,809
+person in the internet.
+
+3
+00:00:09,809 --> 00:00:16,809
+Maybe you 
+should start with how did you get involved
+
+4
+00:00:18,660 --> 00:00:25,660
+>> Jon: That's a good question I Lucky enough
+to be around with the dot com boom in the
+
+5
+00:00:26,420 --> 00:00:27,180
+late 1990's
+
+6
+00:00:27,180 --> 00:00:32,140
+When the small startup that I worked for in
+boston was acquired by level 3 communications,
+
+7
+00:00:32,140 --> 00:00:35,010
+they moved me out to scenic boulder colorado.
+
+8
+00:00:35,010 --> 00:00:41,870
+Uh where phil actually was as well at roughly
+the same time. And Level 3 is of course one
+
+9
+00:00:41,870 --> 00:00:44,410
+of the tier one, backbone providers of the
+internet,
+
+10
+00:00:44,410 --> 00:00:48,100
+and they have a profound engagement with the
+internet engineering task force, one of the
+
+11
+00:00:48,100 --> 00:00:53,730
+standards bodies that helped make the internet,
+that defined how the internet works.
+
+12
+00:00:53,730 --> 00:00:58,800
+And when I got there, that was one of the
+things that most attracted me about this oppurtinity.
+
+13
+00:00:58,800 --> 00:01:04,059
+Would be the ability to really work with the
+top minds that were out there.
+
+14
+00:01:04,059 --> 00:01:08,900
+So I started attending the IETF. I had been
+on mailing lists amd things like that before
+
+15
+00:01:08,900 --> 00:01:14,360
+hand but I first started attending when I
+worked at level 3.
+
+16
+00:01:14,360 --> 00:01:21,360
+I just found it to be a fascinating community,
+that had such intellectual rigor, that had
+
+17
+00:01:21,480 --> 00:01:28,480
+so much interest in trying to find the right
+solution. You don't go to the IETF and represent
+
+18
+00:01:29,470 --> 00:01:32,650
+a company, you go there and you put forward
+what you think is the best idea.
+
+19
+00:01:32,650 --> 00:01:39,310
+And it is a place where there really is a
+meritocracy of ideas. Once you get the [inaudible]
+
+20
+00:01:39,310 --> 00:01:42,290
+you discover there are all of these other
+dimensions to internet governance.
+
+21
+00:01:42,290 --> 00:01:47,860
+If you are there at the IETF, you may end
+up dealing with the W3C if you work on application
+
+22
+00:01:47,860 --> 00:01:51,580
+because they have responsibility for the standards
+associated with the world wide web.
+
+23
+00:01:51,580 --> 00:01:58,580
+You may end up working with ICANN, people
+that do domain name assignments. And I kind
+
+24
+00:01:59,640 --> 00:02:04,360
+of made the rounds of these interenet governance
+circles and working on the intersection between
+
+25
+00:02:04,360 --> 00:02:08,080
+technology and public policy, tends to take
+you to some pretty interesting places.
+
+26
+00:02:08,080 --> 00:02:14,030
+>> Phil: Well, so the first work that you
+did was SIP -- the session initiation protocol.
+
+27
+00:02:14,030 --> 00:02:19,980
+Do you want to talk about this IP telephony
+and kind of what this path was to where SIP
+
+28
+00:02:19,980 --> 00:02:22,040
+is today and what your part in it was?
+
+29
+00:02:22,040 --> 00:02:26,749
+>> Jon: Sure, it's important to remember that
+in the early 1990's, there really wasn't anything
+
+30
+00:02:26,749 --> 00:02:30,700
+like voice over ip, not really.
+There was some experimental technologies that
+
+31
+00:02:30,700 --> 00:02:35,159
+people had rigged up and ran on some of the
+unix environments in labs in California,
+
+32
+00:02:35,159 --> 00:02:40,129
+but there was no commerical product that you
+could buy that would let you talk to someone
+
+33
+00:02:40,129 --> 00:02:41,340
+over the internet.
+
+34
+00:02:41,340 --> 00:02:46,749
+Remember as well that in the mid 1990's you
+know a lot of computer's didn't have adequate
+
+35
+00:02:46,749 --> 00:02:51,310
+sound cards, there certainly wasn't adequate
+video capture.
+
+36
+00:02:51,310 --> 00:02:58,209
+Network interfaces were spotty at best and
+the actual commercial service that you could
+
+37
+00:02:58,209 --> 00:03:04,420
+purchase at the consumer level were -- to
+get enough bandwidth to communicate for something
+
+38
+00:03:04,420 --> 00:03:06,689
+like voice over IP didn't exist.
+
+39
+00:03:06,689 --> 00:03:11,799
+Sometime around 1996, 1997 we hit a sweet
+spot where the computing power was there,
+
+40
+00:03:11,799 --> 00:03:16,779
+the network was there, computers tended to
+have the right interfaces to do this so we
+
+41
+00:03:16,779 --> 00:03:21,150
+started to see the first voice over IP offerings
+around that time.
+
+42
+00:03:21,150 --> 00:03:28,060
+When I started working on this around 1997,
+I worked on the infrastructure dimension of
+
+43
+00:03:28,060 --> 00:03:31,989
+this. The startup that I worked for in boston
+was focussed on the particular problem of
+
+44
+00:03:31,989 --> 00:03:37,439
+how you could take a traditional telephone
+switch and these telephone switches made by
+
+45
+00:03:37,439 --> 00:03:44,310
+nortell and eusend, they were more of these
+expensive, monolithic, special purpose devices
+
+46
+00:03:44,310 --> 00:03:48,099
+that required a ton of operational oversite.
+
+47
+00:03:48,099 --> 00:03:53,999
+They didn't really fit into the internet software
+model or the internet disruptive innovation
+
+48
+00:03:53,999 --> 00:03:57,620
+that we all associate with technology today.
+
+49
+00:03:57,620 --> 00:04:01,669
+So I was one of the first people to work on
+something called soft switching. The idea
+
+50
+00:04:01,669 --> 00:04:07,459
+that you could take a general purpose computer,
+take a solaris box a unix box and put the
+
+51
+00:04:07,459 --> 00:04:13,099
+control plane logic for a telephone switch
+on a box like that and just have it control
+
+52
+00:04:13,099 --> 00:04:17,729
+telephone circuits, just literally switching
+from one customer from another.
+
+53
+00:04:17,728 --> 00:04:24,729
+To handle those instead of dumb devices. And
+this created an extremely disruptive influence
+
+54
+00:04:24,759 --> 00:04:30,919
+on the telephone switch market and today,
+I think it's safe to say, that it has become
+
+55
+00:04:30,919 --> 00:04:35,729
+dominant, that you can't really buy things
+like these nortell switches anymore except
+
+56
+00:04:35,729 --> 00:04:39,490
+on the secondary market.
+You own one today and you need replacement
+
+57
+00:04:39,490 --> 00:04:46,479
+parts for one, you pretty much have to get
+them on E-Bay
+
+58
+00:04:46,479 --> 00:04:52,690
+Once you build a soft switch, now naturally
+some of these unix boxes have internet access
+
+59
+00:04:52,690 --> 00:04:57,840
+then you need ways for these switches to talk
+to one another to be able to coordinate calls
+
+60
+00:04:57,840 --> 00:05:03,720
+that don't use the outdated x25 based ss7
+systems that are used in the traditional telephone
+
+61
+00:05:03,720 --> 00:05:05,090
+network.
+
+62
+00:05:05,090 --> 00:05:08,409
+And thats where tools like SIP started to
+come into play.
+
+63
+00:05:08,409 --> 00:05:13,699
+A lot of my early work on the Session Initiation
+Protocol was on telephony replacement, was
+
+64
+00:05:13,699 --> 00:05:20,110
+on how you would not touch that traditional
+network but how you would instead do all of
+
+65
+00:05:20,110 --> 00:05:25,349
+this over the internet, how you would set
+up calls at the end and um this started to
+
+66
+00:05:25,349 --> 00:05:29,650
+be an important dimension of adopting Voice
+over IP Protocols.
+
+67
+00:05:29,650 --> 00:05:33,960
+It's one thing to build a tool that lets you
+talk to anybody else who happens to have a
+
+68
+00:05:33,960 --> 00:05:38,030
+good computer, right in the 1990's when people
+didn't have the technology that you have.
+
+69
+00:05:38,030 --> 00:05:43,750
+It was a very different matter to actually
+call someone on the telphone network.
+
+70
+00:05:43,750 --> 00:05:47,729
+And these soft switched became bridges between
+people in the traditional network and people
+
+71
+00:05:47,729 --> 00:05:48,930
+in the VOIP space.
+
+72
+00:05:48,930 --> 00:05:54,430
+But these have been essential going forward
+to how VOIP has become successful, to the
+
+73
+00:05:54,430 --> 00:06:00,360
+ability for programs like, say, skype today,
+to be able to call out from your PC to someone
+
+74
+00:06:00,360 --> 00:06:02,750
+who has a normal ground line [inaudible] phone.
+
+75
+00:06:02,750 --> 00:06:07,500
+>> PHIL: and so one of the things that you
+worked on in sort of the more refined versions
+
+76
+00:06:07,500 --> 00:06:13,520
+of SIP was sort of it's security model. How
+do you actually secure the signal in the protocol.
+
+77
+00:06:13,520 --> 00:06:19,280
+So as I'm sure you can imagine given some
+of the recent events in uh the internet with
+
+78
+00:06:19,280 --> 00:06:21,129
+respect to the Snowden releases.
+
+79
+00:06:21,129 --> 00:06:26,560
+This is kind of an interesting question, do
+you see something about the implications of
+
+80
+00:06:26,560 --> 00:06:32,500
+stuff like SIP and security with resoect to
+then like PSTN, wiretapping laws, those sorts
+
+81
+00:06:32,500 --> 00:06:36,289
+of questions? Where do you think this is going
+or how is it different?
+
+82
+00:06:36,289 --> 00:06:40,509
+>> Jon: [laugh] Big question. Yeah so I do
+recall that when we were building the RFC
+
+83
+00:06:40,509 --> 00:06:45,069
+for SIP, RFC3261 we basically drew straws
+for who was going to draw straws for who was
+
+84
+00:06:45,069 --> 00:06:50,319
+going to do what parts and I got to do the
+review of how SIP operated with a one paragraph
+
+85
+00:06:50,319 --> 00:06:50,930
+statement
+
+86
+00:06:50,930 --> 00:06:57,469
+I got to do adressing, I got to do user behavior
+and then I drew the straw to do security.
+
+87
+00:06:57,469 --> 00:07:03,280
+And I said OK I have a security background
+this shouldn't be too difficult and the initial
+
+88
+00:07:03,280 --> 00:07:08,330
+planned one section on security in SIP actually
+ended up being 4 chapters of the RFC
+
+89
+00:07:08,330 --> 00:07:15,330
+At the time this was the largest RFC ever
+published and SIP Security has always been
+
+90
+00:07:16,969 --> 00:07:23,969
+a problem child. And um these revelations
+obviously put the ietf and people who develop
+
+91
+00:07:25,840 --> 00:07:29,270
+standards in a very interesting position.
+
+92
+00:07:29,270 --> 00:07:34,189
+You know no less of an authority than Bruce
+Snyder who is one of the greatest minds today
+
+93
+00:07:34,189 --> 00:07:39,580
+thinking about security has formally called
+on the ietf to drop what it's doing and to
+
+94
+00:07:39,580 --> 00:07:45,439
+refocus all of its efforts in our upcoming
+meeting which will be in vancouver on how
+
+95
+00:07:45,439 --> 00:07:50,710
+we are going to resolve the problems that
+have been raised by prism.
+
+96
+00:07:50,710 --> 00:07:57,409
+And we studied the privacy properties of these
+protocols, the security properties of these
+
+97
+00:07:57,409 --> 00:08:01,840
+protocols very extensively.
+
+98
+00:08:01,840 --> 00:08:08,840
+I'm as convinced now as I ever was that we
+made a lot of compromises in the SIP security
+
+99
+00:08:08,879 --> 00:08:15,240
+becuase they were necessary for it to be adopted
+in the marketplace.
+
+100
+00:08:15,240 --> 00:08:20,030
+It'd be great to design protocol that had
+built-in security that can guarantee integrity
+
+101
+00:08:20,030 --> 00:08:26,150
+and confidentiallity between one end point
+that is trying to make a call and another
+
+102
+00:08:26,150 --> 00:08:26,740
+endpoint that is trying to make a call.
+
+103
+00:08:26,740 --> 00:08:30,330
+As soon as some intermediaries are playing
+some role in the delivery of that. As soon
+
+104
+00:08:30,330 --> 00:08:36,389
+as something needs to help you to find the
+right endpoint, and this dynamic capability
+
+105
+00:08:36,389 --> 00:08:42,860
+that SIP has to allow you to -- you know if
+I wanted to have five devices that were to
+
+106
+00:08:42,860 --> 00:08:48,769
+my SIP name: a deskphone my cell phone an
+iPad, various other devices, They all need
+
+107
+00:08:48,769 --> 00:08:54,600
+to connect to some server somewhere that will
+be responsible for routing traffic to them.
+
+108
+00:08:54,600 --> 00:09:00,760
+The degree to which that server has access
+to signalling, has access to who's calling
+
+109
+00:09:00,760 --> 00:09:06,310
+me, what are the media streams that are going
+to be set up and what are the IP endpoints
+
+110
+00:09:06,310 --> 00:09:09,050
+that the media is going to be sent between.
+
+111
+00:09:09,050 --> 00:09:16,050
+We could have done more to protect that with
+the design of SIP. And I think if we had,
+
+112
+00:09:17,550 --> 00:09:21,410
+we wouldn't be talking about SIP right now
+because it wouldn't have succeeded enough
+
+113
+00:09:21,410 --> 00:09:22,970
+for it to even be noteworthy.
+
+114
+00:09:22,970 --> 00:09:28,470
+>> Phil: so, Can you talk about, so Sip Might
+be a protocol that most people don't realize
+
+115
+00:09:28,470 --> 00:09:32,600
+they are using or about where it is being
+used. Do you want to talk a little about where
+
+116
+00:09:32,600 --> 00:09:35,009
+it has been succesful and where it has been
+adopted?
+
+117
+00:09:35,009 --> 00:09:39,639
+>> Jon: Sure. So I mentioned Skype, you do
+Skype in or Skype out, Skype's internal protocol
+
+118
+00:09:39,639 --> 00:09:46,639
+is converted into SIP for transfer to a gateway
+and then go to the telephone network.
+
+119
+00:09:47,029 --> 00:09:54,029
+Um basically, if you use a VOIP service for
+a land line in your house, that comes from
+
+120
+00:09:55,860 --> 00:10:00,990
+either FiOS or a cable provider that, surely
+SIP is going to be used in the background.
+
+121
+00:10:00,990 --> 00:10:07,899
+The third generation cell phones, things that
+are 3g pt based all use SIP inside them.
+
+122
+00:10:07,899 --> 00:10:13,870
+Now these networks, especially we talk about
+mobile phones and about the networks we see
+
+123
+00:10:13,870 --> 00:10:20,010
+and the cable NSOs and so on, they use a version
+of SIP that is relatively archetecturally
+
+124
+00:10:20,010 --> 00:10:21,290
+similar to the telphone network.
+
+125
+00:10:21,290 --> 00:10:26,019
+They in fact applied the protocol machinery
+of SIP to generate a system that has many
+
+126
+00:10:26,019 --> 00:10:31,430
+of the same properties that the telephone
+network has. And this too is a fundamental
+
+127
+00:10:31,430 --> 00:10:33,130
+tradeoff -- the design of these things.
+
+128
+00:10:33,130 --> 00:10:40,130
+I would love to see a SIP that was much less
+dependent on the network elements shaping
+
+129
+00:10:42,110 --> 00:10:46,800
+traffic and deciding based on that. If it
+were much more driven by the end points.
+
+130
+00:10:46,800 --> 00:10:50,660
+This is just kind of the fundamental end to
+end principle of the internet. That you want
+
+131
+00:10:50,660 --> 00:10:55,060
+to have the smarts be at the end points. You
+don't want to have an intermediary have to
+
+132
+00:10:55,060 --> 00:10:57,420
+understand what the end points want to do.
+
+133
+00:10:57,420 --> 00:11:01,240
+It shouldn't get in their way, it shouldn't
+prevent them from negotiating. In fact, If
+
+134
+00:11:01,240 --> 00:11:05,970
+I made up a great new codec tomorrow and I
+have copy and you have a copy that sits on
+
+135
+00:11:05,970 --> 00:11:09,149
+our two machines, I don't want that thing
+in the middle of the network to have to know
+
+136
+00:11:09,149 --> 00:11:14,040
+anything about that codec for us to connect
+and use it.
+
+137
+00:11:14,040 --> 00:11:17,870
+The realities though of how these things actually
+get implemented, especially when you are doing
+
+138
+00:11:17,870 --> 00:11:21,410
+something as complex as the act of replacing
+the telephone network.
+
+139
+00:11:21,410 --> 00:11:27,399
+Replacing a more than a century old system
+with its reliability constraints with its
+
+140
+00:11:27,399 --> 00:11:31,949
+emergency services implications. So where
+you go when you call 911
+
+141
+00:11:31,949 --> 00:11:38,949
+Just getting the basic services you associate
+with this right. It requires you to make compromises
+
+142
+00:11:39,260 --> 00:11:45,190
+and I can't say that I'm always proud in retrospect
+of the compromises we needed to make for the
+
+143
+00:11:45,190 --> 00:11:46,199
+protocol to be successful.
+
+144
+00:11:46,199 --> 00:11:52,300
+But, I do acknowledge in retrospect that if
+we had pushed back on some of those compromises,
+
+145
+00:11:52,300 --> 00:11:57,420
+it certainly would have led to the death of
+the protocol. As people who design standards,
+
+146
+00:11:57,420 --> 00:12:01,449
+this is a heart breaking thing. That you come
+up against time and time again.
+
+147
+00:12:01,449 --> 00:12:08,449
+Now, we can be smarter about this and I think
+that if there is a silver lining to these
+
+148
+00:12:09,639 --> 00:12:14,480
+increasingly disturbing revelations that are
+coming out about widespread surveillance in
+
+149
+00:12:14,480 --> 00:12:20,540
+the Internet. It might create the political
+veil to see a change in what we can get consensus
+
+150
+00:12:20,540 --> 00:12:24,070
+for and, hopefully, what we can get people
+to be willing to deploy.
+
+151
+00:12:24,070 --> 00:12:28,839
+You now I believe that when you go to the
+IETF and it is consensus based, there are
+
+152
+00:12:28,839 --> 00:12:32,740
+things that we can get consensus to do that
+I think would be very radical at this point.
+
+153
+00:12:32,740 --> 00:12:36,699
+Because the people that go to the IETF are
+so well informed are so energized are so interested
+
+154
+00:12:36,699 --> 00:12:39,329
+in individual liberties.
+
+155
+00:12:39,329 --> 00:12:43,610
+I would hate to see the IETF, though, to become
+an organization that is developing standards
+
+156
+00:12:43,610 --> 00:12:48,610
+that never see the light of day, because it
+has swung to far in this direction. So it
+
+157
+00:12:48,610 --> 00:12:53,130
+is very difficult for us to understand what
+the right direction is, for us to chart at
+
+158
+00:12:53,130 --> 00:12:53,759
+this point.
+
+159
+00:12:53,759 --> 00:12:59,079
+>> Phil: Interesting. So I'd like to wind
+back a little bit and where how you mentioned
+
+160
+00:12:59,079 --> 00:13:05,339
+sort of building the first soft switch and
+how all the logic was in a general purpose
+
+161
+00:13:05,339 --> 00:13:12,199
+computer then in I guess a Sun box. Do you
+see sort of a parallel between that and software
+
+162
+00:13:12,199 --> 00:13:16,089
+defined networking today? Where we see that
+sort of transition maybe happening in the
+
+163
+00:13:16,089 --> 00:13:20,410
+internet? And some of the methods currently
+behind SDN?
+
+164
+00:13:20,410 --> 00:13:25,290
+>> Jon: I certainly see many parallels. I'm
+not sure those parallels will play out exactly
+
+165
+00:13:25,290 --> 00:13:31,220
+the way because companies like Cisco and Juniper
+would not stand to be disrupted by this the
+
+166
+00:13:31,220 --> 00:13:35,459
+same way that Nortel and Eusend were in the
+90's.
+
+167
+00:13:35,459 --> 00:13:40,420
+They are more agile companies, they are companies
+that are taking these technologies and trying
+
+168
+00:13:40,420 --> 00:13:47,420
+to figure out a middle path. For instance
+the is the I2RS the interface to the routing
+
+169
+00:13:48,529 --> 00:13:51,829
+system, a standard proposal circulating in
+the IETF now.
+
+170
+00:13:51,829 --> 00:13:55,750
+It's very different from the very low layer
+software defined networking approach that
+
+171
+00:13:55,750 --> 00:14:02,750
+we see in say the open networking foundation,
+but it is nonetheless a way that software
+
+172
+00:14:02,779 --> 00:14:09,410
+can interact with it and help higher level
+routing decisions get made.
+
+173
+00:14:09,410 --> 00:14:16,410
+I think the routing vendors view this as one
+tool among many that will help decide how
+
+174
+00:14:17,029 --> 00:14:18,529
+packets are going to be forwarded.
+
+175
+00:14:18,529 --> 00:14:22,680
+They are figuring out ways in other words
+to subsume this.
+
+176
+00:14:22,680 --> 00:14:27,040
+That will allow their device to take advantage
+of the strengths of this but without necessarily
+
+177
+00:14:27,040 --> 00:14:33,699
+a road in the market control. And the lengthy
+install base that they have of the maintenance
+
+178
+00:14:33,699 --> 00:14:39,399
+tools and so on that have proven so successful
+to the internet in the past.
+
+179
+00:14:39,399 --> 00:14:46,399
+I don't know that core routers have that to
+the degree that old telephone switches did
+
+180
+00:14:47,009 --> 00:14:53,209
+that impeded innovation in the network. And
+that was another real driver for soft switching
+
+181
+00:14:53,209 --> 00:15:00,209
+was that these telephone switches were so
+[inaudible] that that had no programability,
+
+182
+00:15:00,540 --> 00:15:06,410
+they had no sophisticated interfaces that
+you could use to modify their behavior without
+
+183
+00:15:06,410 --> 00:15:08,569
+doing open heart surgery.
+
+184
+00:15:08,569 --> 00:15:15,569
+The situation is very different for core routers
+but the parallels, they do stand. I wouldn't
+
+185
+00:15:16,509 --> 00:15:21,560
+dismiss it out of hand and I certainly know
+people who work for major router vendors who,
+
+186
+00:15:21,560 --> 00:15:26,730
+if you find them at the bar at the right hour,
+will cry on your shoulder about exactly their
+
+187
+00:15:26,730 --> 00:15:27,600
+concerns about this.
+
+188
+00:15:27,600 --> 00:15:30,209
+It is a real challenge for that business.
+
+189
+00:15:30,209 --> 00:15:35,980
+>> Phil: If you were to look at all the different
+pieces of work, so how many working groups
+
+190
+00:15:35,980 --> 00:15:37,290
+are in the ietf today?
+
+191
+00:15:37,290 --> 00:15:42,750
+>> Jon: Off the top of my head I'm not sure
+I could say. Order of 100
+
+192
+00:15:42,750 --> 00:15:49,579
+>> Phil: If you were to think what's something
+you'd suggest to somebody, "Hey this is something
+
+193
+00:15:49,579 --> 00:15:51,940
+you should keep your eye on. This is something
+that I think is some of the most interesting
+
+194
+00:15:51,940 --> 00:15:57,500
+work going on in the internet." So stuff which
+is currently in progress and really might
+
+195
+00:15:57,500 --> 00:16:02,480
+significantly change what the network is like
+in three or so years. Where would you suggest
+
+196
+00:16:02,480 --> 00:16:02,829
+looking?
+
+197
+00:16:02,829 --> 00:16:08,970
+>> Jon: Well actually that I2RS group is something
+that is very interesting right now.
+
+198
+00:16:08,970 --> 00:16:13,060
+There is a new effort that has just been spotted
+that's unclear if it's going to be a working
+
+199
+00:16:13,060 --> 00:16:19,639
+group or not, it's called per-pass, which
+is the IETF's forum for discussing prism.
+
+200
+00:16:19,639 --> 00:16:22,670
+For discussing how these security things could
+be addressed.
+
+201
+00:16:22,670 --> 00:16:27,329
+There are already some proposals that are
+circulating there that are really about structural
+
+202
+00:16:27,329 --> 00:16:34,329
+changes about how the ICANN process would
+work. Should standards be the new bar to obviate
+
+203
+00:16:36,889 --> 00:16:41,329
+the increasingly very real concerns that are
+coming to light about all of this.
+
+204
+00:16:41,329 --> 00:16:46,959
+If you were coming to Vancouver this time,
+these are certainly things I'd point you to.
+
+205
+00:16:46,959 --> 00:16:51,410
+There are things that I happen to be working
+on That I think are very interesting and pratical
+
+206
+00:16:51,410 --> 00:16:58,410
+that might not extend to exactly that level
+but I continue to be very interested in CDNs
+
+207
+00:16:59,029 --> 00:17:05,260
+and the degree of traffic that is now being
+directed by content distribution networks.
+
+208
+00:17:05,260 --> 00:17:11,569
+We're doing a lot of work today on understanding
+intefaces for how CDNs express their coverage
+
+209
+00:17:11,569 --> 00:17:18,569
+areas, how CDNs can advertise services that
+they provide, in order to allow collaboration
+
+210
+00:17:19,490 --> 00:17:26,309
+or peering among CDNs. To make more optimal
+selections among CDNs.
+
+211
+00:17:26,309 --> 00:17:31,520
+I think this will have potentially tremendous
+impact on the efficiency of internet traffic.
+
+212
+00:17:31,520 --> 00:17:36,270
+It will alleviate some of the bottlenecks
+with more and more video and content in the
+
+213
+00:17:36,270 --> 00:17:40,870
+internet. That's a personal pet project of
+mine.
+
+214
+00:17:40,870 --> 00:17:45,900
+And I'm also still working on somethings at
+the intersection of the Telephone network
+
+215
+00:17:45,900 --> 00:17:52,900
+and the internet. One thing that's been a
+major issue, you know robo-calling has become
+
+216
+00:17:55,330 --> 00:17:59,220
+an increasing problem as the internet and
+the telphone network have become more and
+
+217
+00:17:59,220 --> 00:18:01,240
+more interconnected.
+
+218
+00:18:01,240 --> 00:18:08,240
+And right now I'm looking at how we can do
+better identity services, so it is harder
+
+219
+00:18:08,380 --> 00:18:12,919
+to spoof calls, so it's easier to figure out
+who is responsible for a telephone call that
+
+220
+00:18:12,919 --> 00:18:16,970
+is coming off of the internet before it hits
+the PSDN as the numbers for this are just
+
+221
+00:18:16,970 --> 00:18:18,780
+going up and up.
+
+222
+00:18:18,780 --> 00:18:24,010
+The FTC and the FCC are profoundly interested
+in finding a solution for this. This is being
+
+223
+00:18:24,010 --> 00:18:29,270
+discussed in congressional subcommitees already
+as it is going on in the IETF so I think that
+
+224
+00:18:29,270 --> 00:18:30,429
+is a place where we can really make a difference.
+
+225
+00:18:30,429 --> 00:18:34,659
+And it is something that is hurting consumers
+and it's something that will be a big deal
+
+226
+00:18:34,659 --> 00:18:35,330
+going forward.
+
+227
+00:18:35,330 --> 00:18:39,510
+>> PHIL: So if we stop receiving robo-calls,
+we have you to thank?
+
+228
+00:18:39,510 --> 00:18:43,490
+Great well thanks for stopping by, thanks
+for your time and...
+
+229
+00:18:43,490 --> 00:18:45,200
+>> Jon: My pleasure
+
+230
+00:18:45,200 --> 00:18:47,470
+>> Phil: And thank you
+

@@ -1,0 +1,14 @@
+1
+00:00:00,599 --> 00:00:06,450
+Here’s the quiz. Given that we have two
+parallel requests sharing the same link, and
+
+2
+00:00:06,450 --> 00:00:09,720
+the parameters
+above, how long will the request/response
+
+3
+00:00:09,720 --> 00:00:10,630
+exchange take?
+

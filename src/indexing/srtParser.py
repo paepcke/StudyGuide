@@ -31,10 +31,16 @@
 #find snippet of when this explanation started
 #doc2vec for query and word and word2vec for word queries(word vectors addition)
 #testing: look at course for potential queries and good time slots
-#tfidf: check about scikit matrix and vector for tfidf
-#tfidf for stop words
-#k-means in the future for clustering
+#tfidf: check about scikit matrix and vector for tfidf[each row represents document, and each column represents the term]
+#tfidf for stop words [done]
+#k-means in the future for clustering [based on theme]
+#doc2vec: https://rare-technologies.com/doc2vec-tutorial/
+#training: list of words, and label (label can be just number of document)
+#exact word similarity is fine for query similarity
 
+
+# TODO: Could the issue be with stemming for not getting back the queries, stem both query and result!!!!!? not stemmed
+#TODO: train on larger set of data like the syllabus, and then add additional training for each document, read up on doc2vec
 import re,sys
 import pysubs2
 import math
@@ -43,9 +49,11 @@ import string
 from textblob import TextBlob as tb
 from sklearn.feature_extraction.text import TfidfVectorizer
 from numpy import array
+from gensim.models.doc2vec import LabeledSentence
 from PorterStemmer import PorterStemmer
 from nltk.corpus import stopwords
 from gensim import models
+from random import shuffle
 
 
 import gensim, logging
@@ -54,6 +62,9 @@ import random
 from collections import defaultdict
 from sklearn.metrics.pairwise import linear_kernel
 import csv
+from DocVecModel import DocVec
+from WordVecModel import WordVec
+from TfIdfModel import TfIdf
 
 
 '''
@@ -106,22 +117,35 @@ with open("data/import/tfidf_scikit.csv", "w") as file:
             word_id +=1
         doc_id +=1
 '''
+'''
+class LabeledLineSentence(object):
+    def __init__(self, filename):
+        self.filename = filename
+    def __iter__(self):
+        for srtID, line in enumerate(open(filename)):
+            yield LabeledSentence(words=line.split(), labels=['SRT_%s' % srtID])
+'''
 class parseSrt:
     def __init__(self):
         self.listFiles = ['closed_caption.srt']
         self.wordToTime = {}
         self.vecToTime = {}
         self.text = []
+
+        self.doc2vecModel = None
+        self.wordvecModel = None
+        self.tfidf = None#TfidfVectorizer(analyzer='word', ngram_range=(1,3), min_df = 0, max_df = 0.9, stop_words = 'english')
+
+        self.labeledSentences = []
         self.new_model = None
         self.alphanum = re.compile('[^a-zA-Z0-9]')
         self.p = PorterStemmer()
         self.uniqueVocab = set()
         self.stop_words = set(self.setupData('stopWords.txt')).union(set(stopwords.words('english')))
-        self.path = './srtFiles/test/'
+        self.path = './srtFiles'
         self.documentLen = 4 #sets docLen to 4 lines
         self.corpus = []
-
-        self.tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), min_df = 0, max_df = 0.9, stop_words = 'english')
+        self.docToTime = {}
 
 
     def setupData(self, fileName):
@@ -147,7 +171,7 @@ class parseSrt:
         response = self.tfidf.transform([query])
         feature_names = self.tfidf.get_feature_names()
         print "Query"
-        print response #response- sk learn matrix: (doc_num, feature_name): tfidf score
+        #print response #response- sk learn matrix: (doc_num, feature_name): tfidf score
         #print feature_names
         for col in response.nonzero()[1]:
             print feature_names[col], ', ', response[0, col]
@@ -176,21 +200,22 @@ class parseSrt:
         #    print('{0: <20} {1}'.format(phrase, score))
         print len(feature_names)
         print len(currDoc)
-        print phrase_scores
-        response = self.calcTFidfQuery("This is an MIT srt on computer science")
+        #print phrase_scores
+        response = self.calcTFidfQuery("base case")
         topChoices = self.calcCosineSim(response, tfidf_matrix)
-
+        print "TFIDF:"
         print topChoices
         for choice in topChoices:
             print self.corpus[choice[0]]
 
     def getRandomQuery(self):
-        word = random.choice(list(self.uniqueVocab))
-        self.new_model = gensim.models.Word2Vec.load('srtModelSmall')
+        word = 'recursion'#random.choice(list(self.uniqueVocab))
+        if self.wordvecModel is None:
+            self.wordvecModel = gensim.models.Word2Vec.load('wordVecModel')
         print 'Time slots'
         print self.wordToTime[word]
-        print self.vecToTime[tuple(self.new_model[word])]
-        similarList = self.new_model.most_similar(positive=[word], topn=10)
+        print self.vecToTime[tuple(self.wordvecModel[word])]
+        similarList = self.wordvecModel.most_similar(positive=[word], topn=10)
         print 'Randomly chosen word and similar lists'
         print word
         print similarList
@@ -202,64 +227,138 @@ class parseSrt:
         # add support for phrase queries
         #add support for unseen words
         #use tfidf to rank important words usseful for ranking and selecting important word also for querying
-        wordList = ['loop', 'variable', 'for loop' , 'classes', 'if', 'condition', 'function', 'computer science', 'arithmetic']
+        print 'Word2vec test'
+        wordList = ['recursion', 'variable', 'for loop' , 'classes', 'network', 'condition', 'function', 'computer science', 'arithmetic']
         #print(model.most_similar(positive=['computer', 'science'], negative=[], topn=5)) #concatenates and prints out top 5 similar words [useful for study guides]
 
         for word in wordList:
             phrase = word.split()
             phraseList = [w.strip() for w in phrase]
 
-            similarList = self.new_model.most_similar(positive = phraseList, negative = [], topn=5)
+            similarList = self.wordvecModel.most_similar(positive = phraseList, negative = [], topn=5)
             print word
             print similarList
 
     def openFile(self):
         # TODO looking at data: deal with stop words, deal with commas
-
-        for fileName in os.listdir(self.path):
-             fileName = self.path + fileName
-             #print fileName
-        #for fileName in self.listFiles:
-             subs = pysubs2.load(fileName)
-             leftDoc = self.documentLen
-             currDoc = ''
-             for i in xrange(len(subs)):
-                 startTimeStamp = subs[i].start
-                 endTimeStamp = subs[i].end
-                 sentence = []
-                 line = subs[i].text
-                 line = line.replace('\\N',' ')
-                 line = line.replace('\\n',' ')
-                 line = line.split()
-                  # remove non alphanumeric characters
-                 line = [self.alphanum.sub('', xx) for xx in line]
-                  # remove any words that are now empty
-                 line = [xx.strip() for xx in line if xx != '']
-                  # stem words
-               # line = [self.p.stem(xx) for xx in line if xx not in self.stop_words]
-                 line = [str(xx).translate(None, string.punctuation) for xx in line]
-                 line = [xx for xx in line if xx not in self.stop_words]
-
-                 currDoc += " ".join(line) + ' '
-                 leftDoc -= 1
-                 if leftDoc == 0 or i == len(subs) - 1:
-                    print currDoc
-                    self.corpus.append(currDoc)
+        #TODO: just copy this code over to train all the files
+        #doc2vec tags as keywords from trained syllabus or word2vec trained stuff or tfidf term
+    # for subdir, dirs, files in os.walk(rootdir):
+    #     for file in files:
+    #         filepath = subdir + os.sep + file
+    #
+    #         if filepath.endswith(".asm"):
+    #             print (filepath)
+        print 'Training'
+        for subdir, directories, files in os.walk(self.path):
+            for fileName in files:
+                fileName = subdir + os.sep + fileName
+                #print fileName
+                if '.DS_Store' not in fileName and not os.path.isdir(fileName):
+                    #fileName = self.path + fileName
+                     #print fileName
+                #for fileName in self.listFiles:
+                    print fileName
+                    subs = pysubs2.load(fileName)
                     leftDoc = self.documentLen
-                    currDoc = ''
+                    currDoc = []
+                    currDocTimeStamp = [0 ,0]
+                    for i in xrange(len(subs)):
+                        startTimeStamp = subs[i].start
+                        endTimeStamp = subs[i].end
+                        sentence = []
+                        line = subs[i].text
+                        line = line.replace('\\N',' ')
+                        line = line.replace('\\n',' ')
+                        line = line.split()
+                          # remove non alphanumeric characters
+                        line = [self.alphanum.sub('', xx) for xx in line]
+                          # remove any words that are now empty
+                        line = [xx.strip() for xx in line if xx != '']
+                          # stem words
+                       # line = [self.p.stem(xx) for xx in line if xx not in self.stop_words]
+                        line = [str(xx).translate(None, string.punctuation) for xx in line]
+                        line = [xx for xx in line if xx not in self.stop_words]
 
-                 for word in line:
-                     #print word
-                     word = word.lower()
-                     self.uniqueVocab.add(word)
-                     timeList = []
-                     if word in self.wordToTime:
-                         timeList = self.wordToTime.get(word)
-                     timeList.append((startTimeStamp, endTimeStamp, fileName))
-                     self.wordToTime[word] = timeList
-                     sentence.append(word)
-                 self.text.append(sentence)
-        self.calcTFidf()
+                        if leftDoc == 4:
+                            currDocTimeStamp[0] = startTimeStamp
+                        currDoc += line #" ".join(line) + ' '
+                        leftDoc -= 1
+
+                        if leftDoc == 0 or i == len(subs) - 1:
+                            #print currDoc
+                            currDocTimeStamp[1] = endTimeStamp
+                            currLabeledSentence = LabeledSentence(currDoc,['SRT_%s_%s_%s_%d' %(fileName, currDocTimeStamp[0], currDocTimeStamp[1],  i)])#[currDoc,['SRT_%s_%d' %(fileName, i)] ] #(words = currDoc, labels = )
+                            self.labeledSentences.append(currLabeledSentence)
+
+                            currDocStr = " ".join(currDoc)
+
+                            timeDocList = []
+                            if currDocStr in self.docToTime:
+                                timeDocList = self.docToTime.get(currDocStr)
+                            timeDocList.append((currDocTimeStamp[0], currDocTimeStamp[1], fileName))
+                            self.docToTime[currDocStr] = timeDocList
+
+                            self.corpus.append(currDocStr)
+                            leftDoc = self.documentLen
+                            currDoc = []
+                            currDocTimeStamp = [-1,-1]
+
+
+                        for word in line:
+                             #print word
+                            word = word.lower()
+                            self.uniqueVocab.add(word)
+                            timeList = []
+                            if word in self.wordToTime:
+                                timeList = self.wordToTime.get(word)
+                            timeList.append((startTimeStamp, endTimeStamp, fileName))
+                            self.wordToTime[word] = timeList
+                            sentence.append(word)
+                        self.text.append(sentence)
+
+        self.doc2vecModel = DocVec(self.labeledSentences, self.docToTime)
+        self.wordvecModel = WordVec(self.text)
+        self.tfidf = TfIdf(self.corpus)
+        print "Training DONE"
+
+        # self.calcTFidf()
+        # #print "Self.Labeled"
+        # #print self.labeledSentences
+        # self.trainDoc2Vec(self.labeledSentences)
+        # print "Doc2Vec"
+        # query = "recursion"
+        # similarDocs =  self.getMostSimilarDocs(query)
+        #
+        # #print similarDocs
+        # self.printSimilarDocs(similarDocs)
+
+    def printSimilarDocs(self, simDocList):
+        #print self.docToTime['So saw looked algorithms things like exhaustive enumeration We said well searching answer search space carefully one time']
+        #print simDocList[0]
+        #print 'Similar Docs List:'
+        #print self.docToTime
+        #print simDocList
+        #print self.doc2vecModel.docvecs.most_similar('SRT_./srtFiles/6wTuOMgTrU4.srt_2583870_2598760_595')
+        for doc in simDocList:
+            fileName = ""
+            startTimeStamp = ""
+            endTimeStamp = ""
+            docCredentials = doc[0]
+            docScore = doc[1]
+            matchedStr = re.match("SRT_(.*?.srt)_(.*?)_(.*?)_", docCredentials)
+            #print doc
+            if matchedStr != None:
+                fileName = matchedStr.group(1)
+                startTimeStamp = matchedStr.group(2)
+                endTimeStamp = matchedStr.group(3)
+                docTuple = (int(startTimeStamp), int(endTimeStamp), fileName)
+                #print docTuple
+                for doc in self.docToTime:
+                    if docTuple in self.docToTime[doc]:
+                        print doc
+                        break
+
 
     def buildPreTrainedVec(self):
         preTrainedModel = gensim.models.KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
@@ -271,23 +370,61 @@ class parseSrt:
         #preTrainedModel.build_vocab(self.text, update=True)
 
         model = gensim.models.Word2Vec(self.text, min_count=1)
-        model.save('srtModelSmall')
+        model.save('wordVecModel')
         #model.reset_from(preTrainedModel)
         #preTrainedModel.train(self.text)
         #preTrainedModel.save('srtModel') #model for word2vec from syllabus
-        print("Done")
+        print("Done saving wordVec")
 
     def loadWordVec(self):
-        new_model = gensim.models.Word2Vec.load('srtModelSmall')
+        self.wordvecModel = gensim.models.Word2Vec.load('wordVecModel')
         for word in self.wordToTime:
-            self.vecToTime[tuple(new_model[word])] = self.wordToTime[word]
-        #print self.vecToTime
+            self.vecToTime[tuple(self.wordvecModel[word])] = self.wordToTime[word]
+
+    def shuffleSentences(self, tagged_sentences):
+        shuffle(tagged_sentences)
+        return tagged_sentences
+
+    def trainDoc2Vec(self, tagged_sentences):
+        #shuffle(tagged_sentences)
+        self.doc2vecModel = gensim.models.doc2vec.Doc2Vec(alpha = 0.025, min_alpha = 0.025)#, min_count=1, window=10, size=100, workers=8)
+        #print tagged_sentences
+        self.doc2vecModel.build_vocab(tagged_sentences)
+        #print "Tagged Sentences:"
+        #print tagged_sentences
+        for epoch in range(10):
+            self.doc2vecModel.train(self.shuffleSentences(tagged_sentences), total_examples=self.doc2vecModel.corpus_count, epochs=self.doc2vecModel.iter)
+            self.doc2vecModel.alpha -= 0.002  # decrease the learning rate
+            self.doc2vecModel.min_alpha = self.doc2vecModel.alpha  # fix the learning rate, no decay
+
+    def getMostSimilarDocs(self, query):
+        queryTokens = query.split()
+        queryDocVec = self.doc2vecModel.infer_vector(queryTokens)
+        return self.doc2vecModel.docvecs.most_similar([queryDocVec])
+
+    def getMostSimilarList(self, query):
+        queryTokens = query.split()
+
+    #use this method to test the three different queries
+    def testQueries(self):
+        wordList = ['recursion', 'network stack', 'data structure', 'algorithms']
+        for word in wordList:
+            print 'Testing TFIDF:'
+            self.tfidf.testQuery(word)
+
+            print 'Testing Doc2Vec:'
+            self.doc2vecModel.testQuery(word)
+
+            print 'Testing Word2Vec:'
+            self.wordvecModel.testQuery(word)
+
 
 def main():
     parser = parseSrt()
     parser.openFile()
-    parser.buildWordVec()
-    parser.loadWordVec()
+    parser.testQueries()
+    #parser.buildWordVec()
+    #parser.loadWordVec()
     #parser.getRandomQuery()
 
 if __name__ == "__main__":

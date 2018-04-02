@@ -1,0 +1,1174 @@
+1
+00:00:01,006 --> 00:00:05,000
+This video is a continuation about packet
+switching.
+
+2
+00:00:05,000 --> 00:00:10,003
+And in this video I'm gonna be talking
+about a number of different queue models.
+
+3
+00:00:10,009 --> 00:00:15,001
+I'm gonna start out by describing a simple
+deterministic queue model.
+
+4
+00:00:15,001 --> 00:00:20,003
+This is something that's gonna help us
+understand the dynamics of many simple queue
+
+5
+00:00:20,003 --> 00:00:23,000
+system.
+It often works as a good way of
+
+6
+00:00:23,002 --> 00:00:26,001
+understanding what's going on in the
+network.
+
+7
+00:00:26,001 --> 00:00:28,004
+So.
+Here's a router and as we know already
+
+8
+00:00:28,004 --> 00:00:32,006
+routers have to have queues in the
+interface to hold packets during times of
+
+9
+00:00:32,006 --> 00:00:35,002
+congestion.
+And this is where the variability in
+
+10
+00:00:35,002 --> 00:00:38,034
+queuing delay takes place.
+So if we can understand the dynamics, even
+
+11
+00:00:38,034 --> 00:00:42,062
+just having a rough sense of the dynamics
+of that queue, it really helps us
+
+12
+00:00:42,062 --> 00:00:47,000
+understand the end to end queuing delay
+and the dynamics of the network.
+
+13
+00:00:47,000 --> 00:00:51,003
+So we're going to take a closer look at
+this and we're just going to create a
+
+14
+00:00:51,003 --> 00:00:54,002
+simple model.
+Here are the main characteristics of this
+
+15
+00:00:54,002 --> 00:00:56,006
+queue.
+So I'm going to draw a queue like this,
+
+16
+00:00:56,006 --> 00:01:02,004
+this is a standard way to draw a queue.
+Showing where the packets will be stored,
+
+17
+00:01:02,007 --> 00:01:06,067
+in that router queue.
+This is a 4-port router so, packets could
+
+18
+00:01:06,067 --> 00:01:11,088
+be coming in from any of the interfaces,
+into that queue and, then they will
+
+19
+00:01:11,088 --> 00:01:17,009
+depart, under the outgoing link.
+We're going to say that queue has an occupancy
+
+20
+00:01:17,009 --> 00:01:22,003
+of Q(t).
+So at time t it has Q packets or bytes in
+
+21
+00:01:22,003 --> 00:01:25,034
+it.
+It's gonna be useful to think about the
+
+22
+00:01:25,034 --> 00:01:29,000
+aggregate or the cumulative departure
+process.
+
+23
+00:01:29,000 --> 00:01:34,003
+That is all of the packets or all of the
+bytes that have departed up until some
+
+24
+00:01:34,003 --> 00:01:37,002
+time t.
+Similarly, it's going to be useful to
+
+25
+00:01:37,002 --> 00:01:42,000
+think of the cumulative arrivals.
+The total number of packets that have
+
+26
+00:01:42,000 --> 00:01:45,008
+arrived up until time t.
+Finally, because the outgoing link
+
+27
+00:01:45,008 --> 00:01:51,001
+typically has a deterministic and fixed
+rate, which we're gonna say has a fixed
+
+28
+00:01:51,001 --> 00:01:54,006
+rate of r.
+So they're gonna be the main parameters of
+
+29
+00:01:54,006 --> 00:02:01,001
+our model.
+We can also think of a queue as being like
+
+30
+00:02:01,001 --> 00:02:05,002
+a bucket full of water.
+And here's a simple example here.
+
+31
+00:02:05,002 --> 00:02:10,005
+A of t is the cumulative number of bytes
+that have arrived up until time t.
+
+32
+00:02:10,005 --> 00:02:16,002
+D of t is the cumulative number of bytes
+that have departed up until time t.
+
+33
+00:02:16,002 --> 00:02:21,002
+And in this example, they are going to
+depart at a fixed link rate of r.
+
+34
+00:02:21,002 --> 00:02:25,007
+At any one time, there may be some bytes
+that have arrived, but haven't yet
+
+35
+00:02:25,007 --> 00:02:28,057
+departed.
+They're the ones sitting in the bucket
+
+36
+00:02:28,057 --> 00:02:32,001
+here.
+And, the occupancy of that bucket is gonna
+
+37
+00:02:32,001 --> 00:02:35,000
+be Q of t.
+So this is like a simple model of RQ.
+
+38
+00:02:35,000 --> 00:02:38,005
+It's just another way of thinking about
+it.
+
+39
+00:02:38,005 --> 00:02:42,000
+We could draw the evolution of this as a
+function of time.
+
+40
+00:02:42,000 --> 00:02:45,000
+And I'm gonna try and sketch how this
+might look.
+
+41
+00:02:45,000 --> 00:02:51,008
+So here are gonna be the axes of my graph.
+As a function of time we're gonna look at
+
+42
+00:02:51,008 --> 00:02:57,007
+the cumulative number of bytes, so
+remember this is cumulative.
+
+43
+00:02:57,007 --> 00:03:03,001
+I'm gonna first look at the arrival
+process, A of t.
+
+44
+00:03:03,001 --> 00:03:07,005
+Bytes tend to arrive as part of a packet
+and they're going to arrive at some
+
+45
+00:03:07,005 --> 00:03:11,003
+particular link arrival rate.
+So I'm gonna draw what that cumulative
+
+46
+00:03:11,003 --> 00:03:15,006
+arrival process might look like.
+It could look like anything, but here is
+
+47
+00:03:15,006 --> 00:03:19,005
+the bytes arriving a packet.
+This is the gap between the first packet
+
+48
+00:03:19,005 --> 00:03:23,001
+and the second packet.
+Here's a bunch more bytes arriving a gap,
+
+49
+00:03:23,001 --> 00:03:26,007
+maybe it's a long gap this time, and then
+a new packet arriving.
+
+50
+00:03:26,007 --> 00:03:32,000
+So this is supposed to be a straight line.
+And this would be the arrival rate of the
+
+51
+00:03:32,000 --> 00:03:37,004
+packet on the incoming link and this is
+the number of bits of it let's say the
+
+52
+00:03:37,004 --> 00:03:42,000
+packet is of length p the number of bytes
+of that first packet.
+
+53
+00:03:42,000 --> 00:03:46,002
+Now let's look at what the departure
+process might look like.
+
+54
+00:03:46,002 --> 00:03:50,001
+I'm going to try and draw that and label
+it as A of t.
+
+55
+00:03:50,001 --> 00:03:54,000
+The cumulative arrival process.
+And then in yellow, I'm going to try and
+
+56
+00:03:54,000 --> 00:03:58,001
+draw the, I'm gonna sketch out what the
+departure process might look like.
+
+57
+00:03:58,001 --> 00:04:02,065
+We know that the departure process is
+going to work at and operate at rate R.
+
+58
+00:04:02,065 --> 00:04:07,046
+So at some point after that first packet
+has arrived, let's assume that it is a
+
+59
+00:04:07,046 --> 00:04:12,025
+store and forward model, that doesn't matter,
+it's just for sake of my example.
+
+60
+00:04:12,025 --> 00:04:17,009
+So this time here the packet has arrived
+and then we'll say okay, it's going to
+
+61
+00:04:17,009 --> 00:04:20,061
+depart at rate R.
+So that's going to be my gradient there.
+
+62
+00:04:20,060 --> 00:04:25,035
+So that's the rate, that's rate R, that
+packet on the right, that packet
+
+63
+00:04:25,035 --> 00:04:28,089
+departing.
+At this point, there's nothing left, so,
+
+64
+00:04:28,089 --> 00:04:35,088
+we're gonna wait until there's a whole new
+packet in the queue, and then we're gonna
+
+65
+00:04:35,088 --> 00:04:39,046
+depart again at rate R.
+That's gonna be rate R.
+
+66
+00:04:39,046 --> 00:04:43,095
+And so on, when it went into a whole new
+packet and it'll be at rate R again.
+
+67
+00:04:43,095 --> 00:04:46,049
+So this might be one way in which it
+evolves.
+
+68
+00:04:46,049 --> 00:04:51,000
+The point here is not the particular shape
+of this graph, but just to say you can
+
+69
+00:04:51,000 --> 00:04:53,057
+easily sketch the arrival and departure
+process.
+
+70
+00:04:53,057 --> 00:04:58,084
+And what this kind of a cool property of
+this is that we can immediately from this
+
+71
+00:04:58,084 --> 00:05:01,070
+tell some nice characteristics of the
+system.
+
+72
+00:05:01,070 --> 00:05:07,032
+First of all, we can immediately tell how
+what the value of Q of t is because at any
+
+73
+00:05:07,032 --> 00:05:10,066
+one time.
+So if we were to pick a particular time, Q
+
+74
+00:05:10,066 --> 00:05:15,041
+of t is the number of bytes that have
+arrived but not yet departed, so it's
+
+75
+00:05:15,041 --> 00:05:21,020
+simply D of t minus A of t, I'm sorry A of
+t minus D of t, so it's the number that
+
+76
+00:05:21,020 --> 00:05:26,045
+have arrived, minus those that have
+departed, so for example if we were to
+
+77
+00:05:26,045 --> 00:05:31,061
+take a line here, and here, so a vertical,
+it's supposed to be a vertical line, that
+
+78
+00:05:31,061 --> 00:05:37,016
+value, that distance between the two of
+those is Q(t), so at any one time it's
+
+79
+00:05:37,016 --> 00:05:42,031
+the occupancy of that queue.
+Similarly, if we look at a particular byte
+
+80
+00:05:42,031 --> 00:05:48,043
+that arrives, say at this time here.
+If we assume that all bytes arrive and
+
+81
+00:05:48,043 --> 00:05:53,028
+then depart in the same order.
+Then this byte because it's this
+
+82
+00:05:53,028 --> 00:05:58,000
+particular accumulative byte.
+We know that it departs here, so if we
+
+83
+00:05:58,000 --> 00:06:03,003
+take the horizontal distance between these
+two lines, this is going to tell us the d
+
+84
+00:06:03,003 --> 00:06:05,004
+of t.
+I'll call it little d of t.
+
+85
+00:06:05,004 --> 00:06:10,007
+The delay through the queue.
+So this is a very useful model giving us
+
+86
+00:06:10,007 --> 00:06:14,003
+intuition.
+I often sketch graphs like this when I'm
+
+87
+00:06:14,003 --> 00:06:19,001
+trying to understand, the dynamics of a
+queue or the dynamics of a system.
+
+88
+00:06:19,001 --> 00:06:28,094
+Okay, then to summarize, we can say that
+the queue occupancy, Q of t equals it's the
+
+89
+00:06:28,094 --> 00:06:35,060
+ones that have arrived minus the ones that
+have departed.
+
+90
+00:06:35,060 --> 00:06:44,046
+So a nice simple expression for that and
+that D of t is the time spent in the queue
+
+91
+00:06:44,046 --> 00:06:53,078
+by a byte that arrived at time t.
+So it's the time spent in the queue, by a
+
+92
+00:06:53,078 --> 00:07:02,087
+byte arriving at time t.
+And that's simply the horizontal distance
+
+93
+00:07:02,087 --> 00:07:09,002
+between those two lines.
+Now, the assumption of this is always that
+
+94
+00:07:09,002 --> 00:07:13,000
+it's first come, first serve, or FIFO, we
+also say first in, first out.
+
+95
+00:07:13,000 --> 00:07:15,006
+In this context those have the same
+meaning.
+
+96
+00:07:15,006 --> 00:07:18,007
+So that's true.
+If the bytes didn't arrive and depart in
+
+97
+00:07:18,007 --> 00:07:23,003
+the same order then we couldn't make this
+statement here about D(t) cause we don't
+
+98
+00:07:23,003 --> 00:07:25,007
+know that we're referring to the same
+byte.
+
+99
+00:07:25,007 --> 00:07:29,005
+Let's go on and look at an example now of
+how we might use this.
+
+100
+00:07:29,005 --> 00:07:32,002
+So anyway, I'm going to work through an
+example.
+
+101
+00:07:32,004 --> 00:07:37,004
+We're going to assume that every second.
+A 100 bit packet is going to arrive to a
+
+102
+00:07:37,004 --> 00:07:42,006
+queue at rate, 1000 bits per second.
+In other words, this packet is gonna
+
+103
+00:07:42,006 --> 00:07:47,000
+arrive at a rate of 1000 bits per second,
+and it's 100 bits long.
+
+104
+00:07:47,000 --> 00:07:52,067
+We're going to see the maximum departure
+rate, that was our R, is 500 bits per
+
+105
+00:07:52,067 --> 00:07:56,005
+second.
+And the question is, what is the average
+
+106
+00:07:56,005 --> 00:08:01,000
+occupancy of the queue?
+So just reading the question, it's not so
+
+107
+00:08:01,000 --> 00:08:04,006
+obvious.
+But if we plot this in the way that I did
+
+108
+00:08:04,006 --> 00:08:07,074
+before.
+I'm not gonna try and sketch it, 'cause I
+
+109
+00:08:07,074 --> 00:08:14,002
+want these numbers to be very clear.
+A(t) shown in red here is the arrival
+
+110
+00:08:14,002 --> 00:08:17,001
+process.
+This here is the packet arriving.
+
+111
+00:08:17,001 --> 00:08:21,007
+It's the 100 bit packet arriving at rate
+of 1000 bits per second.
+
+112
+00:08:21,007 --> 00:08:26,005
+So therefore, it takes a tenth of a
+second, .1 of a second, to arrive.
+
+113
+00:08:26,005 --> 00:08:30,005
+The maximum departure rate is 500 bits per
+second.
+
+114
+00:08:30,005 --> 00:08:34,028
+It's slower.
+So our departure rate D, of departure
+
+115
+00:08:34,028 --> 00:08:39,003
+D(t), the rate here is the gradient of that
+is 500 bits per second.
+
+116
+00:08:39,003 --> 00:08:44,004
+So that 1,000, that 100 bit packet is
+going to take.2 of a second, in order to
+
+117
+00:08:44,004 --> 00:08:47,048
+depart.
+In the previous example I showed you the
+
+118
+00:08:47,048 --> 00:08:53,090
+store and forward of each packet.
+Here I didn't, and that's just a choice
+
+119
+00:08:53,090 --> 00:08:57,073
+and I just made that choice when answering
+the question.
+
+120
+00:08:57,073 --> 00:09:00,061
+Question isn't clear as to whether, which
+way it is.
+
+121
+00:09:00,061 --> 00:09:05,036
+So we can now see the time evolution of Q(t), which is the vertical
+
+122
+00:09:05,036 --> 00:09:10,040
+difference between those two lines and the
+delay of an indi-, individual packet.
+
+123
+00:09:10,040 --> 00:09:14,045
+But the question is, what is the average
+occupancy of the queue?
+
+124
+00:09:14,045 --> 00:09:17,033
+Well let's look at how we might solve
+that.
+
+125
+00:09:17,033 --> 00:09:21,084
+I am going to write this out just so that,
+you have a clear record of this.
+
+126
+00:09:21,084 --> 00:09:25,063
+The solution is this.
+During each repeating one second cycle the
+
+127
+00:09:25,063 --> 00:09:30,004
+queue is going to fill at rate 500 bits
+per second for a tenth of a second.
+
+128
+00:09:30,004 --> 00:09:34,077
+So that was my arrival process here.
+Then it drains for 500 bits per second
+
+129
+00:09:34,077 --> 00:09:41,001
+for.
+Then drains at 500 bits per second for.10
+
+130
+00:09:41,001 --> 00:09:45,077
+second.
+Over the first, two-tenths of a second.
+
+131
+00:09:45,077 --> 00:09:50,072
+The average queue occupancy is there for 0.5
+times
+
+132
+00:09:50,072 --> 00:09:59,042
+0.1 times 500 equals 25 bits.
+The queue is empty for eight tenths in a
+
+133
+00:09:59,042 --> 00:10:06,060
+second every cycle that's from here to
+here and so the average q occupancy, q bar
+
+134
+00:10:06,060 --> 00:10:12,077
+of t is .2 over second when its 25 bits
+and .8 over second when its zero.
+
+135
+00:10:12,077 --> 00:10:20,084
+So, the average queue occupancy is five bits.
+Continuing with our theme of simple
+
+136
+00:10:20,084 --> 00:10:26,083
+deterministic queue models, I want to explain
+why it is that small packets can reduce
+
+137
+00:10:26,083 --> 00:10:31,069
+end to end delay.
+You may have been wondering why we can't
+
+138
+00:10:31,069 --> 00:10:34,050
+simply send an entire message in one
+packet.
+
+139
+00:10:34,050 --> 00:10:39,010
+Why is it that we have to break messages
+down into smaller packets?
+
+140
+00:10:39,010 --> 00:10:45,013
+There's very good reason to this, and I
+want to explain this in terms of the end
+
+141
+00:10:45,013 --> 00:10:48,075
+to end delay.
+So on the left, I've got an example of a
+
+142
+00:10:48,075 --> 00:10:53,051
+message, of length r.
+That's being delivered from end to end.
+
+143
+00:10:53,051 --> 00:10:56,066
+And, it's going through three routers, R1,
+R2 and R3.
+
+144
+00:10:56,066 --> 00:11:01,073
+And I am just showing, as we did before,
+the, the delay across each link in terms
+
+145
+00:11:01,073 --> 00:11:06,078
+of the packetization delay and the
+propagation delay over the links, as it
+
+146
+00:11:06,078 --> 00:11:11,057
+makes it way across the network.
+We already know the expression for the end
+
+147
+00:11:11,057 --> 00:11:16,044
+to end delay for this, it's simply made up
+of: the sum of all the M over the RIs.
+
+148
+00:11:16,044 --> 00:11:21,054
+This is the packetization delay, and then
+the sum of the, all of the propagation
+
+149
+00:11:21,054 --> 00:11:25,070
+delays over the lengths.
+So we've seen this before.
+
+150
+00:11:25,070 --> 00:11:32,042
+If you look at the one on the right we can
+see that the packet is, the message has
+
+151
+00:11:32,042 --> 00:11:37,052
+been broken down into packets of length p.
+So I've broken that same message as
+
+152
+00:11:37,052 --> 00:11:40,054
+before.
+Overall this is the same message just
+
+153
+00:11:40,054 --> 00:11:45,058
+broken down into packets of length p.
+So the packetization delay over the first
+
+154
+00:11:45,058 --> 00:11:50,061
+link is p over r1 and so now the one to
+one delay is this expression here p over
+
+155
+00:11:50,061 --> 00:11:55,084
+ra for the packetization delay on each
+link and then li over c for the for the.
+
+156
+00:11:55,084 --> 00:12:00,063
+Propagation delay.
+And M over P, is simply the additional
+
+157
+00:12:00,063 --> 00:12:03,054
+time.
+For the one, the ones who are arriving.
+
+158
+00:12:03,054 --> 00:12:08,058
+And strictly speaking this should be M
+minus one over P because it's the remaining
+
+159
+00:12:08,058 --> 00:12:11,077
+packets.
+I'm going to assume that M is much bigger
+
+160
+00:12:11,077 --> 00:12:15,022
+than P so that's basically the same.
+M over P time R3.
+
+161
+00:12:15,022 --> 00:12:21,002
+The packetization delay of that packet, of
+that set of packets, over the last link.
+
+162
+00:12:21,002 --> 00:12:25,001
+But the most important thing here is that
+you can see what's going on.
+
+163
+00:12:25,001 --> 00:12:29,001
+In this case on the left, the whole
+message has to be transferred over the
+
+164
+00:12:29,001 --> 00:12:33,004
+first link before it can start on the
+second link, whereas over here, the first
+
+165
+00:12:33,004 --> 00:12:37,008
+packet goes and then is transferred on to
+the second link while the first link is
+
+166
+00:12:37,008 --> 00:12:41,002
+carrying the second packet.
+So we have got a pipelining effect.
+
+167
+00:12:41,002 --> 00:12:45,005
+We've got parallelism over the links and
+so, therefore, the end-to-end layer is
+
+168
+00:12:45,005 --> 00:12:48,008
+gonna be reduced over a long network with
+very big messages.
+
+169
+00:12:48,008 --> 00:12:51,002
+This will make a very significant
+difference.
+
+170
+00:12:51,002 --> 00:12:55,002
+And so the end-to-end delay can be reduced
+by making the packets smaller.
+
+171
+00:12:57,004 --> 00:13:02,001
+Let's look at this simple example here.
+I've got a number of flows, 'n' flows are
+
+172
+00:13:02,001 --> 00:13:06,001
+in, in packets coming in on'n' external
+links, all running at rate, r.
+
+173
+00:13:06,001 --> 00:13:10,008
+Got a packet buffer corresponding to the
+upper queue of the router, and then an
+
+174
+00:13:10,008 --> 00:13:13,006
+outgoing link that's running at rate r, as
+well.
+
+175
+00:13:13,006 --> 00:13:18,003
+Clearly, if all of those ingress links
+were running at the full rate r, then the
+
+176
+00:13:18,003 --> 00:13:24,041
+output link would be overwhelmed and would
+start dropping packets very quickly.
+
+177
+00:13:24,041 --> 00:13:30,065
+In effect, there would be, a rate of N
+times R coming in, and a rate of 1R going
+
+178
+00:13:30,065 --> 00:13:33,080
+out.
+So we'll be dropping them at a rate of N
+
+179
+00:13:33,080 --> 00:13:36,083
+minus one times R.
+But because of the statistical
+
+180
+00:13:36,083 --> 00:13:42,001
+multiplexing and the burstiness of the
+arrivals, we can potentially get away with
+
+181
+00:13:42,001 --> 00:13:45,021
+this if the average rates are sufficiently
+low.
+
+182
+00:13:45,021 --> 00:13:49,078
+So, in general we say the reduction in
+rate that we need at the egress, compared
+
+183
+00:13:49,078 --> 00:13:54,054
+to the ingress, is because of that
+statistical multiplexing, and we call that
+
+184
+00:13:54,054 --> 00:13:59,035
+benefit the statistical multiplexing gain.
+We never know what it's going to be
+
+185
+00:13:59,035 --> 00:14:04,062
+precisely because it's going to depend on
+the particular arrival process of packets,
+
+186
+00:14:04,062 --> 00:14:09,051
+and temporarily if there are temporary
+over subscription to the output link, the
+
+187
+00:14:09,051 --> 00:14:14,062
+buffer can absorb those brief periods, and
+so a bigger buffer is going to absorb
+
+188
+00:14:14,062 --> 00:14:18,087
+bigger and longer periods when the
+aggregate rate happens to exceed R.
+
+189
+00:14:18,087 --> 00:14:23,042
+But because the buffer has a finite size
+there's always losses that can occur.
+
+190
+00:14:23,042 --> 00:14:26,071
+And that's just a fact of life in packet
+switching.
+
+191
+00:14:26,071 --> 00:14:33,091
+Nothing that we can do about that.
+Let's look at a couple of specific
+
+192
+00:14:33,091 --> 00:14:38,041
+examples here.
+See the top bar at the top here.
+
+193
+00:14:38,041 --> 00:14:44,007
+I've got a, a communicating a rival
+process A into this.
+
+194
+00:14:44,007 --> 00:14:48,043
+Round a buffer that's being drained at
+rate C.
+
+195
+00:14:48,043 --> 00:14:53,032
+And a separate one that's going through a
+router that's arriving at B, at rate B,
+
+196
+00:14:53,032 --> 00:14:57,059
+and being drained at rate C.
+And I'm showing over here on the left hand
+
+197
+00:14:57,059 --> 00:15:02,036
+side, the rates as a function of time, and
+you can see here that the peaks and
+
+198
+00:15:02,036 --> 00:15:07,050
+troughs don't exactly line up, so that if
+we take the sum of the two, or the sum of
+
+199
+00:15:07,050 --> 00:15:12,053
+these two flows, then we can expect there
+to be some statistical multiplexing gain.
+
+200
+00:15:12,053 --> 00:15:17,052
+Let's have a look at what that might be,
+of course I made up these numbers these
+
+201
+00:15:17,052 --> 00:15:22,049
+are just, just to give us an example, but
+if we take A plus B, here, that was the.
+
+202
+00:15:22,049 --> 00:15:27,047
+Rate of A plus B, and that's the line in
+pink, that's this one here.
+
+203
+00:15:27,047 --> 00:15:33,016
+You can see that, their combined rate, the
+rate of the combined flows are.
+
+204
+00:15:33,016 --> 00:15:37,048
+Is quite a bit less than 2C.
+In other words less than the sum of the
+
+205
+00:15:37,048 --> 00:15:40,032
+two peaks.
+So in this case we would say, the
+
+206
+00:15:40,032 --> 00:15:43,046
+statistical multiplexing gain equals 2C
+over R.
+
+207
+00:15:43,046 --> 00:15:47,051
+It's the benefit that we're getting, from
+summing the two of them.
+
+208
+00:15:47,051 --> 00:15:50,086
+We can actually come up with a different
+definition.
+
+209
+00:15:50,086 --> 00:15:55,098
+And some people use a different definition
+for statistical multiplexing gain.
+
+210
+00:15:55,098 --> 00:16:00,069
+Because, in this case, you can see, we
+didn't actually take advantage of the fact
+
+211
+00:16:00,069 --> 00:16:05,044
+that there is a buffer.
+We're not using that to buffer any, any
+
+212
+00:16:05,044 --> 00:16:08,024
+temporary rate that exceeds R.
+So.
+
+213
+00:16:08,024 --> 00:16:12,034
+One definition could be that for a
+given buffer size, B.
+
+214
+00:16:12,034 --> 00:16:17,011
+The ratio of the rates, that need, that we
+need in order to prevent packet loss, is
+
+215
+00:16:17,011 --> 00:16:21,065
+the statistical multiplexing gain, and
+that generally will be a lower rate,
+
+216
+00:16:21,065 --> 00:16:26,035
+because we can absorb the change.
+So for example in this, in this case,
+
+217
+00:16:26,035 --> 00:16:30,096
+imagine that We were to serve it at this,
+this rate, R', instead.
+
+218
+00:16:30,096 --> 00:16:36,000
+So we call that R', where R' is
+a little bit less then R.
+
+219
+00:16:36,000 --> 00:16:40,022
+So long as the amount that we need to
+buffer here and here,
+
+220
+00:16:40,022 --> 00:16:45,016
+when the rate exceeds R',
+can be accommodated by the buffer, then
+
+221
+00:16:45,016 --> 00:16:48,063
+we're okay.
+An so in this case for the, the buffer of
+
+222
+00:16:48,063 --> 00:16:51,001
+size B.
+We might say that, instead.
+
+223
+00:16:51,001 --> 00:16:56,046
+The multiplexing gain is 2C over R',
+which is a slightly larger number.
+
+224
+00:16:56,046 --> 00:17:00,033
+Okay, so two definitions of statistic
+multiplexing gain.
+
+225
+00:17:00,033 --> 00:17:04,040
+One Where we don't consider the buffer,
+and one where we do.
+
+226
+00:17:04,040 --> 00:17:09,000
+So, in summary, often we can use a simple
+deterministic model of a queue to
+
+227
+00:17:09,000 --> 00:17:13,025
+understand the packet dynamics in a
+network, and I'd encourage to do this.
+
+228
+00:17:13,025 --> 00:17:17,057
+It gives a very good intuitive
+understanding of what's happening in the
+
+229
+00:17:17,057 --> 00:17:19,060
+network.
+I often use this myself.
+
+230
+00:17:19,060 --> 00:17:22,046
+Second.
+We learn that we can break messages into
+
+231
+00:17:22,046 --> 00:17:27,003
+packets or rather the reason that we break
+messages into packets is because it lets
+
+232
+00:17:27,002 --> 00:17:31,046
+us pipeline the transfer of packets from
+one end to another and reduces the end to
+
+233
+00:17:31,046 --> 00:17:34,006
+end delay.
+Finally, statistical multiplexing lets us
+
+234
+00:17:34,006 --> 00:17:38,045
+carry many flows efficiently on a single
+link and this is one of the prime reasons
+
+235
+00:17:38,045 --> 00:17:44,002
+that we use packet switching.
+Okay, that's the end of this video.
+

@@ -1,0 +1,373 @@
+1
+00:00:03,300 --> 00:00:07,399
+In this video, I’m going to explain some
+details about Transport Layer Security, or
+
+2
+00:00:07,399 --> 00:00:14,399
+TLS. It’s what you use when you use HTTPS,
+secure HTTP. It’s specified in RFC5246.
+
+3
+00:00:18,480 --> 00:00:22,480
+Transport layer security is exactly that:
+it provides security at the transport layer,
+
+4
+00:00:22,480 --> 00:00:28,608
+so between applications. It’s a session
+layer on top of TCP. It provides a stream
+
+5
+00:00:28,609 --> 00:00:34,920
+abstraction, just like TCP. So to most applications,
+it looks just like TCP, a bidirectional, reliable
+
+6
+00:00:34,920 --> 00:00:41,920
+byte stream. But TLS adds confidentiality,
+integrity, and authenticity to the stream.
+
+7
+00:00:42,420 --> 00:00:48,129
+So using TLS properly, you can protect your
+communication from eavesdropping, tampering,
+
+8
+00:00:48,129 --> 00:00:52,039
+and spoofing attacks.
+The most recent version of TLS is version
+
+9
+00:00:52,039 --> 00:00:59,039
+1.2, specified in RFC5246. TLS started as
+the secure socket layer (SSL) by Netscape,
+
+10
+00:00:59,940 --> 00:01:06,350
+back when the web was just starting. The version
+order is SSL 2.0, SSL 3.0, TLS 1.0, TLS 1.1,
+
+11
+00:01:06,350 --> 00:01:13,350
+and now TLS 1.2. TLS is used by HTTPS.
+
+12
+00:01:18,710 --> 00:01:24,050
+So what ciphers and keys does TLS use? It
+has a wide range that are available. As part
+
+13
+00:01:24,050 --> 00:01:29,490
+of setting up a TLS session, the client and
+server negotiate four separate ciphers. The
+
+14
+00:01:29,490 --> 00:01:33,780
+first is the cipher used to authenticate the
+server. You can also optionally authenticate
+
+15
+00:01:33,780 --> 00:01:39,590
+a client. The second is the cipher used to
+exchange symmetric keys. The third is the
+
+16
+00:01:39,590 --> 00:01:43,720
+cipher used for symmetric confidentiality.
+The fourth is the cipher used for symmetric
+
+17
+00:01:43,720 --> 00:01:44,250
+integrity.
+
+18
+00:01:44,250 --> 00:01:51,250
+TLS negotiates these four ciphers in a 5-step
+protocol to initiate a session. This all happens
+
+19
+00:01:51,850 --> 00:01:58,850
+after we open a TCP connection. These messages
+are sent over TCP.
+
+20
+00:02:00,350 --> 00:02:06,450
+In the first step, which is sent as plaintext,
+the client sends a list of ciphers it supports,
+
+21
+00:02:06,450 --> 00:02:10,340
+and a random number it has generated.
+
+22
+00:02:10,340 --> 00:02:15,810
+The server responds with what ciphers to use,
+its own random number, and a certificate containing
+
+23
+00:02:15,810 --> 00:02:21,270
+its public key. This is also sent as plaintext.
+
+24
+00:02:21,270 --> 00:02:26,720
+In the third step, the client sends something
+called a “pre-master secret” to the server,
+
+25
+00:02:26,720 --> 00:02:32,250
+encrypted with the server’s public key.
+Using this pre-master secret and the two random
+
+26
+00:02:32,250 --> 00:02:37,420
+numbers exchanged in plaintext, the client
+and server compute the keys for the session.
+
+27
+00:02:37,420 --> 00:02:42,280
+I’ll explain the details of how this works
+in a moment. But for now, just realize that
+
+28
+00:02:42,280 --> 00:02:48,140
+at this point the client and server have generated
+the symmetric keys that their ciphers need.
+
+29
+00:02:48,140 --> 00:02:55,140
+Next, the client sends a finish message, encrypted
+and MACed with symmetric keys generated with
+
+30
+00:02:55,510 --> 00:03:01,280
+the server random, client random, and pre-master
+secret. This message includes a MAC of the
+
+31
+00:03:01,280 --> 00:03:07,180
+handshake messages, to ensure that both sides
+saw the same messages. The MAC is also computed
+
+32
+00:03:07,180 --> 00:03:12,930
+with a symmetric key generated from the server
+random, client random, and pre- master secret.
+
+33
+00:03:12,930 --> 00:03:18,540
+Finally, the server sends a finish message.
+This is secured similarly to the client finish
+
+34
+00:03:18,540 --> 00:03:24,370
+message, and also contains a MAC of the handshake
+messages. MACing the handshake messages allows
+
+35
+00:03:24,370 --> 00:03:29,160
+TLS to protect against an adversary trying
+to force the two parties to choose a different
+
+36
+00:03:29,160 --> 00:03:33,120
+cipher. Since the first two steps are not
+secured, they have neither confidentiality
+
+37
+00:03:33,120 --> 00:03:37,330
+or integrity, then an adversary could perform
+a man-in-the-middle attack to change the offered
+
+38
+00:03:37,330 --> 00:03:42,250
+and selected ciphers. MACing the handshake
+messages lets them detect this.
+
+39
+00:03:42,250 --> 00:03:48,760
+Now, at this point, we have a secure connection,
+protected through symmetric ciphers that both
+
+40
+00:03:48,760 --> 00:03:50,580
+sides have agreed on.
+
+41
+00:03:50,580 --> 00:03:57,580
+What does that look like? Well, to provide
+integrity, TLS needs to break application
+
+42
+00:03:58,680 --> 00:04:04,970
+data up into chunks that it can provide MACs
+for. So TLS takes the application stream of
+
+43
+00:04:04,970 --> 00:04:09,030
+data and breaks it up into records. There
+are also records that don’t contain data,
+
+44
+00:04:09,030 --> 00:04:14,470
+such as records to generate new keys. But
+let’s focus on data records. TLS takes the
+
+45
+00:04:14,470 --> 00:04:18,319
+application stream and breaks it into data
+records, which state their length and have
+
+46
+00:04:18,319 --> 00:04:23,090
+a MAC. These records are encrypted with the
+chosen ciphers and keys and then sent over
+
+47
+00:04:23,090 --> 00:04:28,659
+TCP. This appears as a stream of data to TCP,
+which then breaks it into segments. Records
+
+48
+00:04:28,659 --> 00:04:33,650
+can be much larger than TCP segments. So a
+single record might be broken into many segments,
+
+49
+00:04:33,650 --> 00:04:37,479
+and record and segment boundaries might not
+line up.
+
+50
+00:04:37,479 --> 00:04:42,650
+TLS includes compression as one of its features.
+If, for example, you configure TLS to provide
+
+51
+00:04:42,650 --> 00:04:48,710
+integrity but not confidentiality, then you’d
+be sending plaintext. English text is generall
+
+52
+00:04:48,710 --> 00:04:53,349
+very compressible, almost 10 to 1. So you
+can configure TLS to compress the data. By
+
+53
+00:04:53,349 --> 00:04:58,180
+default compression is off. If there’s confidentiality,
+then compression won’t help since the bits
+
+54
+00:04:58,180 --> 00:05:02,559
+should seem random.
+
+55
+00:05:02,559 --> 00:05:09,559
+Let’s look at how TLS establishes its session
+keys. Remember, both the server and the client
+
+56
+00:05:11,289 --> 00:05:15,930
+provide random numbers. That way, even if
+one of them has a bad random number generator,
+
+57
+00:05:15,930 --> 00:05:21,069
+you’ll still have randomness. The client
+also sends a “pre-master secret” encrypted
+
+58
+00:05:21,069 --> 00:05:26,610
+with the server’s public key. The client
+and server both combine these three pieces
+
+59
+00:05:26,610 --> 00:05:31,449
+of information to something called a “master
+secret,” from which they generate their
+
+60
+00:05:31,449 --> 00:05:36,479
+session keys. Once they compute the master
+secret, the client and server throw away the
+
+61
+00:05:36,479 --> 00:05:42,099
+pre-master secret.
+They generate six keys, whose lengths are
+
+62
+00:05:42,099 --> 00:05:46,680
+determined by the ciphers used. They generate
+a key used to encrypt data from the client
+
+63
+00:05:46,680 --> 00:05:51,870
+to the server, a key to MAC data from the
+client to the server, key to encrypt data
+
+64
+00:05:51,870 --> 00:05:57,729
+from the server to client, a key to MAC data
+from the server to client, a client initialization
+
+65
+00:05:57,729 --> 00:06:03,949
+vector (for ciphers that need it) and a server
+initialization vector (For ciphers that need
+
+66
+00:06:03,949 --> 00:06:06,759
+it).
+Having this master secret, the client and
+
+67
+00:06:06,759 --> 00:06:11,419
+server can regenerate new keys by choosing
+new random numbers. So you can resume a session
+
+68
+00:06:11,419 --> 00:06:15,139
+with the same master secret but new keys.
+
+69
+00:06:15,139 --> 00:06:22,139
+Here’s a picture of the whole process. The
+client and server take the client random,
+
+70
+00:06:22,449 --> 00:06:26,919
+the server random, and the pre-master secret
+and passes them as input to something called
+
+71
+00:06:26,919 --> 00:06:32,629
+a pseudo- random function, or a PRF, which
+basically generates bits that look random.
+
+72
+00:06:32,629 --> 00:06:39,189
+This produces 48 bytes worth of random bits,
+the master secret. TLS takes the master secret
+
+73
+00:06:39,189 --> 00:06:43,860
+and the two random values and passes them
+as input to a pseudo-random function to generate
+
+74
+00:06:43,860 --> 00:06:50,860
+as many bits as you need for all of the keys.
+So, for example, if the MAC keys are 512 bits,
+
+75
+00:06:51,289 --> 00:06:56,770
+the write keys are 256 bits, and the initialization
+vectors are 128 bits, then you call the pseudo-random
+
+76
+00:06:56,770 --> 00:07:01,589
+function enough times to generate 1,792 bits,
+which become the keys.
+

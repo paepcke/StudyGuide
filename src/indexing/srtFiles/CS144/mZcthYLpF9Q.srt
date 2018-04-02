@@ -1,0 +1,735 @@
+1
+00:00:00,849 --> 00:00:03,999
+Nick: The end-to-end principle holds a very
+special place in the design of
+
+2
+00:00:03,999 --> 00:00:08,440
+the Internet. This is because it really refers
+to two different principles: the
+
+3
+00:00:08,440 --> 00:00:11,810
+first deals with correctness. If you don’t
+follow the end-to-end principe
+
+4
+00:00:11,810 --> 00:00:15,330
+when you design your networked system, then
+chances are it has a flaw
+
+5
+00:00:15,330 --> 00:00:19,230
+and might transfer data incorrectly. The second,
+which we call the “strong”
+
+6
+00:00:19,230 --> 00:00:22,310
+end-to-end principle, is much broader and
+general.
+
+7
+00:00:22,310 --> 00:00:26,630
+Phil: So let’s say we want to transfer a
+file from one computer to
+
+8
+00:00:26,630 --> 00:00:32,039
+another. Our application opens a connection
+between A and B. It
+
+9
+00:00:32,039 --> 00:00:38,439
+reads a file on computer A and writes it to
+the TCP connection. B
+
+10
+00:00:38,440 --> 00:00:42,019
+reads the data from the socket and writes
+the data to a file on
+
+11
+00:00:42,019 --> 00:00:45,719
+computer B.
+The network in this case does very little.
+
+12
+00:00:45,719 --> 00:00:49,440
+It just forwards packets
+from A to B. A and B set up the connection,
+
+13
+00:00:49,440 --> 00:00:52,129
+and the application
+reads and writes the data.
+
+14
+00:00:52,129 --> 00:00:56,929
+Phil: Why doesn’t the network do more? It
+turns out there are a lot of things it could
+
+15
+00:00:56,929 --> 00:01:00,739
+do to make the
+file transfer faster. The network could automatically
+
+16
+00:01:00,739 --> 00:01:03,969
+compress packets between A and B. If the file
+is
+
+17
+00:01:03,969 --> 00:01:10,130
+plain English text, this could reduce the
+transfer size tenfold. The network could reformat
+
+18
+00:01:10,130 --> 00:01:13,689
+or improve
+requests. Let’s say that A wants to transfer
+
+19
+00:01:13,689 --> 00:01:16,700
+two files to B. The network could see this
+and combine the
+
+20
+00:01:16,700 --> 00:01:22,719
+two transfers into a single request. It could
+be that A’s file is already stored on another
+
+21
+00:01:22,719 --> 00:01:26,530
+computer, C,
+that’s closer and faster to B than A is;
+
+22
+00:01:26,530 --> 00:01:31,350
+the network could transfer the file from C
+rather than A.
+
+23
+00:01:31,350 --> 00:01:34,789
+Or the network could automatically add security,
+encrypting the data so bad guys can’t read
+
+24
+00:01:34,789 --> 00:01:37,500
+the file. If
+the network does this for us, then we don’t
+
+25
+00:01:37,500 --> 00:01:42,280
+have to worry about it in our application.
+The network could add mobility support, so
+
+26
+00:01:42,280 --> 00:01:45,530
+that as computer A moves through a network,
+routes
+
+27
+00:01:45,530 --> 00:01:49,049
+automatically update and packets continue
+to flow to it. With this support, we could
+
+28
+00:01:49,049 --> 00:01:51,890
+even possibly
+migrate connections across the network, moving
+
+29
+00:01:51,890 --> 00:01:54,249
+something like a Skype video stream from our
+phone
+
+30
+00:01:54,249 --> 00:01:58,499
+to our laptop.
+It turns out there are *many* things the network
+
+31
+00:01:58,499 --> 00:02:03,159
+could do to improve our application and make
+designing it easier. But generally speaking,
+
+32
+00:02:03,159 --> 00:02:05,740
+it doesn’t. Why?
+
+33
+00:02:05,740 --> 00:02:11,190
+Nick: The reason is the end-to-end principle.
+The end-to-end principle was first described
+
+34
+00:02:11,190 --> 00:02:14,190
+by
+Saltzer, Reed and Clark in a 1984 paper. You’ll
+
+35
+00:02:14,190 --> 00:02:16,330
+meet David Clark later in the course when
+he gives
+
+36
+00:02:16,330 --> 00:02:22,100
+a guest lecture. The end-to-end principle,
+as they describe it is:
+
+37
+00:02:22,100 --> 00:02:28,300
+“The function in question can completely
+and correctly be implemented only with the
+
+38
+00:02:28,300 --> 00:02:31,110
+knowledge
+and help of the application standing at the
+
+39
+00:02:31,110 --> 00:02:36,570
+end points of the communication system. Therefore,
+providing that questioned function as a feature
+
+40
+00:02:36,570 --> 00:02:39,710
+of the communication system itself is not
+possible.
+
+41
+00:02:39,710 --> 00:02:43,940
+(Sometimes an incomplete version of the function
+provided by the communication system may be
+
+42
+00:02:43,940 --> 00:02:50,730
+useful as a performance enhancement.) We call
+this line of reasoning. . . “the end-to-end
+
+43
+00:02:50,730 --> 00:02:53,730
+argument.”
+Put another way, the network could possibly
+
+44
+00:02:53,730 --> 00:02:57,880
+do all kinds of things to help. But that’s
+all it can do
+
+45
+00:02:57,880 --> 00:03:02,060
+-- help. If the system is going to work correctly,
+then the end points need to be responsible
+
+46
+00:03:02,060 --> 00:03:05,230
+for
+making sure it does. Nobody else has the information
+
+47
+00:03:05,230 --> 00:03:10,540
+necessary to do this correctly. The network
+can help you, but you can’t depend on it.
+
+48
+00:03:10,540 --> 00:03:12,710
+For example, if you want to be sure your application
+is
+
+49
+00:03:12,710 --> 00:03:17,620
+secure, you need to have end-to-end security
+implemented in the application. The network
+
+50
+00:03:17,620 --> 00:03:20,650
+might
+add additional security, but end-to-end security
+
+51
+00:03:20,650 --> 00:03:25,280
+can only be correctly done by the application
+itself. So making security a feature of the
+
+52
+00:03:25,280 --> 00:03:28,570
+network so that applications don’t have
+to worry about it
+
+53
+00:03:28,570 --> 00:03:30,290
+is not possible.
+
+54
+00:03:30,290 --> 00:03:35,870
+Nick: Let’s go back to our example of transferring
+a file between
+
+55
+00:03:35,870 --> 00:03:40,600
+two computers. It was this exact problem,
+along with others, that
+
+56
+00:03:40,600 --> 00:03:43,970
+led Saltzer, Clark and Reed to formulate the
+end-to-end argument.
+
+57
+00:03:43,970 --> 00:03:47,230
+You want to make sure the file arrives completely
+and
+
+58
+00:03:47,230 --> 00:03:49,980
+uncorrupted. The file data is going to pass
+through several
+
+59
+00:03:49,980 --> 00:03:53,530
+computers between the source and the destination.
+So the file,
+
+60
+00:03:53,530 --> 00:03:57,500
+coming from source, passes through computers
+C, D, and E before
+
+61
+00:03:57,500 --> 00:03:59,880
+arriving at destination.
+
+62
+00:03:59,880 --> 00:04:05,980
+Nick: Each link -- source to C, C to D, D
+to E, and E to destination
+
+63
+00:04:05,980 --> 00:04:09,570
+-- has error detection. If a packet of data
+is corrupted in
+
+64
+00:04:09,570 --> 00:04:12,540
+transmission, then the recipient can detect
+this and reject the
+
+65
+00:04:12,540 --> 00:04:15,720
+packet. The sender will figure out the packet
+didn’t arrive
+
+66
+00:04:15,720 --> 00:04:18,910
+successfully, for example through TCP acknowledgments,
+and
+
+67
+00:04:18,910 --> 00:04:23,070
+resend it.
+Now, one could say “Look, I know the packet
+
+68
+00:04:23,070 --> 00:04:26,530
+won’t be corrupted
+on any link, because I have my checks. Since
+
+69
+00:04:26,530 --> 00:04:30,650
+it won’t be corrupted
+on any link, it won’t be corrupted. Therefore,
+
+70
+00:04:30,650 --> 00:04:33,040
+if it arrives
+successfully at destination, there’s no
+
+71
+00:04:33,040 --> 00:04:38,250
+corruption, and the file has
+arrived successfully.” This is exactly what
+
+72
+00:04:38,250 --> 00:04:41,590
+some programmers at
+MIT did. Since the network provided error
+
+73
+00:04:41,590 --> 00:04:45,500
+detection, they assumed
+it would detect all errors.
+
+74
+00:04:45,500 --> 00:04:49,550
+Phil: This assumption turned out to be wrong,
+and because of this
+
+75
+00:04:49,550 --> 00:04:53,470
+mistake the developers ended up losing a lot
+of their source code.
+
+76
+00:04:53,470 --> 00:04:56,730
+This is what happened. One of the computers
+in the transfer path,
+
+77
+00:04:56,730 --> 00:05:00,940
+let’s say computer D, had buggy memory,
+such that sometimes
+
+78
+00:05:00,940 --> 00:05:04,930
+some bits would be flipped. D received packets
+of data, checked
+
+79
+00:05:04,930 --> 00:05:07,650
+them, and found them correct.
+
+80
+00:05:07,650 --> 00:05:12,440
+Phil: It would then move them into main memory,
+at which point they would become corrupted.
+
+81
+00:05:12,440 --> 00:05:17,960
+It would then forward the packet, but because
+error detection occurs on the link, from the
+
+82
+00:05:17,960 --> 00:05:23,620
+link’s perspective the packet looked fine
+and it would pass E’s check. The link error
+
+83
+00:05:23,620 --> 00:05:27,460
+detection
+was designed for errors in *transmission*,
+
+84
+00:05:27,460 --> 00:05:33,700
+not errors in storage.
+The only way to be sure the file arrives correctly
+
+85
+00:05:33,700 --> 00:05:39,740
+is to perform an end-to-end check. When the
+source sends the file, it includes some error
+
+86
+00:05:39,740 --> 00:05:43,389
+detection information. When the destination
+reassembles
+
+87
+00:05:43,389 --> 00:05:49,910
+the file, it checks whether the file, it its
+entirety, has any errors. This is the only
+
+88
+00:05:49,910 --> 00:05:52,680
+way
+one can be sure it arrived correctly. The
+
+89
+00:05:52,680 --> 00:05:55,330
+network can help, but it can’t be responsible
+for
+
+90
+00:05:55,330 --> 00:05:59,770
+correctness.
+As another concrete example, think of TCP.
+
+91
+00:05:59,770 --> 00:06:03,190
+TCP provides a service of a reliable byte
+stream.
+
+92
+00:06:03,190 --> 00:06:07,180
+But the reliability isn’t perfect. There
+is a chance that TCP delivers some bad data
+
+93
+00:06:07,180 --> 00:06:09,760
+to you, for
+example because there’s a bug in your TCP
+
+94
+00:06:09,760 --> 00:06:12,419
+stack, or some error creeps in somewhere.
+So while
+
+95
+00:06:12,419 --> 00:06:18,360
+it’s very *unlikely* TCP will give you corrupted
+data, it might, and so you need to perform
+
+96
+00:06:18,360 --> 00:06:21,190
+an
+end-to-end check on the data it sends. So
+
+97
+00:06:21,190 --> 00:06:26,280
+if you transfer a file with TCP, do an end-to-end
+check that it arrived successfully. BitTorrent
+
+98
+00:06:26,280 --> 00:06:32,190
+does this, for example. It uses TCP to transfer
+chunks, and after each chunk is complete it
+
+99
+00:06:32,190 --> 00:06:35,669
+checks that it arrived successfully using
+a hash.
+
+100
+00:06:35,669 --> 00:06:42,669
+Phil: So let’s go back to TCP and reliability.
+If you want end-to-end reliable data transfer,
+
+101
+00:06:44,180 --> 00:06:49,760
+then you need an end-to-end reliable
+protocol like TCP. But following the end-to-end
+
+102
+00:06:49,760 --> 00:06:53,740
+argument, while you must have end-to-end functionality
+for correctness, the
+
+103
+00:06:53,740 --> 00:06:59,590
+network can include an incomplete version
+of the feature as a performance enhancement.
+
+104
+00:06:59,590 --> 00:07:03,540
+Wireless link layers provide such a performance
+enhancement. Today, wired link layers are
+
+105
+00:07:03,540 --> 00:07:08,710
+highly, highly reliable (unless your
+wire or connector is bad). But wireless ones
+
+106
+00:07:08,710 --> 00:07:14,230
+aren’t, for a lot of reasons. So while usually
+99.999% of packets sent on a wired link
+
+107
+00:07:14,230 --> 00:07:21,230
+arrive successfully at the next hop, wireless
+links can sometimes be more like 50% or 80%.
+
+108
+00:07:21,960 --> 00:07:26,970
+It turns out that TCP doesn’t work well
+when you have low reliability. So wireless
+
+109
+00:07:26,970 --> 00:07:31,430
+link layers improve their reliability by
+retransmitting at the link layer. When your
+
+110
+00:07:31,430 --> 00:07:36,300
+laptop sends a packet to an access point,
+if the access point receives the packet it
+
+111
+00:07:36,300 --> 00:07:40,620
+immediately -- just a few microseconds later
+-- sends a link layer acknowledgement to tell
+
+112
+00:07:40,620 --> 00:07:45,199
+your laptop the packet was received
+successfully. If the laptop doesn’t receive
+
+113
+00:07:45,199 --> 00:07:51,770
+a link layer acknowledgment, it retransmits.
+It does this several times. Using these linklayer
+
+114
+00:07:51,770 --> 00:07:58,400
+acknowledgements can boost a poor link, with
+only 80% reliability, to 99% or higher. This
+
+115
+00:07:58,400 --> 00:08:04,880
+lets TCP work much better.
+TCP will work correctly -- it will reliably
+
+116
+00:08:04,880 --> 00:08:10,690
+transfer data -- without this link layer help.
+But the link layer help greatly improves
+
+117
+00:08:10,690 --> 00:08:14,320
+TCP’s performance.
+So that’s the end-to-end principle. For
+
+118
+00:08:14,320 --> 00:08:19,490
+something to work correctly, it has to be
+done end-to-end. You can do stuff in the middle
+
+119
+00:08:19,490 --> 00:08:24,000
+to help as performance improvements, but if
+you don’t rely on end-to-end then at some
+
+120
+00:08:24,000 --> 00:08:26,060
+point it will break.
+
+121
+00:08:26,060 --> 00:08:33,060
+Nick: There’s a second version of the end-to-end
+principle, described in the IETF request for
+
+122
+00:08:33,289 --> 00:08:37,430
+comments number 1958, “The Architectural
+Principles of the
+
+123
+00:08:37,429 --> 00:08:41,378
+Internet.” We call it the “strong” end-to-end
+principle. It says
+
+124
+00:08:41,379 --> 00:08:47,619
+“The network’s job is to transmit datagrams
+as efficiently and flexibly as possible. Everything
+
+125
+00:08:47,619 --> 00:08:52,339
+else should be done at the fringes...”
+This end-to-end principle is stronger than
+
+126
+00:08:52,339 --> 00:08:55,860
+the first one. The first one said that you
+have to implement something end-to-end, at
+
+127
+00:08:55,860 --> 00:08:59,569
+the fringes, but that you
+can also implement it in the middle for performance
+
+128
+00:08:59,569 --> 00:09:04,800
+improvements. This principle says to NOT implement
+it in the middle. Only implement it at the
+
+129
+00:09:04,800 --> 00:09:08,350
+fringes.
+The reasoning for the strong principle is
+
+130
+00:09:08,350 --> 00:09:13,129
+flexibility and simplicity. If the network
+implements a piece of functionality to try
+
+131
+00:09:13,129 --> 00:09:18,350
+to help the endpoints, then it is
+assuming what the endpoints do. For example,
+
+132
+00:09:18,350 --> 00:09:24,410
+when a wireless link layer uses retransmissions
+to improve reliability so TCP can work better,
+
+133
+00:09:24,410 --> 00:09:27,019
+it’s assuming
+that the increased latency of the retransmissions
+
+134
+00:09:27,019 --> 00:09:32,389
+is worth the reliability. This isn’t always
+true. There are protocols other than TCP,
+
+135
+00:09:32,389 --> 00:09:36,259
+where reliability isn’t
+important, which might rather send a new,
+
+136
+00:09:36,259 --> 00:09:41,059
+different, packet than retry sending an old
+one. But because the link layer has incorporated
+
+137
+00:09:41,059 --> 00:09:45,600
+improved reliability,
+these other protocols are stuck with it. This
+
+138
+00:09:45,600 --> 00:09:51,170
+can and does act as an impediment to innovation
+and progress. As layers start to add optimizations
+
+139
+00:09:51,170 --> 00:09:54,019
+assuming
+what the layers above and below them do, it
+
+140
+00:09:54,019 --> 00:09:58,949
+becomes harder and harder to redesign the
+layers. In the case of WiFi, it’s a link
+
+141
+00:09:58,949 --> 00:10:01,889
+layer that assumes certain
+behavior at the network and transport layers.
+
+142
+00:10:01,889 --> 00:10:06,850
+If you invent a new transport or network layer,
+it’s likely going to assume how WiFi behaves
+
+143
+00:10:06,850 --> 00:10:10,550
+so it can perform
+well. In this way the network design becomes
+
+144
+00:10:10,550 --> 00:10:17,550
+calcified and really hard to change.
+In terms of long term design and network evolution,
+
+145
+00:10:18,230 --> 00:10:22,490
+the strong end-to-end argument is tremendously
+valuable. The tension is that in terms of
+
+146
+00:10:22,490 --> 00:10:25,040
+short term
+design and performance, network engineers
+
+147
+00:10:25,040 --> 00:10:29,279
+and operators often don’t follow it. So
+over time the network performs better and
+
+148
+00:10:29,279 --> 00:10:31,779
+better but becomes harder
+and harder to change.
+

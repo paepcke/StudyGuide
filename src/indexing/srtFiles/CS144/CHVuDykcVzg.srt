@@ -1,0 +1,318 @@
+1
+00:00:01,510 --> 00:00:05,680
+So why does this matter? If two computers
+are going to communicate, they need to agree
+
+2
+00:00:05,680 --> 00:00:11,100
+on whether they represent numbers using big
+endian or little endian formats. This is complicated
+
+3
+00:00:11,100 --> 00:00:16,859
+by the fact that different processors use
+different endianness. For example, x86 processors
+
+4
+00:00:16,859 --> 00:00:22,580
+from Intel and AMD are little endian: the
+least significant byte comes first. ARM processors,
+
+5
+00:00:22,580 --> 00:00:26,119
+in contrast, such as those in the iPhone,
+are big endian, where the most significant
+
+6
+00:00:26,119 --> 00:00:28,320
+byte comes first.
+
+7
+00:00:28,320 --> 00:00:32,160
+We don’t want two computers to care or know
+whether the other side is big endian or little
+
+8
+00:00:32,159 --> 00:00:37,620
+endian. So protocol specification bodies typically
+pick one and stick with it. For the Internet,
+
+9
+00:00:37,620 --> 00:00:42,699
+this means big endian. All protocols that
+are Internet specifications use a big endian
+
+10
+00:00:42,699 --> 00:00:43,359
+format.
+
+11
+00:00:43,359 --> 00:00:47,549
+Here’s an example snippet of C code that
+will tell you whether your computer is big
+
+12
+00:00:47,549 --> 00:00:52,049
+endian or little endian. It takes a 16-bite
+value and casts a pointer to it that lets
+
+13
+00:00:52,049 --> 00:00:58,649
+the code look at the bytes individually. If
+the byte at index 0 is 0x40, the most significant
+
+14
+00:00:58,649 --> 00:01:05,390
+byte comes first and it’s big endian. If
+the byte at index 1 is 0x40, then it’s little
+
+15
+00:01:05,390 --> 00:01:06,570
+endian. If it’s neither, well, something
+weird is going on.
+
+16
+00:01:06,570 --> 00:01:11,960
+But wait -- this creates a complication. You
+need a packet to be in a big endian format,
+
+17
+00:01:11,960 --> 00:01:15,530
+but what if your processor is little endian?
+Let’s say, for example, that you want to
+
+18
+00:01:15,530 --> 00:01:20,290
+set the port number of a TCP segment to be
+80, the HTTP port. A simple way to do this
+
+19
+00:01:20,290 --> 00:01:24,960
+might be to create a C struct that has a field
+port at the right offset. But if you use a
+
+20
+00:01:24,960 --> 00:01:31,850
+value 80 to compare with the port field, it
+will be stored little endian, with 0x50 as
+
+21
+00:01:31,850 --> 00:01:37,650
+the first byte. Big endian needs 0x50 stored
+in the second byte. So although the port field
+
+22
+00:01:37,650 --> 00:01:43,970
+in the segment is 80, this test will fail.
+
+23
+00:01:43,970 --> 00:01:47,940
+To make this easier, C networking libraries
+provide utility functions that convert between
+
+24
+00:01:47,940 --> 00:01:54,159
+host order and network order. The function
+htons() for example, takes a host short, 16-bit,
+
+25
+00:01:54,159 --> 00:02:00,240
+value as a parameter and returns a value in
+network order. There’s also functions for
+
+26
+00:02:00,240 --> 00:02:05,610
+converting a network short to a host short,
+and functions for longs, 32 bit values. So
+
+27
+00:02:05,610 --> 00:02:10,469
+the right way to test whether the packet port
+is 80 is to read the port field of the packet
+
+28
+00:02:10,469 --> 00:02:16,590
+structure and call ntohs to convert it from
+network order to host order. You can then
+
+29
+00:02:16,590 --> 00:02:21,900
+compare it with 80 and get the correct result.
+In the case of a little endian architecture,
+
+30
+00:02:21,900 --> 00:02:28,019
+ntohs and htons reverse the order of the two
+bytes. In the case of a big endian architecture,
+
+31
+00:02:28,019 --> 00:02:30,900
+they just return the value unchanged.
+
+32
+00:02:30,900 --> 00:02:34,659
+These functions provide you the mechanisms
+by which you can write networking code that’s
+
+33
+00:02:34,659 --> 00:02:39,689
+independent of your processor architecture.
+But be careful! I can’t stress this enough.
+
+34
+00:02:39,689 --> 00:02:44,969
+Be careful whenever you handle network data.
+If you aren’t principled and rigorous about
+
+35
+00:02:44,969 --> 00:02:48,790
+when you translate between host and network
+order, you’ll give yourself a tremendous
+
+36
+00:02:48,790 --> 00:02:53,269
+headache because you’ve forgotten to convert
+or have inadvertently converted twice and
+
+37
+00:02:53,269 --> 00:03:00,269
+suddenly your protocol is behaving wrongly
+or triggering all kinds of weird bugs.
+
+38
+00:03:02,579 --> 00:03:06,980
+Now that we know how Internet specifications
+lay out multibyte values in network order,
+
+39
+00:03:06,980 --> 00:03:11,879
+or big endian, we can look at how Internet
+specifications describe their packet formats.
+
+40
+00:03:11,879 --> 00:03:17,159
+For historical reasons, Internet specifications
+are written in plain ASCII text. The block
+
+41
+00:03:17,159 --> 00:03:23,889
+of text on the left is taken verbatim from
+Request for Comments (RFC) 791, which specifies
+
+42
+00:03:23,889 --> 00:03:30,540
+the IP protocol, version 4, or IPv4. The top
+shows the bits from 0 to 31 -- packets are
+
+43
+00:03:30,540 --> 00:03:37,169
+written 4 bytes wide. Since IPv4 has 5 rows
+of required fields, this means that an IPv4
+
+44
+00:03:37,169 --> 00:03:41,579
+header is at least 20 bytes long. Nick and
+I often use a simpler visual format when we
+
+45
+00:03:41,579 --> 00:03:44,469
+show packets, like the one on the right.
+
+46
+00:03:44,469 --> 00:03:50,040
+To use this as an example, the total length
+field of an IPv4 packet is 2 bytes, or 16
+
+47
+00:03:50,040 --> 00:03:57,040
+bits long. This means an IPv4 packet can’t
+be longer than 65,535 bytes. That field in
+
+48
+00:03:58,939 --> 00:04:05,400
+the packet is stored big endian. A packet
+of length 1400 bytes is stored as 0x0578.
+
+49
+00:04:05,400 --> 00:04:09,069
+So the third byte of an IP packet of that
+length is 0x05.
+
+50
+00:04:09,069 --> 00:04:15,449
+Let’s see this in wireshark. I’m just
+going to start wireshark and listen for packets.
+
+51
+00:04:15,449 --> 00:04:19,480
+This first packet is for something called
+TLS, or transport layer security. It’s what
+
+52
+00:04:19,480 --> 00:04:25,320
+web browsers use for secure connections (https).
+TLS hides the data of the packet from us,
+
+53
+00:04:25,320 --> 00:04:30,780
+but we can still see its headers. Using wireshark,
+we can see that a TLS payload is inside a
+
+54
+00:04:30,780 --> 00:04:37,780
+TCP segment to port 443, the standard TLS
+port. This TCP segment is inside an IPv4 header.
+
+55
+00:04:38,590 --> 00:04:42,810
+Looking in detail at the IPv4 header, we can
+see that the packet’s total length field
+
+56
+00:04:42,810 --> 00:04:49,810
+is 1230. The hexidecimal for 1230 is 0x04ce:
+1024, or 0x04 times 256 plus 106, or 0xce.
+
+57
+00:04:54,330 --> 00:05:01,330
+At the bottom, Wireshark shows us the actual
+bytes of the packet. And there it is, 04 ce,
+
+58
+00:05:02,260 --> 00:05:04,730
+in big endian, or network order.
+
+59
+00:05:04,730 --> 00:05:08,700
+You’ve seen how different processors lay
+out numbers differently. But since network
+
+60
+00:05:08,700 --> 00:05:13,910
+protocols need to agree, protocol specifications
+decide how the numbers are laid out, which
+
+61
+00:05:13,910 --> 00:05:18,200
+can differ from your processor. To help with
+this, C networking libraries provide helper
+
+62
+00:05:18,200 --> 00:05:23,070
+functions that convert between host and network
+order. But use them carefully! Using them
+
+63
+00:05:23,070 --> 00:05:27,140
+haphazardly can easily lead you to many lost
+hours of debugging which could be prevented
+
+64
+00:05:27,140 --> 00:05:30,960
+by being careful when you start and deciding
+on a principled approach to converting in
+
+65
+00:05:30,960 --> 00:05:31,460
+your code.
+

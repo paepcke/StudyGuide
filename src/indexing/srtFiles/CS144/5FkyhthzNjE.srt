@@ -1,0 +1,76 @@
+1
+00:00:00,470 --> 00:00:02,419
+Let’s walk through the answers.
+
+2
+00:00:02,419 --> 00:00:06,749
+The answer to the first row is no. They are
+in different networks. The two addresses differ
+
+3
+00:00:06,749 --> 00:00:11,860
+in their second octet -- 34 versus 35. If
+we take a bitwise AND of the two addresses
+
+4
+00:00:11,860 --> 00:00:18,860
+with the netmask, we get 128.34.0.0 and 128.35.0.0,
+which are not the same.
+
+5
+00:00:20,159 --> 00:00:24,579
+The answer to the second row is yes. They
+are in the same network. If we take a bitwise
+
+6
+00:00:24,579 --> 00:00:31,519
+AND of the two addresses with the netmask,
+we get 10.0.1.0 in both cases.
+
+7
+00:00:31,519 --> 00:00:35,270
+The answer to the third row is no. They are
+not in the same network, because they differ
+
+8
+00:00:35,270 --> 00:00:41,340
+in their third octet. The source is in network
+10.0.1.0, while the destination is in network
+
+9
+00:00:41,340 --> 00:00:41,780
+10.0.2.0.
+
+10
+00:00:41,780 --> 00:00:48,780
+The answer to the fourth row is no. They are
+on in the same network. Just think of the
+
+11
+00:00:49,750 --> 00:00:51,610
+last byte. The address on the left, with 33,
+is 0x21. The address on the right is 0x05.
+
+12
+00:00:51,610 --> 00:00:53,970
+224 is 0xE0, which is three bits. Since the
+source has this bit set but the destination
+
+13
+00:00:53,970 --> 00:00:55,900
+doesn’t, they don’t match. ANDed with
+the netmask, the source address is 171.64.15.32,while
+
+14
+00:00:55,900 --> 00:00:57,540
+the destination is 171.64.15.0.
+
+15
+00:00:57,540 --> 00:01:01,250
+The answer to the final row is yes. They match
+in the first byte: both are 171.0.0.0 when
+
+16
+00:01:01,250 --> 00:01:04,439
+ANDed with the netmask.
+

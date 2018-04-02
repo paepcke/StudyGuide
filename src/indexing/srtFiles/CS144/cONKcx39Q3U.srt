@@ -1,0 +1,799 @@
+1
+00:00:00,000 --> 00:00:04,515
+Continuing on our theme on routing, in
+this video I'm going to tell you about the
+
+2
+00:00:04,515 --> 00:00:08,915
+link state algorithm In particular,
+Dijkstra's Shortest-Path First Algorithm.
+
+3
+00:00:08,915 --> 00:00:13,025
+This is an example of a link-state
+protocol where the routers start by
+
+4
+00:00:13,025 --> 00:00:17,251
+flooding to each other the all the
+information about the topology of the
+
+5
+00:00:17,251 --> 00:00:21,245
+network: which links are there, which
+links are up, which ones are down.
+
+6
+00:00:21,245 --> 00:00:25,992
+And then from there each router is going
+to calculate its shortest path tree from
+
+7
+00:00:25,992 --> 00:00:29,832
+it to every other router.
+Dijkstra's shortest path first algorithm
+
+8
+00:00:29,832 --> 00:00:33,859
+is an example of what's more generally
+called a link state algorithm.
+
+9
+00:00:33,859 --> 00:00:38,353
+In link state algorithms the routers start
+by exchanging all the links state.
+
+10
+00:00:38,353 --> 00:00:43,101
+In other words they're going to learn the
+topology of the network by exchanging with
+
+11
+00:00:43,101 --> 00:00:46,057
+each other the, the state of the links
+connected to each router.
+
+12
+00:00:46,057 --> 00:00:50,025
+So a router is going to flood to every
+other router, the state of the links
+
+13
+00:00:50,025 --> 00:00:53,293
+connected to it.
+So every router has a full topology map
+
+14
+00:00:53,293 --> 00:00:58,020
+and they're going to do this periodically
+and whenever the link state changes so
+
+15
+00:00:58,020 --> 00:01:01,734
+they get quick updates.
+And then specific to Dijkstra's algorithm,
+
+16
+00:01:01,734 --> 00:01:05,598
+we're going to run Dijkstra's algorithm.
+In other words, once we've got that
+
+17
+00:01:05,598 --> 00:01:09,731
+typology map, each router is going to
+independently run Dijkstra's shortest path
+
+18
+00:01:09,731 --> 00:01:12,361
+first algorithm.
+If it was a different link state
+
+19
+00:01:12,361 --> 00:01:16,493
+algorithm, then we would run a different
+algorithm, but because Dijkstra is so
+
+20
+00:01:16,493 --> 00:01:19,445
+widely used, that's the example I'm going
+to be using here.
+
+21
+00:01:19,445 --> 00:01:23,578
+So, at the end of the day, each router
+finds the minimum cost spanning tree to
+
+22
+00:01:23,578 --> 00:01:27,111
+reach every other router.
+Let's work through an example, of
+
+23
+00:01:27,111 --> 00:01:29,966
+Dijkstra's algorithm, on this, topology
+here.
+
+24
+00:01:29,966 --> 00:01:34,814
+So this topology has, eight routers,
+connected by links, that are annotated
+
+25
+00:01:34,814 --> 00:01:39,927
+with the cost of using those links.
+And we're going to go through the example
+
+26
+00:01:39,927 --> 00:01:44,470
+of finding the lowest cost, spanning tree
+from R8 to every other router.
+
+27
+00:01:44,470 --> 00:01:48,111
+So let me just draw an example of what
+that might look like.
+
+28
+00:01:48,111 --> 00:01:53,268
+This won't actually be the, the right one.
+But, it will give us an example of how it
+
+29
+00:01:53,268 --> 00:01:56,727
+might, how it might look.
+So it's going to start from here.
+
+30
+00:01:56,727 --> 00:02:01,217
+And maybe go out this way, go out this
+way, go out this way, go out this way.
+
+31
+00:02:01,217 --> 00:02:04,494
+Maybe we're going to have this one, this
+one, and this one.
+
+32
+00:02:04,494 --> 00:02:08,741
+So that would be a spanning tree.
+It happens not to be the lowest cost
+
+33
+00:02:08,741 --> 00:02:12,018
+spanning tree.
+But, we're going to calculate that using
+
+34
+00:02:12,018 --> 00:02:17,455
+Dykstra's algorithm in a moment.
+So, I'm just going to draw out how this
+
+35
+00:02:17,455 --> 00:02:23,284
+will evolve, I'm just going to go through
+the steps and then take you through more
+
+36
+00:02:23,284 --> 00:02:28,817
+formal way of calculating it afterwards.
+So, let's start with R8, down at the
+
+37
+00:02:28,817 --> 00:02:33,759
+bottom right hand corner.
+In the first step of Dijkstra's algorithm,
+
+38
+00:02:33,759 --> 00:02:38,776
+we're going to add the router that has the
+lowest cost path back to R8.
+
+39
+00:02:38,776 --> 00:02:42,981
+And so, that's R7, because it has a path
+of one back to R8.
+
+40
+00:02:42,981 --> 00:02:46,754
+So, I'm going to draw that on here, R7,
+With a cost of one.
+
+41
+00:02:46,754 --> 00:02:52,211
+Next I'm going to look at the router that
+will directly connect to this tree, this
+
+42
+00:02:52,211 --> 00:02:56,137
+little fledgling tree with the lowest cost
+path back to R8.
+
+43
+00:02:56,137 --> 00:03:01,262
+I've got two choices, either R4, which
+will connect back with a cost of two, or
+
+44
+00:03:01,262 --> 00:03:06,386
+R6, that will connect with a cost of two
+So I'm just going to toss a coin and
+
+45
+00:03:06,386 --> 00:03:11,111
+randomly pick R6 It doesn't matter.
+So it's going to have a cost of two.
+
+46
+00:03:11,111 --> 00:03:16,568
+Next I am going to add the next router
+with the lowest cost path and that's going
+
+47
+00:03:16,568 --> 00:03:18,477
+to be R4 clearly.
+
+48
+00:03:18,477 --> 00:03:22,826
+And each time I've added a router, I'm not
+going to consider adding it again, of
+
+49
+00:03:22,826 --> 00:03:27,462
+course, 'cause I've already added it into
+the, this tree that is evolving in the
+
+50
+00:03:27,462 --> 00:03:29,980
+bottom right hand corner of the slide
+here.
+
+51
+00:03:29,980 --> 00:03:36,024
+Next, I'm going to add the one with I've
+added the ones with up to a cost of two.
+
+52
+00:03:36,024 --> 00:03:39,811
+So is there one with a cost of three?
+No, there isn't.
+
+53
+00:03:39,811 --> 00:03:44,690
+Is there one with a cost of four?
+Yeah, I've got two candidates here.
+
+54
+00:03:44,690 --> 00:03:47,748
+I've got both R3 and R5.
+Both will connect.
+
+55
+00:03:47,748 --> 00:03:52,409
+Okay well, I'll arbitrarily add R5 first.
+That has a cost of four.
+
+56
+00:03:52,409 --> 00:03:59,248
+Back to R8, and then I'll add R3.
+Do I have one with a cost of five?
+
+57
+00:03:59,248 --> 00:04:03,760
+Yes I do, I've got R2, that has a cost of
+five.
+
+58
+00:04:06,340 --> 00:04:09,244
+That adds, that's a cost of five back to
+R8.
+
+59
+00:04:09,244 --> 00:04:14,345
+Do I have one with a cost of six?
+Well, I've got two that are, have a cost
+
+60
+00:04:14,345 --> 00:04:17,604
+of six.
+But they're already connected into the
+
+61
+00:04:17,603 --> 00:04:20,012
+tree at a lower cost.
+So R3 and R4.
+
+62
+00:04:20,012 --> 00:04:23,910
+So I'm not goign to add those.
+They're already on the tree.
+
+63
+00:04:23,910 --> 00:04:28,373
+But I've also got R1.
+I can now count, add that one in at a cost
+
+64
+00:04:28,373 --> 00:04:30,298
+of six.
+So that's one, two, three, four, five,
+
+65
+00:04:30,298 --> 00:04:33,050
+six.
+I've now added them all, and I'm done.
+
+66
+00:04:33,050 --> 00:04:39,157
+Let's go through those steps, because
+basically the same steps that I just went
+
+67
+00:04:39,157 --> 00:04:42,508
+through, adding each of those routers in
+turn.
+
+68
+00:04:42,508 --> 00:04:46,530
+So first of all I added R6 because it has
+a cost of two.
+
+69
+00:04:46,530 --> 00:04:49,733
+Then I added R4 because it has a cost of
+two.
+
+70
+00:04:49,733 --> 00:04:55,542
+Then I added R5 because it has a cost of
+four and then also R3 it has a cost of
+
+71
+00:04:55,542 --> 00:04:58,968
+four.
+Then I added R2 and then finally I added
+
+72
+00:04:58,968 --> 00:05:00,532
+R1,
+And then I'm done.
+
+73
+00:05:00,532 --> 00:05:05,970
+We can think of this more systematically
+by following through this table.
+
+74
+00:05:05,970 --> 00:05:11,802
+So I want to populate this table as I go
+and then I will show you what it looks
+
+75
+00:05:11,802 --> 00:05:17,416
+like when fully populated afterwards.
+So this is just going to repeat exactly
+
+76
+00:05:17,416 --> 00:05:21,500
+what, the, the steps I just did.
+So, I start with at step zero.
+
+77
+00:05:22,160 --> 00:05:27,182
+The candidate set of all those routers
+that directly could connect to R8.
+
+78
+00:05:27,182 --> 00:05:33,137
+So my shortest path set is going to be the
+set of routers that are in the shortest
+
+79
+00:05:33,137 --> 00:05:36,652
+path tree.
+So I start with R8 in my shortest path
+
+80
+00:05:36,652 --> 00:05:42,535
+set, and the candidate set are those that
+connect to it, directly to it, directly to
+
+81
+00:05:42,535 --> 00:05:47,271
+the current fledgling sub-tree.
+So that's R3, R5, R6, and R7,
+
+82
+00:05:47,271 --> 00:05:52,547
+And I'm going to pick the one with the
+lowest cost path back to R8, in this case R7.
+
+83
+00:05:52,547 --> 00:05:57,971
+So I'm going to add R7 in first.
+So I have chosen R7 and in which case if
+
+84
+00:05:57,971 --> 00:06:02,578
+I've chosen R7, I'm going to add it into
+my shortest path set.
+
+85
+00:06:02,578 --> 00:06:06,219
+So my shortest path set is going to be R8
+and R7.
+
+86
+00:06:06,219 --> 00:06:12,090
+My candidate set of the set of routers
+that directly connect to this sub tree.
+
+87
+00:06:12,090 --> 00:06:17,838
+So the ones that directly connect are R3
+and R5, still of course because I haven't
+
+88
+00:06:17,838 --> 00:06:21,554
+used them yet.
+R6 because I haven't used that one yet.
+
+89
+00:06:21,554 --> 00:06:25,410
+I've used R7.
+So now R4 becomes added to the candidates
+
+90
+00:06:25,410 --> 00:06:28,565
+set.
+And I'll pick from that set the one with
+
+91
+00:06:28,565 --> 00:06:33,753
+the lowest cost path back to R8.
+That can either be R4 which has a cost of
+
+92
+00:06:33,753 --> 00:06:38,100
+two or it can be R6 and I'm just going to
+arbitrarily pick R6.
+
+93
+00:06:38,460 --> 00:06:46,247
+So now my shortest path set is going to be
+R8, I'm running out of space here but that
+
+94
+00:06:46,247 --> 00:06:52,040
+doesn't matter, and R6.
+And my candidate set is going be R3, R5.
+
+95
+00:06:52,040 --> 00:06:57,015
+I've used R6 it'll have R4 in it.
+Because I've added R6 well I'm adding no
+
+96
+00:06:57,015 --> 00:07:02,529
+more routers in now to my candidate set.
+So that's going to stay at the same thing
+
+97
+00:07:02,529 --> 00:07:05,958
+and so on.
+Eventually I will fill out the table until
+
+98
+00:07:05,958 --> 00:07:11,606
+the very last one that will add will be in
+I would choose R1 here and so at this
+
+99
+00:07:11,606 --> 00:07:16,783
+point I will add one into my shortest path
+set and then I'm going to be done.
+
+100
+00:07:16,783 --> 00:07:19,200
+Okay.
+I'm going to add one router at each step.
+
+101
+00:07:19,200 --> 00:07:23,310
+I'm going to add the router that is the
+lowest cost path and because that is its
+
+102
+00:07:23,310 --> 00:07:26,355
+lowest cost path we know the way we are
+done with that router.
+
+103
+00:07:26,355 --> 00:07:29,653
+Thers's nothing else left to do.
+So it's nice and simple, when we always
+
+104
+00:07:29,653 --> 00:07:33,459
+run the number of iterations equal to the
+number of routers in the network.
+
+105
+00:07:33,459 --> 00:07:36,910
+So if you fill out this table  you would
+find that it looks like this.
+
+106
+00:07:36,910 --> 00:07:40,727
+And, you can just check whether that
+matches what I did earlier.
+
+107
+00:07:40,727 --> 00:07:45,636
+So, if you run this algorithm and, we will
+give you some exercises where you run
+
+108
+00:07:45,636 --> 00:07:50,303
+through, and fill out tables like this.
+You see, on after few times you done it
+
+109
+00:07:50,303 --> 00:07:55,030
+that, oh yeah, of course, it is actually
+generating the full lowest cost minimum,
+
+110
+00:07:55,211 --> 00:07:59,349
+the lowest cost spanning tree.
+So, some questions worth asking about
+
+111
+00:07:59,349 --> 00:08:03,047
+Dijkstra's Algorithm.
+First one, how long does the algorithm
+
+112
+00:08:03,047 --> 00:08:05,742
+take to run?
+Well, it's a nice simple answer.
+
+113
+00:08:05,742 --> 00:08:09,941
+By the end of the Kth iteration, we've
+added K routers to the graph.
+
+114
+00:08:09,941 --> 00:08:14,893
+So if we have n routers to start with, it
+will always terminate after exactly n
+
+115
+00:08:14,893 --> 00:08:16,460
+iterations.
+Nice and easy.
+
+116
+00:08:17,420 --> 00:08:21,800
+What happens when link costs change, or
+when the routers or links fail?
+
+117
+00:08:21,800 --> 00:08:26,727
+Nice and easy again, every time there's a
+change in the link state, in other words,
+
+118
+00:08:26,727 --> 00:08:31,351
+every time a link goes up or down, the
+routers are going to flood that state to
+
+119
+00:08:31,351 --> 00:08:35,430
+every other router in the network.
+They then rerun Dijkstra's algorithm,
+
+120
+00:08:35,429 --> 00:08:39,951
+Calculate the lowest cost spanning tree
+out to every other router, and we're back
+
+121
+00:08:39,952 --> 00:08:43,023
+up and going again.
+In other words, every time there's a
+
+122
+00:08:43,023 --> 00:08:45,815
+change, we recalculate from scratch, and
+we move on.
+
+123
+00:08:45,815 --> 00:08:50,506
+So we don't have to worry about the, the
+cases like, bad news travels slowly, etc.,
+
+124
+00:08:50,506 --> 00:08:53,856
+that we have to worry about with the
+Bellman/Ford algorithm.
+
+125
+00:08:53,856 --> 00:08:58,100
+Because everything is recalculated from
+scratch every time there's a change.
+
+126
+00:08:58,840 --> 00:09:02,212
+So let's see how Dijkstra's algorithm is
+used in practice.
+
+127
+00:09:02,212 --> 00:09:05,876
+Dijkstra's algorithm is an example of a
+linked-state algorithm.
+
+128
+00:09:06,051 --> 00:09:09,424
+That means that the linked state is known
+by every router.
+
+129
+00:09:09,424 --> 00:09:14,192
+In other words, that it's flooded amongst
+the routers to make sure that all of the
+
+130
+00:09:14,192 --> 00:09:18,554
+routers know the entire topology and the
+state of the links in the network.
+
+131
+00:09:18,554 --> 00:09:23,090
+And then each router independently
+calculates the shortest path spanning tree
+
+132
+00:09:23,090 --> 00:09:25,940
+from itself to every other router in the
+network.
+
+133
+00:09:25,940 --> 00:09:30,639
+Dijkstra's algorithm is the basis of the
+OSPF or Open Shortest Path First
+
+134
+00:09:30,639 --> 00:09:34,703
+algorithm, a, a very widely used routing
+protocol in the Internet,
+
+135
+00:09:34,703 --> 00:09:37,370
+And we're going to see that in a later
+video.
+
+136
+00:09:37,370 --> 00:09:42,359
+There's another way of thinking about
+Dijkstra's algorithm, that I want to tell
+
+137
+00:09:42,359 --> 00:09:46,052
+you about, next.
+I first learned about this from Professor
+
+138
+00:09:46,052 --> 00:09:50,458
+Jean Walrand at Berkeley.
+And, it's a very nice way to think about
+
+139
+00:09:50,458 --> 00:09:54,152
+what's going on.
+So, take a look at this example here, with
+
+140
+00:09:54,152 --> 00:09:59,007
+a set of routers interconnected by,
+Links and the red numbers as before
+
+141
+00:09:59,007 --> 00:10:04,039
+represent the cost of each link.
+I am actually going to represent them by tennis
+
+142
+00:10:04,039 --> 00:10:09,789
+balls, the yellow routers and a white and
+pink ball representing the top and the
+
+143
+00:10:09,789 --> 00:10:13,312
+bottom, A and B.
+And we're going to calculate the lowest
+
+144
+00:10:13,312 --> 00:10:19,709
+cost spanning tree and by connecting it by
+strings between each ball where the length
+
+145
+00:10:19,709 --> 00:10:22,584
+of the string equals the cost shown in
+red.
+
+146
+00:10:22,584 --> 00:10:28,407
+So lets start with them down on the ground
+like this and then if we tug and pull them
+
+147
+00:10:28,407 --> 00:10:33,487
+by A, each link that goes to, or,
+each string that goes toward is going to
+
+148
+00:10:33,487 --> 00:10:38,420
+be on that lowest-cost spending tree from
+A through the network.
+
+149
+00:10:38,420 --> 00:10:42,906
+So eventually, we will end up with
+something that looks like this,
+
+150
+00:10:42,906 --> 00:10:48,566
+Where A is connected to B through R3 and
+R5 with a total cost of nine and all the
+
+151
+00:10:48,566 --> 00:10:52,570
+solid links here represent the strings
+that will be tight.
+
+152
+00:10:52,570 --> 00:10:56,758
+All the ones that are dotted, the two in
+the bottom left hand corner, will be, will
+
+153
+00:10:56,758 --> 00:11:00,430
+be slack or loose, because they're not on
+the lowest cost spanning tree.
+
+154
+00:11:00,430 --> 00:11:05,480
+I'm going to lift them up like this and,
+this is the same topology as before.
+
+155
+00:11:05,480 --> 00:11:11,234
+So A to R1 goes tight, then A to R2 and
+three and R1 goes tight because they're
+
+156
+00:11:11,234 --> 00:11:16,623
+all on the least cost spanning tree.
+Now A4 goes tight and then R5 because
+
+157
+00:11:16,623 --> 00:11:19,828
+they're all on the least cost spanning
+tree.
+
+158
+00:11:19,828 --> 00:11:25,655
+I lift it up further and eventually the
+line A, R3, R5, B will all go tight because
+
+159
+00:11:25,655 --> 00:11:28,860
+they're all on the least cost spanning
+tree.
+
+160
+00:11:29,980 --> 00:11:33,629
+And that's the end of the video about
+Dijkstra's algorithm.
+

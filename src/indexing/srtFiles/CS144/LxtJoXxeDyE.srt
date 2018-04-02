@@ -1,0 +1,477 @@
+1
+00:00:07,779 --> 00:00:12,690
+It’s a dangerous world out there. We want
+to keep our computer systems secure, but what
+
+2
+00:00:12,690 --> 00:00:17,640
+exactly does this mean? Every system and protocol
+is different, but when talking about security,
+
+3
+00:00:17,640 --> 00:00:24,640
+we generally talk about three properties:
+confidentiality, integrity, and availability.
+
+4
+00:00:26,869 --> 00:00:31,079
+Recall our threat model based on all of the
+attacks we’ve covered. An adversary can
+
+5
+00:00:31,079 --> 00:00:36,399
+snoop on all of your traffic, suppress any
+of your packets, replay packets, and even
+
+6
+00:00:36,399 --> 00:00:40,539
+generate new packets that seem to come from
+your host and/or application.
+
+7
+00:00:40,539 --> 00:00:46,420
+To defends against this, we’re going to
+use two approaches. The first, cryptography,
+
+8
+00:00:46,420 --> 00:00:50,439
+is a way to communicate securely end-to-end
+despite the fact that the network inbetween
+
+9
+00:00:50,440 --> 00:00:55,309
+is insecure. Cryptography literally means
+the study of codes. It’s a set of mathematical
+
+10
+00:00:55,309 --> 00:00:59,459
+tools focused on the idea of secrets and the
+computational difficulty of understanding
+
+11
+00:00:59,460 --> 00:01:03,710
+data without the secret. Using cryptography
+as a building block, it turns out that we
+
+12
+00:01:03,710 --> 00:01:08,350
+can actually build end-to-end secure communication
+despite the fact that the adversary might
+
+13
+00:01:08,350 --> 00:01:13,549
+control and own the entire network. By secure,
+I mean that the adversary can’t rewrite
+
+14
+00:01:13,549 --> 00:01:18,159
+our messages, generate new messages, or snoop
+on our messages.
+
+15
+00:01:18,159 --> 00:01:23,270
+The second approach is to prevent an adversary
+from blocking your messages. Even if two hosts
+
+16
+00:01:23,270 --> 00:01:27,950
+can communicate securely, an adversary could
+prevent them from communicating at all. The
+
+17
+00:01:27,950 --> 00:01:34,200
+general approach for this is to design systems
+to be scalable. Take, for example, DNS. The
+
+18
+00:01:34,200 --> 00:01:38,619
+fact that there are so many root servers,
+some of which are highly replicated, means
+
+19
+00:01:38,619 --> 00:01:43,000
+that it’s very hard to launch a denial of
+service against it. I’m not going to talk
+
+20
+00:01:43,000 --> 00:01:47,409
+much more about scalable system design -- it’s
+a complex topic worthy of a course in and
+
+21
+00:01:47,409 --> 00:01:52,630
+of itself. Instead, I’m going to focus on
+the networking part of the problem, secure
+
+22
+00:01:52,630 --> 00:01:55,469
+communication.
+
+23
+00:01:55,469 --> 00:02:02,149
+Cryptography is set of mathematical principles
+and ideas for securing communication. The
+
+24
+00:02:02,149 --> 00:02:06,380
+most important thing to know about cryptography
+is that it can be very subtle and details-oriented.
+
+25
+00:02:06,380 --> 00:02:12,170
+If there’s a single flaw in your system,
+then it’s not secure. So just taking cryptography
+
+26
+00:02:12,170 --> 00:02:19,170
+and applying it without care is unlikely to
+make your system secure. Instead of inventing
+
+27
+00:02:19,200 --> 00:02:26,120
+your new security system. it’s much, much
+safer to use existing, tested, well-understood
+
+28
+00:02:26,120 --> 00:02:31,349
+ones. It’s often the case that ideas from
+security are misused or misunderstood, such
+
+29
+00:02:31,349 --> 00:02:36,159
+as people thinking a message authentication
+code, a security primitive, has the same error
+
+30
+00:02:36,159 --> 00:02:43,159
+detection properties as a CRC.
+Cryptography can give us three valuable things.
+
+31
+00:02:43,620 --> 00:02:47,480
+The first is confidentiality. This is the
+ability to communicate with another party
+
+32
+00:02:47,480 --> 00:02:52,720
+privately, such that no-one else can read
+it. Cryptography provides confidentiality
+
+33
+00:02:52,720 --> 00:02:58,129
+through something called encryption.
+The second is integrity. This is the ability
+
+34
+00:02:58,129 --> 00:03:03,110
+to know if our message has been tampered with.
+There are many ways to provide integrity,
+
+35
+00:03:03,110 --> 00:03:08,980
+depending on the exact needs and the kind
+of cryptography used. The three basic mechanisms,
+
+36
+00:03:08,980 --> 00:03:15,980
+which future videos will cover in depth, are
+cryptographic hashes, cryptographic signatures,
+
+37
+00:03:16,269 --> 00:03:22,689
+and message authentication codes, or MACs.
+Finally, there is authenticity. This is the
+
+38
+00:03:22,689 --> 00:03:29,500
+ability for the party to prove they are who
+they say they are. The three basic mechanisms,
+
+39
+00:03:29,500 --> 00:03:34,129
+which future videos will cover in depth, are
+certificates, message authentication codes,
+
+40
+00:03:34,129 --> 00:03:36,579
+and cryptographic signatures.
+
+41
+00:03:36,579 --> 00:03:43,579
+Again, I can’t stress it enough! Cryptography
+can make your system secure, but only if you
+
+42
+00:03:45,920 --> 00:03:51,480
+use it carefully and correctly. It’s really
+easy to make a mistake! Don’t trust systems
+
+43
+00:03:51,480 --> 00:03:55,769
+that seem to have just tacked security on
+later and don’t think making a system secure
+
+44
+00:03:55,769 --> 00:03:58,140
+is easy.
+
+45
+00:03:58,140 --> 00:04:03,819
+The first property is confidentiality. The
+idea is that two parties should be able to
+
+46
+00:04:03,819 --> 00:04:08,599
+exchange information secretly, so no-one else
+can know what they’re sending even if they
+
+47
+00:04:08,599 --> 00:04:12,980
+can read the messages. This is really useful
+if you want to send your credit card number.
+
+48
+00:04:12,980 --> 00:04:18,890
+A crypto system that has perfect confidentiality
+is something called a one-time pad. The idea
+
+49
+00:04:18,890 --> 00:04:24,889
+is that you and I share a perfectly random
+key of zeros and ones. No-one else has this
+
+50
+00:04:24,889 --> 00:04:31,090
+key, this one time pad. To send you a message,
+I just XOR the message M with the key K, producing
+
+51
+00:04:31,090 --> 00:04:38,090
+a confidential message C. I then send C to
+you. To reconstruct M, you XOR C with K.
+
+52
+00:04:38,910 --> 00:04:45,910
+A one-time pad is perfectly secure. If the
+one-time pad is perfectly random, then given
+
+53
+00:04:46,360 --> 00:04:52,780
+any C, any M is equally likely. It’s also
+very fast: all you have to do is XOR.
+
+54
+00:04:52,780 --> 00:04:59,780
+But it’s not very practical. K has to be
+at least as long as M. If I want to exchange
+
+55
+00:05:00,490 --> 00:05:06,400
+100 megabytes with you, I need a 100 megabyte
+K. So in practice, cryptosystems that provide
+
+56
+00:05:06,400 --> 00:05:10,690
+confidentiality try to provide algorithms
+where we can exchange a much smaller K, say
+
+57
+00:05:10,690 --> 00:05:17,090
+128 bits, or 256 bits, such there are 2 to
+the 128, or 2 to the 256, possible confidential
+
+58
+00:05:17,090 --> 00:05:21,330
+messages, possible Cs.
+
+59
+00:05:21,330 --> 00:05:27,370
+The second property is integrity. Integrity
+is the ability to exchange messages and be
+
+60
+00:05:27,370 --> 00:05:32,440
+sure that they were not tampered with or changed.
+For example, when I download software, I want
+
+61
+00:05:32,440 --> 00:05:35,380
+to know that it’s the real version and not
+a hacked version that installs malware on
+
+62
+00:05:35,380 --> 00:05:39,319
+my machine.
+Some forms of integrity also allow you to
+
+63
+00:05:39,319 --> 00:05:43,610
+know that the other party sent the message.
+If the two of you share a secret key, then
+
+64
+00:05:43,610 --> 00:05:50,610
+there are forms of integrity which only someone
+with the secret key can perform correctly.
+
+65
+00:05:50,810 --> 00:05:56,889
+Two very common forms of integrity are cryptographic
+hashes and message authentication codes. Cryptographic
+
+66
+00:05:56,889 --> 00:06:01,220
+hashes are functions that turn arbitrary length
+data into a fixed length hash, just like a
+
+67
+00:06:01,220 --> 00:06:07,710
+normal hash function. But cryptographic hashes
+have the additional property that they are
+
+68
+00:06:07,710 --> 00:06:13,479
+*collision-resistant*. If I have a message
+x with hash H of x, then it’s intractable
+
+69
+00:06:13,479 --> 00:06:20,210
+to find a message y, different from x, which
+has the same hash. This means, for example,
+
+70
+00:06:20,210 --> 00:06:24,060
+if I know a cryptographic hash of a program
+I want to download, then it’s intractable
+
+71
+00:06:24,060 --> 00:06:28,330
+for someone to hack the software in a way
+that it has the same hash.
+
+72
+00:06:28,330 --> 00:06:33,130
+Message authentication codes, MACs, are like
+cryptographic hashes, except they use a key
+
+73
+00:06:33,130 --> 00:06:38,509
+K to both generate and check the MAC. Anyone
+can generate a cryptographic hash, but only
+
+74
+00:06:38,509 --> 00:06:43,940
+someone with K can compute the correct MAC.
+With a MAC, it’s intractable to generate
+
+75
+00:06:43,940 --> 00:06:49,690
+the correct MAC of a message unless you have
+the key K. So if we’ve exchange K beforehand,
+
+76
+00:06:49,690 --> 00:06:53,889
+and I receive a message with a correct MAC,
+then I know that nobody tampered with the
+
+77
+00:06:53,889 --> 00:06:56,430
+message and you generated the MAC.
+
+78
+00:06:56,430 --> 00:07:01,460
+Finally, there’s authenticity. This is the
+ability to verify someone is who they say
+
+79
+00:07:01,460 --> 00:07:07,080
+they are. For example, you receive a message
+supposedly from the provost and want to be
+
+80
+00:07:07,080 --> 00:07:11,930
+sure the provost actually sent it. If you
+and the provost have exchanged a secret key
+
+81
+00:07:11,930 --> 00:07:16,870
+before hand, you can do this with message
+authentication codes. If you receive a message
+
+82
+00:07:16,870 --> 00:07:21,580
+that has a correct MAC computed with the secret
+you’ve shared with the provost, I know that
+
+83
+00:07:21,580 --> 00:07:27,449
+the provost sent it. If you don’t have a
+secret, then you can use a chain of trust.
+
+84
+00:07:27,449 --> 00:07:32,430
+If weyou trust one party, then that party
+can vouch for someone else. This second party
+
+85
+00:07:32,430 --> 00:07:38,610
+can then vouch for a third party and so on.
+So, for example, suppose we have some information
+
+86
+00:07:38,610 --> 00:07:44,560
+that lets us check Verisign’s authenticity.
+Verisign can then vouch for Stanford, and
+
+87
+00:07:44,560 --> 00:07:47,990
+Stanford can vouch for the provost.
+
+88
+00:07:47,990 --> 00:07:54,990
+Finally, there’s how you design computer
+systems for high availability, so they are
+
+89
+00:07:55,259 --> 00:07:59,430
+resistant to denial of service and distributed
+denial of service attacks. There are tons
+
+90
+00:07:59,430 --> 00:08:03,199
+of kinds of attacks out there: replication
+attacks, resource use attacks, ping attacks,
+
+91
+00:08:03,199 --> 00:08:08,259
+botnets attacks. Generally speaking, you can
+either scale out your system so it distributes
+
+92
+00:08:08,259 --> 00:08:13,120
+the load and can handle it, or at some point
+you can filter the traffic upstream. For example,
+
+93
+00:08:13,120 --> 00:08:17,360
+if someone is DDoSing your cable modem, you
+could possibly contact your ISP to filter
+
+94
+00:08:17,360 --> 00:08:18,360
+out traffic coming at it.
+
+95
+00:08:18,360 --> 00:08:18,610
+So the three things that cryptography can
+provide are confidentiality, integrity, and
+
+96
+00:08:18,360 --> 00:08:18,610
+authenticity. But once more: cryptography
+can make your system secure, but only if you
+
+97
+00:08:18,370 --> 00:08:18,620
+use it carefully and correctly. Be careful!
+

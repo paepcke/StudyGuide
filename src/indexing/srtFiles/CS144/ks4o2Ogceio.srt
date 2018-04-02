@@ -1,0 +1,10 @@
+1
+00:00:01,010 --> 00:00:06,710
+Here’s a quiz. For each number, mark whether
+the hexidecimal representation is big endian
+
+2
+00:00:06,710 --> 00:00:09,589
+or little endian. Don’t use a calculator
+or other tool!
+

@@ -1,0 +1,30 @@
+1
+00:00:01,100 --> 00:00:08,090
+The answer is yes. If an eavesdropper named
+Eve hears both C1 and C2, she can reconstruct
+
+2
+00:00:08,090 --> 00:00:15,090
+M1 XOR M2. If M1 and M2 are ASCII text messages,
+this could provide a lot of information. Since
+
+3
+00:00:16,680 --> 00:00:23,680
+C1 XOR C2 is equal to M1 XOR K XOR M2 XOR
+K, the two Ks cancel. This means that C1 XOR
+
+4
+00:00:26,050 --> 00:00:32,439
+C2 is equal to M1 XOR M2.
+As a trivial example, if it happens to be
+
+5
+00:00:32,439 --> 00:00:37,530
+that M1 is equal to M2, then Eve can figure
+this out, since C1 and C2 will be the same.
+
+6
+00:00:37,530 --> 00:00:42,759
+There’s a reason why it’s called a one-time
+pad! Only use it once.
+

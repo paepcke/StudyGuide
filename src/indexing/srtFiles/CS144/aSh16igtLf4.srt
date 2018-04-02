@@ -1,0 +1,414 @@
+1
+00:00:01,270 --> 00:00:06,720
+Public key cryptography is a critical part
+of many secure systems today. It’s different
+
+2
+00:00:06,720 --> 00:00:09,920
+than symmetric cryptography in that there’s
+what’s called a “public” key, a key
+
+3
+00:00:09,920 --> 00:00:14,490
+that doesn’t have to be secret. You can
+distribute this public key freely and still
+
+4
+00:00:14,490 --> 00:00:16,520
+communicate securely.
+
+5
+00:00:16,520 --> 00:00:23,520
+So how does that work? Like symmetric cryptography,
+public key ciphers have three algorithms,
+
+6
+00:00:23,780 --> 00:00:30,770
+one to generate keys, one to encrypt, and
+one to decrypt. But they differ it two major
+
+7
+00:00:30,770 --> 00:00:37,160
+ways. First, the generate algorithm generates
+*two* keys, a public key K and a private key
+
+8
+00:00:37,160 --> 00:00:43,560
+K- inverse. To encrypt, you pass the public
+key and a plaintext to obtain a ciphertext.
+
+9
+00:00:43,560 --> 00:00:50,560
+To decrypt, you pass the private key and the
+ciphertext to obtain the plaintext. Therefore,
+
+10
+00:00:50,579 --> 00:00:55,670
+if you generate the keys, you can give out
+the public key freely, hence its name, and
+
+11
+00:00:55,670 --> 00:00:59,730
+know that only someone with the private key
+and decrypt something sent with the public
+
+12
+00:00:59,730 --> 00:01:04,399
+key.
+Because the public key is reused many times,
+
+13
+00:01:04,399 --> 00:01:09,170
+this means the encryption process has to include
+randomization. Otherwise, two parties that
+
+14
+00:01:09,170 --> 00:01:12,899
+send the same message will produce the same
+ciphertext. If you’re dealing with small
+
+15
+00:01:12,899 --> 00:01:18,539
+messages, and adversary could just exhaustively
+try all of the messages. So, for example,
+
+16
+00:01:18,539 --> 00:01:22,319
+you can prepend some random data to the plaintext
+to generate the ciphertext.
+
+17
+00:01:22,319 --> 00:01:29,319
+So this is kind of magic: you can generate
+two keys, one public, one private. People
+
+18
+00:01:29,539 --> 00:01:34,670
+with the public key can then send data only
+someone with the private key can decrypt.
+
+19
+00:01:34,670 --> 00:01:38,359
+If each side had the other’s public key,
+we wouldn’t need symmetric cryptography
+
+20
+00:01:38,359 --> 00:01:44,329
+at all! It turns out that’s not the case,
+as I’ll explain in a little bit. Public
+
+21
+00:01:44,329 --> 00:01:48,679
+key cryptography is much, much computationally
+expensive than symmetric cryptography. So
+
+22
+00:01:48,679 --> 00:01:53,990
+we can’t just use it all the time.
+
+23
+00:01:53,990 --> 00:02:00,289
+You can use public key cryptography for integrity
+as well, using something called a signature.
+
+24
+00:02:00,289 --> 00:02:06,479
+Again, we have three functions: generate,
+which generates a pair of keys, sign, which
+
+25
+00:02:06,479 --> 00:02:12,700
+takes the private key, and verify, which takes
+the public key. A signature provides integrity
+
+26
+00:02:12,700 --> 00:02:18,850
+like a MAC. You can’t produce a valid signature
+for a message m without the private key, but
+
+27
+00:02:18,850 --> 00:02:24,900
+anyone can verify it with the public key.
+Furthermore, you can’t derive the public
+
+28
+00:02:24,900 --> 00:02:30,540
+key from the private one.
+
+29
+00:02:30,540 --> 00:02:35,490
+There are a lot of public key algorithms out
+there. For encryption, we have RSA, Rabin,
+
+30
+00:02:35,490 --> 00:02:40,090
+and ElGamal. For signatures, we have RSA,
+Rabin, ElGamal, and DSA.
+
+31
+00:02:40,090 --> 00:02:45,930
+But public key algorithms work differently
+than symmetric ones. The basic idea behind
+
+32
+00:02:45,930 --> 00:02:52,930
+RSA, for example, is really simple: modular
+exponentiation of large integers. However,
+
+33
+00:02:52,930 --> 00:02:58,360
+simple transformations of a message to a number
+is not secure. So you have to be careful in
+
+34
+00:02:58,360 --> 00:03:03,890
+how you use them. I gave one example of that
+earlier, how you have to add randomness. So,
+
+35
+00:03:03,890 --> 00:03:08,050
+generally speaking, it’s good to use existing,
+tested implementations of these algorithms
+
+36
+00:03:08,050 --> 00:03:12,280
+rather than try to re-implement them yourself.
+Or you can re-implement them, but then don’t
+
+37
+00:03:12,280 --> 00:03:17,660
+use your implementation in a secure system.
+For many of these algorithms, you can use
+
+38
+00:03:17,660 --> 00:03:23,840
+the same key for encryption and signing. While
+they use the same key, though, they use different
+
+39
+00:03:23,840 --> 00:03:28,660
+algorithms. You can’t, for example, sign
+a document by “encrypting” it with the
+
+40
+00:03:28,660 --> 00:03:29,420
+private key.
+
+41
+00:03:29,420 --> 00:03:33,300
+I’m not going to go into all of the details,
+but I want to give you a sense of how one
+
+42
+00:03:33,300 --> 00:03:38,710
+very famous of these algorithms, RSA, works.
+RSA is named for its co-creators, Rivest,
+
+43
+00:03:38,710 --> 00:03:43,560
+Shamir, and Adleman. They won a Turing award,
+the highest award in computing, for it. I’m
+
+44
+00:03:43,560 --> 00:03:47,120
+presenting RSA because conceptually it’s
+very simple.
+
+45
+00:03:47,120 --> 00:03:54,120
+To generate RSA keys, you choose to distinct,
+very large, prime numbers p and q. From p
+
+46
+00:03:56,180 --> 00:04:03,180
+and q you compute their product, n. You then
+use p and q to derive K and K-inverse.
+
+47
+00:04:07,230 --> 00:04:14,230
+You advertise n and K as the public key. To
+encrypt a message, you consider the message
+
+48
+00:04:14,790 --> 00:04:20,999
+M as a large number and raise it to the K
+power, then take it modulo n. You send that
+
+49
+00:04:20,999 --> 00:04:27,330
+ciphertext number.
+To decrypt, you consider the ciphertext message
+
+50
+00:04:27,330 --> 00:04:34,330
+M as a large number and raise it to the K-inverse
+power, then take it modulo n. It turns out
+
+51
+00:04:35,930 --> 00:04:39,819
+that if you do this, you will recover the
+original plaintext message.
+
+52
+00:04:39,819 --> 00:04:46,650
+So you derive K and K-inverse from p and q.
+If an adversary learns p and q, then they
+
+53
+00:04:46,650 --> 00:04:53,490
+can generate the private key and break the
+system. You can’t derive p and q from K.
+
+54
+00:04:53,490 --> 00:04:59,389
+It turns out you also can’t derive p and
+q from n. N is the product of two primes.
+
+55
+00:04:59,389 --> 00:05:04,569
+Factoring n into p and q turns out to be computationally
+hard. If someone figured out how to do it
+
+56
+00:05:04,569 --> 00:05:09,569
+quickly, all of RSA crashes down. As you can
+imagine, a lot of people have put a huge amount
+
+57
+00:05:09,569 --> 00:05:13,689
+of effort into understanding how hard it is
+to factor a product of two prime numbers.
+
+58
+00:05:13,689 --> 00:05:18,580
+For those of you who know a bit about computational
+complexity, we know that the problem is in
+
+59
+00:05:18,580 --> 00:05:24,180
+the computational class NP, it’s suspected
+to be outside the class P, but it’s suspected
+
+60
+00:05:24,180 --> 00:05:29,430
+to not be NP- complete. So that means our
+best guess is that you can’t do it in polynomial
+
+61
+00:05:29,430 --> 00:05:35,449
+time, but it’s not as hard as the hardest
+problems in NP, like traveling salesman.
+
+62
+00:05:35,449 --> 00:05:40,430
+So public key cryptography seems pretty amazing.
+You can generate two keys, distribute one
+
+63
+00:05:40,430 --> 00:05:46,749
+publicly, and then have confidentiality, integrity,
+and authenticity. Why do we use symmetric
+
+64
+00:05:46,749 --> 00:05:48,889
+cryptography at all?
+
+65
+00:05:48,889 --> 00:05:55,889
+There is, of course, a catch. Public key cryptography
+is much, much slower than symmetric ciphers.
+
+66
+00:05:57,999 --> 00:06:02,800
+We can do symmetric crypto at line rate. Public
+key systems, though, have execution times
+
+67
+00:06:02,800 --> 00:06:09,639
+in milliseconds. For example, if you run RSA
+with a 2048-bit key,it takes nearly 6 milliseconds
+
+68
+00:06:09,639 --> 00:06:14,499
+to decrypt a message. And remember, the party
+who has the private key does the decrypting.
+
+69
+00:06:14,499 --> 00:06:18,620
+So if you distribute your public key widely
+so lots of other parties can communicate with
+
+70
+00:06:18,620 --> 00:06:22,559
+you, you’re the bottleneck on how many messages
+can be handled.
+
+71
+00:06:22,559 --> 00:06:29,419
+So this is why hybrid schemes are very popular
+today. The idea is that you start with public
+
+72
+00:06:29,419 --> 00:06:34,430
+key cryptography, and use it to encrypt a
+symmetric key. Or you use it to exchange some
+
+73
+00:06:34,430 --> 00:06:39,330
+information, a secret session key, that you
+use to generate symmetric keys. You bootstrap
+
+74
+00:06:39,330 --> 00:06:44,680
+the secure session with public key cryptography
+to exchange a secret, then use that secret
+
+75
+00:06:44,680 --> 00:06:49,339
+for much more efficient symmetric cryptography.
+If you want to see a detailed example of this,
+
+76
+00:06:49,339 --> 00:06:55,279
+I’ll cover one in the TLS video.
+Now, one big pitfall people often run into
+
+77
+00:06:55,279 --> 00:07:00,789
+with public key cryptography is signing an
+underspecified message. For example, if I
+
+78
+00:07:00,789 --> 00:07:07,460
+sign a message, I should specify whom the
+message is for. And give it a lifetime. Otherwise,
+
+79
+00:07:07,460 --> 00:07:11,550
+someone can simply replay the message. Since
+my public key doesn’t change very often,
+
+80
+00:07:11,550 --> 00:07:16,559
+a signed message is valid as long as people
+are using my public key. By valid, I mean
+
+81
+00:07:16,559 --> 00:07:21,960
+it will properly pass the verify function.
+So you want to limit its use at the application
+
+82
+00:07:21,960 --> 00:07:26,499
+level. Otherwise a signed message saying “You
+can access this file” could be taken by
+
+83
+00:07:26,499 --> 00:07:32,089
+an adversary and used. Instead, you should
+say “Nick can access this file until noon
+
+84
+00:07:32,089 --> 00:07:33,199
+on Halloween.”
+

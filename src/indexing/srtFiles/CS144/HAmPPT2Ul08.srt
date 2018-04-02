@@ -1,0 +1,1004 @@
+1
+00:00:00,000 --> 00:00:04,787
+Continuing on a theme of routing, by now,
+you've learned about the basics of
+
+2
+00:00:04,787 --> 00:00:09,831
+routing, distance vector and link state
+algorithms and how routing works in the
+
+3
+00:00:09,831 --> 00:00:13,023
+internet.
+The structure of the internet autonomous
+
+4
+00:00:13,023 --> 00:00:17,938
+systems, the hierarchy of those autonomous
+systems, exterior routing protocols,
+
+5
+00:00:17,938 --> 00:00:22,152
+interior routing protocols.
+So, in this video, I'm going to tell you
+
+6
+00:00:22,152 --> 00:00:27,131
+about the specific exterior routing
+protocol but all autonomous system must be
+
+7
+00:00:27,131 --> 00:00:32,435
+used when connecting to their neighbors.
+That's BGP or the border gateway protocol
+
+8
+00:00:32,435 --> 00:00:39,308
+currently in version four.
+Okay, lets start with the basics of BGP4.
+
+9
+00:00:39,620 --> 00:00:43,957
+BGP is not a link state or a distance
+vector routing protocol.
+
+10
+00:00:44,167 --> 00:00:47,945
+Instead, it's used, it uses what's called
+a path vector.
+
+11
+00:00:47,945 --> 00:00:53,891
+And the way this works is that the BGP
+routers at the boundary of each autonomous
+
+12
+00:00:53,891 --> 00:00:59,418
+system will advertise a complete path.
+And that path has a list of AS's that you
+
+13
+00:00:59,418 --> 00:01:03,825
+passed through in order to reach a
+particular destination prefix.
+
+14
+00:01:03,825 --> 00:01:08,443
+This is also called the AS path.
+And that's the, the path vector.
+
+15
+00:01:08,443 --> 00:01:12,780
+So, an example of a advertisement might
+look like this.
+
+16
+00:01:12,780 --> 00:01:16,471
+Says the, the network prefix 171.64/16 can
+
+17
+00:01:16,471 --> 00:01:22,328
+be reached via the path going through
+these three AS's, one, five, and thirteen.
+
+18
+00:01:22,328 --> 00:01:28,339
+So that might be an, an example of
+advertisement that, that, the BGP might
+
+19
+00:01:28,339 --> 00:01:34,811
+advertise to one of its neighbors.
+The consequence of sending out a path, is
+
+20
+00:01:34,811 --> 00:01:38,663
+that paths with loops are very easily
+detected locally.
+
+21
+00:01:38,663 --> 00:01:44,476
+You just look for repetition of an AS and
+then you can simply remove those, or just
+
+22
+00:01:44,476 --> 00:01:49,939
+completely ignore those advertisements.
+And that, that makes it very easy to find
+
+23
+00:01:49,939 --> 00:01:53,748
+and eliminate loops.
+But perhaps the most important feature of
+
+24
+00:01:53,748 --> 00:01:58,633
+BGP is that local policies that are
+private and secret to a particular
+
+25
+00:01:58,633 --> 00:02:04,207
+autonomous system, can pick the preferred
+path among those that are advertised to
+
+26
+00:02:04,207 --> 00:02:07,235
+it.
+So, if a number of neighboring autonomous
+
+27
+00:02:07,235 --> 00:02:13,153
+systems advertise different paths to reach
+the same prefix, then the local policy can
+
+28
+00:02:13,153 --> 00:02:16,800
+pick whichever one it chooses, whichever
+one it wants.
+
+29
+00:02:16,800 --> 00:02:20,860
+It's not accountable to anyone else when
+it's picking that.
+
+30
+00:02:20,860 --> 00:02:25,914
+Finally, when a link or a router fails,
+the path is withdrawn just like an
+
+31
+00:02:25,914 --> 00:02:29,860
+advertisement comes with it's just like
+the one above.
+
+32
+00:02:29,860 --> 00:02:35,399
+A withdraw would look very similar, in
+which it would say, this particular prefix
+
+33
+00:02:35,399 --> 00:02:41,593
+can no longer be reached via this path.
+So, BGP4 starts with a relationship
+
+34
+00:02:41,593 --> 00:02:47,681
+between customers and providers.
+Let's take a look at this.
+
+35
+00:02:48,480 --> 00:02:53,297
+So, let's start with drawing a particular
+AS.
+
+36
+00:02:53,297 --> 00:03:00,472
+This would be the provider AS.
+The one that's the, the one sitting above
+
+37
+00:03:00,472 --> 00:03:06,520
+in the, in the hierarchy.
+And then the customer AS sitting below.
+
+38
+00:03:06,520 --> 00:03:15,437
+The relationship between them is although
+traffic can flow to or from the customer
+
+39
+00:03:15,437 --> 00:03:21,396
+through the provider in either direction
+and may go off through multiple exit
+
+40
+00:03:21,396 --> 00:03:24,400
+points,
+Because of this specific relationship
+
+41
+00:03:24,400 --> 00:03:30,346
+between them, and that relationship is one
+of provider to customer.
+
+42
+00:03:30,571 --> 00:03:36,361
+It has specific implications.
+And one of them is that the customer will
+
+43
+00:03:36,361 --> 00:03:39,744
+always pay the provider to carry its
+packets.
+
+44
+00:03:39,744 --> 00:03:43,203
+So, if we're thinking of, of how money
+flows,
+
+45
+00:03:43,203 --> 00:03:46,436
+Money is flowing up in this direction
+here.
+
+46
+00:03:46,436 --> 00:03:52,000
+The customer is praying, paying the
+provider in order to carry its packets.
+
+47
+00:03:52,420 --> 00:03:56,902
+So, this hierarchy of customers to
+providers continues.
+
+48
+00:03:56,902 --> 00:04:03,709
+And so, if we have multiple AS's, so let's
+draw some AS's here and some down here.
+
+49
+00:04:03,709 --> 00:04:07,777
+These could be the axis AS's that we saw
+before.
+
+50
+00:04:07,777 --> 00:04:14,334
+Then this relationship between them, of
+provider towards customer, could go like
+
+51
+00:04:14,334 --> 00:04:18,665
+this.
+And what that tells us is that the that
+
+52
+00:04:18,665 --> 00:04:22,672
+the,
+As before, the money is actually flowing
+
+53
+00:04:22,672 --> 00:04:28,046
+in the other direction, for settlement
+charges between them.
+
+54
+00:04:28,046 --> 00:04:34,056
+And IP traffic can go in the following in
+the following way.
+
+55
+00:04:34,056 --> 00:04:41,159
+So, IP traffic could flow from a from a
+customer up to its provider, up to its
+
+56
+00:04:41,159 --> 00:04:47,990
+provider down through its customer and
+down through its customer down here.
+
+57
+00:04:47,990 --> 00:04:54,874
+Similarly, a something from here, traffic
+from here could flow through this way. If
+
+58
+00:04:54,874 --> 00:05:00,284
+there was another, there was another
+relationship, for example, this
+
+59
+00:05:00,284 --> 00:05:07,414
+particular, this particular one access AS
+down here had relationships with providers
+
+60
+00:05:07,414 --> 00:05:13,169
+above it in two places,
+Traffic is allowed to flow through any of
+
+61
+00:05:13,169 --> 00:05:18,799
+these any of these paths.
+So, it could flow down this way or down
+
+62
+00:05:18,799 --> 00:05:20,480
+this way.
+In general,
+
+63
+00:05:20,800 --> 00:05:26,915
+They will not flow through a an, an
+intermediate at the same level.
+
+64
+00:05:26,915 --> 00:05:32,500
+And we'll see an example of that of that a
+little bit later.
+
+65
+00:05:32,500 --> 00:05:35,892
+So, this,
+The reason for telling about this customer
+
+66
+00:05:35,892 --> 00:05:41,080
+provider hierarchy is we're going to see
+it show up a little bit later in the
+
+67
+00:05:41,080 --> 00:05:45,680
+policies that BGP uses.
+And basically, the peering relationship is
+
+68
+00:05:45,680 --> 00:05:49,481
+as follows.
+So, looking at this example here, where we
+
+69
+00:05:49,481 --> 00:05:54,744
+have, just as before, we have three AS's
+here, here and here, which are the
+
+70
+00:05:54,744 --> 00:06:00,519
+providers and then three down here, that
+are the customers of those and, and the
+
+71
+00:06:00,519 --> 00:06:05,124
+key here is telling us what the provided
+customer relationship.
+
+72
+00:06:05,124 --> 00:06:08,560
+And these ones up here are peers of each
+other.
+
+73
+00:06:08,560 --> 00:06:13,637
+So, in general, a peer cannot be a transit
+for its other peers.
+
+74
+00:06:13,637 --> 00:06:19,534
+In other words, this particular path
+that's shown here, the black-dotted line
+
+75
+00:06:19,534 --> 00:06:24,939
+is not allowed because it's going through
+this one, this, this peer.
+
+76
+00:06:24,939 --> 00:06:31,818
+That's because typically, the relationship
+here between two peers is settlement free.
+
+77
+00:06:31,818 --> 00:06:38,288
+There's no dollars flowing across here.
+So, peers do not provide transit between
+
+78
+00:06:38,288 --> 00:06:40,996
+peers.
+Now, let's take a look at BGP messages,
+
+79
+00:06:40,996 --> 00:06:44,261
+and then we'll look at the policies that
+BGP implements.
+
+80
+00:06:44,261 --> 00:06:47,119
+So, there are basically four types of BGP
+message.
+
+81
+00:06:47,119 --> 00:06:50,093
+There's an open message to establish a BGP
+session.
+
+82
+00:06:50,093 --> 00:06:54,409
+There's a keep alive, in order to provide
+a handshake at regular intervals.
+
+83
+00:06:54,409 --> 00:06:59,191
+That's just basically an occasional
+message just to be able to check that the
+
+84
+00:06:59,191 --> 00:07:03,857
+BGP session is still alive between two
+routers that are connected to each other.
+
+85
+00:07:03,857 --> 00:07:07,239
+And there's a notification to shut down a
+peering session.
+
+86
+00:07:07,239 --> 00:07:11,963
+So, these three here, open, keep alive and
+notification, are basically the ones that
+
+87
+00:07:11,963 --> 00:07:16,701
+keep the session alive.
+The ones that actually announce and then
+
+88
+00:07:16,701 --> 00:07:22,018
+withdraw routes are the update messages.
+And these are the, the most important
+
+89
+00:07:22,018 --> 00:07:25,208
+ones.
+They announce new routes or they withdraw
+
+90
+00:07:25,208 --> 00:07:30,458
+ones that were previously announced.
+And these are the, the, the, the, the, we
+
+91
+00:07:30,458 --> 00:07:35,974
+saw an example of that earlier with the
+advertisement of the particular path for a
+
+92
+00:07:35,974 --> 00:07:40,500
+prefix.
+An announcement basically consists of the
+
+93
+00:07:40,500 --> 00:07:43,991
+pre, the prefix and then the path
+attributes.
+
+94
+00:07:43,991 --> 00:07:49,411
+So, it'll be the path of the AS's and then
+attributes associated with it and we'll
+
+95
+00:07:49,411 --> 00:07:54,057
+see an example of that now.
+So, the path at attributes are the next
+
+96
+00:07:54,057 --> 00:07:59,548
+hop information where you go in order to
+be able to use this otherwise, who it is
+
+97
+00:07:59,548 --> 00:08:03,349
+that's advertising this, this particular
+path to S,
+
+98
+00:08:03,349 --> 00:08:08,136
+The particular path AS path.
+So, that's the sequence of AS's that you
+
+99
+00:08:08,136 --> 00:08:14,260
+would go through. And then various other
+things the local preference and the multi-exit
+
+100
+00:08:14,260 --> 00:08:19,041
+discriminator and there,
+There is other parameters that are passed
+
+101
+00:08:19,041 --> 00:08:25,073
+as well, that tell us information that
+would allow us to pick the pick the, the
+
+102
+00:08:25,073 --> 00:08:30,880
+particular path when we receive multiple
+advertisements from different peers.
+
+103
+00:08:30,880 --> 00:08:35,760
+So, these are used to select amongst
+multiple options for paths because we may
+
+104
+00:08:35,760 --> 00:08:40,388
+hear from multiple peers of how to reach a
+particular destination prefix.
+
+105
+00:08:40,388 --> 00:08:46,619
+And basically, when we have a choice,
+The, the, the sequence goes something like
+
+106
+00:08:46,619 --> 00:08:47,390
+this.
+So,
+
+107
+00:08:47,390 --> 00:08:50,787
+We start with the, the highest local
+preference.
+
+108
+00:08:50,991 --> 00:08:56,494
+This is the highest local preference,
+we'll see an example of that in a moment.
+
+109
+00:08:56,494 --> 00:09:02,542
+It's a local preference that tells us how
+we enforce relationships we might prefer
+
+110
+00:09:02,542 --> 00:09:07,910
+customer routes over peer routes and we'll
+see an example of that in, in a moment.
+
+111
+00:09:07,910 --> 00:09:11,597
+If the local preference, which is
+essentially our local policy,
+
+112
+00:09:11,597 --> 00:09:16,295
+If that doesn't tell us which particular
+path to pick when we have some choice,
+
+113
+00:09:16,295 --> 00:09:20,058
+The next one is we'll simply pick the
+shortest autonomous system path.
+
+114
+00:09:20,058 --> 00:09:22,620
+You know, it's the shortest path to a
+destination.
+
+115
+00:09:22,620 --> 00:09:26,892
+And then, there are various other
+parameters that we might pick, they're all
+
+116
+00:09:26,892 --> 00:09:29,739
+to do with helping us do good traffic
+engineering.
+
+117
+00:09:29,739 --> 00:09:34,296
+What this means is that we will tend to
+send traffic over, over lightly loaded
+
+118
+00:09:34,296 --> 00:09:37,599
+paths and will cause less congestion in
+the network.
+
+119
+00:09:37,599 --> 00:09:40,788
+But the ones that we most, are most
+interested, interested in are highest
+
+120
+00:09:40,788 --> 00:09:45,914
+local preference and the shortest AS path.
+If all of these fail to distinguish or
+
+121
+00:09:45,914 --> 00:09:50,641
+identify a particular path that we should
+choose, then we simply go with the lowest
+
+122
+00:09:50,641 --> 00:09:53,090
+router ID.
+In other words, that's the lowest.
+
+123
+00:09:53,090 --> 00:09:58,520
+Router ID of one of our neighbors and that
+is essentially throwing up our hands in a
+
+124
+00:09:58,520 --> 00:10:02,946
+means of breaking ties if there is no
+other way to pick between advertised
+
+125
+00:10:02,946 --> 00:10:07,097
+routes.
+Let's take a look at how the autonomous
+
+126
+00:10:07,097 --> 00:10:10,782
+system path, the AS path attribute might
+work.
+
+127
+00:10:10,782 --> 00:10:17,087
+So, we'll look at an example of how we
+might pick the, the, the shortest, the
+
+128
+00:10:17,087 --> 00:10:21,345
+shortest path.
+So, let's say, that we are sitting over
+
+129
+00:10:21,345 --> 00:10:25,276
+here, at this particular autonomous system
+here.
+
+130
+00:10:25,276 --> 00:10:30,107
+And we're hearing about a prefix that
+originated down here.
+
+131
+00:10:30,107 --> 00:10:32,810
+Here's the prefix,
+135.207.0.0/16.
+
+132
+00:10:32,810 --> 00:10:43,461
+And it originated from here and so it will
+initially be advertised up here and then
+
+133
+00:10:43,461 --> 00:10:52,154
+it will be advertised up here.
+When it gets advertised here, it will say,
+
+134
+00:10:52,154 --> 00:10:58,520
+you can reach this particular prefix
+135.207.0.0/16.
+
+135
+00:10:58,520 --> 00:11:04,030
+You can reach it via AS7018 followed by
+6341.
+
+136
+00:11:04,030 --> 00:11:11,373
+And then, that will flow around here and
+then they have added one AS to the path
+
+137
+00:11:11,373 --> 00:11:17,615
+and so it gets advertised here.
+So, by the time it comes down here, we
+
+138
+00:11:17,615 --> 00:11:23,950
+will find out that the prefix 135.207/16
+can be reached through 1129,
+
+139
+00:11:23,950 --> 00:11:33,502
+1755, and so on until we get to 7018.
+And likewise there'll be an advertisement
+
+140
+00:11:33,502 --> 00:11:43,055
+that will come around this path that will
+say, hey, I can get you to 135.207/16
+
+141
+00:11:43,055 --> 00:11:50,470
+through the sequence 7018,3549, so it's
+over all a much shorter path.
+
+142
+00:11:50,470 --> 00:11:55,426
+So, in this particular case,
+If I haven't got a higher local
+
+143
+00:11:55,426 --> 00:12:00,947
+preference, then the, the router will say,
+this is the shorter path and so I will
+
+144
+00:12:00,947 --> 00:12:06,469
+pick as my favorite to send packets this
+way in order to reach this particular
+
+145
+00:12:06,469 --> 00:12:09,544
+prefix.
+And so, it will install that decision
+
+146
+00:12:09,544 --> 00:12:14,786
+locally in its routers that says, when I
+see this, a packet with this prefix, then
+
+147
+00:12:14,786 --> 00:12:18,840
+I'm going to send it out this direction,
+and that's my choice.
+
+148
+00:12:19,240 --> 00:12:24,141
+There could be many, many choices so let's
+look at an example here.
+
+149
+00:12:24,141 --> 00:12:29,933
+So, in this particular network, Frank's
+Internet Barn is trying to, is trying to
+
+150
+00:12:29,933 --> 00:12:37,062
+decide which route it should pick in order
+to reach this prefix 13.13/16 which is
+
+151
+00:12:37,062 --> 00:12:41,518
+down here in AS1.
+The nature of the relationship here is
+
+152
+00:12:41,518 --> 00:12:45,900
+that Frank is connected directly to a
+provider, AS4.
+
+153
+00:12:45,900 --> 00:12:52,072
+It's connected to a peer, AS3 and it's
+connected to a customer, AS2 which in turn
+
+154
+00:12:52,072 --> 00:12:55,390
+is connected to another customer down
+here.
+
+155
+00:12:55,390 --> 00:13:01,927
+So, we could have a number of different,
+local preferences and it might say, I'm
+
+156
+00:13:01,927 --> 00:13:07,075
+going to,
+I'm going to give a local preference of
+
+157
+00:13:07,350 --> 00:13:14,410
+let's say, 100 to my peer, or the customer
+or my provider to customer relationship.
+
+158
+00:13:14,410 --> 00:13:20,553
+In other words, I'm going to give
+preference of 100 to routes that are
+
+159
+00:13:20,553 --> 00:13:27,155
+advertised by my customers to me.
+And maybe, I just say, I'll give a local
+
+160
+00:13:27,155 --> 00:13:32,932
+preference of 80 to ones that are received
+from my provider.
+
+161
+00:13:32,932 --> 00:13:37,150
+And 90 to ones that are received from my
+peer.
+
+162
+00:13:37,150 --> 00:13:44,880
+What that basically says is, if I hear a
+route, that is, arrives from my customer,
+
+163
+00:13:44,880 --> 00:13:49,023
+I'm going to take that very seriously,
+because that's a paying relationship
+
+164
+00:13:49,023 --> 00:13:53,576
+and I would prefer to send it to my
+customer rather than sending it over to a
+
+165
+00:13:53,576 --> 00:13:58,413
+provider where I'm going to have to pay.
+So, I'm going to give preference from if
+
+166
+00:13:58,413 --> 00:14:01,674
+they are coming up through the from, from
+the customer.
+
+167
+00:14:01,674 --> 00:14:06,023
+My second favorite choice is from my peer
+because I don't pay there either because
+
+168
+00:14:06,023 --> 00:14:10,143
+its presumably settlement free.
+But where I actually have to pay for the
+
+169
+00:14:10,143 --> 00:14:14,892
+traffic is to the providers. So, if I hear
+a route that's advertised down here, I'm
+
+170
+00:14:14,892 --> 00:14:19,126
+going to not like you to pick that unless
+that's my only, that's my only choice.
+
+171
+00:14:19,126 --> 00:14:24,160
+So, basically I'm saying in terms of my
+choice, customer,
+
+172
+00:14:24,160 --> 00:14:29,808
+Customer advertised routes are more better
+than peer advertised routes better than
+
+173
+00:14:29,808 --> 00:14:33,510
+provider advertised routes.
+And this is a pretty common for,
+
+174
+00:14:33,510 --> 00:14:38,154
+It's it, it's not baked into BGP.
+You can just set the preference values to
+
+175
+00:14:38,154 --> 00:14:41,230
+do this.
+You could also set the preference values
+
+176
+00:14:41,230 --> 00:14:44,870
+to be the opposite, although that would be
+pretty unlikely.
+
+177
+00:14:44,870 --> 00:14:49,946
+,, when these, these advertisements are
+going to arrive for this particular AS,
+
+178
+00:14:49,946 --> 00:14:54,771
+They're going to up through here to Frank.
+They're going to come up through here to
+
+179
+00:14:54,771 --> 00:14:57,341
+Frank.
+And they're going to come this way to
+
+180
+00:14:57,341 --> 00:15:00,098
+Frank.
+Frank is going to pick the one that goes
+
+181
+00:15:00,098 --> 00:15:03,984
+down through the customer.
+So, when he sends traffic, he's going to
+
+182
+00:15:03,984 --> 00:15:09,060
+send traffic down this way to AS1, because
+that's his favorite path, because that's
+
+183
+00:15:09,060 --> 00:15:14,287
+the one with the lowest local preference.
+So, local preference is the one that I use
+
+184
+00:15:14,287 --> 00:15:17,450
+first.
+And if that doesn't tell me my, my choice,
+
+185
+00:15:17,450 --> 00:15:22,195
+then I'll pick the shortest AS path.
+And then, I'll walk down that list that
+
+186
+00:15:22,195 --> 00:15:30,058
+was on the previous slide.
+So, in summary all autonomous systems in
+
+187
+00:15:30,058 --> 00:15:34,963
+the internet must connect using BGP4,
+that's the exterior protocol that they
+
+188
+00:15:34,963 --> 00:15:39,804
+must use to talk to their peers, or to
+their neighbors, the routers of their
+
+189
+00:15:39,804 --> 00:15:43,806
+neighboring autonomous system.
+Bgp4 is a path vector algorithm.
+
+190
+00:15:43,806 --> 00:15:48,260
+That means a list of the autonomous
+systems is sent along with every
+
+191
+00:15:48,260 --> 00:15:53,681
+advertised prefix and this allows loops to
+be detected very easily and for a router
+
+192
+00:15:53,681 --> 00:15:59,039
+to examine that path and choose whether it
+wants to use it or not, depending on its
+
+193
+00:15:59,039 --> 00:16:02,261
+policies.
+Bgp4 has a rich and complex interface to
+
+194
+00:16:02,261 --> 00:16:07,094
+let autonomous systems choose a local
+private policy based on all sorts of
+
+195
+00:16:07,094 --> 00:16:10,445
+things.
+You could, you could spend a whole quarter
+
+196
+00:16:10,445 --> 00:16:15,407
+learning about nothing else than how BGP
+works and what the consequences are.
+
+197
+00:16:15,407 --> 00:16:20,368
+There have been many, many papers written
+on the, on the consequences of these
+
+198
+00:16:20,368 --> 00:16:23,139
+policies.
+So, each AS decides a local policy for
+
+199
+00:16:23,139 --> 00:16:28,810
+traffic engineering security and any other
+private preferences that it might have so
+
+200
+00:16:28,810 --> 00:16:33,398
+that it can choose amongst advertised
+paths coming from different neighboring
+
+201
+00:16:33,398 --> 00:16:38,320
+autonomous systems.
+That's the end of this video about BGP.
+

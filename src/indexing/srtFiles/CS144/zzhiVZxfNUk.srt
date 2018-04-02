@@ -1,0 +1,204 @@
+1
+00:00:01,260 --> 00:00:05,479
+So how are IP addresses assigned? Originally,
+they were broken up into three classes: class
+
+2
+00:00:05,479 --> 00:00:11,030
+A, class B, and class C. Each class separated
+an IP address into two part, network and host.
+
+3
+00:00:11,030 --> 00:00:14,850
+The network part of the address denoted an
+administrative domain, such as MIT, BBN, or
+
+4
+00:00:14,850 --> 00:00:19,940
+Stanford University. The host part of the
+address denoted which device within that network.
+
+5
+00:00:19,940 --> 00:00:25,010
+Class A addresses had a leading 0, 7 bits
+of network (for 128 networks) and 24 bits
+
+6
+00:00:25,010 --> 00:00:30,570
+of host, so could cover 16 million computers.
+Class B addresses had 16 bits of host, so
+
+7
+00:00:30,570 --> 00:00:37,570
+could cover 65,536 computers. Class C addresses
+had 8 bits of host, so could cover 256 computers.
+
+8
+00:00:39,409 --> 00:00:44,559
+While classes A, B, and C are simple, we quickly
+found out they were not flexible enough. For
+
+9
+00:00:44,559 --> 00:00:48,999
+example, both MIT and Stanford received one
+of the first class A address blocks - over
+
+10
+00:00:48,999 --> 00:00:53,870
+4 million addresses. For a while, MIT would
+give each of its dorms the equivalent of a
+
+11
+00:00:53,870 --> 00:00:59,299
+class B -- 65,000 addresses for a few hundred
+people! When IP addresses were plentiful,
+
+12
+00:00:59,299 --> 00:01:03,170
+this wasn’t a problem, but as their use
+increased we needed a better allocation policy.
+
+13
+00:01:03,170 --> 00:01:09,010
+A useful note: Stanford gave up its class
+A block in 1999, MIT still has its.
+
+14
+00:01:09,010 --> 00:01:14,460
+Today, IPv4 addresses are structured thought
+something called CIDR, or Classless Inter-Domain
+
+15
+00:01:14,460 --> 00:01:20,370
+Routing. Rather than have prefixes only of
+length 8, 16, and 24 bits, CIDR allows prefixes
+
+16
+00:01:20,370 --> 00:01:26,060
+to be any number of bits. This means all CIDR
+prefixes define a block of addresses that
+
+17
+00:01:26,060 --> 00:01:31,220
+is a power of 2 in size. When we talk about
+a CIDR address, we refer to its netmask length.
+
+18
+00:01:31,220 --> 00:01:36,750
+So, for example, when we talk about a “slash
+16”, we mean a netmask of length 16. This
+
+19
+00:01:36,750 --> 00:01:43,750
+CIDR block describes 2 to the 16 addresses,
+or 65,536. When we talk about a “slash 20”,
+
+20
+00:01:44,659 --> 00:01:51,110
+we mean a netmask of length 20. This CIDR
+block describes 2 to the 12 addresses, or
+
+21
+00:01:51,110 --> 00:01:57,530
+4.096 addresses. CIDR blocks are how addresses
+are structured, addressed, and managed today.
+
+22
+00:01:57,530 --> 00:02:04,290
+Stanford today has 5 /16 blocks, about 325,000
+IPv4 addresses.
+
+23
+00:02:04,290 --> 00:02:09,289
+So how are IPv4 addresses allocated and managed?
+There’s an organization called IANA, for
+
+24
+00:02:09,288 --> 00:02:13,090
+the Internet Assigned Numbers Authority. The
+ultimate authority is ICANN, the Internet
+
+25
+00:02:13,090 --> 00:02:17,499
+Corporation for Assignment of Names and Numbers.
+ICANN delegates the work to IANA.
+
+26
+00:02:17,499 --> 00:02:23,639
+IANA gives out slash-8s, describing 16 million
+addresses, to Regional Internet Registries,
+
+27
+00:02:23,639 --> 00:02:29,969
+or RIRs. Each continent has its own RIR. The
+RIR for the United States is ARIN, while the
+
+28
+00:02:29,969 --> 00:02:35,829
+RIR for the western Pacific is APNIC. These
+RIRs each have their own policy for how they
+
+29
+00:02:35,829 --> 00:02:40,209
+break up the /8s into smaller blocks of addresses
+and assign them to parties who need them.
+
+30
+00:02:40,209 --> 00:02:43,879
+You might have read in the news is that we’ve
+run out of IP addresses. This isn’t really
+
+31
+00:02:43,879 --> 00:02:49,109
+true -- there are many unused addresses today.
+What *did* happen is that IANA ran out of
+
+32
+00:02:49,109 --> 00:02:54,230
+/8s to give out. It reached a special end
+case in its charter. When reduced to its last
+
+33
+00:02:54,230 --> 00:03:01,230
+5 /8s, IANA gave one /8 to each RIR. Now address
+management and allocation is up to RIRs. In
+
+34
+00:03:03,129 --> 00:03:07,200
+2012, Jon Peterson, then a member of the Internet
+Architecture Board, gave a talk at Stanford
+
+35
+00:03:07,200 --> 00:03:11,999
+on some of the political, economic, and technical
+complications this raises. The talk isn’t
+
+36
+00:03:11,999 --> 00:03:17,590
+required material for this course, but I recommend
+it highly.
+
+37
+00:03:17,590 --> 00:03:22,139
+So now you’ve seen the structure of IPv4
+addresses, how they are allocated, and how
+
+38
+00:03:22,139 --> 00:03:26,510
+end hosts make their first hop routing decisions,
+that is, whether to send to a local node or
+
+39
+00:03:26,510 --> 00:03:30,769
+their gateway router. Addresses today are
+managed and allocated in terms of CIDR blocks,
+
+40
+00:03:30,769 --> 00:03:36,590
+whose size is defined by their prefix length.
+A shorter prefix, say, a /8, is a larger block
+
+41
+00:03:36,590 --> 00:03:38,609
+than a longer prefix, say, a /10.
+

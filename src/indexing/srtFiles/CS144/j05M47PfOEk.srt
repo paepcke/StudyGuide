@@ -1,0 +1,200 @@
+1
+00:00:00,770 --> 00:00:07,290
+In this video I will provide a worked example
+for a single flow with AIMD congestion control.
+
+2
+00:00:07,290 --> 00:00:13,209
+Alice is streaming a high definition video
+at 10Mb/s from a remote server in San Francisco.
+
+3
+00:00:13,209 --> 00:00:18,230
+All packets are 250bytes long. She measures
+the ping time to the server and the minimum
+
+4
+00:00:18,230 --> 00:00:24,860
+time she measures is 5ms. Once the AIMD window
+reaches steady state, for the rest of the
+
+5
+00:00:24,860 --> 00:00:29,910
+video, the sawtooth oscillates between constant
+minimum and maximum values. The buffer is
+
+6
+00:00:29,910 --> 00:00:34,440
+perfectly sized so that it is just big enough
+to never go empty.
+
+7
+00:00:34,440 --> 00:00:39,370
+1. What is the smallest value of the AIMD
+window (in bytes)?
+
+8
+00:00:39,370 --> 00:00:45,280
+The minimum ping time of 5ms is when the buffer
+is empty but the bottleneck link is full.
+
+9
+00:00:45,280 --> 00:00:51,190
+At 10Mb/s, there is therefore 50,000 bits
+in the “pipe”.
+
+10
+00:00:51,190 --> 00:00:58,190
+This means the minimum or “trough” of
+the AIMD sawtooth is 50,000 bits, or 6250
+
+11
+00:00:58,230 --> 00:01:03,210
+bytes. So therefore the answer is 6250 bytes.
+
+12
+00:01:03,210 --> 00:01:04,430
+Part 2.
+
+13
+00:01:04,430 --> 00:01:09,700
+What is the largest value of the AIMD window
+in bytes?
+
+14
+00:01:09,700 --> 00:01:16,700
+When the buffer is full, the RTT is doubled
+from 5ms to 10ms.
+
+15
+00:01:16,999 --> 00:01:23,999
+At 10Mb/s, the maximum RTT will hold 100,000
+bits. 50,000bits are in flight, and 50,000
+
+16
+00:01:24,600 --> 00:01:28,609
+bits are in the buffer.
+Therefore the maximum or “peak” of the
+
+17
+00:01:28,609 --> 00:01:34,630
+AIMD sawtooth is 100,000 bits or 12,500 bytes.
+
+18
+00:01:34,630 --> 00:01:37,099
+Part 3.
+
+19
+00:01:37,099 --> 00:01:40,479
+How big is the packet buffer in the router
+in bytes?
+
+20
+00:01:40,479 --> 00:01:47,479
+We already decided in Q2 that when full, the
+buffer holds one minimum RTT, or 50,000 bits.
+
+21
+00:01:51,609 --> 00:01:56,169
+After a packet is dropped, how long does it
+take for the window to reach its maximum value
+
+22
+00:01:56,169 --> 00:01:56,899
+again?
+
+23
+00:01:56,899 --> 00:01:58,380
+Part 4.
+
+24
+00:01:58,380 --> 00:02:03,929
+Packets are 2,000 bits long and so the window
+will increase by 2,000 bits every RTT.
+
+25
+00:02:03,929 --> 00:02:10,929
+Therefore, it takes 25 RTTs to increase the
+RTT by 50,000 bits and fill the buffer.
+
+26
+00:02:11,140 --> 00:02:18,140
+The average RTT is 7.5ms, therefore it will
+take 187.5ms.
+
+27
+00:02:22,860 --> 00:02:24,200
+Part 5.
+
+28
+00:02:24,200 --> 00:02:31,200
+If Alice now tries to watch the same video
+from a server in Australia (with RTT 250ms),
+
+29
+00:02:31,350 --> 00:02:35,780
+how big should the router buffer be (in bytes)
+if the network still runs at 10Mb/s?
+
+30
+00:02:35,780 --> 00:02:42,780
+The minimum RTT is 250ms, so the buffer needs
+to be at least 250ms * 10Mb/s = 2.5 x 10^6
+
+31
+00:02:46,450 --> 00:02:51,260
+bits.
+Because we express storage in powers of 2,
+
+32
+00:02:51,260 --> 00:02:58,260
+the answer is 2.4Mbits or 298 Kbytes.
+
+33
+00:02:59,980 --> 00:03:01,530
+Part 6.
+
+34
+00:03:01,530 --> 00:03:05,790
+When the server is in Australia, after a packet
+is dropped, how long does it take for the
+
+35
+00:03:05,790 --> 00:03:10,260
+window to reach its maximum value again (in
+seconds)?
+
+36
+00:03:10,260 --> 00:03:14,460
+As before, the window increases by 2,000 bits
+every round.
+
+37
+00:03:14,460 --> 00:03:21,460
+To fill the buffer will take 2.5 x 10^6 / 2
+x 10^3 = 1,250 rounds.
+
+38
+00:03:23,040 --> 00:03:30,040
+The average RTT is 375ms.
+So the time to reach the maximum again is
+
+39
+00:03:31,460 --> 00:03:37,790
+468.75 seconds, or almost 8 minutes!
+
+40
+00:03:37,790 --> 00:03:42,840
+The answer might surprise you. It takes a
+long time for the AIMD flow to recover from
+
+41
+00:03:42,840 --> 00:03:47,590
+a single packet drop. This would be a real
+problem in practice, which motivates us to
+
+42
+00:03:47,590 --> 00:03:51,099
+look for better and quicker ways for TCP to
+recover from dropped packets.
+

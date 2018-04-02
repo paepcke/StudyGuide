@@ -1,0 +1,15 @@
+1
+00:00:01,959 --> 00:00:08,700
+Here’s our first quiz. You generate a perfectly
+random key K. You send two messages, M1 and
+
+2
+00:00:08,700 --> 00:00:15,700
+M2, encrypted with the one-time pad algorithm.
+So C1 is equal to K XOR M1, and C2 is equal
+
+3
+00:00:17,470 --> 00:00:24,470
+to K XOR M2. Does sending C2 leak information
+about M1 and M2?
+

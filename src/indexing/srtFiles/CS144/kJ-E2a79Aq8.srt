@@ -1,0 +1,298 @@
+1
+00:00:00,459 --> 00:00:05,290
+The video included a quick worked example.
+In case you found the example hard to follow,
+
+2
+00:00:05,290 --> 00:00:10,009
+in this short video I will explain the same
+example in more detail, and ask a few more
+
+3
+00:00:10,010 --> 00:00:13,210
+questions about the same example.
+
+4
+00:00:13,210 --> 00:00:20,210
+“At the start of every second, a train of
+100 bits arrive to a queue at rate 1000 bits/second.
+
+5
+00:00:21,380 --> 00:00:26,519
+The departure rate from the queue is 500 bits/second.
+The queue is served bit-by-bit, and you can
+
+6
+00:00:26,519 --> 00:00:33,519
+assume the buffer size is infinite.
+What is the average queue occupancy?”
+
+7
+00:00:33,570 --> 00:00:39,390
+The cumulative arrival and departure processes
+will look like this. First, look at the cumulative
+
+8
+00:00:39,390 --> 00:00:45,510
+arrivals, A(t) shown in red. In the first
+1/10th of a second, 100bits will arrive at
+
+9
+00:00:45,510 --> 00:00:52,510
+rate 1000bits/second. There are no more arrivals
+until 1s, then a new 100bits arrive. Now let’s
+
+10
+00:00:54,280 --> 00:00:59,539
+look at the departure process D(t) shown in
+green. As soon as the first train of bits
+
+11
+00:00:59,539 --> 00:01:05,540
+starts to arrive at rate 1000bits/second,
+bits will start departing, because the question
+
+12
+00:01:05,540 --> 00:01:11,040
+says they are served bit-by-bit. If we had
+to wait for a whole packet to arrive, then
+
+13
+00:01:11,040 --> 00:01:18,040
+the departure process would not start increasing
+yet. The bits take 0.2 seconds to depart because
+
+14
+00:01:18,340 --> 00:01:23,649
+they depart at 500bits/second which is half
+the rate at which new bits arrive. The queue
+
+15
+00:01:23,649 --> 00:01:29,329
+therefore builds up, with a peak after 0.1seconds.
+
+16
+00:01:29,329 --> 00:01:34,329
+To answer the question, let’s look at the
+occupancy of the queue Q(t) as a function
+
+17
+00:01:34,329 --> 00:01:41,329
+of time. The queue occupancy is the vertical
+distance between A(t) and D(t) – it’s
+
+18
+00:01:42,210 --> 00:01:48,509
+the number of bits that have arrived up until
+this point, minus those that have departed.
+
+19
+00:01:48,509 --> 00:01:55,509
+During the first 0.1s the queue builds up
+as new bits arrive, to a peak of 50bits. During
+
+20
+00:01:55,579 --> 00:02:02,579
+the first 0.2s the average occupancy is 25bits.
+Then the queue drains from 0.1s to 0.2s until
+
+21
+00:02:04,539 --> 00:02:09,500
+it is empty and all the bits have departed.
+The queue is empty for 0.8s then the same
+
+22
+00:02:09,500 --> 00:02:11,470
+process repeats.
+
+23
+00:02:11,470 --> 00:02:16,110
+We can immediately calculate the time average
+occupancy of the queue. It spends 0.2s with
+
+24
+00:02:16,110 --> 00:02:23,110
+an average occupancy of 25b, then 0.8s with
+an occupancy of zero. The time average is
+
+25
+00:02:23,500 --> 00:02:30,500
+therefore 5bits.
+
+26
+00:02:31,640 --> 00:02:36,630
+The second question is: What is the average
+delay of a bit in the queue?
+
+27
+00:02:36,630 --> 00:02:43,630
+Let’s look at the evolution of A(t) and
+D(t) again. The delay seen by a bit arriving
+
+28
+00:02:44,080 --> 00:02:51,080
+at time t is d(t), the horizontal distance
+between the two lines.
+
+29
+00:02:51,900 --> 00:02:58,900
+The first bit arriving at time zero experiences
+no delay. Whereas a bit arriving at 0.1s experiences
+
+30
+00:02:59,090 --> 00:03:06,090
+a delay of 0.1s. Notice that no more bits
+arrive after 0.1s, so it makes no sense to
+
+31
+00:03:07,680 --> 00:03:14,680
+consider the delay of a bit arriving between
+0.1s and 1.0s. We are conditioning the probability
+
+32
+00:03:15,130 --> 00:03:19,870
+on a bit arriving, which only happens in the
+first 0.1 of every second.
+
+33
+00:03:19,870 --> 00:03:26,870
+Therefore, the average delay seen by a bit
+arriving to the queue is simply 0.05s.
+
+34
+00:03:30,880 --> 00:03:36,890
+Staying with the same queue, the third question
+is: If the trains of 100 bits arrived at random
+
+35
+00:03:36,890 --> 00:03:43,180
+intervals, one train per second on average,
+would the average queue occupancy be the same,
+
+36
+00:03:43,180 --> 00:03:47,070
+lower or higher than in part (a)?
+
+37
+00:03:47,070 --> 00:03:52,520
+The time average occupancy will be Higher.
+When two trains arrived deterministically
+
+38
+00:03:52,520 --> 00:03:57,240
+in part (a), they never overlapped and so
+there were never bits from two trains in the
+
+39
+00:03:57,240 --> 00:04:03,390
+queue at the same time. But if they arrive
+randomly, we might have bits from two or more
+
+40
+00:04:03,390 --> 00:04:09,340
+trains in the queue at the same time, pushing
+up the occupancy, and hence the average occupancy.
+
+41
+00:04:09,340 --> 00:04:15,080
+This might be surprising. Let’s look at
+an example to see why this is true.
+
+42
+00:04:15,080 --> 00:04:21,549
+Consider two cases.
+Case 1: Assume the trains arrive randomly,
+
+43
+00:04:21,548 --> 00:04:28,549
+but no two trains ever overlap. The average
+queue occupancy would be the same as before,
+
+44
+00:04:28,770 --> 00:04:35,770
+which was 5bits.
+As soon as two trains overlap, even once,
+
+45
+00:04:36,650 --> 00:04:41,560
+the average will increase. To see why, consider
+the example here. The red line shows the queue
+
+46
+00:04:41,560 --> 00:04:48,560
+occupancy of tone train which we assume arrives
+at time 0. Let’s say the second train arrives
+
+47
+00:04:49,080 --> 00:04:54,979
+at time 0.1s just when the queue has 50bits
+in it still from the 1st train. The queue
+
+48
+00:04:54,979 --> 00:04:59,550
+will keep growing because bits are arriving
+twice as fast as they are leaving. The queue
+
+49
+00:04:59,550 --> 00:05:06,550
+won’t drain until time 0.4s. If this happened
+every two seconds, the arrival rate would
+
+50
+00:05:06,860 --> 00:05:13,759
+be the same as before, but the time average
+queue occupancy would now be as follows.
+
+51
+00:05:13,759 --> 00:05:20,759
+For 0.4s the time average occupancy is 50b,
+then for 1.6s it is empty. TO get the time
+
+52
+00:05:21,710 --> 00:05:26,930
+average, we divide by two seconds. The time
+average occupancy is 10bits, which is double
+
+53
+00:05:26,930 --> 00:05:29,770
+what it was before.
+
+54
+00:05:29,770 --> 00:05:35,800
+Why is that? It’s because the queue only
+drains at rate 500bits/second and so not only
+
+55
+00:05:35,800 --> 00:05:41,960
+does it fill to twice as much as before, it
+also takes twice as long to drain. The triangle
+
+56
+00:05:41,960 --> 00:05:48,960
+showing when the queue is non-empty has four
+times the area as before.
+
+57
+00:05:50,259 --> 00:05:54,030
+The fourth part of the question is: If the
+departing bits from the queue are fed into
+
+58
+00:05:54,030 --> 00:05:59,330
+a second, identical queue with the same departure
+rate, what is the average occupancy of the
+
+59
+00:05:59,330 --> 00:06:02,029
+second queue?
+
+60
+00:06:02,029 --> 00:06:08,840
+The second queue will have bits arrive at
+500bits/second and depart at 500bits/second.
+
+61
+00:06:08,840 --> 00:06:13,299
+In other words, it will never accumulate bits
+and will always be empty.
+

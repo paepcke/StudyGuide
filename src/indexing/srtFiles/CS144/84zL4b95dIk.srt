@@ -1,0 +1,889 @@
+1
+00:00:00,000 --> 00:00:03,002
+So in this video I'm gonna talk about the
+internet.
+
+2
+00:00:03,002 --> 00:00:07,034
+[laugh], why it's so important and why
+really you should take this course.
+
+3
+00:00:07,034 --> 00:00:12,023
+And so the overarching theme here is that
+there are some people who would argue that
+
+4
+00:00:12,023 --> 00:00:16,088
+in the past twenty or 30 years the most
+important invention of our generation is
+
+5
+00:00:16,088 --> 00:00:21,020
+the internet in terms of what it's
+accomplished, how it has transformed the
+
+6
+00:00:21,020 --> 00:00:25,040
+world, the economy, politics, and society,
+and by understanding how it works,
+
+7
+00:00:25,040 --> 00:00:30,000
+understanding how it's been built, what it
+can do, what it can't do, you'll have a
+
+8
+00:00:30,000 --> 00:00:33,080
+much greater understanding about this
+tremendous engine of change.
+
+9
+00:00:33,080 --> 00:00:36,067
+So let's just take a few simple societal
+examples.
+
+10
+00:00:36,067 --> 00:00:38,089
+So.
+You know today if you think in terms of
+
+11
+00:00:38,089 --> 00:00:42,092
+economics, and the economic changes the
+internet has brought, think about things
+
+12
+00:00:42,092 --> 00:00:45,052
+like black Friday.
+So black Friday is the day after
+
+13
+00:00:45,052 --> 00:00:49,055
+thanksgiving in the United States when
+it's given that name because all of the
+
+14
+00:00:49,055 --> 00:00:53,048
+stores go from the red, that is they've
+lost money over the year to the black
+
+15
+00:00:53,048 --> 00:00:57,061
+because so much is bought for Christmas,
+and so this is historically this time of
+
+16
+00:00:57,061 --> 00:01:01,085
+tremendous sales, and tremendous you know,
+purchasing people will get up early to go
+
+17
+00:01:01,085 --> 00:01:05,075
+to the mall, all of that.
+But today, Black Friday is still of course
+
+18
+00:01:05,075 --> 00:01:10,045
+important, but now there's Cyber Monday,
+when people, after the Thanksgiving
+
+19
+00:01:10,045 --> 00:01:14,078
+holiday, the next Monday, log in online to
+buy gifts for the holidays.
+
+20
+00:01:14,078 --> 00:01:20,007
+In the sense of its the ability for people
+to buy things online so easily has really
+
+21
+00:01:20,007 --> 00:01:25,005
+changed our purchasing patterns.
+Enough so now there is legislation in the
+
+22
+00:01:25,005 --> 00:01:29,091
+United States in the legislature to
+examine whether or not it's fairer that
+
+23
+00:01:29,091 --> 00:01:34,070
+these online vendors don't have to pay,
+the people who buy things from online
+
+24
+00:01:34,070 --> 00:01:39,043
+vendors don't have to pay sales tax,
+whereas brick and mortar vendors, people
+
+25
+00:01:39,043 --> 00:01:43,054
+do have to pay sales tax.
+Suddenly places like Amazon have a price
+
+26
+00:01:43,071 --> 00:01:48,022
+Benefit that they have, that they can give
+a better price, because people don't have
+
+27
+00:01:48,022 --> 00:01:50,066
+to pay.
+Taxes on things which are bought from
+
+28
+00:01:50,066 --> 00:01:53,012
+Amazon.
+So there's been lots of legislation about
+
+29
+00:01:53,012 --> 00:01:57,023
+trying to control this and is it unfair to
+brick and mortar, but the fact that the
+
+30
+00:01:57,023 --> 00:02:01,020
+presence of online purchasing is leading
+to legislation because of concerns of
+
+31
+00:02:01,020 --> 00:02:04,091
+competition says something about the
+economic effect that the Internet is
+
+32
+00:02:04,091 --> 00:02:06,553
+having.
+Or you look at something far more
+
+33
+00:02:06,553 --> 00:02:10,070
+personal, such as dating.
+So, before the internet, you know, how do
+
+34
+00:02:10,070 --> 00:02:12,062
+meet people?
+Well, through friends.
+
+35
+00:02:12,062 --> 00:02:15,099
+Maybe there's, you know, classified ads in
+the newspaper.
+
+36
+00:02:15,099 --> 00:02:18,089
+Or you go to a bar or try to meet people
+that way.
+
+37
+00:02:18,089 --> 00:02:23,025
+Today, there are all these services.
+Okcupid, Match.com, for connecting people
+
+38
+00:02:23,025 --> 00:02:25,087
+online.
+So it's changing how people meet each
+
+39
+00:02:25,087 --> 00:02:29,377
+other, and how people date.
+And as you know some of these sites will
+
+40
+00:02:29,377 --> 00:02:34,298
+claim that some significant fraction of
+the people that meet on their sites
+
+41
+00:02:34,298 --> 00:02:37,037
+eventually become married.
+Think in terms of knowledge.
+
+42
+00:02:37,037 --> 00:02:41,037
+So before, if you wanted to read a book,
+you would go to the library and you'd
+
+43
+00:02:41,037 --> 00:02:43,097
+check it out.
+Today, things like Google books, where
+
+44
+00:02:43,097 --> 00:02:48,018
+there are millions of books that have been
+scanned in, and anyone can read at any
+
+45
+00:02:48,018 --> 00:02:50,073
+time.
+Things like e-books delivered over these
+
+46
+00:02:50,073 --> 00:02:53,038
+wireless networks like the whispernet.
+Or Wikipedia.
+
+47
+00:02:53,038 --> 00:02:57,033
+You used to, if you wanted to look
+something up, you used to have to go to an
+
+48
+00:02:57,033 --> 00:03:00,009
+encyclopedia.
+If you were very lucky, maybe you had an
+
+49
+00:03:00,009 --> 00:03:03,026
+old encyclopedia at home.
+But usually, you'd go to the library.
+
+50
+00:03:03,026 --> 00:03:05,050
+Now, anytime you wanna know something
+about.
+
+51
+00:03:05,050 --> 00:03:10,003
+And something that's not too obscure, you
+can go to Wikipedia and learn something
+
+52
+00:03:10,003 --> 00:03:12,044
+about it.
+Finally, communication, so, you know,
+
+53
+00:03:12,044 --> 00:03:17,003
+there are beginnings of IRC chat, chat
+programs on the internet but think about
+
+54
+00:03:17,003 --> 00:03:20,084
+before we had instant messaging or
+voice-over IP or video telephony.
+
+55
+00:03:20,084 --> 00:03:25,027
+Video Conferencing was this technology of
+the future, the idea you could have a
+
+56
+00:03:25,027 --> 00:03:29,097
+video call and really it was the internet
+and just this cheap inexpensive always on
+
+57
+00:03:29,097 --> 00:03:33,062
+omnipresent data communication system is
+what made that possible.
+
+58
+00:03:33,062 --> 00:03:38,015
+So it really changed how we interact with
+people on a day to day basis when it's
+
+59
+00:03:38,015 --> 00:03:40,049
+available.
+So that's just society.
+
+60
+00:03:40,049 --> 00:03:44,094
+How we interact with one another in the
+fabric of interpersonal relationships.
+
+61
+00:03:44,094 --> 00:03:49,000
+There's also been significant political
+change brought by the internet.
+
+62
+00:03:49,000 --> 00:03:51,096
+So you look at something like the Arab
+Spring, where.
+
+63
+00:03:51,096 --> 00:03:56,078
+People who are revolting against the
+Government are coordinating using SMS, or
+
+64
+00:03:56,078 --> 00:03:59,317
+Twitter.
+So, it's actually a story where during the
+
+65
+00:03:59,317 --> 00:04:04,044
+revolution in Iran, that Twitter was
+planning on taking it's server down for
+
+66
+00:04:04,044 --> 00:04:09,353
+the weekend for an upgrade and the United
+States of America State Department called
+
+67
+00:04:09,353 --> 00:04:13,070
+up twitter and said, 'We're sorry.
+There's a revolution, or an uprising going
+
+68
+00:04:13,070 --> 00:04:17,086
+on and they're using twitter a lot.
+Please keep your servers online.' So
+
+69
+00:04:17,086 --> 00:04:22,037
+political change in the world is greatly
+effected by these technologies we're
+
+70
+00:04:22,036 --> 00:04:26,053
+seeing deployed on the internet.
+Or think in terms of diplomacy with the
+
+71
+00:04:26,053 --> 00:04:30,099
+recent Wiki leaks about all of these
+United States diplomatic cables and how
+
+72
+00:04:30,099 --> 00:04:34,017
+that effects diplomatic relations
+throughout the world.
+
+73
+00:04:34,017 --> 00:04:38,091
+A tremendous effect that would have been
+inconceivable before the very, very rapid
+
+74
+00:04:38,091 --> 00:04:41,086
+spread of information the internet makes
+available.
+
+75
+00:04:41,086 --> 00:04:47,015
+Or you look within, say the United States,
+are the occupy movement, Occupy Wall
+
+76
+00:04:47,015 --> 00:04:52,045
+Street, Occupy Oakland, organized through
+Twitter and through Facebook, these online
+
+77
+00:04:52,045 --> 00:04:56,032
+social media which, for which the internet
+is their backbone.
+
+78
+00:04:56,032 --> 00:05:02,059
+Finally, you also see politics not only in
+terms of uprising and diplomacy but also,
+
+79
+00:05:02,059 --> 00:05:07,069
+in terms of politics by force.
+So one of example of this is, the STUX
+
+80
+00:05:07,069 --> 00:05:13,081
+network, which was in internet capable
+worm that shut down the centrifuges in a
+
+81
+00:05:13,081 --> 00:05:19,093
+row, damaged the centrifuges that were
+being thought to be enriching nuclear
+
+82
+00:05:19,093 --> 00:05:23,057
+material.
+So this is an example of, what looks like
+
+83
+00:05:23,057 --> 00:05:28,196
+a state, a government producing
+essentially a cyber weapon which is
+
+84
+00:05:28,196 --> 00:05:33,268
+intended to spread over an internet style
+network designed very specifically to
+
+85
+00:05:33,268 --> 00:05:38,983
+sabotage these devices at this location.
+So you see the internet used not only for
+
+86
+00:05:38,983 --> 00:05:43,519
+personal connections, personal
+interactions as well as organization.
+
+87
+00:05:43,519 --> 00:05:46,530
+But also even for political changes by
+force.
+
+88
+00:05:46,530 --> 00:05:51,672
+Now in terms of the scope of these
+economic changes, this was recently I just
+
+89
+00:05:51,672 --> 00:05:56,620
+went on April sixteenth, so just a few
+months ago, and I looked up who are the
+
+90
+00:05:56,620 --> 00:06:01,638
+hundred richest people in the world.
+So the top billionaires list from Forbes.
+
+91
+00:06:01,638 --> 00:06:06,656
+And if you look You know number 24 is
+Sergey Brin and Larry Page co founders of
+
+92
+00:06:06,656 --> 00:06:10,321
+Google.
+Number 26 Jeff Bezos CEO of Amazon.
+
+93
+00:06:10,321 --> 00:06:14,215
+Number 35 at the time was Mark Zuckerberg
+CEO of Facebook.
+
+94
+00:06:14,215 --> 00:06:20,107
+These are all people whose billions have
+been made by new services, applications
+
+95
+00:06:20,107 --> 00:06:24,480
+and uses of the internet.
+And so just think about the through the
+
+96
+00:06:24,480 --> 00:06:28,009
+amount of.
+Shift of capital and shift of economics
+
+97
+00:06:28,009 --> 00:06:32,828
+and economic models that the Internet is
+bringing, that gosh, in, in the past decade
+
+98
+00:06:32,828 --> 00:06:36,087
+or so.
+You're seeing some of the richest people
+
+99
+00:06:36,087 --> 00:06:41,427
+in the world have achieved that through
+effectively the use and growth of the
+
+100
+00:06:41,427 --> 00:06:44,287
+Internet.
+And I think this points at a more broader,
+
+101
+00:06:44,287 --> 00:06:47,191
+point, about technology and what's
+happening today.
+
+102
+00:06:47,191 --> 00:06:52,101
+So I would argue that we're in the midst
+of second or, depending on the count, it's
+
+103
+00:06:52,101 --> 00:06:56,120
+second or third industrial revolution.
+This idea of this tremendous upheaval, of
+
+104
+00:06:56,120 --> 00:06:58,483
+how we conduct business, how we produce
+goods.
+
+105
+00:06:58,483 --> 00:07:03,430
+In terms of trade, in terms of the kinds
+of skills that are necessary for modern
+
+106
+00:07:03,430 --> 00:07:06,718
+industries.
+And so, this is some data that I collected
+
+107
+00:07:06,718 --> 00:07:11,473
+from, this is United States data only,
+from the United States Department of Labor
+
+108
+00:07:11,473 --> 00:07:15,237
+and Department of Education.
+And so what it shows is for four
+
+109
+00:07:15,237 --> 00:07:20,023
+scientific engineering degrees, the number
+of degrees granted in the United States
+
+110
+00:07:20,023 --> 00:07:24,639
+each year and the number of job openings
+each year projected over the next ten
+
+111
+00:07:24,639 --> 00:07:27,162
+years.
+So, there's data for the job openings
+
+112
+00:07:27,162 --> 00:07:30,077
+projected 2008-2018 from the U.S.
+Department of Labor.
+
+113
+00:07:30,077 --> 00:07:33,818
+And the job, and the actual degrees are
+2008 data from the United States
+
+114
+00:07:33,818 --> 00:07:37,189
+Department of Education.
+And so if you want some details about how
+
+115
+00:07:37,189 --> 00:07:39,519
+I got this data, there's this url down
+here.
+
+116
+00:07:39,519 --> 00:07:45,639
+But the basic point here is that you can
+see that in most disciplines, you know
+
+117
+00:07:45,639 --> 00:07:50,066
+there are fewer jobs, than there are
+degrees and that's normal because not
+
+118
+00:07:50,066 --> 00:07:54,382
+everyone who gets an engineering degree
+say, goes into engineering, they can do
+
+119
+00:07:54,382 --> 00:07:58,918
+other things with that degree.
+But there is this tremendous discrepancy
+
+120
+00:07:58,918 --> 00:08:03,687
+for computer science, that the number of
+degrees which at least the United States
+
+121
+00:08:03,687 --> 00:08:07,751
+is producing each year in computer
+science, is only a small fraction, you
+
+122
+00:08:07,751 --> 00:08:11,037
+know, effectively a third of the number of
+job openings.
+
+123
+00:08:11,037 --> 00:08:15,767
+There's tremendous economic growth in this
+area which we educationally, in terms of
+
+124
+00:08:15,767 --> 00:08:20,456
+societally  have not yet caught up with.
+So, learning about these kind of things,
+
+125
+00:08:20,456 --> 00:08:25,490
+learning about the Internet, because it is
+such a core aspect of this, is something
+
+126
+00:08:25,490 --> 00:08:28,887
+which is of tremendous, practical value in
+the job market.
+
+127
+00:08:28,887 --> 00:08:33,424
+It's important in our every day society.
+In fact, if you had pull apart those
+
+128
+00:08:33,424 --> 00:08:38,598
+160,000 jobs per year that are appearing
+in the United States, in fact, you know
+
+129
+00:08:38,597 --> 00:08:43,655
+there are a lot of them are software
+engineers, as you may think people who are
+
+130
+00:08:43,655 --> 00:08:48,659
+in software a lot of them are database
+administrators, but if you look there are
+
+131
+00:08:48,659 --> 00:08:52,524
+a bunch of very large categories here.
+Networking computer systems
+
+132
+00:08:52,524 --> 00:08:56,449
+administrators, people who are
+administering computer systems and
+
+133
+00:08:56,449 --> 00:08:59,131
+networks.
+People who are analyzing data
+
+134
+00:08:59,131 --> 00:09:03,729
+communication systems and network systems.
+And so the point being that actually
+
+135
+00:09:03,729 --> 00:09:10,216
+there's significant, almost a quarter of
+the computer science jobs each year.
+
+136
+00:09:10,216 --> 00:09:15,067
+So 40,000 jobs a year approximately have
+to do with computer networks, which is not
+
+137
+00:09:15,067 --> 00:09:17,280
+to say that even these software
+engineering jobs.
+
+138
+00:09:17,280 --> 00:09:19,918
+Many of them have to do with computer
+networks as well.
+
+139
+00:09:19,918 --> 00:09:22,493
+You're building a new web application, new
+web service.
+
+140
+00:09:22,493 --> 00:09:24,799
+This all involves the use of networks and
+the internet.
+
+141
+00:09:24,799 --> 00:09:28,942
+So correspondingly, understanding how the
+internet works, understanding the design
+
+142
+00:09:28,942 --> 00:09:32,011
+principles of networks.
+How they work, why they're built this way.
+
+143
+00:09:32,011 --> 00:09:36,464
+Good design principles for building future
+networks, future network applications,
+
+144
+00:09:36,464 --> 00:09:41,332
+future network systems is of tremendous
+value going forward in terms of knowing it
+
+145
+00:09:41,332 --> 00:09:45,506
+as a practical skill but also to
+understand what is becoming a tremendous
+
+146
+00:09:45,506 --> 00:09:49,311
+linchpin of modern society.
+And so this course is gonna teach you
+
+147
+00:09:49,311 --> 00:09:52,718
+exactly that.
+It's gonna teach you how computer networks
+
+148
+00:09:52,718 --> 00:09:55,020
+work.
+Not only their implementation, as an
+
+149
+00:09:55,020 --> 00:09:59,028
+example of a very successful on the
+internet, but also the design principles
+
+150
+00:09:59,028 --> 00:10:02,194
+that lead you there.
+So as the internet evolves, as it does
+
+151
+00:10:02,194 --> 00:10:06,018
+every day, you'll understand the
+principles that lead that evolution, that
+
+152
+00:10:06,018 --> 00:10:08,860
+guide that evolution.
+Such that even if we use slightly
+
+153
+00:10:08,860 --> 00:10:12,856
+different protocols in five years, you'll
+still be able to understand.
+
+154
+00:10:12,856 --> 00:10:15,815
+Because you'll understand the principles
+behind network design.
+
+155
+00:10:15,815 --> 00:10:18,098
+And so.
+In theory, or the hope would be that if
+
+156
+00:10:18,098 --> 00:10:21,342
+you take this course, you'll not only
+understand the internet of today, but
+
+157
+00:10:21,342 --> 00:10:24,132
+you'll also have the
+Intellectual tools to understand the
+
+158
+00:10:24,132 --> 00:10:26,767
+internet of tomorrow, as it evolves
+towards that.
+
+159
+00:10:26,767 --> 00:10:30,695
+And it's also gonna give you a background
+of what are the forces that shape the
+
+160
+00:10:30,695 --> 00:10:33,353
+internet.
+So it's a technological marvel and an
+
+161
+00:10:33,353 --> 00:10:37,080
+amazing feat of engineering.
+But what makes it especially interesting,
+
+162
+00:10:37,080 --> 00:10:40,655
+at least to me, is that it's shaped not
+only by engineering concerns.
+
+163
+00:10:40,655 --> 00:10:44,231
+But also by real world economic political
+and societal  concerns.
+
+164
+00:10:44,231 --> 00:10:48,112
+If you read about how the internet is
+being used in politics, or it's effects on
+
+165
+00:10:48,112 --> 00:10:52,037
+the Arab spring, or the Stuxnet worm.
+Or it's effects on economies, to whether
+
+166
+00:10:52,037 --> 00:10:55,088
+or not how internet commerce is going to
+be regulated or governed.
+
+167
+00:10:55,088 --> 00:10:59,550
+What about things like off-shore gambling
+and how that's managed?
+
+168
+00:10:59,550 --> 00:11:04,140
+All of these kinds of questions affect
+legislation, affect how the Internet is
+
+169
+00:11:04,140 --> 00:11:08,395
+developed, affect how it's governed.
+And that has tremendous implications on
+
+170
+00:11:08,395 --> 00:11:10,584
+its design.
+So it's this interesting.
+
+171
+00:11:10,584 --> 00:11:15,694
+Interface and mix between not only deep
+technical concepts but also the societal
+
+172
+00:11:15,694 --> 00:11:21,299
+needs, and the societal wants, and our
+societal rules that we use to use those
+
+173
+00:11:21,299 --> 00:11:24,804
+concepts.
+And, basically make a better world for the
+
+174
+00:11:24,804 --> 00:11:29,658
+future through data communication.
+So now that's the, the basic overview.
+
+175
+00:11:29,658 --> 00:11:34,915
+Internet's astoundingly important.
+It's going to become only more important
+
+176
+00:11:34,915 --> 00:11:38,943
+as time goes on.
+And so understanding it is a, a very, very
+
+177
+00:11:38,943 --> 00:11:42,371
+valuable thing.
+And so I encourage you to do so and take
+
+178
+00:11:42,371 --> 00:11:43,063
+this course.
+

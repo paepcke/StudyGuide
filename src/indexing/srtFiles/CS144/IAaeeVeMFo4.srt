@@ -1,0 +1,203 @@
+1
+00:00:01,020 --> 00:00:06,390
+So let’s suppose we have a good block cipher.
+How do we use it? Messages are typically longer
+
+2
+00:00:06,390 --> 00:00:12,369
+than one 64 or 128 bit block.
+One straight-forward approach is something
+
+3
+00:00:12,369 --> 00:00:18,270
+called ECB, or electronic code book mode.
+This is simple: we take our message M and
+
+4
+00:00:18,270 --> 00:00:25,270
+break it into blocks. We then encrypt each
+one individually. So m1 becomes c1, m2 becomes
+
+5
+00:00:26,210 --> 00:00:32,070
+c2, etc. This is fast, because we can do them
+all in parallel, something great on modern
+
+6
+00:00:32,070 --> 00:00:37,410
+multicore processors. Assuming that our encryption
+algorithm is secure, then an adversary can’t
+
+7
+00:00:37,410 --> 00:00:43,010
+decrypt any block, and so our message is secure.
+Futhermore, we can reuse our keys, since every
+
+8
+00:00:43,010 --> 00:00:50,010
+block encrypted with the cipher will be secure.
+Simple, fast, and secure.
+
+9
+00:00:50,140 --> 00:00:56,510
+NOPE! It’s not secure at all. Using electronic
+code book mode, an attacker will learn of
+
+10
+00:00:56,510 --> 00:01:03,420
+repeated plaintext blocks. Since encryption
+is deterministic, then if M1 equals M2, C1
+
+11
+00:01:03,420 --> 00:01:09,490
+will equal C2. If we’re transmitting a sparse
+file, for example, this is bad. An adversary
+
+12
+00:01:09,490 --> 00:01:14,959
+could see where the non-zero regions of the
+file are. Here’s a visual example of the
+
+13
+00:01:14,959 --> 00:01:19,969
+problem, using an image of Tux. The center
+image shows the result of encrypting the image
+
+14
+00:01:19,969 --> 00:01:25,289
+with ECB. Identical regions of the image,
+such as the white space, show up identically,
+
+15
+00:01:25,289 --> 00:01:31,049
+and you can see a general outline of Tux.
+The image on the right is more like what we
+
+16
+00:01:31,049 --> 00:01:38,049
+want, where there’s no pattern and an adversary
+can’t learn anything from the ciphertext.
+
+17
+00:01:42,490 --> 00:01:47,179
+One way to achieve this desired degree of
+confidentiality is Cipher Block Chaining,
+
+18
+00:01:47,179 --> 00:01:54,179
+or CBC mode. In CBC mode, you choose an initialization
+vector IV, the same size as the block. You
+
+19
+00:01:56,189 --> 00:02:03,189
+XOR M1 with this initialization vector, and
+encrypt it to produce C1. You then take C1
+
+20
+00:02:05,359 --> 00:02:10,080
+and XOR it with M2 before encrypting it to
+produce C2.
+
+21
+00:02:10,080 --> 00:02:16,830
+If you use a key to encrypt only one message,
+than IV can be zero. The basic danger is that
+
+22
+00:02:16,830 --> 00:02:22,790
+you don’t want to re-use an initialization
+vector. Suppose you do. So you set IV to be
+
+23
+00:02:22,790 --> 00:02:28,020
+zero for one message, then reuse and IV of
+zero for a second message. If the plaintexts
+
+24
+00:02:28,020 --> 00:02:32,130
+are identical, then the ciphertexts will be
+identical, and you’ve leaked information
+
+25
+00:02:32,130 --> 00:02:38,020
+to the adversary.
+
+26
+00:02:38,020 --> 00:02:45,020
+If we use CBC mode on the Tux image, then
+we compute the ciphertext on the right. So
+
+27
+00:02:45,040 --> 00:02:50,650
+problem solved. But again, for this to work
+across multiple messages and remain secure,
+
+28
+00:02:50,650 --> 00:02:57,650
+you need to be careful with how you pick and
+use initialization vectors.
+
+29
+00:03:00,010 --> 00:03:03,720
+Electronic code book and cipher block chaining
+mode are just two ways to use block ciphers.
+
+30
+00:03:03,720 --> 00:03:07,920
+There are many more, with different properties,
+strengths, and weaknesses. Cipher feedback
+
+31
+00:03:07,920 --> 00:03:12,380
+mode, for example, XORs the message with an
+encryption of the prior ciphertext. This is
+
+32
+00:03:12,380 --> 00:03:16,830
+useful if your message isn’t a multiple
+of the block size and you don’t want to
+
+33
+00:03:16,830 --> 00:03:21,730
+pad it with zeros. In ECB and CBC mode, you
+pass the message block to encrypt so you can’t
+
+34
+00:03:21,730 --> 00:03:27,430
+then trim the ciphertext.
+Or there’s output feedback mode, where you
+
+35
+00:03:27,430 --> 00:03:31,760
+repeatedly encrypt the initialization vector
+and use it like a stream cipher. Or counter
+
+36
+00:03:31,760 --> 00:03:36,140
+mode, where you encrypt incrementing values
+with the key and XOR them with message blocks.
+
+37
+00:03:36,140 --> 00:03:42,720
+This is easily parallelizable, but mean that
+you can use a key for only one message, unless
+
+38
+00:03:42,720 --> 00:03:49,400
+you do something smart with the value i.
+One final quiz. Let’s suppose we have a
+
+39
+00:03:49,400 --> 00:03:54,510
+shared secret key, which only you and the
+other party know. You encrypt your messages
+
+40
+00:03:54,510 --> 00:04:00,340
+with a good cipher using CBC mode and transmit
+these messages over the network. Are they
+
+41
+00:04:00,340 --> 00:04:00,890
+secure?
+

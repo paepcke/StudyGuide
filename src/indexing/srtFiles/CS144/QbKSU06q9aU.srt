@@ -1,0 +1,744 @@
+1
+00:00:00,000 --> 00:00:05,250
+This video digs into the details of what
+actually a DNS query response series looks
+
+2
+00:00:05,250 --> 00:00:07,631
+like.
+So, as soon as you know what resource
+
+3
+00:00:07,631 --> 00:00:11,721
+records are and what their structure is
+and the high level view of this idea to
+
+4
+00:00:11,721 --> 00:00:17,277
+the client issuing a recursive query which
+is then non recursively issued to other
+
+5
+00:00:17,277 --> 00:00:20,757
+servers in the network.
+And by details, I mean, that this is high
+
+6
+00:00:20,757 --> 00:00:25,509
+level, there's this idea I issue a
+recursive query COUGH and then this
+
+7
+00:00:25,509 --> 00:00:31,332
+results in resolver issuing a series of
+non recursive queries to give me my final
+
+8
+00:00:31,333 --> 00:00:35,108
+answer of what the address record of
+www.stanford.edu is.
+
+9
+00:00:35,150 --> 00:00:39,860
+But what are the, what are the actual
+contents of these queries? What are the
+
+10
+00:00:39,860 --> 00:00:45,068
+actual contents of the responses and what
+is the information that each of these
+
+11
+00:00:45,068 --> 00:00:48,596
+servers has to know?
+So, this matter, this is really important
+
+12
+00:00:48,596 --> 00:00:51,491
+when you are actually setting up a name,
+name system,
+
+13
+00:00:51,491 --> 00:00:56,055
+when you are actually setting up a domain and
+need to configure name servers in network
+
+14
+00:00:56,055 --> 00:01:00,174
+such that you would be able to actually ask
+questions and people are able to access
+
+15
+00:01:00,174 --> 00:01:03,881
+their machines and their names.
+So, the big challenge, one of the big
+
+16
+00:01:03,881 --> 00:01:06,909
+challenges comes from this concept of
+traversing zones.
+
+17
+00:01:07,074 --> 00:01:10,047
+So at some point, my name server has a
+root cache file.
+
+18
+00:01:10,047 --> 00:01:12,964
+So, this just gives some IP addresses of
+root servers.
+
+19
+00:01:12,964 --> 00:01:17,203
+And this is the bootstrapping process.
+If I just have those IP addresses, then
+
+20
+00:01:17,203 --> 00:01:20,616
+from there, I can get TLD, TLD name server
+addresses from there,
+
+21
+00:01:20,616 --> 00:01:23,644
+I can get domain name server addresses,
+and sub-domains,
+
+22
+00:01:23,902 --> 00:01:27,424
+Etc. So,
+At a high level it sort of makes sense,
+
+23
+00:01:27,424 --> 00:01:30,081
+Oh, I asked about edu, I asked about
+Stanford.
+
+24
+00:01:30,081 --> 00:01:32,858
+But there turned out to be a couple of
+tricks.
+
+25
+00:01:32,858 --> 00:01:35,319
+So,
+Think about an NS record.
+
+26
+00:01:35,319 --> 00:01:42,341
+So, if you recall, a name server record, if I
+ask for what the name server is of a
+
+27
+00:01:42,341 --> 00:01:46,900
+domain, the nameserver record contains a
+host name.
+
+28
+00:01:46,900 --> 00:01:54,105
+So, for example, if I ask what is the name
+server of stanford.edu, the answer is a
+
+29
+00:01:54,105 --> 00:01:58,664
+host name.
+So, here let's dig for the nameserver of
+
+30
+00:01:58,664 --> 00:02:06,264
+stanford.edu.
+And the answer is, we get four answers,
+
+31
+00:02:06,264 --> 00:02:09,621
+these host names,
+Avallone.stanford.edu,
+
+32
+00:02:09,621 --> 00:02:12,949
+argis.stanfor.edu,
+atalante.stanford.edu, and
+
+33
+00:02:12,949 --> 00:02:18,571
+aerathea.stanford.edu
+But the problem is these are all names in
+
+34
+00:02:18,571 --> 00:02:23,263
+Stanford.
+How can we get the address of these name
+
+35
+00:02:23,263 --> 00:02:28,040
+servers unless we know the IP address of
+these name servers?
+
+36
+00:02:28,040 --> 00:02:31,340
+These are the servers we would ask for
+what those names are.
+
+37
+00:01:53,505 --> 00:02:35,977
+So, there's this chicken and egg problem.
+How do we get started?
+
+38
+00:02:35,977 --> 00:02:42,260
+Given that we're being given host names.
+and so, the solution to this and the name
+
+39
+00:02:42,260 --> 00:02:47,271
+system, of the domain name system is
+something called the glue record.
+
+40
+00:02:47,496 --> 00:02:53,180
+And what this is, is that when, say,
+Stanford goes to the edu servers and says,
+
+41
+00:02:53,180 --> 00:02:56,227
+hey,
+These are the name servers for Stanford.
+
+42
+00:02:56,227 --> 00:03:01,217
+It gives them not only NS records
+specifying the names of the servers but
+
+43
+00:03:01,217 --> 00:03:06,254
+also associated A records. And these are
+glue records because it means the edu
+
+44
+00:03:06,254 --> 00:03:11,200
+servers are going to serve up address
+records, A records for stanford.edu,
+
+45
+00:03:11,200 --> 00:03:15,357
+Only for the name servers of stanford.edu,
+but nonetheless,,they they are serving A
+
+46
+00:03:15,357 --> 00:03:17,259
+records for stanford.edu,
+Right?
+
+47
+00:03:17,259 --> 00:03:21,605
+And so, we go back to this example,
+Alright?
+
+48
+00:03:21,813 --> 00:03:27,505
+We can see that on one hand, I'm asking,
+what are the name servers of stanford.edu?
+
+49
+00:03:27,505 --> 00:03:32,712
+But the additional section then, also
+gives me address records for them, and
+
+50
+00:03:32,712 --> 00:03:37,155
+these address records are stored within
+the edu name servers.
+
+51
+00:03:37,155 --> 00:03:40,626
+So, let me just walk through an example of
+this.
+
+52
+00:03:40,626 --> 00:03:46,407
+What I'm going to do is I'm going to look
+up www.scs.stanford.edu assuming there's
+
+53
+00:03:46,407 --> 00:03:49,714
+no cache.
+I'm going to explicitly walk through this
+
+54
+00:03:49,714 --> 00:03:54,965
+series of queries that would be issued.
+The way I'm going to do that is with this
+
+55
+00:03:55,159 --> 00:03:58,790
+norec option, which means do not ask a
+recursive query.
+
+56
+00:03:58,790 --> 00:04:09,190
+And so, as the first step, lets dig.
+So, this is going to, I'm going to contact
+
+57
+00:04:09,190 --> 00:04:15,170
+one of the root servers to the A root
+servers.
+
+58
+00:04:15,560 --> 00:04:23,620
+And say, hey who do I talk to for
+edu? Because it's non-recursive.
+
+59
+00:04:23,620 --> 00:04:29,776
+And I get a response which says, here are
+some of the servers to use.
+
+60
+00:04:29,776 --> 00:04:33,851
+So, let's say, here's the, the A edu
+servers.
+
+61
+00:04:33,851 --> 00:04:43,262
+And these are the main servers that you
+can use...okay So, I am going to use the A
+
+62
+00:04:43,262 --> 00:04:45,974
+edu, server.
+And I'm going to say, hey,
+
+63
+00:04:45,974 --> 00:04:54,400
+Whom shall I ask about stanford.edu?
+And it's going to tell me to ask
+
+64
+00:04:54,400 --> 00:05:01,288
+argus.stanford.edu. As you can see,
+it's also getting me the A records the A
+
+65
+00:05:01,288 --> 00:05:04,620
+record for argus so I actually have an IP
+address to ask.
+
+66
+00:05:08,420 --> 00:05:17,209
+Then I'm going to ask argis, hey, whom
+would I ask about www.scs.stanford?
+
+67
+00:05:17,209 --> 00:05:24,290
+And Argus is going to answer, oh, you
+should ask ns1.fs.net.
+
+68
+00:05:24,290 --> 00:05:28,979
+And, or you can also ask
+mission.scs.stanford.edu.
+
+69
+00:05:28,979 --> 00:05:34,569
+Oh, and here's the address record for
+mission.scs.stanford.edu.
+
+70
+00:05:34,569 --> 00:05:41,693
+And so, in its response, I now know the IP
+address to contact and I can put that
+
+71
+00:05:41,693 --> 00:05:45,243
+record into my cache.
+And so, if I then do
+
+72
+00:05:45,243 --> 00:05:50,260
+mission.scs.stanford.edu, I'm going to get
+the A record.
+
+73
+00:05:50,660 --> 00:05:58,128
+In fact, that mission.scs.stanford.edu
+does gave me the A the record for, for
+
+74
+00:05:58,128 --> 00:06:02,651
+www.scs.stanford.edu, time to leave is
+3600, and IP address of 171.66.3.9. So, on
+
+75
+00:06:02,651 --> 00:06:07,722
+record that we saw briefly, besides an A
+record and NS record, there is something
+
+76
+00:06:07,722 --> 00:06:13,566
+called the CNAME record, a canonical name.
+What the canonical name record tells you
+
+77
+00:06:13,566 --> 00:06:19,174
+in DNS is that a name is an alias.
+So as we saw before, if you dig
+
+78
+00:06:19,174 --> 00:06:24,370
+www.stanford.edu, you'll see that that's
+actually an alias for another name say,
+
+79
+00:06:24,370 --> 00:06:28,933
+www-v6.stanford.edu.
+And so, if there's a CNAME record for a
+
+80
+00:06:28,933 --> 00:06:32,164
+name, there can't be any other records for
+the name.
+
+81
+00:06:32,164 --> 00:06:34,889
+It's telling you, oh, this is just a
+pointer.
+
+82
+00:06:35,079 --> 00:06:40,288
+And so often, what will happen is that if
+you ask a query about a canonical name, it
+
+83
+00:06:40,288 --> 00:06:43,531
+will tell you, oh,
+Sorry, for and alias name, they will tell
+
+84
+00:06:43,531 --> 00:06:47,849
+you this is an alias for this canonical
+name then here are the records you want
+
+85
+00:06:47,849 --> 00:06:50,582
+for the canonical name.
+So, for example, if you dig
+
+86
+00:06:50,856 --> 00:06:55,338
+www.stanford.edu, it will tell you the
+canonical name is this other name oh, and
+
+87
+00:06:55,338 --> 00:06:59,934
+here is the A record for that other name.
+Another kind of DNS record, and this one
+
+88
+00:06:59,934 --> 00:07:04,821
+is really valuable is, they're all really
+valuable, is what's called an MX record.
+
+89
+00:07:04,821 --> 00:07:08,824
+So, mail exchange record.
+And it tells you what's the mail server
+
+90
+00:07:08,824 --> 00:07:12,111
+for a domain.
+So, for example, there's no host,
+
+91
+00:07:12,355 --> 00:07:16,422
+scs.stanford.edu,
+You can't ping it, try it. But you can
+
+92
+00:07:16,422 --> 00:07:21,790
+send e-mail to scs.stanford.edu.
+People have e-mail addresses of that
+
+93
+00:07:21,790 --> 00:07:25,453
+domain.
+And so, what this is, is that, there is an
+
+94
+00:07:25,453 --> 00:07:31,337
+MX record for scs.stanford.edu that says,
+oh, if you want to send mail to this
+
+95
+00:07:31,337 --> 00:07:34,732
+domain, this is the server you should talk
+to.
+
+96
+00:07:34,958 --> 00:07:39,484
+And further more, an MX record causes A
+record processing.
+
+97
+00:07:39,484 --> 00:07:45,595
+So, if I say, hey, what is the MX record,
+then it will say, oh, this is the name of
+
+98
+00:07:45,595 --> 00:07:50,498
+the server for the mail and here is the A
+record for that server.
+
+99
+00:07:50,498 --> 00:07:54,120
+So, for example, let's dig
+mx.scs.stanford.edu.
+
+100
+00:07:55,265 --> 00:07:58,808
+You know,.and And we'll see, okay, answer
+section.
+
+101
+00:07:58,808 --> 00:08:04,173
+The MX record for scs.stanford.edu,
+The TTL, 3600, its internet is
+
+102
+00:08:04,173 --> 00:08:09,293
+market4.scs.stanford.edu.
+Furthermore, the address record for
+
+103
+00:08:09,293 --> 00:08:15,284
+market4.scs.stanford.edu is 171.66.3.10.
+And this ten is a preference value, it
+
+104
+00:08:15,284 --> 00:08:21,810
+tells you if there's maybe different
+servers that you want which one is best.
+
+105
+00:08:21,810 --> 00:08:29,061
+So there, we can request the MX record.
+So, this starts to get a little funny. So,
+
+106
+00:08:29,061 --> 00:08:34,672
+what happens if the male server name
+doesn't have an A record?
+
+107
+00:08:34,672 --> 00:08:41,670
+So, let's try digging this bad MX.
+So, let's do dig MX, add
+
+108
+00:08:41,669 --> 00:08:50,909
+mx.scs.stanford.edu, okay.
+And it's going to say, well, bad MX is
+
+109
+00:08:50,909 --> 00:09:00,960
+cs144.scs.stanford.edu but now, we don't
+have an A record of it.
+
+110
+00:09:00,960 --> 00:09:07,667
+But this is weird.
+Why don't we have an A record for
+
+111
+00:09:07,667 --> 00:09:12,459
+Cs144.scs.stanford.edu? That's a valid
+host name but for some reason, the name
+
+112
+00:09:12,459 --> 00:09:18,878
+servers not able to give us an A record.
+So, if we look up, let's just dig
+
+113
+00:09:18,878 --> 00:09:25,397
+cs144.scs.stanford.edu,.
+If we look up here, it turns out that
+
+114
+00:09:25,397 --> 00:09:29,094
+cs144.stanford.edu is a CNAME for
+www.cs.stanford.edu..
+
+115
+00:09:30,238 --> 00:09:35,396
+So, it's actually an alias for this.
+And this is where you get one of those
+
+116
+00:09:35,396 --> 00:09:38,830
+interesting edge cases in protocols, these
+things were the way it's designed,
+
+117
+00:09:38,871 --> 00:09:42,525
+It turns out there's some implications
+which you maybe didn't foresee which
+
+118
+00:09:42,525 --> 00:09:45,449
+actually, you know, I mean, kind of maybe
+a good idea.
+
+119
+00:09:45,449 --> 00:09:49,697
+The point is that your MX record isn't
+something which people are looking at.
+
+120
+00:09:49,697 --> 00:09:54,330
+It's something which just machines use so
+you shouldn't have it be pointing at aliases.
+
+121
+00:09:54,330 --> 00:09:59,019
+If you're pointing at aliases then you're
+forcing another level of indirection in
+
+122
+00:09:59,019 --> 00:10:03,267
+the DNS hierarchy which isn't helpful
+given that it's just machines, it's not
+
+123
+00:10:03,267 --> 00:10:05,860
+people.
+So recall, when you look up an MX record,
+
+124
+00:10:05,860 --> 00:10:10,039
+you'll also get processing for the
+associated A records, but cs144 does not
+
+125
+00:10:10,039 --> 00:10:13,576
+have an A record,
+It has a CNAME record and the fact that it
+
+126
+00:10:13,576 --> 00:10:16,940
+has a CNAME record means it cannot have
+any other record.
+
+127
+00:10:16,940 --> 00:10:21,306
+And so, there's this approach where, if
+you point your MX record at an alias, it
+
+128
+00:10:21,306 --> 00:10:25,448
+forces people to lookup.
+And so, there is, it's sort of this way to
+
+129
+00:10:25,448 --> 00:10:28,247
+create a negative incentive for you to do
+that.
+
+130
+00:10:28,247 --> 00:10:32,670
+And so, here's this interaction, which
+means two different kinds of records, with
+
+131
+00:10:32,670 --> 00:10:37,540
+their process which is, in a way, to kind
+of construct this system to be more
+
+132
+00:10:37,540 --> 00:10:40,223
+efficient.
+So, in addition to A records, Quad A
+
+133
+00:10:40,223 --> 00:10:44,955
+records, NS records, MX records, and CNAME
+records, there are all kinds of other
+
+134
+00:10:44,955 --> 00:10:47,868
+records.
+There are Start of Authority records,
+
+135
+00:10:47,868 --> 00:10:52,358
+which give you information about the
+actual caching of DNS information.
+
+136
+00:10:52,540 --> 00:10:56,665
+There's something called a Text record,
+which is a way to put arbitrary text, so
+
+137
+00:10:56,665 --> 00:10:59,578
+you can associate arbitrary text with a
+name.
+
+138
+00:10:59,578 --> 00:11:04,189
+This is a great way for extensions.
+People have explored all kinds of new
+
+139
+00:11:04,189 --> 00:11:08,220
+services using Text records.
+It allows you to play with something in
+
+140
+00:11:08,220 --> 00:11:12,638
+the operating, working internet and then,
+maybe transition to a new kind of specific
+
+141
+00:11:12,638 --> 00:11:15,965
+record.
+There also things called pointer records,
+
+142
+00:11:15,965 --> 00:11:19,930
+which do the reverse mapping.
+You look up a pointer record for an
+
+143
+00:11:19,930 --> 00:11:24,322
+address and it'll give you a name if one
+exists or if it knows of it.
+
+144
+00:11:24,322 --> 00:11:28,897
+And then, as we've see before, there were
+called quad A records, or IPv6 address
+
+145
+00:11:28,897 --> 00:11:31,764
+records.
+They have full 128 bit IPV6 addresses in
+
+146
+00:11:31,764 --> 00:11:34,462
+them.
+And so, those are the nitty-gritty details
+
+147
+00:11:34,462 --> 00:11:39,076
+of DNS, the information that is cached,
+how to use glue records to stitch together
+
+148
+00:11:39,076 --> 00:11:43,803
+zones and some of the different kinds of
+records that you have besides just simple
+
+149
+00:11:44,031 --> 00:11:45,000
+NS and A records.
+

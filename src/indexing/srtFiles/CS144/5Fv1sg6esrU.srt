@@ -1,0 +1,707 @@
+1
+00:00:00,470 --> 00:00:04,310
+You will have heard people say many times
+that the Internet has transformed society
+
+2
+00:00:04,310 --> 00:00:08,470
+in profound ways, not seen since the invention
+of the printing press.
+
+3
+00:00:08,470 --> 00:00:12,830
+In this video, I will give you a brief background
+on the history of networking leading up to
+
+4
+00:00:12,830 --> 00:00:15,200
+the invention of the Internet in the 1960s.
+
+5
+00:00:15,200 --> 00:00:22,200
+Let’s start with a brief history of how
+messages were communicated over long distances.
+
+6
+00:00:22,230 --> 00:00:26,869
+While today we think nothing of sending an
+email to the other side of the world, 3,000
+
+7
+00:00:26,869 --> 00:00:30,980
+years ago it was very hard to communicate
+over long distances.
+
+8
+00:00:30,980 --> 00:00:35,590
+The first recorded long distance communications
+are from about 1,000 BC and were mostly put
+
+9
+00:00:35,590 --> 00:00:39,480
+in place for military offense and defensive
+purposes.
+
+10
+00:00:39,480 --> 00:00:43,300
+Fire beacons were used to signal the arrival
+of an enemy, or to synchronize an attack.
+
+11
+00:00:43,300 --> 00:00:47,400
+This is an example of a fire beacon in the
+south of England.
+
+12
+00:00:47,400 --> 00:00:51,850
+Fire beacons carry information fast, work
+particularly well at night when danger is
+
+13
+00:00:51,850 --> 00:00:58,850
+greatest, but they carry very little information.
+Generally, they are on or off, signaling danger.
+
+14
+00:00:59,280 --> 00:01:03,530
+Carrier pigeons, human messengers and horse
+relays have been used around the world for
+
+15
+00:01:03,530 --> 00:01:08,330
+thousands of year because they can carry more
+information. But the information travels more
+
+16
+00:01:08,330 --> 00:01:12,790
+slowly than a fire beacon, and messengers
+are prone to interception along the way. The
+
+17
+00:01:12,790 --> 00:01:16,920
+message could be read, tampered with or blocked
+completely.
+
+18
+00:01:16,920 --> 00:01:21,820
+The earliest recorded relay systems were horses
+in Egypt and China 2-3 thousand years ago.
+
+19
+00:01:21,820 --> 00:01:26,630
+They were common throughout history. In 13th
+C, Marco Polo described how the great Mongol
+
+20
+00:01:26,630 --> 00:01:33,400
+ruler Kublai Khan used horse relays. His army
+had relay stations every 40km, with 400 horses
+
+21
+00:01:33,400 --> 00:01:39,200
+waiting for relay riders. Horse relays were
+used all the way up to 19th century for mail
+
+22
+00:01:39,200 --> 00:01:44,510
+delivery in the famous Pony Express across
+the USA. These early systems were limited
+
+23
+00:01:44,510 --> 00:01:50,049
+in the information they could carry (fires)
+or by the speed of delivery (horses, humans,
+
+24
+00:01:50,049 --> 00:01:51,330
+pigeons).
+
+25
+00:01:51,330 --> 00:01:57,030
+Around 2,000 years ago, optical methods started
+to be used, such as FLAGS, and HELIOGRAPHS,
+
+26
+00:01:57,030 --> 00:02:01,600
+which encoded digital information such as
+letters, words and numbers.
+
+27
+00:02:01,600 --> 00:02:06,799
+These systems transmit data at the speed of
+light, over limited distances, with limited
+
+28
+00:02:06,799 --> 00:02:10,110
+information --- they are basically simple
+encodings.
+
+29
+00:02:10,110 --> 00:02:16,540
+Perhaps the biggest advances in optical communications
+happened in France around the time of the
+
+30
+00:02:16,540 --> 00:02:23,270
+French Revolution in 1793 when Claude Chappe
+invented and starting building a semaphore
+
+31
+00:02:23,270 --> 00:02:27,200
+telegraph network.
+
+32
+00:02:27,200 --> 00:02:33,160
+Claude Chappe built towers with a large HORIZONTAL
+beam (the REGULATOR), with two smaller arms
+
+33
+00:02:33,160 --> 00:02:36,770
+called INDICATORS.
+It looked like a human being giving different
+
+34
+00:02:36,770 --> 00:02:42,090
+signals with their arms. The location of the
+arms indicated a SYMBOL.
+
+35
+00:02:42,090 --> 00:02:49,090
+In 1793, the French government built 15 stations
+to cover 190km, or 13km per station. By 1804,
+
+36
+00:02:51,400 --> 00:02:58,400
+a 370km network stretched from Paris to Dijon.
+The system was used to send a variety of messages,
+
+37
+00:03:02,470 --> 00:03:07,900
+including military information and fast-breaking
+news. Most went towards Paris to report information
+
+38
+00:03:07,900 --> 00:03:12,480
+from the provinces.
+The operators became quite skilled: The fastest
+
+39
+00:03:12,480 --> 00:03:16,910
+messages could be signaled by one station
+every 10-20seconds, and could cross France
+
+40
+00:03:16,910 --> 00:03:21,989
+in less than 30 minutes! They could send about
+3,000 signs per day, corresponding to a few
+
+41
+00:03:21,989 --> 00:03:23,780
+hundred messages.
+
+42
+00:03:23,780 --> 00:03:29,730
+To make the network function properly, the
+optical telegraph systems in France and Sweden
+
+43
+00:03:29,730 --> 00:03:33,120
+developed a number of concepts that are used
+in networks to this day:
+
+44
+00:03:33,120 --> 00:03:39,540
+They needed to develop five concepts in particular:
+The first were CODES. These are symbols to
+
+45
+00:03:39,540 --> 00:03:45,959
+indicate characters, and control signals like:
+START OF TX, END OF TX, “WAIT” or “CONFLICT
+
+46
+00:03:45,959 --> 00:03:51,959
+(When two signals arrived at the same time!)”,
+ERROR (cancel last code), PRIORITY (between
+
+47
+00:03:51,959 --> 00:03:58,849
+conflicting messages), FAILURE of TOWER, Acknowledgment
+(of ciphered text from far end), RAIN/FOG
+
+48
+00:03:58,849 --> 00:04:05,849
+to say “we can’t see you!”.
+The second was FLOW CONTROL, to stop the sender
+
+49
+00:04:06,080 --> 00:04:09,659
+overwhelming the receiver. Basically, the
+receiver tells the sender to slow down because
+
+50
+00:04:09,659 --> 00:04:13,709
+it can’t keep up
+Third was SYNCHRONIZATION, to tell when one
+
+51
+00:04:13,709 --> 00:04:19,290
+symbol ended and the next one started. This
+helps delineate words made up of several symbols.
+
+52
+00:04:19,290 --> 00:04:24,940
+The forth concept was ERROR CORRECTION AND
+RETRANSMISSION to tell the sender when symbols
+
+53
+00:04:24,940 --> 00:04:29,270
+were misunderstood. This allows the sender
+to try sending the symbols again.
+
+54
+00:04:29,270 --> 00:04:34,460
+Finally, they used ENCRYPTION so that messages
+could not be intercepted. They were particularly
+
+55
+00:04:34,460 --> 00:04:37,860
+worried about news of the stock market beating
+the newspapers.
+
+56
+00:04:37,860 --> 00:04:44,860
+By 1830 the Chappe optical telegraph network
+was very extensive, covering most of France.
+
+57
+00:04:48,449 --> 00:04:54,460
+We can characterize four main steps of invention
+in communication networks up until the 1700s.
+
+58
+00:04:54,460 --> 00:05:00,590
+First, from about 2,000 BC, humans used systems
+to signal a small set of pre-defined messages,
+
+59
+00:05:00,590 --> 00:05:02,570
+for example using fire beacons.
+
+60
+00:05:02,570 --> 00:05:07,449
+Second, starting in the 1600s, people developed
+systems to transmit arbitrary messages, by
+
+61
+00:05:07,449 --> 00:05:10,300
+encoding the entire alphabet.
+
+62
+00:05:10,300 --> 00:05:15,680
+By the early 1700s, numeric codes started
+to be used for common words and phrases. This
+
+63
+00:05:15,680 --> 00:05:19,530
+was the earliest form of compression, because
+it required less information to be sent over
+
+64
+00:05:19,530 --> 00:05:21,410
+the link.
+
+65
+00:05:21,410 --> 00:05:26,530
+During the 1700s, codes were developed for
+control signals. They could communicate when
+
+66
+00:05:26,530 --> 00:05:30,930
+to start and stop sending, when to slow down,
+how to retransmit and so on. This was the
+
+67
+00:05:30,930 --> 00:05:35,669
+birth of what we call today “Protocols”
+– the agreed upon rules governing how two
+
+68
+00:05:35,669 --> 00:05:38,840
+or more parties communicate.
+
+69
+00:05:38,840 --> 00:05:45,270
+By 1800 there were a number of different optical
+telegraph systems deployed across Europe,
+
+70
+00:05:45,270 --> 00:05:52,270
+using a variety of different protocol signals,
+such as these.
+
+71
+00:06:09,979 --> 00:06:14,190
+Clearly there was an enormous step forward
+in communications when the telephone was invented
+
+72
+00:06:14,190 --> 00:06:16,180
+at the end of the 19th century.
+
+73
+00:06:16,180 --> 00:06:20,330
+For some time, there had been many attempts
+to increase the capacity of the electrical
+
+74
+00:06:20,330 --> 00:06:24,870
+telegraph network that now connected many
+towns across the United States.
+
+75
+00:06:24,870 --> 00:06:29,900
+Alexander Graeme Bell – a Scottish born
+inventor – transmitted the first voice call
+
+76
+00:06:29,900 --> 00:06:36,139
+in 1876 in the very celebrated phone call
+to his colleague, Thomas Watson.
+
+77
+00:06:36,139 --> 00:06:40,259
+While his patent was challenged many times,
+most notably by fellow inventor Elisha Gray,
+
+78
+00:06:40,259 --> 00:06:45,560
+the patent stood up to the legal challenges
+and we generally attribute the invention to
+
+79
+00:06:45,560 --> 00:06:46,620
+Bell.
+
+80
+00:06:46,620 --> 00:06:52,580
+Within 10 years over 150,000 people owned
+telephones, and by 1915 the first transcontinental
+
+81
+00:06:52,580 --> 00:06:58,030
+phone call was made from New York to San Francisco.
+
+82
+00:06:58,030 --> 00:07:05,030
+The series of events and inventions that eventually
+led to the internet started in 1960.
+
+83
+00:07:07,750 --> 00:07:13,539
+In 1962, J.C.R. Licklider at MIT started to
+write memos and give talks about his concepts
+
+84
+00:07:13,539 --> 00:07:18,780
+of an Intergalactic Network, in which everyone
+on the globe is interconnected and can access
+
+85
+00:07:18,780 --> 00:07:24,380
+programs and data at any site from anywhere.
+He talked of being able to communicate with
+
+86
+00:07:24,380 --> 00:07:29,720
+his own ‘Intergalactic Network’ of researchers
+across the country. This is widely thought
+
+87
+00:07:29,720 --> 00:07:34,020
+to be the first recorded description of the
+social interactions that could be enabled
+
+88
+00:07:34,020 --> 00:07:38,860
+by a large communication network - very much
+like the Internet of today. Licklider became
+
+89
+00:07:38,860 --> 00:07:43,919
+the first head of the computer research program
+at DARPA - the Defense Advanced Research Projects
+
+90
+00:07:43,919 --> 00:07:50,919
+Agency - from 1962. While at DARPA he convinced
+Ivan Sutherland, Bob Taylor, and MIT researcher
+
+91
+00:07:51,229 --> 00:07:54,860
+Lawrence G. Roberts, of the importance of
+his new networking concept, and they took
+
+92
+00:07:54,860 --> 00:07:58,250
+up the mantle when they succeeded him at DARPA.
+
+93
+00:07:58,250 --> 00:08:04,349
+In 1964 researcher Paul Baran wrote what is
+now considered the first academic paper about
+
+94
+00:08:04,349 --> 00:08:09,919
+large scale communication networks. The paper
+is titled: “On Data Communication networks”.
+
+95
+00:08:09,919 --> 00:08:15,380
+At about the same time, Leonard Kleinrock’s
+thesiswas published on queueing theory. Donald
+
+96
+00:08:15,380 --> 00:08:21,870
+Davies was working on very similar ideas at
+the National Physical Laboratory in the UK.
+
+97
+00:08:21,870 --> 00:08:27,770
+in 1965 working with Thomas Merrill, Larry
+Roberts connected the TX-2 computer in Mass.
+
+98
+00:08:27,770 --> 00:08:32,669
+to the Q-32 in California with a low speed
+dial-up telephone line creating the first
+
+99
+00:08:32,669 --> 00:08:36,489
+wide-area computer network ever built.
+
+100
+00:08:36,489 --> 00:08:40,669
+Larry Roberts joined DARPA in 1966 to help
+develop the first ARPANET plans, which were
+
+101
+00:08:40,669 --> 00:08:44,739
+published in 1967.
+
+102
+00:08:44,739 --> 00:08:50,480
+In 1969 the first four nodes were installed
+at UCLA, SRI, UCSB and University of Utah
+
+103
+00:08:50,480 --> 00:08:54,949
+and the very first messages sent.
+
+104
+00:08:54,949 --> 00:08:59,689
+This is what the Internet looked like in 1969
+– it was called the ARPANET and was a single
+
+105
+00:08:59,689 --> 00:09:04,449
+CLOSED, PROPRIETARY network.
+
+106
+00:09:04,449 --> 00:09:09,369
+By the early 1970s a number of different packet-switched
+data networks started to appear.
+
+107
+00:09:09,369 --> 00:09:16,369
+In 1971, the first packet radio network was
+built between the Hawaii Islands, called AlohaNet.
+
+108
+00:09:16,999 --> 00:09:21,929
+The mechanisms developed for the ALOHA protocol
+have influenced pretty much every wireless
+
+109
+00:09:21,929 --> 00:09:27,800
+network since.
+Also in 1971 the Cyclades research network
+
+110
+00:09:27,800 --> 00:09:33,389
+was built in France. It was the first to give
+the end hosts the responsibility for reliable
+
+111
+00:09:33,389 --> 00:09:36,739
+communications, and heavily influenced the
+design of the Internet.
+
+112
+00:09:36,739 --> 00:09:43,040
+In 1974 IBM introduced an entire data network
+stack called SNA, which stands for Systems
+
+113
+00:09:43,040 --> 00:09:48,079
+Network Architecture. Its goal was to reduce
+the cost of building large time-shared computers
+
+114
+00:09:48,079 --> 00:09:55,079
+with many teletype terminals, rather than
+batch processing with punch cards.
+
+115
+00:09:55,160 --> 00:10:00,040
+DARPA sponsored work on “Internetting”
+to create the first “networks of networks”
+
+116
+00:10:00,040 --> 00:10:04,579
+to connect together networks around the world.
+The protocols needed for Internetting were
+
+117
+00:10:04,579 --> 00:10:11,579
+first described by Vint Cerf (Stanford) and
+Bob Kahn in a now famous paper in 1974, with
+
+118
+00:10:11,819 --> 00:10:15,949
+the title: “A Protocol for Packet Network
+Intercommunication”.
+
+119
+00:10:15,949 --> 00:10:21,549
+TCP called for reliable, in-sequence delivery
+of data and included much of what we call
+
+120
+00:10:21,549 --> 00:10:26,439
+today the Network layer. In the early days
+there was no notion of congestion control;
+
+121
+00:10:26,439 --> 00:10:29,709
+it was added to the Internet about 15 years
+later.
+
+122
+00:10:29,709 --> 00:10:35,959
+By the end of 1970s, TCP and IP were separated,
+making room for UDP to be added as an unreliable
+
+123
+00:10:35,959 --> 00:10:39,670
+transport service as well, originally for
+packetized voice.
+
+124
+00:10:39,670 --> 00:10:46,670
+At the time, Vint Cerf was an Assistant Professor
+here at Stanford. He moved to DARPA in 1976
+
+125
+00:10:52,189 --> 00:10:56,089
+to help shepherd the new Internet project.
+He is now the Chief Internet Evangelist at
+
+126
+00:10:56,089 --> 00:10:58,290
+Google.
+Bob Kahn was already at DARPA when the paper
+
+127
+00:10:58,290 --> 00:11:04,989
+was written. Together, they are considered
+the fathers of the Internet.
+
+128
+00:11:04,989 --> 00:11:10,399
+In 1983 TCP/IP was first deployed across the
+ARPAnet in a flag day when everyone upgraded
+
+129
+00:11:10,399 --> 00:11:12,980
+to use the new protocols.
+
+130
+00:11:12,980 --> 00:11:19,980
+By 1986 NSFNET was created by the US National
+Science Foundation to interconnect supercomputers
+
+131
+00:11:20,519 --> 00:11:27,519
+at universities across the US, using links
+running at 56kb/s. Other small networks started
+
+132
+00:11:27,920 --> 00:11:31,369
+to pop up all over the place, connecting to
+the Internet.
+
+133
+00:11:31,369 --> 00:11:37,999
+By the end of the 1980s, there were about
+100,000 connected hosts.
+
+134
+00:11:37,999 --> 00:11:44,999
+And then, around 1990 Tim Berners-Lee at CERN
+invented the world wide web, with the first
+
+135
+00:11:47,579 --> 00:11:53,149
+browsers appearing in 1993 – most notably
+the Mosaic browser written by Marc Andreessen.
+
+136
+00:11:53,149 --> 00:11:57,999
+I can still remember the day I first saw a
+web browser in 1993 when I was a graduate
+
+137
+00:11:57,999 --> 00:12:02,790
+student. We knew immediately it would change
+everything – but we didn’t realize how
+
+138
+00:12:02,790 --> 00:12:08,069
+huge that change would be. For many people,
+this is the dawning of the Internet, although
+
+139
+00:12:08,069 --> 00:12:12,790
+of course we all know it goes much further
+back than the world wide web. But within a
+
+140
+00:12:12,790 --> 00:12:17,670
+year, over a million people round the world
+were using the Web. And before the end of
+
+141
+00:12:17,670 --> 00:12:24,259
+the 1990s, Yahoo, Google, Amazon and eBay
+would all be household names.
+
+142
+00:12:24,259 --> 00:12:29,749
+If you would like to learn more about the
+early days of networking and the Internet,
+
+143
+00:12:29,749 --> 00:12:32,549
+here are three excellent references that I
+really enjoy.
+
+144
+00:12:32,549 --> 00:12:37,519
+I’d highly recommend you read them to learn
+more about what led to an amazing transformation
+
+145
+00:12:37,519 --> 00:12:38,609
+of modern society.
+

@@ -1,0 +1,414 @@
+1
+00:00:00,000 --> 00:00:05,712
+A problem that can arise in networks  is
+when you have different kinds of addresses
+
+2
+00:00:05,712 --> 00:00:10,226
+and you somehow need to resolve them and
+you need to know what address is associated
+
+3
+00:00:10,226 --> 00:00:14,730
+with some other address.
+One really common example of this that you
+
+4
+00:00:14,730 --> 00:00:19,291
+encounter is figuring out what is the
+ethernet address associated with an IP
+
+5
+00:00:19,291 --> 00:00:23,991
+address.
+And this problem or generally, the problem
+
+6
+00:00:23,991 --> 00:00:28,139
+of mapping network addresses and hardware
+addresses is solved by something called
+
+7
+00:00:28,139 --> 00:00:32,898
+ARP, the Address Resolution Protocol.
+The problem here is that you have
+
+8
+00:00:32,898 --> 00:00:36,520
+layers of names.
+So, in the case of something like this
+
+9
+00:00:36,520 --> 00:00:39,400
+host, I have an IP address, say,
+171.67.76.65.
+
+10
+00:00:39,400 --> 00:00:44,585
+I'm going to, here's my IPv6 address.
+But I also have the interface address,
+
+11
+00:00:44,585 --> 00:00:48,690
+this is the, the Ethernet address of, say,
+my Ethernet card.
+
+12
+00:00:48,690 --> 00:00:52,333
+And somehow, I need to associate these two
+things.
+
+13
+00:00:52,333 --> 00:00:56,840
+I know that if I want to send an IP packet
+to this host,
+
+14
+00:00:56,840 --> 00:01:02,284
+then this is the ethernet address I should
+send it to.
+
+15
+00:01:02,284 --> 00:01:06,722
+So, let's go back to DHCP.
+So, recall that, you know, I have this
+
+16
+00:01:06,722 --> 00:01:14,466
+client and I issue a DHCP request and I
+get my IP address.
+
+17
+00:01:14,466 --> 00:01:21,092
+Let's just say, you know, it's
+192.168.0.7.
+
+18
+00:01:21,092 --> 00:01:27,282
+So, one of the things that the DHCP server
+will give me is my gateway IP address.
+
+19
+00:01:27,282 --> 00:01:32,492
+So, this is, if I want to send a packet
+into the wider internet, I should send it
+
+20
+00:01:32,492 --> 00:01:37,058
+via this IP address.
+But the problem is I don't need to just
+
+21
+00:01:37,058 --> 00:01:42,908
+send it through that node.
+I don't want to send it to 192.168.0.1
+
+22
+00:01:42,908 --> 00:01:45,705
+I want to send it to sort of my
+
+23
+00:01:45,705 --> 00:01:51,638
+destination IP address. Let's say,
+171.5.6.7, alright? That's what I sort of
+
+24
+00:01:51,638 --> 00:01:55,127
+what, I want that IP address to be the
+destination address.
+
+25
+00:01:55,127 --> 00:02:01,100
+But I want to send it to this interface.
+So, at the link layer, I want to send it
+
+26
+00:02:01,100 --> 00:02:04,966
+to the gateway, but the destination IP
+address should be the destination IP
+
+27
+00:02:04,966 --> 00:02:07,779
+address I actually have off the internet
+at large.
+
+28
+00:02:07,779 --> 00:02:10,873
+And so, my DHCP server, you know, it gives
+me this information.
+
+29
+00:02:10,872 --> 00:02:17,286
+Here's my gateway, etc. I fill this in,
+but the basic problem you encounter is
+
+30
+00:02:17,286 --> 00:02:19,931
+given the IP address of the gateway, or,
+in fact, of any of the nodes in my local
+
+31
+00:02:19,931 --> 00:02:24,151
+subnet, I need to know the link layer
+address that can properly address an
+
+32
+00:02:24,151 --> 00:02:31,075
+ethernet frame to and so, if the IP packet
+destination is actually the gateway IP,
+
+33
+00:02:31,075 --> 00:02:35,113
+then I want the destination IP
+address to be the gateway IP address,
+
+34
+00:02:35,113 --> 00:02:39,756
+and the destination ethernet address to be the gateway's ethernet address.
+
+35
+00:02:39,756 --> 00:02:41,767
+But if the packet destination is not the
+
+36
+00:02:41,767 --> 00:02:45,602
+gateway IP, it's somewhere in the larger
+internet, then I want the destination to
+
+37
+00:02:45,602 --> 00:02:50,350
+be my destination's IP address.
+I want the destination IP address to be, say,
+
+38
+00:02:50,350 --> 00:02:54,407
+Google's IP address but I want the
+ethernet, the link to our destination
+
+39
+00:02:54,407 --> 00:02:57,215
+address, to be the ethernet address of the
+gateway.
+
+40
+00:02:57,215 --> 00:03:02,127
+And so, how do I do this?
+How do I get the ethernet address of the
+
+41
+00:03:02,127 --> 00:03:03,448
+gateway?
+So, the answer is something called the
+
+42
+00:03:03,448 --> 00:03:05,986
+address, Address Resolution Protocol or
+ARP.
+
+43
+00:03:05,986 --> 00:03:09,794
+Basically, what ARP does is it generates
+mappings between layer two and layer three
+
+44
+00:03:09,794 --> 00:03:12,602
+addresses.
+It's a simple request reply protocol, so
+
+45
+00:03:12,602 --> 00:03:17,038
+what you do is you send a message saying,
+"Hey, who has address X? Who has network
+
+46
+00:03:17,038 --> 00:03:19,955
+address X?"
+And someone can respond, saying, "I have
+
+47
+00:03:19,955 --> 00:03:22,769
+network address X."
+There should be an exclamation point.
+
+48
+00:03:22,941 --> 00:03:28,168
+You send your request to link layer
+broadcast address, so everyone hears it.
+
+49
+00:03:28,168 --> 00:03:31,960
+The reply is sent unicast to the requesting
+address, not broadcast.
+
+50
+00:03:32,122 --> 00:03:36,183
+The packet format includes some redundant
+data like you say, your own ethernet
+
+51
+00:03:36,183 --> 00:03:39,434
+address, your own network address so that
+people who hear you ask a request can then
+
+52
+00:03:39,434 --> 00:03:42,888
+cache in the information. And it tells
+them, oh, that's the mapping. If I
+
+53
+00:03:42,888 --> 00:03:46,740
+ever need to talk to that IP address, that's
+the Ethernet address to go through.
+
+54
+00:03:46,740 --> 00:03:49,610
+This is also included to make debugging
+much simpler.
+
+55
+00:03:49,610 --> 00:03:52,743
+Furthermore, there's no sharing of bad
+state.
+
+56
+00:03:52,743 --> 00:03:57,800
+Nobody ever says what's the mapping between
+a link and a network address
+
+57
+00:03:57,800 --> 00:04:01,381
+Nobody ever says it except the owner of
+
+58
+00:04:01,381 --> 00:04:04,788
+that mapping. So, you never speak for
+anyone else's ethernet address or anyone
+
+59
+00:04:04,788 --> 00:04:09,437
+else's IP address.
+And so, if I know it's generating a bad
+
+60
+00:04:09,437 --> 00:04:13,117
+state and you turn it off or you stop it
+from generating bad state, that state will
+
+61
+00:04:13,117 --> 00:04:17,685
+eventually die right away it's not
+like people are going to continue, are
+
+62
+00:04:17,685 --> 00:04:23,048
+going to repeat it forever.
+So, the ARP packet looks like this and there is an
+
+63
+00:04:23,048 --> 00:04:29,154
+identifier saying, what is the hardware?
+So, let's say, ethernet and then what's the
+
+64
+00:04:29,154 --> 00:04:32,947
+protocol, let's say, IP.
+Then there's the length of a hardware
+
+65
+00:04:32,947 --> 00:04:38,203
+address and the length of a protocol address.
+And then the Opcode is "this is a request/
+
+66
+00:04:38,203 --> 00:04:41,965
+this is a response". And then, here are the
+four fields, or the five fields, the
+
+67
+00:04:41,965 --> 00:04:45,002
+source hardware, source protocol,
+destination hardware, destination
+
+68
+00:04:45,002 --> 00:04:47,941
+protocol.
+And then, you can also embed data in the
+
+69
+00:04:47,941 --> 00:04:55,565
+ARP request, and response if you want.
+And so, the way this works is, if the
+
+70
+00:04:55,565 --> 00:05:01,065
+client wants to send a packet through the
+wider internet, it knows from DHCP
+
+71
+00:05:01,065 --> 00:05:07,520
+that the gateway is 192.168.0.1.
+And what it'll do is it will say, "ARP",
+
+72
+00:05:07,520 --> 00:05:16,792
+you know, "who is 192.168.0.1", and by the
+way, it's going to say, "oh, and I'm
+
+73
+00:05:16,792 --> 00:05:31,031
+192.168.0.3 with 68:A8:60:05:85:22".
+So now, anyone hearing this can put this
+
+74
+00:05:31,031 --> 00:05:33,794
+into their table.
+Then, the gateway will respond, saying,
+
+75
+00:05:33,794 --> 00:05:35,283
+"aha", you know, "I am,
+
+76
+00:05:35,283 --> 00:05:53,697
+I'm 192.168.0.1 and I have 0:18:E7:R3:CE:1A".
+Because that's the reply that comes back.
+
+77
+00:05:53,697 --> 00:05:56,968
+So, reverse ARP was kind of the opposite
+of this.
+
+78
+00:05:56,968 --> 00:06:01,524
+It's something that is completely obsolete
+and it's replaced by DHCP which is the way of
+
+79
+00:06:01,524 --> 00:06:05,146
+saying, hey, "I have a link address what's
+my network address?"
+
+80
+00:06:05,146 --> 00:06:09,935
+And so now, DHCP is what does this. Rather
+than say, "hey, this is my ethernet address,
+
+81
+00:06:09,935 --> 00:06:14,140
+what's my IP address", and you do an explicit
+request through the Dynamic Host
+
+82
+00:06:14,140 --> 00:06:17,587
+Configuration Protocol to say, hey, I
+would like an IP address.
+
+83
+00:06:17,587 --> 00:06:21,761
+And so, RARP is this thing which is nice to
+mention, ARP and RARP. But in practice,
+
+84
+00:06:21,761 --> 00:06:23,720
+RARP is not used today.
+

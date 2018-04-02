@@ -1,0 +1,9 @@
+1
+00:00:00,489 --> 00:00:05,870
+Here's a quiz. For each source, destination,
+and netmask, mark whether the destination
+
+2
+00:00:05,870 --> 00:00:07,660
+is in the same network as the source.
+

@@ -1,0 +1,845 @@
+1
+00:00:00,000 --> 00:00:04,250
+So, in this video on names and  addresses.
+I'm going to talk about the Dynamic Host
+
+2
+00:00:04,250 --> 00:00:08,386
+Configuration Protocol or DHCP,
+Something which you probably use every day
+
+3
+00:00:08,386 --> 00:00:12,422
+when you access the internet.
+So, if we take a step back and think about
+
+4
+00:00:12,423 --> 00:00:15,956
+what do we need to communicate with IP,
+with internet protocol,
+
+5
+00:00:15,957 --> 00:00:18,864
+There are basically three things that a
+host needs.
+
+6
+00:00:18,864 --> 00:00:22,853
+It needs first, an IP address.
+It needs an address which it can give to
+
+7
+00:00:22,853 --> 00:00:28,382
+other nodes for to send packets to and
+which it can put it own packets that nodes
+
+8
+00:00:28,382 --> 00:00:31,355
+know to send back to it.
+It needs a subnet mask.
+
+9
+00:00:31,355 --> 00:00:36,938
+So, it needs to know what nodes are on its
+own local subnet versus nodes it must
+
+10
+00:00:37,147 --> 00:00:42,312
+contact through a local gateway.
+Sound It also needs to know the gateway
+
+11
+00:00:42,312 --> 00:00:48,105
+router, such that if a node is not on the
+local subnet, what's the IP address of the
+
+12
+00:00:48,105 --> 00:00:52,640
+next hop, or the first hop towards
+destinations outside of the local subnet.
+
+13
+00:00:52,640 --> 00:00:57,915
+So, these are the three things that you
+have to have in order to communicate with
+
+14
+00:00:57,915 --> 00:01:01,888
+IP on internet as a whole.
+In addition, often it's very useful to
+
+15
+00:01:01,888 --> 00:01:07,294
+have this fourth thing, which is the IP
+address of the domain name service, server
+
+16
+00:01:07,294 --> 00:01:11,658
+or domain name system server.
+This is basically where, what allows you to
+
+17
+00:01:11,658 --> 00:01:15,044
+translate names like www.cnn.com into an
+IP address.
+
+18
+00:01:15,044 --> 00:01:20,059
+And so, you do not need this per se, to
+communicate here with IP if you just know
+
+19
+00:01:20,059 --> 00:01:24,684
+the IP address, but it is very, very
+useful for most applications and for
+
+20
+00:01:24,684 --> 00:01:26,943
+people.
+So, there's this basic problem.
+
+21
+00:01:26,943 --> 00:01:30,730
+You take, you buy a new computer, and you
+plug it into a network.
+
+22
+00:01:30,730 --> 00:01:35,420
+You need these three things, and hopefully
+this fourth one, how do you get them?
+
+23
+00:01:35,420 --> 00:01:41,721
+How do you get these values?
+So, in the old days, like actually when I
+
+24
+00:01:41,721 --> 00:01:45,866
+was, my first year in college, you'd get
+them from your system administrator.
+
+25
+00:01:45,866 --> 00:01:48,430
+So, you'd fill out a request for a network
+tap.
+
+26
+00:01:48,430 --> 00:01:55,934
+And then a couple days later, you get a
+slip of paper, which had your, important
+
+27
+00:01:55,934 --> 00:01:58,615
+values.
+It had your IP address,
+
+28
+00:01:58,615 --> 00:02:04,243
+It had your subnet mask,
+It had your gateway address, and it had
+
+29
+00:02:04,243 --> 00:02:09,693
+the DNS server address.
+And so, you get this slip of paper with
+
+30
+00:02:09,693 --> 00:02:15,590
+these four things on it, and a sheet of
+usually a photocopy saying,
+
+31
+00:02:15,773 --> 00:02:20,850
+Okay, take these values and here's how you
+open up your control panel and type them
+
+32
+00:02:20,850 --> 00:02:23,941
+in here.
+And that was basically how you'd configure a
+
+33
+00:02:23,941 --> 00:02:26,790
+machine.
+So, this is, I did at Brown when I went
+
+34
+00:02:26,790 --> 00:02:31,684
+there as an undergraduate in 1995.
+By the time I graduated though, they moved
+
+35
+00:02:31,684 --> 00:02:34,502
+on.
+So, as you imagine, on one hand, this can
+
+36
+00:02:34,502 --> 00:02:40,171
+work, but it has all kinds of problems.
+If your machine moves, like if I take my
+
+37
+00:02:40,171 --> 00:02:45,638
+machine and I move it to a friend's a
+friend's room, it no longer works because
+
+38
+00:02:45,638 --> 00:02:50,902
+that particular machine was configured for
+that particular tap in the network
+
+39
+00:02:50,902 --> 00:02:53,509
+topology.
+So, this question is, how long it lasts?
+
+40
+00:02:53,509 --> 00:02:57,678
+So, I, back then when you fill out this
+slip of paper, it lasted a year.
+
+41
+00:02:57,678 --> 00:03:02,304
+And, in fact, if you didn't request it by
+a certain point of the year, you couldn't
+
+42
+00:03:02,304 --> 00:03:05,160
+get one.
+So, these addresses and configurations are
+
+43
+00:03:05,160 --> 00:03:10,915
+given out on a yearly basis.
+One final question is, how do you collect
+
+44
+00:03:10,915 --> 00:03:14,106
+unused entries?
+So, if I only want a machine for, you
+
+45
+00:03:14,106 --> 00:03:19,175
+know, plug in my machine for three days,
+does this mean that I have to allocate an
+
+46
+00:03:19,175 --> 00:03:21,866
+entry for an entire year?
+The answer is yes.
+
+47
+00:03:21,866 --> 00:03:25,120
+And so, while this works, it's remarkably
+inefficient.
+
+48
+00:03:25,120 --> 00:03:29,366
+So, the approach that computers use today
+and this is what was Brown started using
+
+49
+00:03:29,366 --> 00:03:33,716
+by the time I graduated across the entire
+campus is something called DHCP, the
+
+50
+00:03:33,716 --> 00:03:36,719
+Dynamic Host Configuration Protocol
+specified in RFC 2131.
+
+51
+00:03:36,719 --> 00:03:40,447
+Basic idea is, a machine, when it
+connects to a network, can request it's
+
+52
+00:03:40,447 --> 00:03:44,901
+configuration from a DHCP server. and if
+you can just request your configuration,
+
+53
+00:03:44,901 --> 00:03:48,836
+say, what's my I.P address? What's my
+subnet mask? What's my Gateway? What's my
+
+54
+00:03:48,836 --> 00:03:52,066
+DNS server?
+This turns out to solve the three major
+
+55
+00:03:52,066 --> 00:03:54,900
+problems outlined.
+If you move, well, you just do a
+
+56
+00:03:54,900 --> 00:03:57,845
+re-request.
+You're in a different part of the network,
+
+57
+00:03:57,845 --> 00:04:01,671
+You need a different configuration. For
+the duration, how long it lasts.
+
+58
+00:04:01,671 --> 00:04:05,758
+Well, when the DHCP server gives you a
+configuration, it's associated with the
+
+59
+00:04:05,758 --> 00:04:08,339
+lease.
+Saying, the configuration is this good for
+
+60
+00:04:08,339 --> 00:04:11,081
+this long.
+And then, if you're nearing the end of
+
+61
+00:04:11,081 --> 00:04:15,437
+that lease, you can re-request the same
+configuration, and usually the server will
+
+62
+00:04:15,437 --> 00:04:18,179
+give it to you.
+So, there's a way to renew the lease.
+
+63
+00:04:18,178 --> 00:04:20,974
+These leases then make garbage collection
+very easy.
+
+64
+00:04:20,975 --> 00:04:25,170
+Because if somebody doesn't re-request it,
+you can reclaim say, that IP address.
+
+65
+00:04:25,170 --> 00:04:31,377
+And so, the basic interaction, the basic
+packet exchange that you see in DHCP is,
+
+66
+00:04:31,377 --> 00:04:36,190
+there's a basic four step exchange.
+And then, there's this optional release.
+
+67
+00:04:36,369 --> 00:04:41,307
+So when a node first joins the network and
+it had, knows nothing about what's going
+
+68
+00:04:41,307 --> 00:04:45,710
+on, it sends out a discover message.
+I want to discover what DHCP servers are
+
+69
+00:04:45,710 --> 00:04:48,923
+out there and what configurations they
+might give you.
+
+70
+00:04:48,923 --> 00:04:53,624
+So, the client sends a discover.
+Then, the DNS, sorry the DHCP servers that
+
+71
+00:04:53,624 --> 00:04:56,301
+can hear that discover respond with an
+offer.
+
+72
+00:04:56,301 --> 00:05:00,228
+So, here are the servers.
+And more than one server can be connected
+
+73
+00:05:00,228 --> 00:05:04,691
+and you might get more than one offer.
+And they'll say, here, I'm going to offer
+
+74
+00:05:04,691 --> 00:05:08,550
+you this configuration.
+The client then selects one of the
+
+75
+00:05:08,550 --> 00:05:14,385
+configurations, and sends a request to the
+originating DHCP server saying, well, I'd
+
+76
+00:05:14,385 --> 00:05:18,156
+like to request that configuration you
+offered me.
+
+77
+00:05:18,156 --> 00:05:22,306
+And then the server sends an
+acknowledgment saying, I acknowledge you
+
+78
+00:05:22,306 --> 00:05:26,089
+can have that configuration.
+This configuration is now valid for the
+
+79
+00:05:26,089 --> 00:05:30,586
+duration of its lease.
+And a client can release it early if it
+
+80
+00:05:30,586 --> 00:05:35,644
+wants to or, if the lease starts to reach
+the end, it does a re request.
+
+81
+00:05:35,644 --> 00:05:41,063
+So, the request mechanism is both in
+response to an offer but also a way to
+
+82
+00:05:41,063 --> 00:05:44,965
+renew a lease.
+So, let's walk through an example with a
+
+83
+00:05:44,965 --> 00:05:49,517
+client and two servers.
+The first step a client connects to the
+
+84
+00:05:49,517 --> 00:05:53,780
+network and it sends a DHCP discover
+message as a broadcast.
+
+85
+00:05:53,780 --> 00:05:58,447
+These are broadcast.
+Server A and server B both hear this
+
+86
+00:05:58,447 --> 00:06:02,787
+message.
+There happens to be two DHCP servers that
+
+87
+00:06:02,787 --> 00:06:08,928
+can hear the, the discover broadcast.
+And let's say, both respond with offers
+
+88
+00:06:08,928 --> 00:06:14,414
+for different configurations.
+So, here's a offer, offer B and offer A.
+
+89
+00:06:14,414 --> 00:06:19,370
+The client seeing these two offers, decides
+that it wants offer B.
+
+90
+00:06:19,370 --> 00:06:23,680
+And so, it then sends a request to B
+saying, I would like to request the
+
+91
+00:06:23,680 --> 00:06:27,874
+configuration that you offered me.
+Server B can then acknowledge and say,
+
+92
+00:06:27,874 --> 00:06:31,194
+okay you have it.
+Server A doesn't hear a request for the
+
+93
+00:06:31,194 --> 00:06:34,515
+offer and so at some point then that offer
+will time out.
+
+94
+00:06:34,515 --> 00:06:38,650
+Now client A is configured, it has an IP
+address, it has all it needs to
+
+95
+00:06:38,650 --> 00:06:45,055
+communicate.
+If the, the lease on this offer gets close
+
+96
+00:06:45,055 --> 00:06:51,488
+to an end it can re-request and say,
+receive an acknowledgement.
+
+97
+00:06:51,488 --> 00:06:54,425
+It will, you know, do this, you know, well before
+the lease expires.
+
+98
+00:06:54,583 --> 00:06:58,727
+So now the lease has been extended. And
+then, it can also optionally send what's
+
+99
+00:06:58,727 --> 00:07:01,664
+called a release, and say, oh, actually
+I'm done with this.
+
+100
+00:07:01,664 --> 00:07:05,650
+I'm practice, clients often don't do this,
+they just let the lease expire. But,
+
+101
+00:07:05,650 --> 00:07:09,165
+sometimes you see it in your control panel
+and you can say release.
+
+102
+00:07:09,165 --> 00:07:12,050
+And I'll, I'll show you an example on a
+Mac in a second.
+
+103
+00:07:12,050 --> 00:07:15,040
+So, here is a basic DHCP sequence, or
+exchange of messages..
+
+104
+00:07:16,176 --> 00:07:21,745
+So, I've said you send these messages.
+What do these messages look like?
+
+105
+00:07:21,745 --> 00:07:25,565
+The issue here is, you're trying to
+bootstrap IP.
+
+106
+00:07:25,565 --> 00:07:31,850
+You're trying to get the, the beginning IP
+configuration before you have any IP
+
+107
+00:07:31,850 --> 00:07:36,385
+information.
+And so, the way it works is a client sends
+
+108
+00:07:36,385 --> 00:07:41,080
+UDP packets to port 67,
+that's the DHCP port, from port 68.
+
+109
+00:07:41,080 --> 00:07:45,017
+And it sends these packets.
+It doesn't know the IP address of the DHCP
+
+110
+00:07:45,017 --> 00:07:49,629
+server so it sends them to the broadcast
+IP address and also makes them come from
+
+111
+00:07:49,629 --> 00:07:52,947
+the broadcast IP address because it
+doesn't have an IP address.
+
+112
+00:07:52,947 --> 00:07:57,390
+In, cases where the DHCP servers not
+on the exact same link, you can have
+
+113
+00:07:57,390 --> 00:08:02,002
+relays that will forward it across links.
+And most switches, etc., will actually
+
+114
+00:08:02,002 --> 00:08:05,940
+just forward broadcast packets across all
+of their, all of their ports.
+
+115
+00:08:05,940 --> 00:08:10,813
+And so, the way you bootstrap this is to
+use the special IP address, communicate
+
+116
+00:08:10,813 --> 00:08:14,700
+using UDP packets.
+Then, once a node has received its
+
+117
+00:08:14,700 --> 00:08:18,340
+configuration, it now can bootstrap with
+its own IP address.
+
+118
+00:08:18,780 --> 00:08:23,870
+And so, this is then the message exchange
+that we see.
+
+119
+00:08:23,870 --> 00:08:27,368
+So, to start with my iMac issuing a DHCP
+discover.
+
+120
+00:08:27,368 --> 00:08:33,148
+It sends this, so here's my source
+Ethernet address 04.54.53.10.78.e4, and it
+
+121
+00:08:33,148 --> 00:08:37,330
+sends it to the Ethernet broadcast
+address, so all once.
+
+122
+00:08:37,330 --> 00:08:40,981
+The source address is 0.0.0.0, source IP
+address.
+
+123
+00:08:40,981 --> 00:08:44,479
+The destination IP address is
+255.255.255.255.
+
+124
+00:08:44,479 --> 00:08:49,422
+And you can see it's sending it from
+source port UDP port eight, 68 to
+
+125
+00:08:49,422 --> 00:08:54,137
+destination port 67.
+And if you look inside this message right,
+
+126
+00:08:54,137 --> 00:09:02,577
+this is basically is just the basic DHCP
+discover message. Sends it once, doesn't
+
+127
+00:09:02,577 --> 00:09:04,442
+hear anything. So, it retries after a
+second,
+
+128
+00:09:04,442 --> 00:09:07,610
+Doesn't hear anything. So, it retries
+after another 2-1/2 seconds,
+
+129
+00:09:07,610 --> 00:09:13,013
+Then hears two offers.
+Which, perhaps, might be a response to
+
+130
+00:09:13,013 --> 00:09:16,584
+these two different, discovers.
+Who knows?
+
+131
+00:09:16,584 --> 00:09:23,962
+Since they the same transaction ID. So this
+first offer is sent from 10.33.0.2 to IP
+
+132
+00:09:23,962 --> 00:09:27,691
+address 10.33.1.94.
+The second one is 10.33.3.188.
+
+133
+00:09:27,691 --> 00:09:33,404
+But, if you look inside the Ethernet
+frame, these are being sent from, you
+
+134
+00:09:33,404 --> 00:09:38,403
+know, some device and they're being sent
+to my ethernet address.
+
+135
+00:09:38,403 --> 00:09:43,272
+So, these are offers that are sent in
+response to my discovery and you can also
+
+136
+00:09:43,272 --> 00:09:48,475
+tell by the transaction ID. And so, this
+is destined to this IP address because my
+
+137
+00:09:48,475 --> 00:09:51,429
+node knows that it does not have an IP
+address,
+
+138
+00:09:51,429 --> 00:09:54,760
+This turns to be part of, in fact, the
+information.
+
+139
+00:09:54,791 --> 00:09:59,311
+And so here, here's the reply, the offer.
+And there's all this configuration
+
+140
+00:09:59,311 --> 00:10:01,932
+information.
+It's basically saying, here.
+
+141
+00:10:01,932 --> 00:10:06,367
+I'm offering you, an IP address of
+10.33.1.94 which maps up here,
+
+142
+00:10:06,367 --> 00:10:08,920
+10.33.1.94.
+And same in the second one,
+
+143
+00:10:08,920 --> 00:10:12,078
+You'd see that it was offering 10.33.
+3.188.
+
+144
+00:10:12,078 --> 00:10:17,433
+So, you've got two different IP addresses
+and not one. turns that all kinds of
+
+145
+00:10:17,433 --> 00:10:21,353
+options in this message.
+It's also going to tell me the subnet
+
+146
+00:10:21,353 --> 00:10:24,874
+mask, 255 255.48.0.
+It's also going to tell me the router,
+
+147
+00:10:24,874 --> 00:10:28,129
+10.33.0.1.
+And, its also going to tell me domain name
+
+148
+00:10:28,129 --> 00:10:31,185
+server.
+It's going to tell me that my domain name
+
+149
+00:10:31,185 --> 00:10:35,371
+server is here's three servers I can use,
+171.64.7. 55,121, and 99.
+
+150
+00:10:35,371 --> 00:10:39,423
+It's going to tell me the domain name, oh,
+you're in stanford.edu.
+
+151
+00:10:39,423 --> 00:10:44,738
+And so, that's what these offers contain.
+All this information which I can use to
+
+152
+00:10:44,738 --> 00:10:50,366
+configure my host when it starts up.
+Then, in response when these offers, I
+
+153
+00:10:50,366 --> 00:10:54,087
+send a, my device sends a DHCP request,
+Right?
+
+154
+00:10:54,087 --> 00:11:00,074
+And, so now, it's sending, again here's my
+address sending as a broadcast, it
+
+155
+00:11:00,074 --> 00:11:05,333
+broadcasts its request.
+And if we look which IP address did it
+
+156
+00:11:05,333 --> 00:11:08,815
+choose?
+Right? So, here's all this information,
+
+157
+00:11:08,815 --> 00:11:12,552
+all these flags, options.
+So, parameter request list.
+
+158
+00:11:12,552 --> 00:11:18,682
+So, I'm requesting a certain subnet mask,
+router, a certain subnet mask, a certain
+
+159
+00:11:18,682 --> 00:11:21,597
+router, domain name, server, etc. etc.
+etc.
+
+160
+00:11:23,092 --> 00:11:28,474
+And so we can see here, that my node ended
+up requesting the first offer,
+
+161
+00:11:28,474 --> 00:11:28,474
+So 10.33.1.94.
+And it also ended up requesting, a host
+
+162
+00:06:24,686 --> 00:11:37,043
+name, Phillip's iMac.
+And so it's saying, hey, I would like to
+
+163
+00:11:37,043 --> 00:11:42,509
+respond to the request.
+I would like to request the off, the offer
+
+164
+00:11:42,509 --> 00:11:48,215
+that you made for 10.33.1.94.
+Then, the DHCP server acknowledges that
+
+165
+00:11:48,215 --> 00:11:52,475
+and all is well.
+And so, now we open up my network control
+
+166
+00:11:52,475 --> 00:11:57,450
+panel, and we look.
+We look at what, my configuration is,
+
+167
+00:11:57,450 --> 00:12:03,253
+that's in fact, what we see.
+So, my IP address is 10.33.1.94.
+
+168
+00:12:03,253 --> 00:12:08,556
+My subnet mask is 255.255.248.0,
+My router is 10.33.0.1.
+
+169
+00:12:08,556 --> 00:12:15,459
+And, if we're to check, my host name would
+be philipsimac.stanford.edu.
+

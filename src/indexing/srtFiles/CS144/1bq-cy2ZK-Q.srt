@@ -1,0 +1,353 @@
+1
+00:00:00,000 --> 00:00:04,503
+So, in this video, I'm going to talk about
+wireless media access control and why it
+
+2
+00:00:04,503 --> 00:00:08,665
+is that the media access control
+algorithms we see in wired systems, like
+
+3
+00:00:08,665 --> 00:00:12,940
+CSMA, Carrier Sense Multiple Access, CD,
+Collision Detection, don't work in
+
+4
+00:00:12,940 --> 00:00:15,790
+wireless.
+So, recall the basic goals of the
+
+5
+00:00:15,790 --> 00:00:20,066
+media access control protocol.
+There are essentially three:
+
+6
+00:00:20,066 --> 00:00:24,410
+you want to arbitrarily control the
+channel, who gets to transmit when while
+
+7
+00:00:24,410 --> 00:00:26,297
+simultaneously trying to achieve three
+things.
+
+8
+00:00:26,298 --> 00:00:29,418
+And generally, you can't achieve all of
+them simultaneously, so you trade off
+
+9
+00:00:29,418 --> 00:00:31,635
+between them.
+So, the first is that if there's only one
+
+10
+00:00:31,635 --> 00:00:34,550
+node that wants to transmit, it should be
+able to get 100% of the medium.
+
+11
+00:00:34,550 --> 00:00:38,762
+The second goal is that if you have
+multiple nodes trying to transmit, they
+
+12
+00:00:38,762 --> 00:00:42,020
+should each get a fair share of the
+medium, so, say, one nth.
+
+13
+00:00:42,020 --> 00:00:44,733
+Finally,
+If there's lots of nodes contending, you'd
+
+14
+00:00:44,733 --> 00:00:47,272
+like it that the medium is being used
+heavily.
+
+15
+00:00:47,272 --> 00:00:51,633
+So, if that one nth is only one thousandth
+of the medium, that's not very useful.
+
+16
+00:00:51,633 --> 00:00:55,884
+So, these are the three goals that we have
+in a media access control protocol.
+
+17
+00:00:55,884 --> 00:00:58,630
+So, recall that Ethernet, CSMA/CD, Carrier
+
+18
+00:00:58,630 --> 00:01:04,211
+Sense Multiple Access Collision Detection
+has a simple approach on transmission.
+
+19
+00:01:04,489 --> 00:01:09,651
+You set a counter n if the channel is
+idle, you just sense the voltages on the
+
+20
+00:01:09,652 --> 00:01:13,837
+wire and you transmit.
+If it's busy you wait until it's idle for
+
+21
+00:01:13,837 --> 00:01:17,464
+96 bit times.
+It's this timing thing in Ethernet, and
+
+22
+00:01:17,464 --> 00:01:21,401
+then, you transmit.
+During a transmission, you can detect a
+
+23
+00:01:21,401 --> 00:01:25,547
+collision.  That is you hear, that you're
+transmitting some zeros and ones, but
+
+24
+00:01:25,547 --> 00:01:27,723
+what you hear is different than
+that,
+
+25
+00:01:27,723 --> 00:01:31,558
+That you hear some other ones, but you
+thought you were transmitting zeros.
+
+26
+00:01:31,558 --> 00:01:35,549
+So, if you detect a collision, the voltage
+is different than what you'd expect.
+
+27
+00:01:35,549 --> 00:01:40,057
+You wait 96 bit times and then if there's,
+sorry, if there's no collision, you just
+
+28
+00:01:40,057 --> 00:01:43,737
+wait 96 bit times, it transmitted fine and
+you will then transmit again.
+
+29
+00:01:43,737 --> 00:01:48,142
+If you do detect a collision, then
+you send a jam signal so everyone knows
+
+30
+00:01:48,142 --> 00:01:52,271
+there is a collision just to be sure.
+And then, you backoff, and this backoff is
+
+31
+00:01:52,271 --> 00:01:56,111
+exponentially increasing.
+And you check the channel again.
+
+32
+00:01:56,111 --> 00:01:59,600
+So, there's this idea that you start
+transmitting.
+
+33
+00:01:59,600 --> 00:02:04,748
+If the channel is idle, if the channel,
+you hear a collision then you transfer it
+
+34
+00:02:04,748 --> 00:02:07,540
+into the jam signal and you back off and
+you wait.
+
+35
+00:02:07,540 --> 00:02:10,827
+So, in carrier sense multiple access
+collision detection
+
+36
+00:02:10,827 --> 00:02:14,921
+you can detect a collision.
+So, it turns out this approach does not
+
+37
+00:02:14,921 --> 00:02:17,775
+work on wireless.
+And the basic reason is this.
+
+38
+00:02:17,775 --> 00:02:22,613
+This step here, "if collision detected."
+The problem is that the transmitter is
+
+39
+00:02:22,613 --> 00:02:26,460
+transmitting a signal which is being
+received at the receiver.
+
+40
+00:02:27,340 --> 00:02:31,933
+The transmitter is going to hear its own
+signal at a really, really high signal
+
+41
+00:02:31,933 --> 00:02:34,593
+strength,
+You know, it's right next to itself.
+
+42
+00:02:34,593 --> 00:02:39,066
+But it can't necessarily hear what's
+happening at the receiver.  In a wired
+
+43
+00:02:39,066 --> 00:02:41,732
+network,
+Because there's so little attenuation over
+
+44
+00:02:41,732 --> 00:02:45,235
+distance, the receiver and transmitter
+share their observation of the
+
+45
+00:02:45,235 --> 00:02:47,875
+environment.
+You know,  if the receiver is
+
+46
+00:02:47,875 --> 00:02:51,682
+hearing a signal, then the transmitter is
+going to hear that signal as well, because
+
+47
+00:02:51,682 --> 00:02:54,981
+it's going to propagate along the wire
+with very little attenuation.
+
+48
+00:02:54,981 --> 00:02:58,281
+But that's not true in wireless.
+In wireless, it could be that the
+
+49
+00:02:58,281 --> 00:03:01,936
+interfering transmitting signal is too
+weak for the transmitter to hear.
+
+50
+00:03:01,936 --> 00:03:04,271
+So, let me show you an example
+of this.
+
+51
+00:03:04,271 --> 00:03:07,469
+So here, we have A, B, and C.
+And so, A is our transmitter, and it's
+
+52
+00:03:07,469 --> 00:03:12,985
+transmitting a packet to B.
+B is receiving this packet just fine.
+
+53
+00:03:12,985 --> 00:03:16,447
+Then simultaneously, C starts transmitting
+to B.
+
+54
+00:03:16,447 --> 00:03:21,383
+Now, B is able to hear C's signal,
+B is able to hear A's signal.
+
+55
+00:03:21,383 --> 00:03:24,624
+When they both arrive, it just hears
+garbage.
+
+56
+00:03:24,624 --> 00:03:29,191
+There's interference.
+But it turns out that C's signal, because
+
+57
+00:03:29,191 --> 00:03:35,010
+it's decaying with at least the
+square of the distance, is too weak for A
+
+58
+00:03:35,010 --> 00:03:39,036
+to hear.
+In particular, because A's own signal is
+
+59
+00:03:39,036 --> 00:03:43,790
+so powerful (it's shouting) and C is
+coming from far away,
+
+60
+00:03:43,790 --> 00:03:49,280
+even if C's signal was strong enough for A
+to hear, A can't hear C's signal over its
+
+61
+00:03:49,280 --> 00:03:54,182
+own because its signal is, say, way up
+here, you know, it's something like say,
+
+62
+00:03:54,182 --> 00:03:58,757
+-20 dBm, whereas C's signal's arriving
+at, say, -80 dBm.
+
+63
+00:03:58,757 --> 00:04:02,482
+A can't hear it.
+It's trying to hear a whisper, while it's
+
+64
+00:04:02,482 --> 00:04:04,051
+shouting.
+It can't do it.
+
+65
+00:04:04,051 --> 00:04:09,149
+This is different in contrast to a wire
+where C's signal will arrive, you know,
+
+66
+00:04:09,149 --> 00:04:14,574
+at, say, -21 dBm, it wouldn't attenuate
+very much at all, and so A would still be
+
+67
+00:04:14,574 --> 00:04:18,240
+able to hear it.
+And so, the problem here is that A can't
+
+68
+00:04:18,240 --> 00:04:21,515
+detect the collision at B.
+So, CSMA/CD doesn't work.
+
+69
+00:04:21,515 --> 00:04:26,756
+So, what this means in practice is that
+wireless networks, in order to be able to
+
+70
+00:04:26,756 --> 00:04:31,604
+respond to collisions, in order to get
+good utilization of the channel, use
+
+71
+00:04:31,604 --> 00:04:32,980
+different algorithms.
+

@@ -1,0 +1,936 @@
+1
+00:00:00,470 --> 00:00:03,500
+In this video, you’re going to learn about
+the service provided to applications by TCP
+
+2
+00:00:03,500 --> 00:00:09,379
+– the Transmission Control Protocol - which
+is used by over 95% of Internet applications.
+
+3
+00:00:09,380 --> 00:00:14,230
+TCP is almost universally used because it
+provides the reliable, end-to-end, bi directional
+
+4
+00:00:14,230 --> 00:00:17,980
+byte-stream service that almost all applications
+want.
+
+5
+00:00:17,980 --> 00:00:21,739
+TCP is an example of the transport layer.
+
+6
+00:00:21,740 --> 00:00:25,640
+When an application calls TCP, it hands it
+some bytes that it wants delivered to the
+
+7
+00:00:25,640 --> 00:00:29,679
+other end.
+TCP places these bytes into a TCP Segment,
+
+8
+00:00:29,679 --> 00:00:31,730
+and then takes it from there.
+
+9
+00:00:31,730 --> 00:00:37,730
+TCP hands the segment to the IP layer, which
+encapsulates it in an IP datagram. The IP
+
+10
+00:00:37,730 --> 00:00:41,850
+addresses are added.
+The IP datagram is handed to the Link Layer,
+
+11
+00:00:41,850 --> 00:00:46,119
+which builds the link frame, adds the Link
+address – for example, the Ethernet addresses
+
+12
+00:00:46,120 --> 00:00:50,889
+– and then sends it onto the wire.
+
+13
+00:00:50,890 --> 00:00:55,890
+When two applications use TCP, they establish
+a two-way communication channel between the
+
+14
+00:00:55,890 --> 00:01:02,590
+TCP peers at both ends. First TCP establishes
+a communication channel from A to B Then it
+
+15
+00:01:02,590 --> 00:01:04,989
+establishes a channel from B to A.
+
+16
+00:01:04,989 --> 00:01:09,940
+We call the two way communication a “connection”.
+At both ends of the connection, TCP keeps
+
+17
+00:01:09,940 --> 00:01:14,370
+a state machine to keep track of how the connection
+is doing. We’ll see how the state machine
+
+18
+00:01:14,370 --> 00:01:17,460
+works in a separate video.
+
+19
+00:01:17,460 --> 00:01:22,220
+The TCP connection is established using a
+3-way handshake between hosts A and B.
+
+20
+00:01:22,220 --> 00:01:26,830
+First of all, Host A sends a message to B
+indicating that the TCP layer at A wants to
+
+21
+00:01:26,830 --> 00:01:33,350
+establish a connection with the TCP layer
+at B. The message is called a SYN message,
+
+22
+00:01:33,350 --> 00:01:38,229
+which is short for synchronize, because A
+also sends along the base number it will use
+
+23
+00:01:38,229 --> 00:01:42,860
+to identify bytes in the byte stream. If it
+sends “0” then the numbers will start
+
+24
+00:01:42,860 --> 00:01:47,460
+at zero. If it sends “1,000” then they
+will start at 1,000.
+
+25
+00:01:47,460 --> 00:01:53,240
+B responds with what we call a SYN + ACK.
+B signals an ACK because B is acknowledging
+
+26
+00:01:53,240 --> 00:01:59,299
+A’s request and agreeing to establish the
+communication from A to B. The TCP layer at
+
+27
+00:01:59,299 --> 00:02:04,920
+B also sends a SYN back to A to indicate that
+the TCP layer at B wants to establish a connection
+
+28
+00:02:04,920 --> 00:02:09,700
+with the TCP layer at A. It sends a number
+too, indicating the starting number for the
+
+29
+00:02:09,699 --> 00:02:11,410
+byte stream.
+
+30
+00:02:11,410 --> 00:02:17,510
+Finally, A responds with an ACK to indicate
+that it is accepting the request for communication
+
+31
+00:02:17,510 --> 00:02:22,260
+in the reverse direction. The connection is
+now setup in both directions. They are now
+
+32
+00:02:22,260 --> 00:02:26,980
+ready to start sending data to each other.
+
+33
+00:02:26,980 --> 00:02:33,400
+The hosts send data to each other as if it
+is from a continuous stream of bytes.
+
+34
+00:02:33,400 --> 00:02:38,330
+Assume time is increasing from left to right
+and the stream of bytes next to A represents
+
+35
+00:02:38,330 --> 00:02:44,270
+the bytes it wants to send to B. The stream
+of bytes might exist in advance – for example,
+
+36
+00:02:44,270 --> 00:02:49,870
+they are read from an html file describing
+a static web page. Or it could be a stream
+
+37
+00:02:49,870 --> 00:02:54,739
+being generated on the fly – for example
+from a video camera. Either way, TCP sees
+
+38
+00:02:54,739 --> 00:02:57,400
+it as a stream of bytes.
+
+39
+00:02:57,400 --> 00:03:02,270
+Data from the application on A is delivered
+to the application at B. The TCP layers on
+
+40
+00:03:02,270 --> 00:03:07,209
+A and B work together to make sure the stream
+of bytes is delivered correctly in order to
+
+41
+00:03:07,209 --> 00:03:10,170
+the application at B.
+
+42
+00:03:10,170 --> 00:03:14,879
+The stream of bytes is delivered by TCP segments.
+
+43
+00:03:14,879 --> 00:03:20,270
+A puts bytes from the stream into a TCP segment,
+hands it to the IP layer which delivers it
+
+44
+00:03:20,270 --> 00:03:22,970
+to B.
+
+45
+00:03:22,970 --> 00:03:28,640
+The TCP layer at B extracts the bytes to recreate
+the byte stream and delivers them to the application
+
+46
+00:03:28,640 --> 00:03:30,610
+at B.
+
+47
+00:03:30,610 --> 00:03:35,209
+In practice, the TCP segment may need to be
+transmitted multiple times, in the case a
+
+48
+00:03:35,209 --> 00:03:39,860
+segment is dropped along the way, or if A
+doesn’t receive an acknowledgment.
+
+49
+00:03:39,860 --> 00:03:45,010
+The TCP segment can be a small as 1 byte – for
+example, if you are typing characters in an
+
+50
+00:03:45,010 --> 00:03:49,790
+ssh session, each character is sent one at
+a time, rather than waiting for the whole
+
+51
+00:03:49,790 --> 00:03:53,459
+segment to fill up.
+This isn’t very efficient when we have lots
+
+52
+00:03:53,459 --> 00:03:58,319
+of data to send; so we can fill the TCP segment
+all the way up to the maximum IP datagram
+
+53
+00:03:58,319 --> 00:04:00,480
+size.
+
+54
+00:04:00,480 --> 00:04:04,470
+When A and B have finished sending data to
+each other, they need to close the connection.
+
+55
+00:04:04,470 --> 00:04:08,310
+We say they “teardown” the connection,
+which means they tell each other they are
+
+56
+00:04:08,310 --> 00:04:14,269
+closing the connection and both ends can clean
+up the state associated with the state machine.
+
+57
+00:04:14,269 --> 00:04:19,070
+The TCP layer at Host A can close the connection
+by sending a FIN message, which is short for
+
+58
+00:04:19,070 --> 00:04:21,049
+FINISH.
+
+59
+00:04:21,048 --> 00:04:25,630
+Host B acknowledges that A no longer has data
+to send and stops looking for new data from
+
+60
+00:04:25,630 --> 00:04:32,630
+A. This closes down the data stream from A
+to B. But B might still have new data to send
+
+61
+00:04:33,190 --> 00:04:39,410
+to A and is not ready to close down the channel
+from B to A. So the message from B to A carrying
+
+62
+00:04:39,410 --> 00:04:45,930
+the ACK can also carry new data from B to
+A. B can keep sending new data to A as long
+
+63
+00:04:45,930 --> 00:04:48,940
+as it needs to.
+
+64
+00:04:48,940 --> 00:04:55,479
+Sometime later B finishes sending data to
+A, and now sends its own FIN to tell A they
+
+65
+00:04:55,479 --> 00:05:00,100
+can close the connection.
+Host A replies by sending an ACK to acknowledge
+
+66
+00:05:00,100 --> 00:05:04,840
+that the connection is now closed. Because
+both directions have finished, the connection
+
+67
+00:05:04,840 --> 00:05:09,880
+is now fully closed and the state can be safely
+removed.
+
+68
+00:05:09,880 --> 00:05:14,060
+Here is a table summarizing the services provided
+by TCP.
+
+69
+00:05:14,060 --> 00:05:20,190
+The first three are services TCP provides
+to the application. As we just saw, it provides
+
+70
+00:05:20,190 --> 00:05:24,180
+a reliable stream of bytes between two applications.
+
+71
+00:05:24,180 --> 00:05:30,580
+It uses four mechanisms to make the communication
+reliable – in other words, to make sure
+
+72
+00:05:30,580 --> 00:05:35,949
+the data is correctly delivered.
+When a TCP layer receives data, it sends an
+
+73
+00:05:35,949 --> 00:05:41,419
+acknowledgment back to the sender to let it
+know the data arrived correctly.
+
+74
+00:05:41,419 --> 00:05:46,699
+Checksums detect corrupted data. The TCP header
+carries a checksum covering the header and
+
+75
+00:05:46,699 --> 00:05:51,250
+the data inside the segment. The checksum
+is there to detect if the segment is corrupted
+
+76
+00:05:51,250 --> 00:05:56,340
+along the way, for example by a bit-error
+on the wire or by a memory fault inside a
+
+77
+00:05:56,340 --> 00:06:01,110
+router.
+Sequence numbers detect missing data. Every
+
+78
+00:06:01,110 --> 00:06:05,430
+segment’s header carries the sequence number
+- in the stream of bytes – of the first
+
+79
+00:06:05,430 --> 00:06:09,930
+byte in the segment. For example, if the two
+sides agree that the sequence numbers start
+
+80
+00:06:09,930 --> 00:06:15,350
+at 1,000 then the first segment will have
+a sequence number of 1,000. If the segment
+
+81
+00:06:15,350 --> 00:06:22,350
+carries 500 bytes of data then the next segment
+will carry the sequence number 1,500. If a
+
+82
+00:06:22,460 --> 00:06:26,810
+segment gets lost, then the sequence number
+will be incorrect and the TCP layer knows
+
+83
+00:06:26,810 --> 00:06:31,169
+some data is missing. It is possible it will
+show up later – perhaps it took a longer
+
+84
+00:06:31,169 --> 00:06:35,250
+path – or it might have gone missing, in
+which case the sender will need to resend
+
+85
+00:06:35,250 --> 00:06:41,100
+the data.
+Flow-control prevents overrunning the receiver.
+
+86
+00:06:41,100 --> 00:06:47,610
+If Host A is much faster than Host B then
+it’s possible for Host A to overwhelm Host
+
+87
+00:06:47,610 --> 00:06:54,169
+B by sending data so fast that Host B can’t
+keep up. TCP prevents this from happening
+
+88
+00:06:54,169 --> 00:07:00,220
+using something we call flow-control. In TCP,
+the receiver keeps telling the sender if it
+
+89
+00:07:00,220 --> 00:07:05,039
+can keep sending; specifically, it tells the
+sender how much room it has in its buffers
+
+90
+00:07:05,039 --> 00:07:11,539
+to accept new data. If Host B is falling behind,
+the space drops – possibly all the way to
+
+91
+00:07:11,539 --> 00:07:18,539
+zero. When it has more room, it tells A and
+it can send more data.
+
+92
+00:07:18,759 --> 00:07:25,350
+TCP delivers data to the application in the
+right sequence; in other words, whatever sequence
+
+93
+00:07:25,350 --> 00:07:31,360
+the data was delivered from the application
+to TCP at host A, this is the same order in
+
+94
+00:07:31,360 --> 00:07:37,930
+which it is sent from TCP to the application
+at B. If segments arrive out of order, the
+
+95
+00:07:37,930 --> 00:07:43,150
+TCP layer re-sequences them to the correct
+order, using the sequence number.
+
+96
+00:07:43,150 --> 00:07:49,900
+Finally, TCP provides a service to the whole
+network by controlling congestion. TCP tries
+
+97
+00:07:49,900 --> 00:07:55,699
+to divide up the network capacity equally
+among all the TCP connections using the network.
+
+98
+00:07:55,699 --> 00:07:59,900
+The congestion control mechanisms in TCP are
+very complicated and we’ll devote the whole
+
+99
+00:07:59,900 --> 00:08:06,169
+of Unit 4 to studying congestion control.
+
+100
+00:08:06,169 --> 00:08:12,050
+The TCP Segment header is much longer and
+more complicated than, say the IP and Ethernet
+
+101
+00:08:12,050 --> 00:08:17,410
+headers. That is because a TCP connection
+is reliable – In order to make the communication
+
+102
+00:08:17,410 --> 00:08:21,849
+reliable, the two ends of the connection need
+to exchange more information so they know
+
+103
+00:08:21,849 --> 00:08:25,520
+which bytes have arrived, which are missing,
+and the status of the connection.
+
+104
+00:08:25,520 --> 00:08:30,349
+Here is a quick summary of the most important
+fields in the TCP header. You don’t need
+
+105
+00:08:30,349 --> 00:08:34,869
+to remember the layout of the header, but
+you should learn what each field does. If
+
+106
+00:08:34,869 --> 00:08:41,349
+you need a reference, I’d recommend Wikipedia
+or the Kurose and Ross textbook.
+
+107
+00:08:41,349 --> 00:08:46,059
+The Destination port tells the TCP layer which
+application the bytes should be delivered
+
+108
+00:08:46,059 --> 00:08:51,410
+to at the other end. When a new connection
+starts up, the application tells TCP which
+
+109
+00:08:51,410 --> 00:08:56,860
+service to open a connection with. For example,
+if TCP is carrying web data, it uses port
+
+110
+00:08:56,860 --> 00:09:01,749
+80, which is the port number for TCP. You’ll
+learn more about port numbers later, but if
+
+111
+00:09:01,749 --> 00:09:07,639
+you are curious, you can look up the well
+known port numbers at the IANA website. Search
+
+112
+00:09:07,639 --> 00:09:12,999
+for IANA port numbers. You’ll find thousands
+of port numbers defined for different well
+
+113
+00:09:12,999 --> 00:09:18,189
+known services. For example, when we open
+a connection to an ssh server, we use destination
+
+114
+00:09:18,189 --> 00:09:25,119
+port 22. For smtp (the simple mail transfer
+protocol) we use port 23. Using a well known
+
+115
+00:09:25,119 --> 00:09:32,119
+port number lets Host B identify the application
+it should establish the connection with.
+
+116
+00:09:32,360 --> 00:09:36,959
+The Source port tells the TCP layer at the
+other end which port it should use to send
+
+117
+00:09:36,959 --> 00:09:42,860
+data back again. In our example, when Host
+B replies to Host A, it should place Host
+
+118
+00:09:42,860 --> 00:09:47,739
+A’s source port number in the destination
+port field, so that Host A’s TCP layer can
+
+119
+00:09:47,739 --> 00:09:54,679
+deliver the data to the correct application.
+When a new connection starts, the initiator
+
+120
+00:09:54,679 --> 00:10:00,749
+of the connection – in our case Host A – generates
+a unique source port number, so differentiate
+
+121
+00:10:00,749 --> 00:10:07,569
+the connection from any other connections
+between Host A and B to the same service.
+
+122
+00:10:07,569 --> 00:10:11,739
+The Sequence number indicates the position
+in the byte stream of the first byte in the
+
+123
+00:10:11,739 --> 00:10:17,049
+TCP Data field. For example, if the Initial
+Sequence number is 1,000 and this is the first
+
+124
+00:10:17,049 --> 00:10:17,989
+segment, then the Sequence number is 1,000.
+If the segment is 500 bytes long, then the
+
+125
+00:10:17,989 --> 00:10:20,239
+sequence number in the next segment will be
+1,500 and so on.
+
+126
+00:10:20,239 --> 00:10:25,089
+The Acknowledgment sequence number tells the
+other end which byte we are expecting next.
+
+127
+00:10:25,089 --> 00:10:29,970
+It also says that we have successfully received
+every byte up until the one before this byte
+
+128
+00:10:29,970 --> 00:10:36,049
+number. For example, if the Acknowledgment
+Sequence number is 751, it means we have received
+
+129
+00:10:36,049 --> 00:10:42,429
+every byte up to and including byte 750. Notice
+that there are sequence numbers for both directions
+
+130
+00:10:42,429 --> 00:10:47,610
+in every segment. This way, TCP piggybacks
+acknowledgments on the data segments traveling
+
+131
+00:10:47,610 --> 00:10:51,290
+in the other direction.
+
+132
+00:10:51,290 --> 00:10:56,670
+The 16 bit checksum is calculated over the
+entire header and data, and helps the receiver
+
+133
+00:10:56,670 --> 00:11:01,959
+detect corrupt data. For example, bit errors
+on the wire, or a faulty memory in a router.
+
+134
+00:11:01,959 --> 00:11:08,319
+You’ll learn more about error detection
+and checksums in a later video.
+
+135
+00:11:08,319 --> 00:11:15,319
+The Header Length field tells us how long
+the TCP header is. The TCP Options fields
+
+136
+00:11:15,559 --> 00:11:21,670
+are, well, optional. They carry extra, new
+header fields that were thought of and added
+
+137
+00:11:21,670 --> 00:11:27,089
+after the TCP standard was created. The Header
+Length field tells us how many option fields
+
+138
+00:11:27,089 --> 00:11:30,480
+are present. Usually there are none.
+
+139
+00:11:30,480 --> 00:11:34,569
+Finally, there are a bunch of Flags used to
+signal information from one end of the connection
+
+140
+00:11:34,569 --> 00:11:40,509
+to the other. The ACK flag tells us that the
+Acknowledgement sequence number is valid and
+
+141
+00:11:40,509 --> 00:11:44,929
+we are acknowledging all of the data up until
+this point. The SYN flag tells us that we
+
+142
+00:11:44,929 --> 00:11:50,049
+are signalling a synchronize, which is part
+of the 3way handshake to set up the connection.
+
+143
+00:11:50,049 --> 00:11:55,109
+And the FIN flag signals the closing of one
+direction of the connection. Finally, the
+
+144
+00:11:55,109 --> 00:12:01,749
+PSH flag tells the TCP layer at the other
+end to deliver the data immediately upon arrival,
+
+145
+00:12:01,749 --> 00:12:07,319
+rather than wait for more data. This is useful
+for short segments carrying time critical
+
+146
+00:12:07,319 --> 00:12:12,309
+data, such as a key stroke. We don’t want
+the TCP layer to wait to accumulate many keystrokes
+
+147
+00:12:12,309 --> 00:12:15,439
+before delivering them to the application.
+
+148
+00:12:15,439 --> 00:12:20,929
+A TCP connection is uniquely identified by
+five pieces of information in the TCP and
+
+149
+00:12:20,929 --> 00:12:25,999
+IP headers.
+The IP source and destination addresses uniquely
+
+150
+00:12:25,999 --> 00:12:32,999
+identify the end points, and the IP Protocol
+ID for TCP tells us the connection is TCP.
+
+151
+00:12:33,059 --> 00:12:38,079
+The TCP source and destination ports identify
+they application processes on the end hosts.
+
+152
+00:12:38,079 --> 00:12:44,389
+Together, at any instant, all 5 fields uniquely
+identify the TCP connection Internet-wide.
+
+153
+00:12:44,389 --> 00:12:51,389
+Now, the unique ID only holds if a few things
+hold. First, we need to make sure Host A – the
+
+154
+00:12:53,119 --> 00:12:58,720
+initiator of the connection - picks a unique
+source port ID. We need to make sure it doesn’t
+
+155
+00:12:58,720 --> 00:13:02,519
+accidentally pick the same source port number
+it is already using with another connection
+
+156
+00:13:02,519 --> 00:13:08,989
+to the same service on Host B. Host A uses
+a simple method to minimize the chances: It
+
+157
+00:13:08,989 --> 00:13:14,009
+increments the source port number for every
+new connection. The field is 16bits, so it
+
+158
+00:13:14,009 --> 00:13:18,519
+takes 64k new connections before the field
+wraps round.
+
+159
+00:13:18,519 --> 00:13:24,259
+There is also a very slight danger that if
+Host A suddenly creates a lot of new connections
+
+160
+00:13:24,259 --> 00:13:29,709
+to Host B it might still wrap around and try
+to create two connections with the same global
+
+161
+00:13:29,709 --> 00:13:35,069
+ID. If this happened, the bytes from one connection
+might become confused with the bytes from
+
+162
+00:13:35,069 --> 00:13:39,639
+another connection. This could happen, for
+example, if a TCP segment somehow lived for
+
+163
+00:13:39,639 --> 00:13:44,509
+a long time in the network, stuck inside a
+router buffer or circulating in a temporary
+
+164
+00:13:44,509 --> 00:13:46,269
+loop.
+
+165
+00:13:46,269 --> 00:13:51,230
+To reduce the chances of confusion, the TCP
+connections initialize with a random initial
+
+166
+00:13:51,230 --> 00:13:56,699
+sequence number to refer to bytes in the byte
+stream. While not totally fool proof, it does
+
+167
+00:13:56,699 --> 00:14:02,809
+reduce the chances of confusion. When Host
+A initiates the connection to B, it includes
+
+168
+00:14:02,809 --> 00:14:09,059
+the initial sequence number if will use in
+the stream of bytes from A to B. When B replies
+
+169
+00:14:09,059 --> 00:14:15,169
+and initiates the connection from B to A,
+it supplies its own initial sequence number
+
+170
+00:14:15,169 --> 00:14:17,259
+for the stream of bytes from B to A.
+
+171
+00:14:17,259 --> 00:14:24,259
+And so to summarize how sequence numbers work…..
+The sequence number in a segment from A to
+
+172
+00:14:27,559 --> 00:14:34,350
+B includes the sequence number of the first
+byte, offset by the initial sequence number.
+
+173
+00:14:34,350 --> 00:14:39,649
+The acknowledgment sequence number in the
+segment from B back to A tells us which byte
+
+174
+00:14:39,649 --> 00:14:45,699
+B is expecting next, offset by A’s initial
+sequence number.
+
+175
+00:14:45,699 --> 00:14:50,899
+Let’s summarize how TCP port numbers work….
+
+176
+00:14:50,899 --> 00:14:57,899
+Imagine that Host B on the right offers two
+services: A Web Server and a Mail Server.
+
+177
+00:14:58,029 --> 00:15:02,850
+When the Web client – for example a Chrome
+browser on Host A – wants to request a page
+
+178
+00:15:02,850 --> 00:15:06,639
+from the Web server on B, it sends the data
+to TCP.
+
+179
+00:15:06,639 --> 00:15:11,519
+We’ll assume TCP has already established
+a connection with B, so now it just needs
+
+180
+00:15:11,519 --> 00:15:17,389
+to send the data. It creates a segment and
+uses destination port 80 to tell B it is requesting
+
+181
+00:15:17,389 --> 00:15:23,779
+the data be sent to the web server.
+Host A uses a locally generated source port
+
+182
+00:15:23,779 --> 00:15:27,790
+number for B to use when sending data and
+acknowledgments back again.
+
+183
+00:15:27,790 --> 00:15:34,790
+As usual, the TCP segment is encapsulated
+into an IP datagram and sent to B. The IP
+
+184
+00:15:36,669 --> 00:15:42,079
++ TCP headers carry the unique ID of the TCP
+connection.
+
+185
+00:15:42,079 --> 00:15:49,079
+When the IP datagram arrives at B, the TCP
+segment is removed. The TCP layer sees that
+
+186
+00:15:49,089 --> 00:15:55,209
+the segment is for port 80 and sends the data
+to the web server.
+
+187
+00:15:55,209 --> 00:16:00,769
+You’ll learn about other features of TCP
+in upcoming videos.
+
+188
+00:16:00,769 --> 00:16:06,079
+You’ll learn about window-based flow control
+and to stop us from overwhelming the receiver.
+
+189
+00:16:06,079 --> 00:16:11,720
+You’ll learn about retransmissions and timeouts
+and different methods to accomplish it.
+
+190
+00:16:11,720 --> 00:16:17,699
+And you’ll learn about Congestion Control
+in Unit 4.
+
+191
+00:16:17,699 --> 00:16:24,699
+In summary, TCP provides in-order, reliable
+delivery of a stream of bytes between application
+
+192
+00:16:24,970 --> 00:16:25,879
+processes.
+

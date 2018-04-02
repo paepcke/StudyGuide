@@ -1,0 +1,232 @@
+1
+00:00:01,589 --> 00:00:01,839
+Nick:
+
+2
+00:00:01,639 --> 00:00:05,970
+So in this unit we're going to be learning
+about network security. Usually when read
+
+3
+00:00:05,970 --> 00:00:11,010
+about the Internet and networks in the newspaper,
+it's because of some security vulnerability
+
+4
+00:00:11,010 --> 00:00:17,010
+that's been exploited or found. Of course
+we read about these exploits in software,
+
+5
+00:00:17,010 --> 00:00:22,240
+but sometimes you read about them at the infrastructure
+itself and these are usually exposed because
+
+6
+00:00:22,240 --> 00:00:28,480
+an individual, a company, or a country is
+attacking someone in order to discover or
+
+7
+00:00:28,480 --> 00:00:34,380
+tamper with their data. We're going to start
+by learning about the types of attack that
+
+8
+00:00:34,380 --> 00:00:37,800
+are quite common. There are many ways to attack
+a network, and you're going to be seeing a
+
+9
+00:00:37,800 --> 00:00:42,579
+collection of methods that work in a variety
+of ways. The first and most common one is
+
+10
+00:00:42,579 --> 00:00:47,540
+to simply eavesdrop, or listen, on someone's
+communication. In some networks, this is surprisingly
+
+11
+00:00:47,540 --> 00:00:52,059
+easy, and you're going to be surprised at
+some of the methods that people use and can
+
+12
+00:00:52,059 --> 00:00:57,180
+be used, and we'll even demonstrate some of
+these to you. You can either eavesdrop on
+
+13
+00:00:57,180 --> 00:01:02,550
+a broadcast network, like a wireless network,
+or you can force the network to expose or
+
+14
+00:01:02,550 --> 00:01:08,929
+broadcast in a way that will make it easier
+for you to hear. Another type of attack is
+
+15
+00:01:08,929 --> 00:01:14,659
+to masquerade or behave as if you're a piece
+of the infrastructure that is providing information
+
+16
+00:01:14,659 --> 00:01:21,659
+back to a sending host. For example, you can
+forge ARP responses, you can spoof the response
+
+17
+00:01:23,670 --> 00:01:29,560
+from a DHCP server or from a DNS server and
+cause a client to a place other than where
+
+18
+00:01:29,560 --> 00:01:35,459
+it was thinking of sending it. So you can
+either get the data redirected to you, or
+
+19
+00:01:35,459 --> 00:01:40,849
+you can look at it and pass it on, which is
+often called a man-in-the-middle attack, or
+
+20
+00:01:40,849 --> 00:01:45,259
+you can make it impossible for the sender
+to communicate with a particular part of the
+
+21
+00:01:45,259 --> 00:01:49,469
+network, and essentially censor or block a
+part of the network. Sometimes you're actually
+
+22
+00:01:49,469 --> 00:01:56,469
+about to hijack an entire end host and masquerade
+as an end host, and therefore completely terminate
+
+23
+00:01:56,759 --> 00:02:01,389
+the communication, for example to get someone's
+credit card information when they're performing
+
+24
+00:02:01,389 --> 00:02:07,559
+an e-commerce transaction. Another thing that
+you can do is prevent someone from being able
+
+25
+00:02:07,559 --> 00:02:11,009
+to communicate at all. This is usually called
+a denial of service attack, by overwhelming
+
+26
+00:02:11,008 --> 00:02:14,959
+the sender, or overwhelming a piece of the
+infrastructure, so that the communication
+
+27
+00:02:14,959 --> 00:02:16,650
+can no longer take place.
+
+28
+00:02:16,650 --> 00:02:16,989
+Phil:
+
+29
+00:02:16,989 --> 00:02:21,260
+So the Internet is dangerous. We're going
+to learn the three principles that you can
+
+30
+00:02:21,260 --> 00:02:25,780
+actually use to secure your network despite
+the fact that the Internet itself might be
+
+31
+00:02:25,780 --> 00:02:31,180
+insecure. First is confidentiality. This is
+the idea that we'd like to be able to communicate
+
+32
+00:02:31,180 --> 00:02:35,969
+securely, that is hidden from everyone else,
+despite the fact that they might be able to
+
+33
+00:02:35,969 --> 00:02:39,719
+see what we're saying. So if you have confidentiality,
+then you can communicate with another party,
+
+34
+00:02:39,719 --> 00:02:44,409
+and other people can observe this communication,
+but not be able to know what you're saying.
+
+35
+00:02:44,409 --> 00:02:49,890
+The second principle is integrity. So confidentially
+let's us communicate without people knowing
+
+36
+00:02:49,890 --> 00:02:53,989
+what we're saying, but people can still meddle
+with it. With integrity, we can be sure that
+
+37
+00:02:53,989 --> 00:02:58,670
+our communications aren't tampered with such
+that the message that, say, Nick sent to me,
+
+38
+00:02:58,670 --> 00:03:02,159
+was actually the message that Nick sent to
+me. It wasn't that somebody fussed with it
+
+39
+00:03:02,159 --> 00:03:08,739
+in between. The third principle is authenticity.
+Can I actually be sure that the other party
+
+40
+00:03:08,739 --> 00:03:13,069
+I'm talking with is whom they say they are?
+And it turns out there are some ways to do
+
+41
+00:03:13,069 --> 00:03:20,069
+this. But the basic techniques for both confidentiality,
+and integrity, and authenticity, uses cryptography.
+
+42
+00:03:20,739 --> 00:03:26,170
+Mathematical tools, and secrecy and codes.
+The idea is that if we use the right cryptographic
+
+43
+00:03:26,170 --> 00:03:32,099
+tools, then we can have secure communication,
+even over an insecure network like the Internet.
+
+44
+00:03:32,099 --> 00:03:36,060
+And so you're going to learn about some basic
+cryptographic tools, such as cryptographic
+
+45
+00:03:36,060 --> 00:03:41,040
+hashes, message authentication codes, symmetric
+ciphers, public key cryptography, certificates
+
+46
+00:03:41,040 --> 00:03:46,049
+and signatures, which are all used in the
+Internet today. And so by the end of this
+
+47
+00:03:46,049 --> 00:03:50,489
+unit, you should start to have a sense as
+to how should secure your network going forward.
+

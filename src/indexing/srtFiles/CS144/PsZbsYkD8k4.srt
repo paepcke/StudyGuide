@@ -1,0 +1,10 @@
+1
+00:00:01,079 --> 00:00:05,279
+With the forwarding table on the right, over
+which link will a router using longest prefix
+
+2
+00:00:05,279 --> 00:00:08,280
+match send packets with the following IP destination
+address?
+

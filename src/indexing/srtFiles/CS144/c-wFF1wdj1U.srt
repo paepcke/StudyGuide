@@ -1,0 +1,161 @@
+1
+00:00:00,590 --> 00:00:03,919
+For two parties to communicate, they need
+to agree on the messages they exchange.
+
+2
+00:00:03,919 --> 00:00:08,130
+If one party assumes messages are in Spanish
+and the other assumes they are in Cambodian,
+
+3
+00:00:08,130 --> 00:00:10,000
+they will not be able to communicate.
+
+4
+00:00:10,000 --> 00:00:13,780
+For computer communication, this means agreeing
+on what fields messages have, how they are
+
+5
+00:00:13,780 --> 00:00:16,650
+arranged and formatted, and how they are represented.
+
+6
+00:00:16,650 --> 00:00:20,830
+To generate a message to send, software typically
+has to create a copy of it in memory, which
+
+7
+00:00:20,830 --> 00:00:22,619
+it then passes to the networking card.
+
+8
+00:00:22,619 --> 00:00:26,810
+Similarly, when a computer receives a message,
+the networking card puts that message in memory,
+
+9
+00:00:26,810 --> 00:00:29,130
+which software can then access.
+
+10
+00:00:29,130 --> 00:00:32,460
+Understanding how this works and some of the
+pitfalls you can encounter is important if
+
+11
+00:00:32,460 --> 00:00:37,280
+you want to understand network protocols and
+write network protocol software.
+
+12
+00:00:37,280 --> 00:00:40,020
+So let's start with a simple model of computer
+memory.
+
+13
+00:00:40,020 --> 00:00:45,180
+In most computers today, memory is organized
+in terms of bytes: 8 bit chunks of memory.
+
+14
+00:00:45,180 --> 00:00:48,410
+A program has an address space, starting at
+address zero.
+
+15
+00:00:48,410 --> 00:00:52,510
+Most computers today are 64 bits: this means
+that memory addresses are 64 bits long, so
+
+16
+00:00:52,510 --> 00:00:56,820
+a computer has up to 2 to the 64 bytes, or
+18 sextillion bytes.
+
+17
+00:00:56,820 --> 00:01:00,890
+In practice, computers today do not have this
+much memory: they have gigabytes, which is
+
+18
+00:01:00,890 --> 00:01:01,719
+2 to the 30th.
+
+19
+00:01:01,719 --> 00:01:08,719
+In this example, our computer has 8 gigabytes
+of memory, so its largest address is the hexidecimal
+
+20
+00:01:09,509 --> 00:01:15,749
+value shown.
+
+21
+00:01:15,749 --> 00:01:19,619
+Software can access each byte of this memory,
+or access bytes in groups, such as loading
+
+22
+00:01:19,619 --> 00:01:25,069
+a 64-bit integer from 8 contiguous byte cells
+of memory in a single instruction.
+
+23
+00:01:25,069 --> 00:01:28,159
+But how does a computer represent a multibyte
+value?
+
+24
+00:01:28,159 --> 00:01:33,969
+Let's say we want to represent the number
+1,024, which in hexidecimal is 0x0400, or
+
+25
+00:01:33,969 --> 00:01:36,189
+4 times 256.
+
+26
+00:01:36,189 --> 00:01:43,029
+This value requires 16 bits, or two bytes.
+Which byte comes first: 0x00 or 0x04?
+
+27
+00:01:43,029 --> 00:01:48,619
+How you lay out a multibyte value in memory
+is called endianness, and there are two options.
+
+28
+00:01:48,619 --> 00:01:52,689
+In little endian, the least significant byte
+is at the lowest address.
+
+29
+00:01:52,689 --> 00:01:56,539
+So the least significant byte comes first
+in memory.
+
+30
+00:01:56,539 --> 00:02:00,509
+It turns out that from a computational and
+architectural standpoint, this can make the
+
+31
+00:02:00,509 --> 00:02:01,509
+most sense.
+
+32
+00:02:01,509 --> 00:02:06,209
+The other option is big endian, where the
+most significant byte is the lowest address.
+
+33
+00:02:06,209 --> 00:02:11,260
+Big endian makes more sense to a human reader,
+because it's how we write numbers, with the
+
+34
+00:02:11,260 --> 00:02:12,930
+most significant digits first.
+

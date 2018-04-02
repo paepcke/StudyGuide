@@ -1,0 +1,24 @@
+1
+00:00:00,489 --> 00:00:06,109
+Here’s a quiz. Suppose I decide I want to
+make Blowfish faster, and so cut it to just
+
+2
+00:00:06,109 --> 00:00:13,049
+one iteration. I feed it two plaintext blocks.
+The first plaintext block is all zeroes, which
+
+3
+00:00:13,049 --> 00:00:20,049
+my adversary somehow knows. It produces the
+first ciphertext. I feed it a second plaintext
+
+4
+00:00:20,250 --> 00:00:27,250
+block, which produces the second ciphertext.
+What is the value of L0 in the second plaintext
+
+5
+00:00:28,390 --> 00:00:28,750
+block?
+

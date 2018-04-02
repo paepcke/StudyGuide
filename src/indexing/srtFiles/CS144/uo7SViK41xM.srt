@@ -1,0 +1,200 @@
+1
+00:00:00,750 --> 00:00:06,839
+the answer to case 1 is 90 milliseconds. The
+setup is 20 milliseconds the ack request is
+
+2
+00:00:06,839 --> 00:00:13,839
+25 milliseconds and the response is 30 milliseconds.
+So 95 milliseconds total.
+
+3
+00:00:14,040 --> 00:00:21,040
+The answer to case 2 is 380 milliseconds.
+It takes 95 milliseconds to load the intial
+
+4
+00:00:21,789 --> 00:00:28,019
+page. It then takes 95 milliseconds to load
+image one. When Image one finishes,image 3
+
+5
+00:00:28,019 --> 00:00:28,900
+starts.
+
+6
+00:00:28,900 --> 00:00:33,669
+Meanwhile, image two is already in flight
+so thats 95 milliseconds.
+
+7
+00:00:33,670 --> 00:00:39,070
+When image 3 completes, that's another 95
+milliseconds, since image 2 has already completed.
+
+8
+00:00:39,070 --> 00:00:40,700
+Image 4 is in flight.
+
+9
+00:00:40,700 --> 00:00:47,700
+It takes a final 95 milliseconds for image
+5, for a total of 380 milliseconds.
+
+10
+00:00:47,930 --> 00:00:52,050
+Let's take a look at this pictorially, to
+see what's happening. This picture starts
+
+11
+00:00:52,050 --> 00:00:55,070
+after the first initial page request.
+
+12
+00:00:55,070 --> 00:00:58,520
+It's showing what happens as the client request
+images.
+
+13
+00:00:58,520 --> 00:01:05,390
+So we start at 95 milliseconds. There's a
+pair of SYN SYN/ACKs as the two connections
+
+14
+00:01:05,390 --> 00:01:06,450
+start their three-way handshake.
+
+15
+00:01:06,450 --> 00:01:13,450
+So 40 milliseconds later, at 135 milliseconds,
+the client sends request 1 at 135 milliseconds,
+
+16
+00:01:14,110 --> 00:01:18,890
+and request 2 at 140 milliseconds.
+
+17
+00:01:18,890 --> 00:01:24,700
+Request 1 arrives at the server at 165 milliseconds.
+20 milliseconds of latency and 5 milliseconds
+
+18
+00:01:24,700 --> 00:01:26,640
+of pavketization delay.
+
+19
+00:01:26,640 --> 00:01:33,159
+The server starts sending the response. It's
+sent one segment of the response, 1a, when
+
+20
+00:01:33,159 --> 00:01:35,189
+the second request arrives.
+
+21
+00:01:35,189 --> 00:01:42,189
+The response segments for the second request
+are enqueued and sent after response 1b.
+
+22
+00:01:42,509 --> 00:01:48,380
+Response 1b arrives at the client at 190 milliseconds.
+
+23
+00:01:48,380 --> 00:01:53,700
+At this point, the client opens a new connection
+through a three-way handshake, but note how
+
+24
+00:01:53,700 --> 00:01:55,329
+long this took.
+
+25
+00:01:55,329 --> 00:02:01,340
+The client is requesting the third image at
+190 milliseconds, 95 milliseconds after the
+
+26
+00:02:01,340 --> 00:02:04,130
+first request started.
+
+27
+00:02:04,130 --> 00:02:09,450
+because the second request is going in parallel,
+the client doesn't have to wait for it to
+
+28
+00:02:09,449 --> 00:02:11,430
+complete before starting the request.
+
+29
+00:02:11,430 --> 00:02:18,090
+It will start the fifth request immediately
+after the third one completes.
+
+30
+00:02:18,090 --> 00:02:25,069
+So these three rounds take on 95 milliseconds
+each. If we had requested six images, then
+
+31
+00:02:25,069 --> 00:02:29,810
+the final round would take 105 milliseconds.
+
+32
+00:02:29,810 --> 00:02:33,050
+Look at this figure carefully, until you understand
+what's going on.
+
+33
+00:02:33,050 --> 00:02:40,050
+As requests are delayed going out from queueing,
+they delay responses. As responses delay going
+
+34
+00:02:42,129 --> 00:02:45,519
+out from queueing, they delay further requests.
+
+35
+00:02:45,519 --> 00:02:50,400
+Over time, this causes the requests and responses
+to naturally space themselves out, reducing
+
+36
+00:02:50,400 --> 00:02:52,160
+queueing delay.
+
+37
+00:02:52,160 --> 00:02:58,090
+And because we have multiple operations in
+parallel, they can mask each other's latencies.
+
+38
+00:02:58,090 --> 00:03:01,950
+If you look at these numbers and think about
+them a bit, you should see that requesting
+
+39
+00:03:01,950 --> 00:03:07,319
+multiple resources in parallel doesn't take
+much longer than requesting a single resource.
+
+40
+00:03:07,319 --> 00:03:10,989
+There's additional packetization delay, but
+on most networks today, packetization delay
+
+41
+00:03:10,989 --> 00:03:12,970
+is a tiny fraction of the overall time.
+
+42
+00:03:12,970 --> 00:03:17,970
+A single request can't fill the network capacity,
+but many requests might be able to.
+
+43
+00:03:17,970 --> 00:03:20,890
+HTTP only allows a single connection per request
+though.
+

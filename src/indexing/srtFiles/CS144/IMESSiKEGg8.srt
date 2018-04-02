@@ -1,0 +1,540 @@
+1
+00:00:00,710 --> 00:00:02,920
+Nick:
+In this unit you learned a lot about packet
+
+2
+00:00:02,920 --> 00:00:06,220
+switching – this was an intense unit.
+
+3
+00:00:06,220 --> 00:00:10,860
+We started out with a look at why modern networks
+including the Internet are built on a foundation
+
+4
+00:00:10,860 --> 00:00:15,570
+of packet switching. Packet switching is simple
+in the sense that each packet is a self-contained
+
+5
+00:00:15,570 --> 00:00:22,319
+unit of data that carries information necessary
+for it to reach its destination. Packet switching
+
+6
+00:00:22,319 --> 00:00:27,220
+is efficient in the sense that it keeps a
+link busy whenever there is work to be done,
+
+7
+00:00:27,220 --> 00:00:33,559
+rather than have dedicated capacity reserved
+for each user or application. Packet switching
+
+8
+00:00:33,559 --> 00:00:38,289
+can potentially help the network recover quickly
+from failures: the simple forwarding paradigm,
+
+9
+00:00:38,289 --> 00:00:42,949
+with no per-flow state in each router, makes
+it easier to quickly route around link and
+
+10
+00:00:42,949 --> 00:00:45,609
+router failures.
+
+11
+00:00:45,609 --> 00:00:50,769
+Next we dived deep deep deep into some of
+the consequences of packet switching. This
+
+12
+00:00:50,769 --> 00:00:54,289
+took us on a journey that included more math
+than you will see in any other unit of this
+
+13
+00:00:54,289 --> 00:01:00,439
+course. Packet switching determines many of
+the timing and performance characteristics
+
+14
+00:01:00,440 --> 00:01:05,710
+of the Internet, and so you really need to
+have a strong understanding of packet dynamics.
+
+15
+00:01:05,710 --> 00:01:10,740
+The main mathematical ideas are not so complicated
+and it is worth mastering them now so you
+
+16
+00:01:10,740 --> 00:01:16,640
+can build a strong intuition. You now know
+why two packets traveling between the same
+
+17
+00:01:16,640 --> 00:01:21,979
+two end hosts might encounter a different
+delay. While the time they spend traversing
+
+18
+00:01:21,979 --> 00:01:26,439
+each link is the same, the packets might take
+different paths and experience different queueing
+
+19
+00:01:26,439 --> 00:01:33,289
+delays in the router buffers. It is absolutely
+crucial that you fully understand the three
+
+20
+00:01:33,289 --> 00:01:38,950
+main components of packet delay: the packetization
+delay, the propagation delay, and the queueing
+
+21
+00:01:38,950 --> 00:01:43,439
+delay; and that you understand the physical
+processes that cause them. You should get
+
+22
+00:01:43,439 --> 00:01:46,899
+into the habit of sketching and using the
+simple deterministic queue model that I taught
+
+23
+00:01:46,899 --> 00:01:51,289
+you. It’s a simple geometric construct that
+lets you visualize what is going on. It tells
+
+24
+00:01:51,289 --> 00:01:55,490
+us why routers have buffers, and gets us thinking
+about how big they should be. It tells us
+
+25
+00:01:55,490 --> 00:01:59,420
+why streaming applications need a playback
+buffer to give a smooth listening or viewing
+
+26
+00:01:59,420 --> 00:02:05,850
+experience for the user. We’ll use it later
+when we study congestion control.
+
+27
+00:02:05,850 --> 00:02:12,850
+We then used the simple deterministic model
+to learn how a network can go beyond just
+
+28
+00:02:13,900 --> 00:02:19,120
+simple FCFS packet delivery. A packet switched
+network can guarantee the rate that each flow
+
+29
+00:02:19,120 --> 00:02:23,080
+receives and even bound the delay a packet
+experiences from one end of the network to
+
+30
+00:02:23,080 --> 00:02:27,160
+the other. These required some careful thinking
+about; don’t worry if it took you a while
+
+31
+00:02:27,160 --> 00:02:32,890
+to get the hang of how they work as they are
+difficult concepts at first. They are also
+
+32
+00:02:32,890 --> 00:02:37,120
+important – if you can understand how a
+packet switched network can provide rate and
+
+33
+00:02:37,120 --> 00:02:42,660
+delay guarantees, then you have a strong understanding
+of how packet switching works.
+
+34
+00:02:42,660 --> 00:02:43,980
+Phil:
+
+35
+00:02:43,980 --> 00:02:46,010
+You learned a lot in this unit.
+
+36
+00:02:46,010 --> 00:02:52,120
+First, “Queueing delay and end-to-end delay”.
+You learned that the time it takes for a packet
+
+37
+00:02:52,120 --> 00:02:58,870
+to travel between two end hosts is determined
+by three components. First, we have to transmit
+
+38
+00:02:58,870 --> 00:03:03,430
+the packet over each link in turn. The time
+it takes to write the packet onto each link
+
+39
+00:03:03,430 --> 00:03:09,860
+is determined by the time to write each bit,
+multiplied by the number of bits in the packet.
+
+40
+00:03:09,860 --> 00:03:15,620
+We call this the packetization delay. Second,
+the bits have to propagate down the cable
+
+41
+00:03:15,620 --> 00:03:19,860
+or through the air to the other end of the
+link. The propagation delay is determined
+
+42
+00:03:19,860 --> 00:03:23,950
+by the speed of propagation (which is close
+to the speed of light) and the distance the
+
+43
+00:03:23,950 --> 00:03:30,830
+bits travel. Make sure the difference between
+propagation delay and packetization delay
+
+44
+00:03:30,830 --> 00:03:37,280
+are clear in your mind, because it’s a frequent
+cause for confusion. Third, the end to end
+
+45
+00:03:37,280 --> 00:03:42,850
+delay has a variable component, the queueing
+delay. Because the Internet uses packet switching,
+
+46
+00:03:42,850 --> 00:03:47,830
+the routers have buffers to hold packets during
+time of congestion, and so the queueing delay
+
+47
+00:03:47,830 --> 00:03:52,890
+depends on how busy the network is right now.
+Later, when we study wireless, you’ll see
+
+48
+00:03:52,890 --> 00:03:57,830
+that wireless links add more variability to
+the delay, because wireless links are noisy,
+
+49
+00:03:57,830 --> 00:04:04,370
+so packets frequently need to be retransmitted
+and can have changing packetization delays.
+
+50
+00:04:04,370 --> 00:04:09,040
+“Why streaming applications use a playback
+buffer”
+
+51
+00:04:09,040 --> 00:04:13,290
+Realtime streaming applications – such as
+Skype, YouTube and Netflix – need to deliver
+
+52
+00:04:13,290 --> 00:04:18,259
+continuous realtime voice and video to our
+ears and eyes, even though the network delivers
+
+53
+00:04:18,259 --> 00:04:25,259
+packets at unpredictable times. All streaming
+applications use a playback buffer to smooth
+
+54
+00:04:25,400 --> 00:04:30,300
+out the variations in packet delay, so they
+can play the video and audio to the user without
+
+55
+00:04:30,300 --> 00:04:35,900
+having to pause and wait for new data in the
+middle. You learned how to design a playback
+
+56
+00:04:35,900 --> 00:04:41,319
+buffer, and you learned why it is not possible
+in the Internet to completely avoid pauses
+
+57
+00:04:41,319 --> 00:04:45,780
+in the playback – packets can experience
+a large delay, causing the playback buffer
+
+58
+00:04:45,780 --> 00:04:50,969
+to run dry. If you fully understand how a
+playback is designed, then you have a good
+
+59
+00:04:50,969 --> 00:04:54,469
+understanding of packet dynamics in the Internet.
+
+60
+00:04:54,469 --> 00:04:59,800
+A simple deterministic queue model.
+Queueing delay in routers is a complex topic
+
+61
+00:04:59,800 --> 00:05:04,139
+all on its own. The field of queueing theory
+is very mathematically rich and you can take
+
+62
+00:05:04,139 --> 00:05:11,139
+classes and read many books on the topic.
+In general, queues with complicated, random
+
+63
+00:05:11,830 --> 00:05:16,650
+arrival processes are complex beasts. A network
+consisting of a series of router queues, with
+
+64
+00:05:16,650 --> 00:05:23,090
+many competing flows coming from random users
+and different applications is way to hard
+
+65
+00:05:23,090 --> 00:05:30,030
+to analyze in closed form. But our goal here
+is less ambitious. We want you to develop
+
+66
+00:05:30,030 --> 00:05:35,800
+some intuition about how queues evolve and
+to become familiar with their dynamics. Just
+
+67
+00:05:35,800 --> 00:05:40,210
+like the queue at airport security, a router
+queue holds the packets that have arrived
+
+68
+00:05:40,210 --> 00:05:46,099
+but not yet departed. If we can keep track
+of arrivals and departures, then we know how
+
+69
+00:05:46,099 --> 00:05:51,150
+deep the queue is, and how long an arriving
+packet must wait. The deterministic queue
+
+70
+00:05:51,150 --> 00:05:56,180
+model is a geometric representation of the
+packets in the queue, letting us visualize
+
+71
+00:05:56,180 --> 00:06:02,069
+how the queue evolves over time. It’s good
+practice to use this geometric model to help
+
+72
+00:06:02,069 --> 00:06:06,749
+you build your intuition of how the math works.
+
+73
+00:06:06,749 --> 00:06:12,319
+The deterministic queue model helps us understand:
+Rate guarantees.
+
+74
+00:06:12,319 --> 00:06:16,669
+Sometimes we want a particular flow of packets
+to receive a particular fraction of the network
+
+75
+00:06:16,669 --> 00:06:19,979
+capacity. For example, Stanford might have
+a contract with AT&T guaranteeing that its
+
+76
+00:06:19,979 --> 00:06:25,569
+traffic will always receive at least 10Gb/s
+of service. Over the link that attaches us
+
+77
+00:06:25,569 --> 00:06:31,849
+to AT&T that’s easy to do – we simply
+connect with a 10Gb/s link. AT&T could also
+
+78
+00:06:31,849 --> 00:06:35,889
+make this guarantee by putting all the Stanford
+packets into a queue in their routers, and
+
+79
+00:06:35,889 --> 00:06:41,389
+making sure they have 10Gb/s of service. This
+can be done on very aggregated traffic, like
+
+80
+00:06:41,389 --> 00:06:45,580
+all of Stanford’s packets. Or it can be
+done on individual applications: We might
+
+81
+00:06:45,580 --> 00:06:52,479
+ask Comcast to provide at least 1Mb/s to stream
+our Netflix videos.
+
+82
+00:06:52,479 --> 00:06:57,559
+You learned how to serve every queue in a
+router at a minimum rate. If all packets were
+
+83
+00:06:57,559 --> 00:07:02,090
+the same length, this would be trivial. But
+different packets have different lengths,
+
+84
+00:07:02,090 --> 00:07:07,169
+so we need to take into consideration how
+long each packet is. This is where Weighted
+
+85
+00:07:07,169 --> 00:07:12,749
+Fair Queueing comes in. It tells us the correct
+order to serve packets in the router queues,
+
+86
+00:07:12,749 --> 00:07:18,949
+so as to take into consideration the length
+of individual packets.
+
+87
+00:07:18,949 --> 00:07:24,169
+The same idea can be extended to provide
+Delay guarantees.
+
+88
+00:07:24,169 --> 00:07:28,729
+Now we know how to control the rate at which
+a queue is served, we can control the maximum
+
+89
+00:07:28,729 --> 00:07:33,740
+delay a packet can experience in the queue.
+It is simply the length of the queue divided
+
+90
+00:07:33,740 --> 00:07:40,740
+by the rate. All we need to do is limit the
+length of the queue so we can bound the delay.
+
+91
+00:07:40,999 --> 00:07:45,909
+Finally, you learned
+How packets are switched and forwarded.
+
+92
+00:07:45,909 --> 00:07:49,900
+As you saw, Ethernet switches and Internet
+routers work in very similar ways. When a
+
+93
+00:07:49,900 --> 00:07:53,400
+packet arrives, it looks up the destination
+address in its forwarding table. If it finds
+
+94
+00:07:53,400 --> 00:07:56,789
+the address, it forwards the packet towards
+its destination, holding it in a buffer if
+
+95
+00:07:56,789 --> 00:08:03,789
+the outgoing link is currently busy. Ethernet
+switches and Internet routers differ in which
+
+96
+00:08:04,490 --> 00:08:10,430
+address they use and how they organize the
+forwarding tables; and of course an Internet
+
+97
+00:08:10,430 --> 00:08:15,559
+router needs to decrement the TTL field to
+prevent loops. But at a high level, packet
+
+98
+00:08:15,559 --> 00:08:20,520
+switches all operate in roughly the same way.
+
+99
+00:08:20,520 --> 00:08:22,550
+Nick:
+
+100
+00:08:22,550 --> 00:08:26,370
+The things you learned in this unit will help
+you in several ways:
+
+101
+00:08:26,370 --> 00:08:31,559
+1. You can take the description of a network
+– the rates and length of the links – and
+
+102
+00:08:31,559 --> 00:08:35,830
+the length of a packet, and figure out the
+fixed component of the packet’s end to end
+
+103
+00:08:35,830 --> 00:08:36,919
+delay.
+
+104
+00:08:36,919 --> 00:08:41,490
+2. You can visualize the variable queueing
+delay by sketching the queue, which is the
+
+105
+00:08:41,490 --> 00:08:45,350
+most common cause for variable end to end
+delay in a network.
+
+106
+00:08:45,350 --> 00:08:51,140
+3. you can explain how a packet switch works,
+such as an Ethernet switch or Internet router.
+
+107
+00:08:51,140 --> 00:08:55,120
+4. You can design a playback buffer for a
+realtime application.
+
+108
+00:08:55,120 --> 00:08:59,890
+5. You can explain how a flow traversing a
+packet switched network can be delivered at
+
+109
+00:08:59,890 --> 00:09:05,840
+a minimum rate. And you can explain how individual
+packets can have a bounded delay from end
+
+110
+00:09:05,840 --> 00:09:06,220
+to end.
+

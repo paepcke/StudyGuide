@@ -1,0 +1,824 @@
+1
+00:00:00,000 --> 00:00:04,038
+This video is a continuation of our first
+video on how packet switches work.
+
+2
+00:00:04,038 --> 00:00:09,008
+In the first video we saw that there are
+two basic operations to a packet switch.
+
+3
+00:00:09,008 --> 00:00:13,076
+First, packet addresses have to be looked
+up into a forwarding table, and then the
+
+4
+00:00:13,076 --> 00:00:17,074
+packet has to be switched or
+transferred to the correct output port so
+
+5
+00:00:17,074 --> 00:00:20,048
+that it can be sent on to the correct
+outgoing link.
+
+6
+00:00:20,048 --> 00:00:25,010
+In the last video we saw how addresses are
+looked up in tables for Ethernet switches
+
+7
+00:00:25,010 --> 00:00:28,031
+and internet routers.
+And in this video I'm gonna explain how
+
+8
+00:00:28,031 --> 00:00:30,084
+packets are switched to the correct egress
+port.
+
+9
+00:00:30,084 --> 00:00:33,052
+I'm gonna look at a number of different
+techniques.
+
+10
+00:00:33,052 --> 00:00:36,041
+Output queuing, input queuing, and virtual
+output queues.
+
+11
+00:00:36,041 --> 00:00:40,093
+And, and we'll see and get a sense for how
+these packet switches are actually built.
+
+12
+00:00:42,021 --> 00:00:47,043
+I wanna start with the sort of the basic
+vanilla switch, which is the one I showed
+
+13
+00:00:47,043 --> 00:00:50,088
+you before.
+We have the address look up on the left
+
+14
+00:00:50,088 --> 00:00:54,019
+over here.
+And then on the this is the forwarding
+
+15
+00:00:54,019 --> 00:00:59,029
+table where we look up the addresses.
+And then we have the, the packet queuing
+
+16
+00:00:59,029 --> 00:01:02,003
+logic.
+And then the buffer memory where the
+
+17
+00:01:02,003 --> 00:01:04,084
+packets are held during times of
+congestion.
+
+18
+00:01:04,084 --> 00:01:10,021
+When packets arrive, here are three
+packets arriving with different egress
+
+19
+00:01:10,043 --> 00:01:14,018
+Ports, indicated by the color of the
+header of the packet.
+
+20
+00:01:14,018 --> 00:01:19,064
+So the red one at the top is going to the
+red port over here, the one in the middle.
+
+21
+00:01:19,064 --> 00:01:24,730
+So when these packets traverse the back
+plane we see that the blue one is able to
+
+22
+00:01:24,730 --> 00:01:29,005
+go to its output.
+One of the red ones can be delivered
+
+23
+00:01:29,005 --> 00:01:34,025
+immediately, and the other one is held in
+the output queue, waiting for its turn.
+
+24
+00:01:34,025 --> 00:01:39,863
+So as soon as the first two have left,
+this one can then depart in FIFO order.
+
+25
+00:01:39,863 --> 00:01:45,716
+We often refer to a switch like this as an
+output-queued switch, because the queues
+
+26
+00:01:45,716 --> 00:01:49,581
+are out the output.
+And this has a certain ramification for
+
+27
+00:01:49,581 --> 00:01:54,579
+the, for the performance of the switch.
+Let's take a look at that, When we have
+
+28
+00:01:54,579 --> 00:02:00,037
+packets arriving, it's possible in the
+worst case that all the packets coming in
+
+29
+00:02:00,037 --> 00:02:05,501
+at the same time from the outside will be
+wanting to go to the same output queue,
+
+30
+00:02:05,501 --> 00:02:09,618
+let's say this one here.
+So if we have N ports each running at rate
+
+31
+00:02:09,618 --> 00:02:12,515
+R and there are, let's say there are N of
+them.
+
+32
+00:02:12,515 --> 00:02:19,143
+Then in the worst case we could actually
+have a writing rate of n times r into this
+
+33
+00:02:19,143 --> 00:02:23,421
+output queue.
+Similarly and we always have a reading
+
+34
+00:02:23,421 --> 00:02:28,820
+rate from this queue of rate r.
+So we, so we say in the output queue
+
+35
+00:02:28,820 --> 00:02:36,522
+switch that this memory run an aggregate a
+total rate of up to n plus one times r.
+
+36
+00:02:36,522 --> 00:02:42,607
+The somewhat annoying thing, or
+frustrating thing about this is that long
+
+37
+00:02:42,607 --> 00:02:47,747
+term, it can't possibly be the case that
+we're writing into this quet rate N times
+
+38
+00:02:47,747 --> 00:02:52,958
+R, the system could not sustain that.
+This only really works if some mechanism
+
+39
+00:02:52,958 --> 00:02:58,141
+is in play like congestion control to hold
+the average rate of writing into this queue at
+
+40
+00:02:58,141 --> 00:03:01,875
+no more than one R.
+So it feels as though the maximum rate
+
+41
+00:03:01,875 --> 00:03:05,816
+that we should is two times R.
+That was what we would strive for.
+
+42
+00:03:05,816 --> 00:03:08,159
+Unfortunately your paying this penalty of
+N.
+
+43
+00:03:08,159 --> 00:03:12,049
+And N could be a large number.
+It could be hundreds or even thousands.
+
+44
+00:03:12,049 --> 00:03:16,518
+So this memory has to run much faster.
+output queued, output queued switches are  said to be
+
+45
+00:03:16,518 --> 00:03:21,698
+limited by this problem.
+That they have to have memories that run
+
+46
+00:03:21,698 --> 00:03:26,518
+very, very fast.
+And it becomes quite a challenge when
+
+47
+00:03:26,518 --> 00:03:32,137
+building scalable output queued switches to find or, or
+use memories, or create a memory
+
+48
+00:03:32,137 --> 00:03:38,030
+hierarchy, that will run fast enough.
+One obvious way to solve this problem is
+
+49
+00:03:38,030 --> 00:03:41,092
+to move the queues from the output over to
+the input.
+
+50
+00:03:41,092 --> 00:03:45,033
+Let's take a look at what happens when we
+do this.
+
+51
+00:03:45,054 --> 00:03:50,005
+For obvious reasons we'll call this input
+queued packet switch.
+
+52
+00:03:50,005 --> 00:03:55,065
+Now the queues where packets will be held
+are at the input side of the switch.
+
+53
+00:03:55,065 --> 00:04:00,064
+The advantage of this will perhaps be
+obvious in a moment, if we consider
+
+54
+00:04:00,064 --> 00:04:06,002
+packets arriving to the switch.
+Same pattern as before; two reds, one
+
+55
+00:04:06,002 --> 00:04:08,082
+blue.
+In this case what we would do is all of
+
+56
+00:04:08,082 --> 00:04:13,326
+the packets would come through the switch.
+Only one of them needs to be held.
+
+57
+00:04:13,326 --> 00:04:17,072
+That's the one down here waiting for it's
+turn to go across the switch.
+
+58
+00:04:17,072 --> 00:04:22,008
+And that's because it's output line is
+busy and there's no cue at the output to
+
+59
+00:04:22,007 --> 00:04:24,076
+hold it.
+So we hold it back at the input and then
+
+60
+00:04:24,076 --> 00:04:29,001
+later when its turn comes it can depart
+just like it would for an output cue.
+
+61
+00:04:29,001 --> 00:04:33,060
+So it's shown on the face of it, the good
+news is that things look like they work
+
+62
+00:04:33,060 --> 00:04:36,038
+the same.
+And the better news is that the buffer
+
+63
+00:04:36,038 --> 00:04:39,022
+memory here is now only has to accept one
+packet.
+
+64
+00:04:39,022 --> 00:04:42,092
+At the most one packet.
+From the ingress, at a time, and has to
+
+65
+00:04:42,092 --> 00:04:46,039
+only send one packet into the switch in a
+packet time.
+
+66
+00:04:46,039 --> 00:04:51,047
+It's speed is being reduced from n+1 times
+R, just down to minimum in our goal,
+
+67
+00:04:51,047 --> 00:04:55,045
+which was two times R.
+So, a factor of almost n, reduction.
+
+68
+00:04:55,045 --> 00:05:00,040
+So, this makes a huge difference.
+And, for this reason people often say that
+
+69
+00:05:00,040 --> 00:05:05,048
+input queued switches are much more scalable,
+indeed quite a few big switches are made
+
+70
+00:05:05,048 --> 00:05:10,068
+this way, but with the caveat, and there
+is a problem that we are gonna discuss, we
+
+71
+00:05:10,068 --> 00:05:15,039
+are gonna have take a look at right now.
+In an input queued switch the problems is
+
+72
+00:05:15,039 --> 00:05:20,001
+something called head of line blocking.
+And this problem is something that you'll
+
+73
+00:05:20,001 --> 00:05:23,026
+see in many contexts.
+I want to explain it here, so you'll
+
+74
+00:05:23,026 --> 00:05:26,017
+recognize it when you see it in other
+environments.
+
+75
+00:05:26,017 --> 00:05:30,045
+Let me go through an example.
+These are three inputs, representing the
+
+76
+00:05:30,045 --> 00:05:33,065
+inputs of the switch.
+So these are the input buffers.
+
+77
+00:05:33,065 --> 00:05:38,033
+I've taken away everything else on the, on
+the switch, just to make it a little bit
+
+78
+00:05:38,033 --> 00:05:40,096
+clearer.
+And we're gonna see packets arrive to
+
+79
+00:05:40,096 --> 00:05:42,010
+these.
+Here they are.
+
+80
+00:05:42,027 --> 00:05:47,047
+The red one's going to the red output.
+Black ones to the black output, green ones
+
+81
+00:05:47,047 --> 00:05:52,382
+to the green output, and imagine that you
+have the task of deciding which switch,
+
+82
+00:05:52,382 --> 00:05:56,781
+which packets to go and you look at the
+packets at the head of line, of this, and
+
+83
+00:05:56,781 --> 00:06:00,981
+you see that they're red.
+Problem is, that you can only send one of
+
+84
+00:06:00,981 --> 00:06:05,279
+them at a time.
+And so in this particular instance we'd
+
+85
+00:06:05,279 --> 00:06:10,981
+only be able to send the red ones.
+Even though there are green and black
+
+86
+00:06:10,981 --> 00:06:15,675
+packets in the system that could go to
+these unused outputs.
+
+87
+00:06:15,675 --> 00:06:21,444
+Because we've arranged everything as a single cue we
+get this head of line blocking affect.
+
+88
+00:06:21,444 --> 00:06:26,995
+Natural solution to this, which is pretty
+widely used is something called Virtual
+
+89
+00:06:26,995 --> 00:06:31,050
+output queues, where each input maintains a
+separate queue for each output.
+
+90
+00:06:31,050 --> 00:06:36,646
+So in this case, we have a three by three
+switch, so this queue here is a FIFO queue of
+
+91
+00:06:36,646 --> 00:06:41,818
+packets waiting to go to output one, the
+red output, for output two and for output
+
+92
+00:06:41,818 --> 00:06:45,013
+three.
+So when packets arrive, here are the same
+
+93
+00:06:45,013 --> 00:06:50,045
+set of packets arriving as before, but now
+they get pre-classified and placed into a
+
+94
+00:06:50,045 --> 00:06:53,068
+queue corresponding to the output they're
+going to.
+
+95
+00:06:53,068 --> 00:06:58,069
+That's why we call them virtual output
+queues, it's a queue of packets going to
+
+96
+00:06:58,069 --> 00:07:03,000
+all going to the same output.
+The good news now is that because each
+
+97
+00:07:03,000 --> 00:07:07,336
+queue holds packets going to the same
+output, no packet can be held up by a
+
+98
+00:07:07,336 --> 00:07:10,096
+packet ahead of it going to a different
+output.
+
+99
+00:07:10,096 --> 00:07:16,059
+So it can't be held up because it's head
+of line is blocked by someone who is
+
+100
+00:07:16,059 --> 00:07:19,050
+stuck.
+So now, the we can look at this and say
+
+101
+00:07:19,050 --> 00:07:22,051
+aha!
+We have visibility into all of the head of
+
+102
+00:07:22,051 --> 00:07:27,057
+line packets, and we can deliver all three
+in one go, and therefore get a higher
+
+103
+00:07:27,057 --> 00:07:31,055
+instantaneous throughput.
+It's an obvious solution, it can be a
+
+104
+00:07:31,055 --> 00:07:36,062
+little tricky to implement in practice,
+but the nice thing is that it overcomes
+
+105
+00:07:36,062 --> 00:07:41,062
+this head of line blocking entirely.
+So the good news overall is we've reduced
+
+106
+00:07:41,062 --> 00:07:44,058
+the
+speed of the queues to two times R, speed of
+
+107
+00:07:44,058 --> 00:07:50,019
+the memories because remember, we can only
+have one packet come in at a time and only
+
+108
+00:07:50,019 --> 00:07:54,366
+one packet depart at a time.
+And, we are able to sustain the same
+
+109
+00:07:54,366 --> 00:07:59,064
+throughput performance as before.
+Just to look at this on a graph, we often
+
+110
+00:07:59,064 --> 00:08:04,800
+see graphs that look like this.
+This is a plot of the delay or the average
+
+111
+00:08:04,800 --> 00:08:09,945
+delay that a packet would experience as a
+function of the load, this is basically
+
+112
+00:08:09,945 --> 00:08:14,603
+how busy the ingress lines are.
+The best that any queuing system can
+
+113
+00:08:14,603 --> 00:08:19,645
+achieve is this line here and this
+corresponds to a system in which, as the
+
+114
+00:08:19,645 --> 00:08:24,263
+load approaches 100 percent the delay
+increases, well the average delay
+
+115
+00:08:24,263 --> 00:08:29,630
+increases and is asymptotic to a 100 percent
+In fact, this is what we will see in a
+
+116
+00:08:29,630 --> 00:08:34,358
+output-queued switch.
+An output-queued switch is perfect in the
+
+117
+00:08:34,357 --> 00:08:40,091
+sense that you can't achieve a higher
+throughput, or you can't achieve a lower
+
+118
+00:08:40,092 --> 00:08:43,506
+average delay.
+Let's take a look at the main properties
+
+119
+00:08:43,506 --> 00:08:47,353
+of output queued switches first we say they
+are work conserving.
+
+120
+00:08:47,353 --> 00:08:52,315
+Work conserving means that an output line
+is never idle when there is a packet in
+
+121
+00:08:52,315 --> 00:08:56,539
+the system waiting to go to it.
+That means there is blocking internally
+
+122
+00:08:56,539 --> 00:09:01,654
+preventing a packet getting to that line,
+whenever that line is idle there is no
+
+123
+00:09:01,654 --> 00:09:06,257
+packet in the system waiting for it.
+As a consequence, throughput is maximized,
+
+124
+00:09:06,257 --> 00:09:09,964
+because you cannot have a higher
+throughput than keeping all the lines
+
+125
+00:09:09,964 --> 00:09:12,588
+busy, whenever there's a packet available
+for them.
+
+126
+00:09:12,588 --> 00:09:16,773
+And the expected delay is minimized cuz
+we're always doing useful work delivering
+
+127
+00:09:16,773 --> 00:09:23,190
+packets onto the outgoing line.
+Just to recap the performance that we
+
+128
+00:09:23,190 --> 00:09:25,684
+suffer from with head of the line
+blocking.
+
+129
+00:09:25,684 --> 00:09:29,011
+This was our perfect output queued switch, on the
+right.
+
+130
+00:09:29,011 --> 00:09:34,421
+This nice performance here with head of
+line blocking it's a well known result
+
+131
+00:09:34,421 --> 00:09:39,203
+that the throughput can be reduced in other words
+this asymptote when things fall apart gets
+
+132
+00:09:39,203 --> 00:09:42,795
+reduced to two minus the square root of
+two or approximately 58%.
+
+133
+00:09:42,795 --> 00:09:47,595
+So we lose almost half of the performance
+of the system as a consequence of this
+
+134
+00:09:47,595 --> 00:09:51,242
+head of line blocking.
+The actual number will vary depending on
+
+135
+00:09:51,242 --> 00:09:54,819
+the particular
+arrival pattern, but in general, it's
+
+136
+00:09:54,819 --> 00:09:58,592
+pretty bad news.
+But if we use virtual output queues this
+
+137
+00:09:58,592 --> 00:10:03,678
+58 percent gets pushed back up again to
+the full, full 100 percent of the system.
+
+138
+00:10:03,678 --> 00:10:09,093
+It doesn't entirely match the output
+queue, switch the asymptote will still be
+
+139
+00:10:09,093 --> 00:10:14,274
+100 percent over, over here.
+Actually with, virtual output queues the,
+
+140
+00:10:14,274 --> 00:10:18,964
+the delay will be slightly higher.
+But the asymptote is 200%.
+
+141
+00:10:18,964 --> 00:10:23,089
+I'd like to say a few last words about
+virtual output queues.
+
+142
+00:10:23,089 --> 00:10:25,977
+Virtual output queues are actually used
+very widely.
+
+143
+00:10:25,977 --> 00:10:30,074
+And you may even have noticed them when
+driving on the street.
+
+144
+00:10:30,074 --> 00:10:34,768
+So, in the US where we drive on the right
+it's very common to have a left hand turn
+
+145
+00:10:34,768 --> 00:10:39,675
+lane like the one that's shown here.
+This is to hold cars that are arriving and
+
+146
+00:10:39,675 --> 00:10:43,092
+that are blocked because of cars coming
+the other way.
+
+147
+00:10:43,092 --> 00:10:48,384
+So, these ones are blocked, and can't turn
+left until there's nothing coming the
+
+148
+00:10:48,384 --> 00:10:51,116
+other way.
+However, cars in this lane here can keep
+
+149
+00:10:51,116 --> 00:10:53,457
+going straight on or can turn
+right
+
+150
+00:10:53,457 --> 00:10:58,399
+They are not held up or blocked, because
+of a packet ahead of it, going to an
+
+151
+00:10:58,399 --> 00:11:02,593
+output, that in this case over here, which
+is temporarily unavailable.
+
+152
+00:11:02,593 --> 00:11:06,539
+So  in countries where you
+drive on the, on the left hand side, then
+
+153
+00:11:06,539 --> 00:11:08,573
+the right hand turn lane is quite common
+as well.
+
+154
+00:11:08,573 --> 00:11:12,243
+So next time you're driving and you see
+one of these, just remember, this is
+
+155
+00:11:12,243 --> 00:11:15,989
+virtual output queuing.
+So in summary, we've seen the packet
+
+156
+00:11:15,989 --> 00:11:19,820
+switches perform two basic operations.
+They look up addresses in a forwarding
+
+157
+00:11:19,820 --> 00:11:22,656
+table.
+We saw examples of that in the last video
+
+158
+00:11:22,656 --> 00:11:25,520
+for Ethernet switches and for internet
+routers.
+
+159
+00:11:25,520 --> 00:11:30,073
+And they also, once they've decided where
+a packet is going, they have to switch it.
+
+160
+00:11:30,073 --> 00:11:34,389
+They have to deliver it to the correct
+egress port so it can go under the correct
+
+161
+00:11:34,389 --> 00:11:37,425
+output link.
+The simplest and slowest switches use
+
+162
+00:11:37,425 --> 00:11:42,521
+output queuing because this maximizes the
+throughput and minimizes the expected
+
+163
+00:11:42,521 --> 00:11:47,508
+delay of packets whereas more scalable
+switches often use input queues with
+
+164
+00:11:47,508 --> 00:11:50,598
+virtual output queues to maximize the
+throughput.
+
+165
+00:11:50,598 --> 00:11:52,089
+That's the end of this video.
+

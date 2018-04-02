@@ -1,0 +1,1257 @@
+1
+00:00:00,000 --> 00:00:02,050
+Continuing with our theme of packet
+switching.
+
+2
+00:00:02,050 --> 00:00:06,049
+In this video, I'm going to tell you about
+some useful properties of queues.
+
+3
+00:00:06,049 --> 00:00:10,091
+These are going to come in handy whenever
+we're thinking about how a queue evolves,
+
+4
+00:00:10,091 --> 00:00:15,044
+how a packet buffer changes to affect the
+queuing delay of packets through in that
+
+5
+00:00:15,044 --> 00:00:19,015
+work.
+As you have seen before, we can think of a
+
+6
+00:00:19,015 --> 00:00:23,096
+network as a set of queues interconnected
+by some links and those links are carrying
+
+7
+00:00:23,096 --> 00:00:27,024
+the traffic or the packets from many, many
+different users.
+
+8
+00:00:27,024 --> 00:00:31,048
+And when multiplexed together when
+statistically multiplexed together they,
+
+9
+00:00:31,048 --> 00:00:34,099
+that whole process of packet arrival is
+very, very complicated.
+
+10
+00:00:34,099 --> 00:00:39,035
+So, we usually think of the arrival
+processes as being random events each one
+
+11
+00:00:39,035 --> 00:00:43,554
+of it was of course, deterministically
+generated but the aggregate we can think
+
+12
+00:00:43,554 --> 00:00:46,901
+of as a random process.
+So, its going to be good for us to
+
+13
+00:00:46,901 --> 00:00:51,988
+understand how queues with random arrival
+processes work and so that's going to be
+
+14
+00:00:51,988 --> 00:00:55,343
+the topic that I am going to be discussing
+today.
+
+15
+00:00:55,343 --> 00:00:59,655
+So, usually arrival process is
+complicated in systems like networks so
+
+16
+00:00:59,655 --> 00:01:04,582
+we often model them using random
+processes and the study of queues with
+
+17
+00:01:04,581 --> 00:01:07,342
+random arrival processes is called queuing
+theory.
+
+18
+00:01:07,342 --> 00:01:11,801
+And queuing theory you've probably heard of
+before, has a reputation for having very
+
+19
+00:01:11,801 --> 00:01:15,104
+hairy mathematics.
+But despite that hairy mathematics, queues
+
+20
+00:01:15,104 --> 00:01:19,461
+with random arrival processes have some
+really interesting properties that's gonna
+
+21
+00:01:19,461 --> 00:01:23,506
+be good for us to understand.
+They're gonna really help us understand
+
+22
+00:01:23,506 --> 00:01:28,564
+the dynamics of networks.
+So I'm going through a set of properties
+
+23
+00:01:28,564 --> 00:01:33,402
+I'm gonna be starting with this one here
+that the burstiness tends to increase
+
+24
+00:01:33,402 --> 00:01:37,815
+delay and it's at this level I want you to
+remember these properties.
+
+25
+00:01:37,815 --> 00:01:43,143
+The details of mathematics we're not gonna
+worry about so much. I want you, want
+
+26
+00:01:43,143 --> 00:01:47,138
+you to understand these basic intuitive
+properties of queuing systems.
+
+27
+00:01:47,138 --> 00:01:49,594
+It all comes down to the way the queue
+evolves.
+
+28
+00:01:49,594 --> 00:01:52,455
+I'm just going to sketch here my queue
+again.
+
+29
+00:01:52,455 --> 00:01:57,551
+This is the arrivals to the queue of our
+packets, you'll hear people call customers
+
+30
+00:01:57,551 --> 00:02:01,943
+as well because queuing theory applies to
+many other systems so I'll, if I say
+
+31
+00:02:01,943 --> 00:02:07,051
+customers I mean packets in this context,
+and so this is our arrivals, these are our
+
+32
+00:02:07,051 --> 00:02:12,360
+departures, and we're going to be thinking
+about the evolution of the Q occupancy, Q(t),
+
+33
+00:02:12,360 --> 00:02:16,155
+Q as a function of time.
+On this timeline down here, I've drawn a
+
+34
+00:02:16,155 --> 00:02:20,524
+sequence of arrivals and departures,
+packet arrivals happening up these blue
+
+35
+00:02:20,524 --> 00:02:25,522
+downward arrows representing the time or
+the epoch of the arrival, and then these
+
+36
+00:02:25,522 --> 00:02:29,043
+red upward arrows being
+the departures, the time in which the
+
+37
+00:02:29,043 --> 00:02:33,426
+queue was serviced.
+And, just like in many queues for networks,
+
+38
+00:02:33,426 --> 00:02:38,478
+we're gonna think of this is, as
+representing a link of a fixed rate R.
+
+39
+00:02:38,478 --> 00:02:44,439
+Which means that their inter-departure
+opportunities are one over R apart.
+
+40
+00:02:44,439 --> 00:02:48,364
+Now, let us look at the, evolution of the
+queue.
+
+41
+00:02:48,364 --> 00:02:52,908
+The queue here has this the first arrival
+with blue one, which takes it up to one,
+
+42
+00:02:52,908 --> 00:02:57,075
+and then we have the service, the outward
+red arrow which is gonna take us to zero.
+
+43
+00:02:57,075 --> 00:03:02,025
+There's a new arrival, which is gonna take
+us back to one again, then this departure
+
+44
+00:03:02,025 --> 00:03:06,037
+here, which is gonna take us to zero, then
+back up to one again, then zero etc.
+
+45
+00:03:06,037 --> 00:03:10,071
+But, this point here, we had two arrivals
+in a row, which is gonna take us back to
+
+46
+00:03:10,071 --> 00:03:15,006
+queue occupancy of two, and so on.
+So this is gonna be the, the evolution of
+
+47
+00:03:15,006 --> 00:03:17,421
+the queue.
+Now, lets look at this one here this,
+
+48
+00:03:17,421 --> 00:03:22,005
+departure opportunity, the reason I've
+drawn this as a dotted line.
+
+49
+00:03:22,005 --> 00:03:25,020
+This is, sometimes people call this a
+shadow departure.
+
+50
+00:03:25,020 --> 00:03:29,080
+It was a departure opportunity where we
+could have sent a packet, but the queue
+
+51
+00:03:29,080 --> 00:03:32,084
+was empty.
+So that we never actually sent the packet
+
+52
+00:03:32,084 --> 00:03:36,010
+cause we can't actually go down to a
+negative Q occupancy.
+
+53
+00:03:36,010 --> 00:03:38,052
+That wouldn't be, that wouldn't be
+possible.
+
+54
+00:03:38,052 --> 00:03:42,030
+And so the Q sticks at zero even though we
+missed this opportunity.
+
+55
+00:03:42,030 --> 00:03:46,082
+It's going to turn out that these missed
+opportunities are quite important.
+
+56
+00:03:46,082 --> 00:03:52,094
+You can't have a negative queue occupancy.
+So some people say you don't get credit
+
+57
+00:03:52,094 --> 00:03:56,359
+for good behavior by not having an arrival
+during this interval here.
+
+58
+00:03:56,359 --> 00:04:01,531
+It meant that the queue occupancy is stuck
+at zero but we don't get any credit for it
+
+59
+00:04:01,531 --> 00:04:04,710
+and so if we have random arrivals with arrivals that are
+spread out.
+
+60
+00:04:04,710 --> 00:04:09,667
+If we miss an opportunity to send it's
+tough we never get, we never get that back
+
+61
+00:04:09,667 --> 00:04:12,254
+again.
+Now let's take a look at the first
+
+62
+00:04:12,254 --> 00:04:15,099
+property I wanted to explain.
+That is that,
+
+63
+00:04:15,099 --> 00:04:19,351
+burstiness, or bursty arrivals tend to
+increase delay.
+
+64
+00:04:19,351 --> 00:04:25,627
+We'll start with a very simple example
+where there is no burstiness, where we
+
+65
+00:04:25,627 --> 00:04:31,211
+have the simplest arrival process which is
+a sequence of arrivals, all exactly one
+
+66
+00:04:31,211 --> 00:04:34,250
+second apart.
+So this is one packet per second.
+
+67
+00:04:34,250 --> 00:04:37,396
+And in fact it's one packet exactly every
+second.
+
+68
+00:04:37,396 --> 00:04:41,673
+Nothing random about this at all.
+Let's look at the sequence of departures
+
+69
+00:04:41,673 --> 00:04:45,795
+and we are going to assume that there is one
+departure every second.
+
+70
+00:04:45,795 --> 00:04:48,820
+So if we were to sketch the q occupancy
+here.
+
+71
+00:04:48,820 --> 00:04:51,784
+I won't sketch the graph. I'll just put the
+numbers in.
+
+72
+00:04:51,784 --> 00:04:54,541
+If we were to sample the occupancy here
+
+73
+00:04:54,541 --> 00:04:58,737
+There's been an arrival but no departure.
+So we'd have one and then zero.
+
+74
+00:04:58,737 --> 00:05:01,196
+And then it's one again.
+And then zero, one, zero.
+
+75
+00:05:01,196 --> 00:05:04,541
+So there's a long.
+and this is the way I've drawn it here there
+
+76
+00:05:04,541 --> 00:05:09,009
+are long periods of zero.
+And then there are short periods of one when
+
+77
+00:05:09,009 --> 00:05:13,054
+there's been arrival but no departure.
+But of course I could shift either the
+
+78
+00:05:13,054 --> 00:05:18,397
+arrivals and departures and make those 0's
+and 1's be of different duration.
+
+79
+00:05:18,397 --> 00:05:22,170
+Okay, so now we'll just carry on because
+everything's nice and periodic.
+
+80
+00:05:22,170 --> 00:05:27,745
+The interesting thing to note here is Q of
+T, the Q occupancy is either zero or a
+
+81
+00:05:27,745 --> 00:05:30,312
+one.
+So we can say it's always less than or
+
+82
+00:05:30,312 --> 00:05:33,784
+equal to one.
+And the average queue occupancy is gonna
+
+83
+00:05:33,784 --> 00:05:38,547
+be somewhere between zero and one.
+We know that for sure, just because of the
+
+84
+00:05:38,547 --> 00:05:42,490
+structure of the problem.
+So periodic arrivals make for a nice
+
+85
+00:05:42,490 --> 00:05:45,834
+simple understanding of the queue or
+queue evolution.
+
+86
+00:05:45,834 --> 00:05:49,500
+Now let's look at a different example when
+things are more bursty.
+
+87
+00:05:49,500 --> 00:05:54,244
+So just as before, the arrivals are gonna
+be at the rate of one per second, but
+
+88
+00:05:54,244 --> 00:06:01,061
+they're gonna arrive in bursts.
+And in fact we're gonna have N arrivals,
+
+89
+00:06:01,061 --> 00:06:04,089
+every N seconds.
+So N packets every N seconds.
+
+90
+00:06:04,089 --> 00:06:07,160
+But they're gonna come in these bursts of
+N.
+
+91
+00:06:07,160 --> 00:06:11,839
+In this particular case it's five packets
+every five seconds.
+
+92
+00:06:11,839 --> 00:06:16,724
+The service opportunities or the
+departures are gonna be the same as
+
+93
+00:06:16,724 --> 00:06:18,795
+before.
+We're gonna have one per second.
+
+94
+00:06:18,795 --> 00:06:23,112
+So in terms of the rates, the arrival rate
+and the departure rate, everything is
+
+95
+00:06:23,112 --> 00:06:26,372
+exactly the same as before, it's one
+packet per second.
+
+96
+00:06:26,372 --> 00:06:30,751
+It's just that the burstiness of the
+arrival is gonna change things.
+
+97
+00:06:30,751 --> 00:06:33,859
+And let's look at the way in which they,
+they change.
+
+98
+00:06:33,859 --> 00:06:37,374
+So.
+Here we've got a sudden burst of arrivals
+
+99
+00:06:37,374 --> 00:06:40,297
+of five.
+So depending on whether, when we sample
+
+100
+00:06:40,297 --> 00:06:44,962
+it, sample the queue occupancy.
+We're gonna have Q(T) equals zero all
+
+101
+00:06:44,962 --> 00:06:48,486
+the way thru to five, depending on when we
+sample.
+
+102
+00:06:48,486 --> 00:06:53,312
+During this time here it's four, then
+three, then two, then one, then zero.
+
+103
+00:06:53,312 --> 00:06:58,205
+And then it's gonna go up to five again
+sometime in here and four and so on, and
+
+104
+00:06:58,205 --> 00:06:59,430
+so on, and so on.
+Okay.
+
+105
+00:06:59,430 --> 00:07:02,342
+So, before our Q occupancy was zero or
+one.
+
+106
+00:07:02,342 --> 00:07:08,076
+But now even with the same arrival rate,
+and even with the same departure rate, our
+
+107
+00:07:08,076 --> 00:07:13,551
+Q occupancy can be between zero and five.
+So our arrival average Q occupancy is
+
+108
+00:07:13,551 --> 00:07:16,349
+higher.
+And the variance of the Q occupancy is
+
+109
+00:07:16,349 --> 00:07:19,274
+higher too.
+Because it's varying all the way across
+
+110
+00:07:19,274 --> 00:07:22,031
+zero to five.
+So average and the variance have both
+
+111
+00:07:22,031 --> 00:07:24,528
+increased, even though the rate hasn't
+changed.
+
+112
+00:07:24,528 --> 00:07:27,985
+So clearly, the burstiness is gonna make a
+big difference.
+
+113
+00:07:27,985 --> 00:07:30,917
+And, in general, we say, burstiness
+increases delay.
+
+114
+00:07:30,917 --> 00:07:34,417
+And that simple example that illustrates
+it doesn't prove it.
+
+115
+00:07:34,417 --> 00:07:39,418
+But hopefully, it gives you intuition as
+to why burstiness will increase delay.
+
+116
+00:07:39,418 --> 00:07:42,846
+The second property, which is very similar
+to the first.
+
+117
+00:07:42,846 --> 00:07:47,475
+It's almost the counter balance of the
+first is that determinism, tends to
+
+118
+00:07:47,475 --> 00:07:51,016
+minimize delay.
+But it's enough for us to know that in
+
+119
+00:07:51,016 --> 00:07:55,070
+general, determinism minimizes delay.
+In other words, random arrivals wait
+
+120
+00:07:55,070 --> 00:07:58,073
+longer on average than simple, periodic
+arrivals.
+
+121
+00:07:58,073 --> 00:08:03,096
+Okay, let me move on to the third property
+that I'd like you to know about, and that
+
+122
+00:08:03,096 --> 00:08:06,086
+is a well-known result called Little's
+Result.
+
+123
+00:08:07,013 --> 00:08:12,066
+Queues are very complicated, and as you've,
+as I've already given an indication.
+
+124
+00:08:12,066 --> 00:08:17,748
+The mathematics tends to get very hairy,
+but there's some simple results that you
+
+125
+00:08:17,748 --> 00:08:22,075
+really need to know, and its important
+first to understand.
+
+126
+00:08:22,075 --> 00:08:27,568
+Because they're gonna come in handy, when we're
+understanding, the basic properties of
+
+127
+00:08:27,568 --> 00:08:30,632
+queues.
+And this one, Little's result is
+
+128
+00:08:30,632 --> 00:08:34,538
+deceptively simple.
+So, in any queuing system, like the one
+
+129
+00:08:34,538 --> 00:08:40,053
+shown here, there's a following property
+which is a little surprising.
+
+130
+00:08:40,053 --> 00:08:44,050
+If I've got a well defined arrival rate,
+let's call that Lambda.
+
+131
+00:08:47,029 --> 00:08:53,017
+And I've got a average number of queues in
+the system L.
+
+132
+00:08:53,072 --> 00:09:01,058
+And I want to know what the average delay
+is, and I'm going to call this D equals
+
+133
+00:09:01,058 --> 00:09:06,091
+average delay, of the customer or a packet
+through the queue.
+
+134
+00:09:08,044 --> 00:09:14,094
+Then Little's result tells us, that there
+is in general, the number of customers in
+
+135
+00:09:14,094 --> 00:09:21,068
+the system, equals the average arrival
+rate Times the average delay of a customer
+
+136
+00:09:21,068 --> 00:09:23,071
+thru the queue.
+That's it.
+
+137
+00:09:23,071 --> 00:09:30,080
+This deceptively simple result applies for
+any queuing system for which there are no
+
+138
+00:09:30,080 --> 00:09:35,098
+customers that are lost or dropped.
+So if none lost or dropped.
+
+139
+00:09:36,065 --> 00:09:40,074
+So it doesn't matter what the arrival
+process is.
+
+140
+00:09:40,074 --> 00:09:47,009
+It isn't gonna help us [inaudible], so
+long as it has a well defined arrival
+
+141
+00:09:47,009 --> 00:09:51,018
+rate, lambda, then we can make this
+miscalculation.
+
+142
+00:09:51,018 --> 00:09:57,012
+So you can go to any queue, and we'll look
+at some examples in a moment.
+
+143
+00:09:57,012 --> 00:10:01,084
+And you can calculate the average number
+in the queue as a function of the arrival
+
+144
+00:10:01,084 --> 00:10:06,029
+rate and the average delay or of course,
+if you know L and Lambda, then you can
+
+145
+00:10:06,029 --> 00:10:10,085
+figure out the average delay that's going
+to be seen by a customer through this
+
+146
+00:10:10,085 --> 00:10:12,078
+queue.
+Now L, is the average number.
+
+147
+00:10:12,078 --> 00:10:17,053
+that are in the queue, plus currently
+being serviced, so long as D is the
+
+148
+00:10:17,053 --> 00:10:22,021
+average delay of customers that arrive
+until they've completed service.
+
+149
+00:10:22,021 --> 00:10:27,061
+It turns out this result also holds if we
+say L is the average time, I'm sorry, the
+
+150
+00:10:27,061 --> 00:10:32,075
+average number of customers in just the
+queue but not yet entering service, so
+
+151
+00:10:32,075 --> 00:10:37,075
+long as D also equals the average delay
+through the queue prior to entering
+
+152
+00:10:37,075 --> 00:10:40,000
+service.
+So, both of those are true.
+
+153
+00:10:41,051 --> 00:10:45,075
+We're gonna be using this result quite a
+lot throughout the quarter.
+
+154
+00:10:47,010 --> 00:10:51,075
+Having told you about those three
+properties of queues.
+
+155
+00:10:51,075 --> 00:10:56,053
+Something I need to tell you before we get
+on to the fourth property, and that is
+
+156
+00:10:56,053 --> 00:11:00,014
+the, the Poisson process.
+You're going to hear a lot about the
+
+157
+00:11:00,014 --> 00:11:05,023
+Poisson process whenever you study queues or
+any complicated system that, that we model
+
+158
+00:11:05,023 --> 00:11:08,066
+probabilistically.
+First of all I'm going to tell you what
+
+159
+00:11:08,066 --> 00:11:13,039
+the Poisson process is, then I'm going to
+tell you why it's interesting and some
+
+160
+00:11:13,039 --> 00:11:17,012
+caveats about using it.
+So the Poisson process is, is an arrival
+
+161
+00:11:17,012 --> 00:11:20,090
+process in our case, and an arrival
+process we say is Poisson if.
+
+162
+00:11:20,090 --> 00:11:26,015
+And in fact, and only if, the probability
+of there being K arrivals in an interval
+
+163
+00:11:26,015 --> 00:11:31,059
+of T seconds is given by this expression
+here, kind of a hairy expression but the,
+
+164
+00:11:31,059 --> 00:11:36,091
+the important thing is that, that we can
+express this as the expected number of
+
+165
+00:11:36,091 --> 00:11:42,015
+arrivals within an interval T is simply
+lambda<i>T, where lambda is the arrival rate.</i>
+
+166
+00:11:43,015 --> 00:11:47,017
+Also, successive inter-arrival times are
+independent.
+
+167
+00:11:47,017 --> 00:11:51,035
+What this means is that once we've picked
+one arrival.
+
+168
+00:11:51,035 --> 00:11:55,064
+From this expression here, this will lead
+to a, an arrival event happening.
+
+169
+00:11:55,064 --> 00:12:00,028
+Then the next arrival is independent of
+the first one, and, in fact, if we take a
+
+170
+00:12:00,028 --> 00:12:04,075
+sliding window and move that over the
+arrival process within any, within any
+
+171
+00:12:04,075 --> 00:12:09,028
+period, the inter-arrival times within one
+period are independent of the next.
+
+172
+00:12:09,028 --> 00:12:13,075
+That means that there's no burstiness or
+coupling of one arrival to another.
+
+173
+00:12:13,075 --> 00:12:18,034
+Okay, that's what the Poisson process is.
+You'd pick up any book on probability,
+
+174
+00:12:18,034 --> 00:12:22,075
+then you can find, a more detailed
+description, if that's something new to
+
+175
+00:12:22,075 --> 00:12:24,063
+you.
+So why the Poisson process?
+
+176
+00:12:24,063 --> 00:12:27,099
+Why do we, why are we interested in the
+Poisson process?
+
+177
+00:12:27,099 --> 00:12:32,070
+Well the Poisson process, happens to,
+model, an aggregation of many independent
+
+178
+00:12:32,070 --> 00:12:36,076
+random events, very well.
+For example, it's used in models of new
+
+179
+00:12:36,076 --> 00:12:41,050
+phone calls arriving to a switch.
+So when we have a telephone switch, we
+
+180
+00:12:41,050 --> 00:12:46,084
+say, we want to model the arrival of a new
+phone call that is being placed through
+
+181
+00:12:46,084 --> 00:12:49,090
+the day.
+Then, a Poisson process is a very good
+
+182
+00:12:50,010 --> 00:12:53,077
+model of this.
+Or the decay of many independent nuclear
+
+183
+00:12:53,077 --> 00:12:59,031
+particles where we have huge number of
+particles all operating independently of
+
+184
+00:12:59,031 --> 00:13:02,024
+each other.
+They will decay at certain times.
+
+185
+00:13:02,024 --> 00:13:05,025
+That decay.
+As a aggregation of many random events
+
+186
+00:13:05,025 --> 00:13:09,010
+tends to a Poisson process, as we have a
+large number of particles.
+
+187
+00:13:09,010 --> 00:13:13,072
+And you may also be familiar with shot
+noise in an electrical circuit, which is
+
+188
+00:13:13,072 --> 00:13:18,015
+also modeled as a Poisson process.
+The final thing, despite the complexity of
+
+189
+00:13:18,015 --> 00:13:23,105
+the equation on the previous slide, it
+actually makes the math very easy, and this
+
+190
+00:13:23,105 --> 00:13:26,097
+is a big reason that it gets used very
+widely as well.
+
+191
+00:13:26,097 --> 00:13:32,003
+At this point I should give you some
+warnings, network traffic is very bursty,
+
+192
+00:13:32,003 --> 00:13:36,028
+there's nothing independent about one
+packet arrival after another.
+
+193
+00:13:36,028 --> 00:13:41,028
+As we will see later packets tend very
+frequently to arrive in bursts, and many
+
+194
+00:13:41,028 --> 00:13:46,016
+things in the network help actually to
+keep them that way, and make them very
+
+195
+00:13:46,016 --> 00:13:49,007
+bursty.
+So packet arrivals are not, and I can't
+
+196
+00:13:49,007 --> 00:13:54,033
+over-emphasise this, they are not Poisson,
+there's been some classic papers, research
+
+197
+00:13:54,033 --> 00:13:58,054
+papers that have shown this.
+However, it does model quite well the
+
+198
+00:13:58,054 --> 00:14:01,038
+arrival of new flows, of new
+communications.
+
+199
+00:14:01,038 --> 00:14:05,099
+For example, the inter-arrival times of
+web requests, or sending emails.
+
+200
+00:14:05,099 --> 00:14:10,087
+For any one individual, they may be
+somewhat Poisson, but when you take the
+
+201
+00:14:10,087 --> 00:14:16,021
+aggregation of many users putting their
+network traffic into the network, that is
+
+202
+00:14:16,021 --> 00:14:19,044
+actually modeled quite well by a Poisson
+process.
+
+203
+00:14:19,044 --> 00:14:24,036
+And sometimes, sometimes we can use some
+of the results that apply to queues with
+
+204
+00:14:24,036 --> 00:14:29,109
+Poisson arrivals, to give us an intuition and
+understanding of maybe what's happening
+
+205
+00:14:29,109 --> 00:14:33,072
+even at the packet level.
+But we must do that very, very carefully.
+
+206
+00:14:35,089 --> 00:14:40,065
+Let's look at a very common example of
+where we use the Poisson process.
+
+207
+00:14:40,065 --> 00:14:46,014
+This is something called the M/M/1 Queue.
+The M/M/1 Queue is about the simplest type
+
+208
+00:14:46,014 --> 00:14:50,044
+of queue that is commonly analyzed.
+The notation is that the M.
+
+209
+00:14:50,044 --> 00:14:55,010
+Stands for a Markovian arrival process.
+Which, in our case is Poisson.
+
+210
+00:14:55,010 --> 00:14:59,014
+Markovian service process which is
+exponential, in our case.
+
+211
+00:14:59,014 --> 00:15:04,042
+Which means that the time that it takes to
+service a packet is exponentially
+
+212
+00:15:04,042 --> 00:15:09,070
+distributed, and each one has a service
+time independent of all of the others.
+
+213
+00:15:09,070 --> 00:15:14,049
+And that there is one server.
+In other words, that there's one outgoing
+
+214
+00:15:14,049 --> 00:15:18,071
+line servicing this queue.
+This is very widely used,
+
+215
+00:15:18,071 --> 00:15:24,048
+because it, it assumes a nice simple Poisson arrival, with independent arrivals from
+
+216
+00:15:24,048 --> 00:15:29,049
+one packet to the next.
+But it's also used, because the math is
+
+217
+00:15:29,049 --> 00:15:33,041
+very simple, and the result is very
+intuitive.
+
+218
+00:15:33,041 --> 00:15:36,078
+So.
+If we were to analyze this, and we can
+
+219
+00:15:36,078 --> 00:15:42,069
+analyze it using, using continuous time
+Markov chains, we will discover that the
+
+220
+00:15:42,069 --> 00:15:47,054
+average delay of a packet going through
+this queue is given by the simple
+
+221
+00:15:47,054 --> 00:15:52,093
+expression, one over Mu minus Lambda.
+What this tells us is that it's a one over
+
+222
+00:15:52,093 --> 00:15:57,079
+the, one over the difference between the
+service rate and the arrival rate.
+
+223
+00:15:57,079 --> 00:16:03,010
+So as the load increases, and the load
+gets closer and closer to the service rate
+
+224
+00:16:03,010 --> 00:16:07,076
+then, this number will grow very rapidly.
+And, if we plot this on a graph.
+
+225
+00:16:07,076 --> 00:16:14,060
+So, as a function of lambda over mu, so
+that's lambda over mu, as we get closer
+
+226
+00:16:14,060 --> 00:16:21,035
+and closer to one, in other words where
+they're equal, the average delay of a
+
+227
+00:16:21,035 --> 00:16:26,050
+packet through this queue will increase
+very, very steeply.
+
+228
+00:16:26,050 --> 00:16:30,089
+And this is the case for almost any
+queuing system not just the M/M/1 queue.
+
+229
+00:16:30,089 --> 00:16:36,009
+The reason that we use the M/M/1 Queue sometimes
+as a placeholder for a more complicated
+
+230
+00:16:36,009 --> 00:16:39,020
+system is only that the math is simpler and this
+
+231
+00:16:39,020 --> 00:16:43,001
+expression is simple.
+But you see a very similar shape for
+
+232
+00:16:43,001 --> 00:16:48,002
+almost any queuing system.
+We can use Little's result to figure out
+
+233
+00:16:48,002 --> 00:16:54,015
+what the average queue occupancy is.
+And we know that L equals Lambda times D,
+
+234
+00:16:54,015 --> 00:16:58,074
+which in this case is, simply going to be
+Lambda over MU.
+
+235
+00:16:58,074 --> 00:17:03,040
+Divided by one minus lambda over mu.
+The reason of writing it in terms of
+
+236
+00:17:03,040 --> 00:17:08,070
+lambda over mu is simply that lambda over
+mu represents the intensity just as I
+
+237
+00:17:08,069 --> 00:17:13,047
+sketch on the graph here.
+As lambda approaches mu, lambda over mu
+
+238
+00:17:13,048 --> 00:17:18,040
+approaches one, and the denominator turns
+to zero and the queue occupancy, and the
+
+239
+00:17:18,040 --> 00:17:21,078
+average delay will blow up and turn
+towards infinity.
+
+240
+00:17:21,078 --> 00:17:24,075
+So the M/M/1 queue provides us a good
+intuition.
+
+241
+00:17:24,075 --> 00:17:30,014
+Though never assume that this is the actual
+representative measure of, of the queue
+
+242
+00:17:30,014 --> 00:17:35,074
+occupancy or the average delay but it can
+often help to give an intuitive sense of
+
+243
+00:17:35,074 --> 00:17:41,092
+what's going on in a network.
+So in summary, the main queue properties I
+
+244
+00:17:41,092 --> 00:17:46,094
+want you to take away from this video are,
+that burstiness tends to increase delay.
+
+245
+00:17:46,094 --> 00:17:50,024
+So bursty arrivals tend to make queuing
+delays longer.
+
+246
+00:17:50,024 --> 00:17:54,083
+Little's result gives us a nice
+relationship between the average occupancy
+
+247
+00:17:54,083 --> 00:17:59,042
+of a queue, L, lambda the arrival rate,
+and D, the average delay of a customer
+
+248
+00:17:59,042 --> 00:18:02,093
+through that queue.
+While packet arrivals are not poisson.
+
+249
+00:18:02,093 --> 00:18:06,068
+Some events are, such as web requests, and
+new flow arrivals.
+
+250
+00:18:06,068 --> 00:18:10,004
+And poisson process also forms the basis
+of the M/M/1 Queue.
+
+251
+00:18:10,004 --> 00:18:15,037
+Which is a simple queuing model that often
+can give us some intuition about the delay
+
+252
+00:18:15,037 --> 00:18:18,074
+properties of a network.
+That's the end of this video.
+

@@ -1,0 +1,793 @@
+1
+00:00:00,000 --> 00:00:04,519
+So in this video, we'll talk about the
+basics of network address translation and
+
+2
+00:00:04,519 --> 00:00:07,231
+how network address translator or
+NAT works.
+
+3
+00:00:07,231 --> 00:00:09,830
+So if you go back to the end-to-end
+principle.
+
+4
+00:00:09,830 --> 00:00:15,078
+There's this idea, this strong end-to-end
+argument, that the networks job is to
+
+5
+00:00:15,079 --> 00:00:20,127
+transmit datagrams as efficiently and
+flexibly as possible, everything else
+
+6
+00:00:20,127 --> 00:00:25,511
+should be done at the fringes.
+So in this model, we'll have say two hosts
+
+7
+00:00:25,713 --> 00:00:31,164
+that have IP addresses and really all the
+Internet should do, all that the set of
+
+8
+00:00:31,164 --> 00:00:36,885
+hosts and devices between these two nodes
+should do, is forward and transmit their,
+
+9
+00:00:36,885 --> 00:00:40,586
+their datagrams.
+Should, you know send it along some route,
+
+10
+00:00:40,586 --> 00:00:43,750
+through the Internet figure out the best
+route.
+
+11
+00:00:43,919 --> 00:00:48,217
+And deliver it, deliver those packets
+between these two hosts that's all the
+
+12
+00:00:48,217 --> 00:00:51,554
+networks should do.
+You want all the intelligence the edges
+
+13
+00:00:51,554 --> 00:00:55,343
+because that's where the action is, that's
+where you can add new things.
+
+14
+00:00:55,343 --> 00:00:59,698
+And when you start adding stuff in the
+middle then you start introducing the
+
+15
+00:00:59,698 --> 00:01:03,940
+dependencies and complexities and make the
+world generally a tougher place.
+
+16
+00:01:03,940 --> 00:01:10,249
+So network address translator
+or NAT was first specified a good while
+
+17
+00:01:10,249 --> 00:01:14,080
+ago in RFC 1631.
+And so, NATs are really interesting
+
+18
+00:01:14,080 --> 00:01:17,310
+example, a really compelling example of
+how.
+
+19
+00:01:17,310 --> 00:01:22,159
+Putting something, putting some smarts
+into the network can have some really,
+
+20
+00:01:22,159 --> 00:01:26,945
+really nice benefits..., in some ways,
+have some really attractive benefits.
+
+21
+00:01:26,945 --> 00:01:31,284
+We're also introducing that complexity can
+cause a lot of headaches.
+
+22
+00:01:31,284 --> 00:01:36,133
+So essentially what a network address
+translator does is, it's some box that
+
+23
+00:01:36,133 --> 00:01:41,174
+sits between you and the Internet, like
+say this host on the left, so here's our
+
+24
+00:01:41,174 --> 00:01:44,676
+NAT.
+And this NAT has its own IP address, for
+
+25
+00:01:44,676 --> 00:01:49,432
+the public Internet, so let's just call
+that IP address X.
+
+26
+00:01:49,432 --> 00:01:55,018
+And what happens is, what a NAT does, is
+that when a packet comes from your
+
+27
+00:01:55,018 --> 00:02:00,680
+computer, from what's called its internal
+address, or its internal interface,
+
+28
+00:02:00,680 --> 00:02:04,271
+internal.
+What the NAT does, in that its going to
+
+29
+00:02:04,271 --> 00:02:10,094
+somewhere out on the broader Internet.
+So the NAT has an internal and an external
+
+30
+00:02:10,094 --> 00:02:13,752
+interface.
+The NAT will rewrite your packet so it
+
+31
+00:02:13,752 --> 00:02:18,232
+appears like it is coming from the NAT's
+external interface.
+
+32
+00:02:18,232 --> 00:02:23,308
+And so if the NAT, lets say it has
+internal interface I and external
+
+33
+00:02:23,308 --> 00:02:27,340
+interface X, well your packet might be
+from 171.64.15.55.
+
+34
+00:02:27,340 --> 00:02:32,015
+The NAT will rewrite it to be coming from
+IP address X.
+
+35
+00:02:32,015 --> 00:02:35,670
+So then the packet goes to this other
+host.
+
+36
+00:02:35,670 --> 00:02:39,760
+It sees a packet from X.
+Maybe it's a TCP connection request or
+
+37
+00:02:39,760 --> 00:02:42,600
+something like that.
+And so we'll send the packet back.
+
+38
+00:02:42,600 --> 00:02:45,439
+to X, so the destination here, the source is
+X.
+
+39
+00:02:45,439 --> 00:02:49,731
+Here the destination is X.
+Then now, on receiving this packet, will
+
+40
+00:02:49,731 --> 00:02:55,013
+know to, that it was actually intended for
+you, will re-translate it, re-write the
+
+41
+00:02:55,013 --> 00:03:00,560
+packet to being from to destination X to
+being your destination and then, forward
+
+42
+00:03:00,560 --> 00:03:03,400
+it appropriately to its internal
+interface.
+
+43
+00:03:03,400 --> 00:03:08,350
+So this just turns out to have a bunch of
+really nice advantages.
+
+44
+00:03:08,350 --> 00:03:13,490
+For example, almost all wireless routers
+today are basically all wireless home
+
+45
+00:03:13,490 --> 00:03:17,496
+routers today are NATs.
+The idea is you connect your wireless
+
+46
+00:03:17,496 --> 00:03:22,303
+router to your Internet connection, the ISP
+gives you a single IP address.
+
+47
+00:03:22,303 --> 00:03:27,443
+Lets just call it X, then internally the
+NAT can give many machines behind it
+
+48
+00:03:27,443 --> 00:03:33,051
+different private IP addresses just local
+IP addresses and translate all of them to
+
+49
+00:03:33,051 --> 00:03:37,724
+a single public IP address.
+So its a way for a whole bunch of nodes to
+
+50
+00:03:37,724 --> 00:03:41,399
+share an IP address.
+And this is what allows you to have say
+
+51
+00:03:41,399 --> 00:03:44,441
+ten machines in your house with a single
+IP address.
+
+52
+00:03:44,441 --> 00:03:47,190
+It's a NAT.
+A single public routable IP address.
+
+53
+00:03:47,190 --> 00:03:50,465
+The NATs IP address.
+So then this provides some security
+
+54
+00:03:50,465 --> 00:03:54,852
+properties, where because your IP
+addresses are hidden behind this NAT, it's
+
+55
+00:03:54,852 --> 00:03:59,239
+actually becomes very hard for adversaries
+or attackers to start opening
+
+56
+00:03:59,239 --> 00:04:02,690
+connections to machines.
+So it's a limited kind of firewall,
+
+57
+00:04:02,690 --> 00:04:06,258
+security protection.
+So NATs are really, really attractive and
+
+58
+00:04:06,258 --> 00:04:09,182
+popular.
+They give you a bunch of great advantages,
+
+59
+00:04:09,182 --> 00:04:14,116
+a great piece of functionality.
+Now let me walk through a more concrete
+
+60
+00:04:14,116 --> 00:04:18,918
+example with my feature as exactly what's
+happening when you sit behind a NAT.
+
+61
+00:04:18,918 --> 00:04:22,631
+So there's two hosts, A and B.
+And they're both behind NATs.
+
+62
+00:04:22,631 --> 00:04:28,009
+And they, these NATs are on completely
+different networks so one of them has this
+
+63
+00:04:28,009 --> 00:04:31,402
+IP address 128.34.22,8.
+So the other NAT is 76.18.117.20.
+
+64
+00:04:31,402 --> 00:04:34,540
+So there is two people at home, different
+ISPs.
+
+65
+00:04:34,540 --> 00:04:38,700
+So the first thing to note, is that the
+NATs are giving these hosts behind them,
+
+66
+00:04:38,700 --> 00:04:41,100
+these private IP addresses, starting with
+ten.
+
+67
+00:04:41,100 --> 00:04:44,887
+So if you try to send a packet to 10.x on
+the on the Internet, it doesn't go
+
+68
+00:04:44,887 --> 00:04:47,501
+anywhere.
+It's considered a private, local address.
+
+69
+00:04:47,661 --> 00:04:51,608
+It might go to, in fact, you have one, to
+one of your private, local machines.
+
+70
+00:04:51,768 --> 00:04:56,035
+So that can share these IP addresses.
+In fact, it's possible for a machine
+
+71
+00:04:56,035 --> 00:05:00,943
+behind that B, and the or behind the NAT
+on the right and the machine behind the
+
+72
+00:05:00,943 --> 00:05:03,290
+NAT on the left, to have the same IP
+address.
+
+73
+00:05:03,290 --> 00:05:09,061
+Because, that appears only valid within
+their, their small domain.
+
+74
+00:05:09,061 --> 00:05:16,274
+So, what happens now when A wants to open
+a connection to this SSH server, out of
+
+75
+00:05:16,274 --> 00:05:20,603
+the network.
+So, it's trying to open a connection,
+
+76
+00:05:20,603 --> 00:05:24,390
+well, this going to result in TCP SYN
+packet.
+
+77
+00:05:24,390 --> 00:05:31,784
+Now, when A sends the message, the source
+address is going to be 10.0.0.101 and the
+
+78
+00:05:31,784 --> 00:05:38,214
+destination will be 18.181.0.31.
+The source port it's going to be some port
+
+79
+00:05:38,214 --> 00:05:43,242
+that A has decided on, let's just say
+5,000 for simplicity.
+
+80
+00:05:43,242 --> 00:05:48,611
+The destination port is going to be 22.
+Now when this packet traverses the NAT,
+
+81
+00:05:48,611 --> 00:05:51,691
+the NAT is going to translate the network
+address.
+
+82
+00:05:51,691 --> 00:05:56,618
+It's going to rewrite the network address.
+So rather than coming from 10.0.0.101, the
+
+83
+00:05:56,618 --> 00:05:59,328
+packets going to be coming from
+128.34.22.8.
+
+84
+00:05:59,328 --> 00:06:04,193
+The destination will remain the same, the
+destination port will remain the same.
+
+85
+00:06:04,193 --> 00:06:09,059
+But it turns out the NAT also has to
+rewrite the source port, because otherwise
+
+86
+00:06:09,059 --> 00:06:13,370
+what happens if two hosts behind the NAT
+both decide to use port 5000?
+
+87
+00:06:13,370 --> 00:06:17,619
+You can't share port 5000.
+So rewrite the source port to be something
+
+88
+00:06:17,619 --> 00:06:21,757
+like you know, 8035.
+This packet then goes out over the
+
+89
+00:06:21,757 --> 00:06:28,370
+Internet, reaches the SSH server which
+sees a request from 128.34.22.8 port 8035.
+
+90
+00:06:28,370 --> 00:06:31,676
+It'll generate, say, a TCP SYN-ACK in
+
+91
+00:06:31,676 --> 00:06:36,358
+response.
+To this IP address and port, when the NAT
+
+92
+00:06:36,358 --> 00:06:44,000
+sees that the packet come back in it's
+going to re-translate that 128.34.22.8,
+
+93
+00:06:44,000 --> 00:06:48,703
+8035 to 10.0.0.1.1:5000 and forward that packet
+to A.
+
+94
+00:06:48,703 --> 00:06:57,030
+And so it sets up a mapping between these
+(internal port, IP) pair and an (external port,
+
+95
+00:06:57,030 --> 00:07:01,881
+IP) pair.
+Similarly, when host B sends the packet to
+
+96
+00:07:01,881 --> 00:07:07,138
+the SSH server.
+The NAT is going to translate its IP
+
+97
+00:07:07,138 --> 00:07:13,638
+address and port to its own.
+So B's IP address to its own, so what was
+
+98
+00:07:13,638 --> 00:07:20,520
+once 10.1.1.1.9 port let's say 13013 is going to become.
+
+99
+00:07:20,520 --> 00:07:29,620
+76.18.117.20
+let's say a port 2009.
+
+100
+00:07:29,960 --> 00:07:34,960
+So then when the ssh servers sends the
+TCP SYN-ACK back
+
+101
+00:07:37,160 --> 00:07:42,469
+You know send it to this (IP address, port)
+pair, which the NAT can translate back to
+
+102
+00:07:42,469 --> 00:07:46,548
+the internal (IP address, port) pair and
+deliver to node B.
+
+103
+00:07:46,548 --> 00:07:50,433
+So how does this work?
+The NAT is magically setting up these
+
+104
+00:07:50,433 --> 00:07:53,865
+mapping you know.
+How is it managing these mapping?
+
+105
+00:07:53,865 --> 00:07:58,915
+Well, turns out there's all kinds of
+different ways NAT can operate and we'll
+
+106
+00:07:58,915 --> 00:08:03,706
+look at that in some future videos.
+But the basic model is that the NAT
+
+107
+00:08:03,706 --> 00:08:08,303
+doesn't create a mapping generally until
+it gets a request from inside.
+
+108
+00:08:08,303 --> 00:08:14,188
+So, here we have the NAT's internal.
+Interface, and here we have its external
+
+109
+00:08:14,188 --> 00:08:15,817
+interface.
+.
+
+110
+00:08:15,817 --> 00:08:20,160
+So generally speaking, when the NAT sees
+packets.
+
+111
+00:08:20,160 --> 00:08:24,429
+Destined to the external, to nodes on the
+external interface.
+
+112
+00:08:24,429 --> 00:08:28,911
+That is Internet at large, from nodes on
+its internal interface.
+
+113
+00:08:28,911 --> 00:08:32,967
+In response to those packets, it might
+generate a mapping.
+
+114
+00:08:32,967 --> 00:08:38,303
+So in this case, let's say A is trying to
+open a packet to server S, port 22.
+
+115
+00:08:38,303 --> 00:08:42,999
+And so there's a packet coming in from
+10.0.0.101.
+
+116
+00:08:42,999 --> 00:08:49,283
+I mean, let's say it's a TCP packet.
+And this is port, again, let's say, 5000,
+
+117
+00:08:49,283 --> 00:08:57,518
+, and it's going to 18.181.0.31 port 22 .
+Well, that's going to say, Look, I see a
+
+118
+00:08:57,518 --> 00:09:01,774
+packet that is trying to open up a
+connection.
+
+119
+00:09:01,774 --> 00:09:10,189
+What I need to do is allocate.
+For this particular (internal IP, port) pair
+
+120
+00:09:10,189 --> 00:09:19,320
+and (external IP, port) pair, so let's say
+128.34.22.8 port 7,009.
+
+121
+00:09:19,580 --> 00:09:27,040
+So it's going to create a mapping from
+this, 10.0.0.101, 5,000.
+
+122
+00:09:27,040 --> 00:09:32,883
+To 128.34.22.8: 7009.
+And this is for TCP and TCP only.
+
+123
+00:09:32,883 --> 00:09:40,479
+So then, the packet will traverse, it'll
+look up this mapping, it will translate
+
+124
+00:09:40,479 --> 00:09:46,420
+the packet, send the packet with the
+external IP address port.
+
+125
+00:09:46,420 --> 00:09:51,117
+Then when a packet comes back from the
+server, it's going to look up and say,
+
+126
+00:09:51,117 --> 00:09:54,269
+Aha, I received a packet on my external
+interface.
+
+127
+00:09:54,269 --> 00:09:59,095
+I'm going to see if I've any mappings
+which match it, based on the protocol, IP
+
+128
+00:09:59,095 --> 00:10:02,698
+address, and port.
+And then if so, translate the packet and
+
+129
+00:10:02,698 --> 00:10:05,530
+rewrite it to the internal address and
+port.
+
+130
+00:10:05,530 --> 00:10:09,535
+So, that's at a high level in terms of
+there's all kind of variations and all
+
+131
+00:10:09,535 --> 00:10:12,448
+kinds of details which we'll go into in
+future lectures.
+
+132
+00:10:12,448 --> 00:10:15,933
+But that's the basic model.
+And the NAT is maintaining some state so it
+
+133
+00:10:15,933 --> 00:10:19,315
+can translate the packets.
+And generally speaking, it sets up this
+
+134
+00:10:19,315 --> 00:10:23,528
+state in response to receiving a packet
+from a node on the internal interface,
+
+135
+00:10:23,528 --> 00:10:26,390
+requesting, or that's sending packets to a
+node outside.
+
+136
+00:10:26,390 --> 00:10:30,618
+And so when you connect over wireless to
+your wireless router at home, this is
+
+137
+00:10:30,618 --> 00:10:34,338
+what's happening.
+When you, say, look up on your
+
+138
+00:10:34,338 --> 00:10:39,291
+using your network control panel and
+you'll see what your IP address is, you'll
+
+139
+00:10:39,291 --> 00:10:44,244
+see that it's almost certainly a local
+private address either something in the
+
+140
+00:10:44,244 --> 00:10:49,823
+10. range or 192.168 and then when you're sending
+packets out to say servers on the Internet
+
+141
+00:10:49,823 --> 00:10:54,149
+then that is translating them to it's own
+public IP address and port.
+
+142
+00:10:54,149 --> 00:10:59,165
+And so for example, lets look at my, my
+Imac, here in my office, so if I look at
+
+143
+00:10:59,165 --> 00:11:03,553
+my, IP address, so it turns out the
+wireless, EN1 that's the wireless
+
+144
+00:11:03,553 --> 00:11:06,500
+interface.
+You can see in fact, I have a private.
+
+145
+00:11:06,500 --> 00:11:08,089
+Ip address.
+10.33.6.35.
+
+146
+00:11:08,089 --> 00:11:11,772
+So this does not go out over the Internet
+at large.
+
+147
+00:11:11,772 --> 00:11:15,240
+This is a local private address within
+Stanford.
+
+148
+00:11:15,500 --> 00:11:22,044
+And so, that IP address can't be you say,
+you know, Google servers cannot send me a
+
+149
+00:11:22,044 --> 00:11:27,458
+packet at that IP address.
+This means that I'm sitting behind a NAT.
+
+150
+00:11:27,458 --> 00:11:33,760
+In fact, if I type, you know, what's my
+IP, into a Google server, it tells me that
+
+151
+00:11:33,760 --> 00:11:39,496
+my IP address is 171.66.168.122.
+And so what's happening here is that, I
+
+152
+00:11:39,496 --> 00:11:45,494
+have a private IP address of.
+10.33.6.35 on the internal interface of
+
+153
+00:11:45,494 --> 00:11:50,554
+the network address translation box.
+And, the external interface of the network
+
+154
+00:11:50,554 --> 00:11:55,485
+address translator is 171.66.168.22.
+So, when I issue a connection request to
+
+155
+00:11:55,485 --> 00:11:58,534
+Google servers, this is the IP address
+they see.
+
+156
+00:11:58,534 --> 00:12:01,518
+And, they send packets back to this IP
+address.
+
+157
+00:12:01,518 --> 00:12:06,708
+When the NAT receives those packets, then
+translates them back to my own private
+
+158
+00:12:06,708 --> 00:12:10,860
+local IP address, forwards those packets
+to the connection setup.
+
+159
+00:12:11,660 --> 00:12:15,640
+So these are everywhere and you should
+probably try this at home.
+

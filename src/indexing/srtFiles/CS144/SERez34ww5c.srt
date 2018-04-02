@@ -1,0 +1,472 @@
+1
+00:00:00,780 --> 00:00:04,010
+When we read about computer networks in the
+newspaper, it’s often because they have
+
+2
+00:00:04,010 --> 00:00:09,290
+been attacked or compromised. Almost every
+week we read about hackers breaking in and
+
+3
+00:00:09,290 --> 00:00:13,509
+walking off with millions of credit card numbers
+and other private data, perhaps following
+
+4
+00:00:13,509 --> 00:00:19,130
+a phishing attack or by exploiting some other
+vulnerability to access a supposedly private
+
+5
+00:00:19,130 --> 00:00:23,410
+network. Or we read about a new worm that
+Is designed to take over computers turning
+
+6
+00:00:23,410 --> 00:00:30,410
+them into botnets, such as the infamous Code
+Red and Slammer worms of the early 2000s.
+
+7
+00:00:31,860 --> 00:00:36,600
+Botnets are armies of infected computers,
+controlled by a master, that are commonly
+
+8
+00:00:36,600 --> 00:00:42,399
+used to send SPAM. While SPAM levels appear
+to be dropping slightly, reports suggest that
+
+9
+00:00:42,399 --> 00:00:48,829
+between 75% and 95% of emails sent every day
+are SPAM, adding up to hundreds of millions
+
+10
+00:00:48,829 --> 00:00:54,149
+of emails per day. Worms are also sent by
+one government to attack another. For example
+
+11
+00:00:54,149 --> 00:00:59,319
+when the 2010 Stuxnet worm – which is widely
+believed to have been created by the US and
+
+12
+00:00:59,319 --> 00:01:05,979
+Israel - to attack centrifuges used for processing
+nuclear material in Iran.
+
+13
+00:01:05,979 --> 00:01:10,409
+In this video we’ll look at some of the
+ways a network can be compromised by an attacker,
+
+14
+00:01:10,409 --> 00:01:15,229
+and I’ll explain the security characteristics
+we want from a network.
+
+15
+00:01:15,229 --> 00:01:20,280
+Let’s start by exploring the different ways
+a communication can be compromised.
+
+16
+00:01:20,280 --> 00:01:24,229
+The first and simplest method is for an attacker
+to Eavesdrop on someone’s else’s private
+
+17
+00:01:24,229 --> 00:01:30,229
+communication . This means passively sniffing
+and recording network data. Or it could mean
+
+18
+00:01:30,229 --> 00:01:34,560
+listening to the metadata, such as noting
+that a connection has been made, without necessarily
+
+19
+00:01:34,560 --> 00:01:39,909
+recording the data in the connection. Connection
+metadata was made infamous recently when the
+
+20
+00:01:39,909 --> 00:01:44,939
+NSA acknowledged recording information about
+calls and connections made, without – suuposedly
+
+21
+00:01:44,939 --> 00:01:47,450
+- recording the contents.
+
+22
+00:01:47,450 --> 00:01:52,140
+There are many ways to tap a network. For
+example, at the physical layer an attacker
+
+23
+00:01:52,140 --> 00:01:57,499
+might passively tap an electrical or optical
+cable. Or – as you have seen before – we
+
+24
+00:01:57,499 --> 00:02:02,640
+can listen-in to WiFi because the packets
+are broadcast for everyone to hear. A third
+
+25
+00:02:02,640 --> 00:02:08,539
+way is for an attacker to persuade a router
+to duplicate and forward copies of packets.
+
+26
+00:02:08,538 --> 00:02:13,340
+In each case, the attacker can use standard
+tools such as wireshark to decode the protocols
+
+27
+00:02:13,340 --> 00:02:16,980
+and understand the user’s data.
+
+28
+00:02:16,980 --> 00:02:21,659
+A second type of compromise is when an attacker
+modifies, deletes or inserts data as it passes
+
+29
+00:02:21,659 --> 00:02:26,010
+through the network. In other words, they
+are actively tampering with our data by Changing
+
+30
+00:02:26,010 --> 00:02:30,069
+the contents of the packets, redirecting packets
+to a different, rogue server without us knowing,
+
+31
+00:02:30,069 --> 00:02:35,730
+or taking over control of our end host. This
+might happen by persuading us to download
+
+32
+00:02:35,730 --> 00:02:40,040
+malware based on a phishing attack, or by
+exploiting a vulnerability in our computer
+
+33
+00:02:40,040 --> 00:02:44,769
+or the way we communicate. For example, later,
+we’ll see how it is possible to hijack an
+
+34
+00:02:44,769 --> 00:02:48,170
+ongoing TCP connection without either end
+knowing.
+
+35
+00:02:48,170 --> 00:02:53,480
+Finally, an attacker might just want to prevent
+us from communicating. This kind of attack
+
+36
+00:02:53,480 --> 00:02:58,040
+is usually called a denial of service attack.
+Sometimes these attacks are performed by swamping
+
+37
+00:02:58,040 --> 00:03:02,959
+servers or entire networks by generating billions
+of messages from different botnets spread
+
+38
+00:03:02,959 --> 00:03:07,549
+around the Internet. We’ll learn more about
+Denial of Service attacks in a later video.
+
+39
+00:03:07,549 --> 00:03:13,599
+Let’s take a look at an example.
+
+40
+00:03:13,599 --> 00:03:18,840
+Imagine that Alice is making a purchase online
+from an e-commerce site. She is using her
+
+41
+00:03:18,840 --> 00:03:25,430
+laptop, connected to her local WiFi access
+point, then over the Internet to Amazon.com.
+
+42
+00:03:25,430 --> 00:03:32,180
+She browses the site and makes her credit-card
+purchase using vanilla http. Unfortunately,
+
+43
+00:03:32,180 --> 00:03:39,099
+what she doesn’t know is the bad guy Attacker
+is listening in to what she is doing.
+
+44
+00:03:39,099 --> 00:03:44,849
+There are a few ways the Attacker can eavesdrop.
+For example, by simply listening or sniffing
+
+45
+00:03:44,849 --> 00:03:49,959
+the WiFi packets broadcast into the air. Anyone
+with a laptop and the Wireshark tool can listen
+
+46
+00:03:49,959 --> 00:03:55,930
+to packets in the air and – if they are
+not encrypted – decode their contents. Alternatively,
+
+47
+00:03:55,930 --> 00:03:59,829
+the attacker can eavesdrop on the physical
+wire, by placing a passive detector to pick
+
+48
+00:03:59,829 --> 00:04:05,760
+up small electromagnetic signals that leak
+from the cable. Or the attacker might insert
+
+49
+00:04:05,760 --> 00:04:11,659
+an electrical connection onto the wire. If
+the attacker is eavesdropping on a long haul
+
+50
+00:04:11,659 --> 00:04:15,420
+link in the Internet backbone, they are more
+likely to be tapping into an optical fiber.
+
+51
+00:04:15,420 --> 00:04:20,609
+This can be done by placing a device called
+an optical coupler which diverts a small fraction
+
+52
+00:04:20,608 --> 00:04:27,050
+of the optical signal onto a second optical
+fiber which can then be listened to and decoded.
+
+53
+00:04:27,050 --> 00:04:32,060
+An attacker without physical access might
+manage to subvert the switches and routers
+
+54
+00:04:32,060 --> 00:04:36,680
+along the path, tricking one of them into
+duplicating data and forwarding it to the
+
+55
+00:04:36,680 --> 00:04:42,139
+attacker’s computer. This can be done by
+remotely subverting Ethernet, IP or DNS traffic.
+
+56
+00:04:42,139 --> 00:04:47,479
+We’ll see examples of all three later. Or
+the attacker might manage to break into the
+
+57
+00:04:47,479 --> 00:04:52,060
+router console and take over the router completely.
+
+58
+00:04:52,060 --> 00:04:57,500
+In our example, if the attacker successfully
+eavesdrops on the clear http communication,
+
+59
+00:04:57,500 --> 00:05:03,180
+he or she can learn Alice’s private data,
+such as her credit card number and her home
+
+60
+00:05:03,180 --> 00:05:05,340
+address.
+In a later video we’ll learn more about
+
+61
+00:05:05,340 --> 00:05:12,340
+https prevents this from happening in practice.
+
+62
+00:05:14,360 --> 00:05:19,400
+If the attacker is able to insert herself
+into the middle of the communication, between
+
+63
+00:05:19,400 --> 00:05:25,280
+Alice and Amazon.com, then the Attacker can
+terminate the http connection in the middle,
+
+64
+00:05:25,280 --> 00:05:32,280
+pretending to be Amazon to Alice, and pretending
+to be Alice to Amazon. The Attacker could
+
+65
+00:05:32,360 --> 00:05:37,259
+simply pass through the data, recording it
+without changing it. Or the Attacker could
+
+66
+00:05:37,259 --> 00:05:41,400
+alter the data, for example to modify the
+shipping address, causing the purchased items
+
+67
+00:05:41,400 --> 00:05:46,660
+to be delivered to the Attacker instead of
+Alice. So called Man in the Middle attacks
+
+68
+00:05:46,660 --> 00:05:50,449
+are very hard to detect, because both parties
+can think they are talking to a legitimate
+
+69
+00:05:50,449 --> 00:05:56,729
+end host.
+
+70
+00:05:56,729 --> 00:06:00,870
+A third line of attack is to redirect the
+traffic away from the server without Alice
+
+71
+00:06:00,870 --> 00:06:05,520
+realizing that she is not actually talking
+to Amazon. If the Attacker is able to fool
+
+72
+00:06:05,520 --> 00:06:11,039
+a router to forward packets destined to Amazon.com
+to the Attacker instead, then the Attacker
+
+73
+00:06:11,039 --> 00:06:17,210
+can respond and pretend to be Amazon. Or the
+Attacker might fool Alice’s DNS server into
+
+74
+00:06:17,210 --> 00:06:22,960
+returning the Attacker’s IP adddress when
+Alice is trying to lookup Amazon’s IP address.
+
+75
+00:06:22,960 --> 00:06:27,509
+In each case, Alice can be forced to browse
+the Attacker’s website and be encouraged
+
+76
+00:06:27,509 --> 00:06:34,509
+to enter her credit card information.
+
+77
+00:06:36,069 --> 00:06:41,310
+Clearly Alice is not happy and would like
+her communication to be more secure. In general,
+
+78
+00:06:41,310 --> 00:06:46,639
+when we say we want secure communications
+over the Internet we are saying that we want:
+
+79
+00:06:46,639 --> 00:06:52,240
+Secrecy/confidentiality: We don’t want anyone
+to listen-in to our communication. For this,
+
+80
+00:06:52,240 --> 00:06:58,419
+we use encryption and we will describe how
+it works in one of the upcoming videos.
+
+81
+00:06:58,419 --> 00:07:04,139
+Integrity – We don’t want our messages
+to be altered in transit. The most common
+
+82
+00:07:04,139 --> 00:07:08,259
+way to prove that a message has not been tampered
+with is to attach what is called a message
+
+83
+00:07:08,259 --> 00:07:13,560
+authentication code, or MAC. MACs are based
+on encryption as well, coupled with calculating
+
+84
+00:07:13,560 --> 00:07:18,680
+a hash over the transmitted message. WE’ll
+study message authentication codes in an upcoming
+
+85
+00:07:18,680 --> 00:07:23,349
+video.
+Authentication – We often want to confirm
+
+86
+00:07:23,349 --> 00:07:27,860
+the identity of the other party we are communicating
+with. In our example, Alice wants to know
+
+87
+00:07:27,860 --> 00:07:31,919
+that she is really talking to Amazon – who
+she trusts – before entering her credit
+
+88
+00:07:31,919 --> 00:07:36,960
+card details. In a later video we will study
+digital signatures and certificates that help
+
+89
+00:07:36,960 --> 00:07:40,360
+us ensure that we are really communicating
+with who we think we are.
+
+90
+00:07:40,360 --> 00:07:46,729
+Finally, we want: Uninterrupted communication
+– We don’t want someone to prevent us
+
+91
+00:07:46,729 --> 00:07:51,610
+from communicating. You may have heard of
+denial of service attacks where an attacker
+
+92
+00:07:51,610 --> 00:07:56,199
+floods a network or a set of servers to prevent
+them from working properly. We will study
+
+93
+00:07:56,199 --> 00:07:58,479
+denial of service attacks shortly.
+
+94
+00:07:58,479 --> 00:08:04,099
+And so in the next few videos we will study
+different types of attack
+
+95
+00:08:04,099 --> 00:08:09,680
+Eavesdropping.
+Redirecting Ethernet, IP and DNS traffic.
+
+96
+00:08:09,680 --> 00:08:12,979
+Hijacking a running TCP connection.
+Denial of service.
+

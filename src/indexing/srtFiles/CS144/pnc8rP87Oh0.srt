@@ -1,0 +1,133 @@
+1
+00:00:07,299 --> 00:00:14,299
+Layering is a general and important principle
+in the design of computer networks. You mostly
+
+2
+00:00:17,880 --> 00:00:21,980
+see its benefits: separation of concerns,
+independent evolution, ease of adaptability
+
+3
+00:00:21,980 --> 00:00:28,980
+to future technologies. But it does sometimes
+get in the way. TLS is used today for secure
+
+4
+00:00:30,880 --> 00:00:37,329
+web transactions over HTTPS. But it’s often
+the case that a web server actually runs multiple
+
+5
+00:00:37,329 --> 00:00:41,519
+web sites through something called virtual
+hosts. The domain names of all of the web
+
+6
+00:00:41,519 --> 00:00:46,230
+sites map to the same IP address, of the server.
+Clients connect to all of them over port 80.
+
+7
+00:00:46,230 --> 00:00:51,859
+It’s not until the HTTP request comes in
+that the web server process knows which site
+
+8
+00:00:51,859 --> 00:00:57,920
+the request is for. The Host: header field
+of an HTTP request tells it. For example,
+
+9
+00:00:57,920 --> 00:01:04,489
+if you go to sing.stanford.edu and tinyos.stanford.edu,
+they’re the same server. I can could configure
+
+10
+00:01:04,489 --> 00:01:08,930
+Apache so they serve up different web pages.
+Apache would look inside the request, see
+
+11
+00:01:08,930 --> 00:01:14,940
+the Host: header, and chose which pages to
+server based on that.
+
+12
+00:01:14,940 --> 00:01:20,520
+This can break TLS such that it can’t fully
+work properly. How?
+
+13
+00:01:20,520 --> 00:01:25,230
+Does it break server authentication?
+Does it break the key exchange?
+
+14
+00:01:25,230 --> 00:01:30,180
+Does it break randomness generation?
+Does it break routing the handshake messages?
+
+15
+00:01:30,180 --> 00:01:37,180
+Or does it break premaster secret generation?
+
+16
+00:01:39,890 --> 00:01:45,510
+The answer is that it breaks server authentication.
+The TLS handshake and secure session setup
+
+17
+00:01:45,510 --> 00:01:51,780
+occur before there is any application data.
+As part of this exchange, the server needs
+
+18
+00:01:51,780 --> 00:01:57,470
+to provide a certificate that binds a public
+key to a name. But it doesn’t know what
+
+19
+00:01:57,470 --> 00:02:02,320
+name to use. For example, my server can’t
+tell whether a connection is coming in for
+
+20
+00:02:02,320 --> 00:02:07,330
+tinyos.stanford.edu or sing.stanford.edu.
+So it doesn’t know whether to provide a
+
+21
+00:02:07,330 --> 00:02:12,920
+certificate for tinyos.stanford.edu or sing.stanford.edu.
+In my case, I have a certificate that says
+
+22
+00:02:12,920 --> 00:02:19,890
+both, but if I wanted to add a new host name
+to the server, say a new website named “www.networking-class.com”,
+
+23
+00:02:19,890 --> 00:02:25,080
+then TLS would throw an error.
+
+24
+00:02:25,080 --> 00:02:29,450
+The problem is that the session layer, layer
+5, needs to know the host name that the client
+
+25
+00:02:29,450 --> 00:02:34,890
+is trying to contact. But that name is only
+available in the application layer, layer
+
+26
+00:02:34,890 --> 00:02:40,190
+7. The client has translated the name to an
+IP address, so a layer 3 name. So here’s
+
+27
+00:02:40,190 --> 00:02:46,700
+an example of layers, encapsulation of functionality,
+causing a conflict and getting in our way.
+

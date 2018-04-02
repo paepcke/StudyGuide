@@ -1,0 +1,1238 @@
+1
+00:00:00,000 --> 00:00:04,680
+In another video about the basics of
+routing, I told you about what multicast
+
+2
+00:00:04,860 --> 00:00:08,820
+routing is, in principle.
+In this video, I'm going to be telling you
+
+3
+00:00:08,820 --> 00:00:12,060
+about a number of techniques related to IP
+multicast.
+
+4
+00:00:12,850 --> 00:00:19,223
+So far we've assumed that all packets go
+to a single destination, or that they're
+
+5
+00:00:19,223 --> 00:00:23,309
+unicast,
+There are some applications where we want
+
+6
+00:00:23,309 --> 00:00:28,539
+packets to be duplicated to a number of
+hosts, to a set of hosts.
+
+7
+00:00:28,539 --> 00:00:34,750
+So, for example, A might want to send to
+B, C and X and E without sending to D.
+
+8
+00:00:34,750 --> 00:00:38,792
+For example, it could be a broadcast TV,
+where B, C, X, and E are all watching the
+
+9
+00:00:38,792 --> 00:00:42,356
+same TV or radio station.
+It could be a video conference among a
+
+10
+00:00:42,356 --> 00:00:46,026
+certain number of participants.
+It could be automatic updates to a large
+
+11
+00:00:46,026 --> 00:00:50,574
+number of hosts and so on.
+So, while we could easily send packets
+
+12
+00:00:50,574 --> 00:00:54,433
+one at a time to each destination as I
+
+13
+00:00:54,433 --> 00:01:00,762
+showed, it's natural to ask if the network
+can or should do the replication for us.
+
+14
+00:01:00,762 --> 00:01:06,010
+So, for example, if the network was to
+duplicate the packets.
+
+15
+00:01:06,241 --> 00:01:12,570
+R1 here and then, then it can more
+efficiently deliver to the
+
+16
+00:01:12,570 --> 00:01:16,275
+end hosts.
+A only sends one packet, yet the packets
+
+17
+00:01:16,275 --> 00:01:20,520
+are delivered correctly to all of the end
+destinations.
+
+18
+00:01:20,520 --> 00:01:25,022
+So, in this video, I'm going to look at a
+number of different techniques for
+
+19
+00:01:25,022 --> 00:01:27,929
+doing this.
+I'm going to start with the, the general
+
+20
+00:01:28,100 --> 00:01:31,634
+techniques and principles and then move on
+to the practice.
+
+21
+00:01:31,634 --> 00:01:36,955
+What is actually done in the internet.
+So, we always already saw one way in which
+
+22
+00:01:36,955 --> 00:01:42,891
+packets could be delivered to a large
+number of hosts with a rather simplistic
+
+23
+00:01:42,891 --> 00:01:47,849
+approach of flooding.
+So, in flooding, I've got a source A
+
+24
+00:01:47,849 --> 00:01:53,184
+and it's sending through the network to a
+to a number of routers.
+
+25
+00:01:53,184 --> 00:01:57,692
+Let's say, to B down here.
+I said that if the network is, is
+
+26
+00:01:57,692 --> 00:02:01,298
+flooding,
+If we use flooding as an approch to, to,
+
+27
+00:02:01,298 --> 00:02:06,866
+to reach B, then packets from A could
+simply be replicated at each router along
+
+28
+00:02:06,866 --> 00:02:11,804
+the path by sending out every interface
+except the one through which the packet
+
+29
+00:02:11,804 --> 00:02:14,829
+arrived.
+So, packets from A could come down to this
+
+30
+00:02:14,829 --> 00:02:19,582
+first router, go up this way and this way
+then when it gets to this
+
+31
+00:02:19,582 --> 00:02:24,643
+router, it could be sent out this way and
+this way and likewise here and eventually,
+
+32
+00:02:24,643 --> 00:02:27,729
+clearly the packet is going to get
+delivered to B.
+
+33
+00:02:27,729 --> 00:02:31,186
+In fact, it'll be delivered to every leaf
+in the network.
+
+34
+00:02:31,186 --> 00:02:37,135
+The basic problem in the flooding is that when there are
+
+35
+00:02:37,135 --> 00:02:41,449
+loops in the topology, packets can loop
+forever because when it gets packets
+
+36
+00:02:41,449 --> 00:02:43,890
+coming from this direction hit this
+router,
+
+37
+00:02:43,890 --> 00:02:48,431
+This router will say, aha, the packet came
+in through this interface, I'm going to
+
+38
+00:02:48,431 --> 00:02:52,972
+send out of all the interfaces except the
+one through which it came and then, of
+
+39
+00:02:52,972 --> 00:02:55,356
+course, it's going to keep looping
+forever.
+
+40
+00:02:55,356 --> 00:02:59,387
+So, we saw in the spanning tree protocol
+how these loops were broken.
+
+41
+00:02:59,557 --> 00:03:04,325
+We don't look at a different way they can
+be avoided in the first place and that
+
+42
+00:03:04,325 --> 00:03:09,710
+approach is called reverse path broadcast.
+And this is the basis for the early
+
+43
+00:03:09,710 --> 00:03:13,364
+multicast methods that we used in the, in
+the internet.
+
+44
+00:03:13,364 --> 00:03:17,587
+The first technique I'm going to be
+describing is called reverse path
+
+45
+00:03:17,587 --> 00:03:20,363
+broadcast, also known as reverse past
+forwarding.
+
+46
+00:03:20,363 --> 00:03:25,551
+It's a very clever technique that's widely
+used and was, was used in the very first
+
+47
+00:03:25,551 --> 00:03:30,800
+internet multicast routing protocols and
+it builds on a very simple observation and
+
+48
+00:03:30,800 --> 00:03:36,243
+that observation is that before A has even
+started sending multicast, the, the
+
+49
+00:03:36,243 --> 00:03:42,667
+network will have already built a unicast,
+minimum cost spanning tree covering all of
+
+50
+00:03:42,667 --> 00:03:47,214
+the hosts that A can reach.
+And we saw how that was done in the
+
+51
+00:03:47,214 --> 00:03:52,899
+unicast routing protocols earlier.
+So, for example R1 already knows how the
+
+52
+00:03:53,122 --> 00:03:58,922
+what the minimum cost spanning tree is for
+all of the packets going towards A.
+
+53
+00:03:58,922 --> 00:04:05,020
+So, there is essentially a minimum cost
+spanning tree in the network that has been
+
+54
+00:04:05,020 --> 00:04:09,110
+built by all of the routers together on
+how to reach A.
+
+55
+00:04:09,110 --> 00:04:18,254
+So, A can use that as a loop-free method
+in order to deliver packets to everybody
+
+56
+00:04:18,254 --> 00:04:21,778
+else.
+So, first let me describe the broadcast
+
+57
+00:04:21,778 --> 00:04:28,504
+case which is like flooding but without
+the loop packets
+
+58
+00:04:28,504 --> 00:04:33,148
+lasting forever.
+So, imagine now that A is sending a packet
+
+59
+00:04:33,148 --> 00:04:36,866
+to everybody else.
+And that packet is going to have an
+
+60
+00:04:36,866 --> 00:04:40,912
+address in it, and I'll talk, I'll talk
+about the addresses later.
+
+61
+00:04:40,912 --> 00:04:45,717
+So, it's going to have a group address
+corresponding to who it's sending to, but
+
+62
+00:04:45,717 --> 00:04:50,936
+it'll have the source address A in it.
+And because this packet came from A, the
+
+63
+00:04:50,936 --> 00:04:56,781
+routers at each hop along the way can ask
+the question, is the interface over which
+
+64
+00:04:56,781 --> 00:05:00,169
+this packet arrives?
+So, this, this interface here.
+
+65
+00:05:00,169 --> 00:05:03,986
+Is it on the shortest path spanning tree
+from me to A?
+
+66
+00:05:03,986 --> 00:05:09,925
+And you look can that up in its, in its
+forwarding table to see whether, if it was
+
+67
+00:05:09,925 --> 00:05:14,732
+sending a unicast packet to A rather than
+a multicast packet from A.
+
+68
+00:05:14,732 --> 00:05:18,762
+If it was sending a unicast packet to A,
+is this the path?
+
+69
+00:05:18,762 --> 00:05:23,640
+This is the interface through which it
+would depart from this router.
+
+70
+00:05:23,640 --> 00:05:27,980
+So, it looks up the address, the source
+address in its table.
+
+71
+00:05:27,980 --> 00:05:30,932
+And it's going to look that up in its
+forwarding table.
+
+72
+00:05:30,932 --> 00:05:35,474
+And if this is the interface through which
+it would send it, if it was sending a
+
+73
+00:05:35,474 --> 00:05:39,561
+unicast, then it will accept it and send
+it out of every other interface.
+
+74
+00:05:39,561 --> 00:05:42,287
+So, it will send it out of every other
+interface.
+
+75
+00:05:42,287 --> 00:05:45,580
+Likewise, when it gets to R2, R2 will ask
+the same question.
+
+76
+00:05:45,580 --> 00:05:50,381
+If it was sending a unicast packet to A,
+is this the interface through which it
+
+77
+00:05:50,381 --> 00:05:53,602
+would send it?
+The answer is yes, so therefore, it will
+
+78
+00:05:53,602 --> 00:05:58,221
+send it out of every other interface.
+So, it's a little bit like flooding but
+
+79
+00:05:58,221 --> 00:06:03,084
+its asking a more detailed question, is
+this the interface through which I would
+
+80
+00:06:03,084 --> 00:06:05,880
+send it if it was a unicast packet going
+to A?
+
+81
+00:06:06,240 --> 00:06:11,996
+So, you can see here that R3 would also
+ask the same question, and it would say,
+
+82
+00:06:11,996 --> 00:06:17,163
+yes, this is the interface through which I
+would send it to A so therefore, I am
+
+83
+00:06:17,163 --> 00:06:20,041
+going to send it out all of the other
+ports.
+
+84
+00:06:20,041 --> 00:06:25,339
+However, when this packet reaches R2, it
+will come through this interface which is
+
+85
+00:06:25,339 --> 00:06:30,375
+not on the green shortest path tree back
+to A. So therefore, R2 will drop that
+
+86
+00:06:30,375 --> 00:06:31,945
+packet.
+It won't send it.
+
+87
+00:06:31,945 --> 00:06:35,020
+And you can see that it's just broken the
+loop.
+
+88
+00:06:35,020 --> 00:06:39,624
+Same thing will happen over here at R8,
+this is known on the green shortest path
+
+89
+00:06:39,624 --> 00:06:44,055
+tree so that packet will be dropped.
+And you can convince yourself that there,
+
+90
+00:06:44,055 --> 00:06:48,775
+in fact, will be no loops because packets
+will follow that spanning tree
+
+91
+00:06:48,775 --> 00:06:52,804
+that is already being built.
+This is sort of a clever idea that you can
+
+92
+00:06:52,804 --> 00:06:57,580
+see why its called reverse path broadcast
+because its using the spanning tree that
+
+93
+00:06:57,580 --> 00:07:02,147
+is in the opposite direction.
+Now, this is all very well as a means for
+
+94
+00:07:02,147 --> 00:07:05,256
+broadcast but we're talking about
+multicast.
+
+95
+00:07:05,256 --> 00:07:10,698
+In this particular case, the, the packet
+would've been delivered to all of the end
+
+96
+00:07:10,698 --> 00:07:16,210
+hosts whereas, in fact, we wanted it to be
+delivered to every end host except D.
+
+97
+00:07:16,210 --> 00:07:20,521
+That was the set of hosts that we were
+trained to deliver to.
+
+98
+00:07:20,521 --> 00:07:26,457
+So, as a simple extension to this, there
+is something that's, that's called pruning
+
+99
+00:07:26,457 --> 00:07:32,965
+and usually referred to reverse path
+broadcast plus pruning, RPB plus pruning,
+
+100
+00:07:32,965 --> 00:07:40,293
+in which those routers that don't have any
+connected hosts interested in receiving
+
+101
+00:07:40,293 --> 00:07:44,892
+the packet, so in our case, D is not part
+of the multicast group.
+
+102
+00:07:44,892 --> 00:07:50,731
+So, R6 would send what's called a prune
+message, which I'll just show as a dotted
+
+103
+00:07:50,731 --> 00:07:56,060
+line, so it'll send prune and say, hey, I
+actually don't have any end hosts
+
+104
+00:07:56,060 --> 00:08:01,315
+interested in receiving this.
+Please don't send me multicast packets for
+
+105
+00:08:01,315 --> 00:08:06,279
+this group address anymore.
+And so, it will prune G and say, I have no
+
+106
+00:08:06,279 --> 00:08:10,160
+interest in this.
+So, in this case this would then be
+
+107
+00:08:10,160 --> 00:08:15,927
+removed from the, from the reverse path
+broadcast tree and now that tree will only
+
+108
+00:08:15,927 --> 00:08:19,123
+reach the end hosts that are interested in
+it.
+
+109
+00:08:19,123 --> 00:08:23,292
+So, its a way of decreasing the
+inefficiency of, of broadcast.
+
+110
+00:08:23,292 --> 00:08:28,989
+However, it clearly has the inefficiency
+still that  to start with
+
+111
+00:08:28,989 --> 00:08:34,409
+every router will hear about it before
+starts pruning. So, at very, very large
+
+112
+00:08:34,409 --> 00:08:38,370
+network, this is probably, this is
+probably impractical.
+
+113
+00:08:38,370 --> 00:08:43,596
+So, in summary, reverse path
+broadcast plus pruning packets are
+
+114
+00:08:43,596 --> 00:08:48,248
+delivered loop-free to every end host.
+Routers with no
+
+115
+00:08:48,248 --> 00:08:52,670
+interested hosts attached to them will
+send prune messages back towards the
+
+116
+00:08:52,670 --> 00:08:57,265
+source and, of course, they can use the
+unicast address of the source, in order to
+
+117
+00:08:57,265 --> 00:09:00,998
+send that prune message.
+So, it will follow the tree back towards
+
+118
+00:09:00,998 --> 00:09:04,272
+the source.
+The resulting tree is the
+
+119
+00:09:06,426 --> 00:09:08,579
+minimum cost spanning tree from the source
+to the set of interested hosts.
+
+120
+00:09:08,579 --> 00:09:13,013
+So, it's an efficient way, an efficient
+tree that we end up with although the
+
+121
+00:09:13,013 --> 00:09:16,377
+method to get there is a little
+inefficient, because we have to start by
+
+122
+00:09:16,377 --> 00:09:18,900
+communicating to all of the routers in the
+network.
+
+123
+00:09:18,900 --> 00:09:25,404
+One question that, that you may be
+wondering, do we build one tree or do we
+
+124
+00:09:25,404 --> 00:09:30,462
+build several trees?
+In my example, I showed A wanting to
+
+125
+00:09:30,462 --> 00:09:34,437
+send to this set of destinations B, C,
+X, and E.
+
+126
+00:09:34,437 --> 00:09:41,664
+But what if it's a video conference and
+after A has spoken and, and sent packets
+
+127
+00:09:41,664 --> 00:09:46,000
+to everybody else, what if it's B's turn
+to send?
+
+128
+00:09:46,000 --> 00:09:51,629
+What is, what is the tree, the multicast
+tree that packets from B should follow?
+
+129
+00:09:51,629 --> 00:09:56,119
+So, going from B back to A again, they
+would follow the same way.
+
+130
+00:09:56,119 --> 00:10:00,324
+B to C and B to X.
+But going from B to E, it would seem more
+
+131
+00:10:00,324 --> 00:10:03,459
+likely that the packets would flow this
+way.
+
+132
+00:10:03,459 --> 00:10:07,590
+In other words, the tree is specific to a
+source.
+
+133
+00:10:07,590 --> 00:10:11,822
+The shortest path tree specific to a
+source and that should be clear from my
+
+134
+00:10:11,822 --> 00:10:16,473
+previous example of the reverse path
+broadcast in which the packets are going
+
+135
+00:10:16,473 --> 00:10:20,348
+to follow the shortest path spanning tree
+in the opposite direction.
+
+136
+00:10:20,348 --> 00:10:25,236
+And so given that they will be a shortest
+path spanning tree from every source and
+
+137
+00:10:25,236 --> 00:10:30,304
+to every destination, it's not surprising
+that the packets will take a different a
+
+138
+00:10:30,304 --> 00:10:33,404
+different path.
+So, ideally, we would build a separate
+
+139
+00:10:33,404 --> 00:10:37,637
+tree for every sender, a source specific
+tree so that all packets follow the
+
+140
+00:10:37,637 --> 00:10:40,380
+shortest cost spanning tree to the end
+hosts.
+
+141
+00:10:40,380 --> 00:10:45,847
+But in communications where they're, where
+the multicast group of end host is very
+
+142
+00:10:45,847 --> 00:10:50,847
+small, it might be easier instead of
+building a whole load of trees, one for
+
+143
+00:10:50,847 --> 00:10:56,115
+every source, to establish some, some
+rendezvous points and we'll see an example
+
+144
+00:10:56,115 --> 00:10:59,715
+of this later.
+So, for example, we might elect R5 as a
+
+145
+00:10:59,715 --> 00:11:04,382
+rendezvous through which all of the
+multicast packets are going to go.
+
+146
+00:11:04,382 --> 00:11:09,863
+So, when everyone's sending a multicast,
+they could send them to R5. And then, R5
+
+147
+00:11:09,863 --> 00:11:15,084
+would build a shortest path spanning tree
+to everybody else within the group.
+
+148
+00:11:15,084 --> 00:11:20,305
+Now, there is one shortest path spanning
+tree from R5, the rendezvous point to
+
+149
+00:11:20,305 --> 00:11:23,899
+everybody.
+And then everybody uses the normal unicast
+
+150
+00:11:23,899 --> 00:11:29,599
+routing method in order to reach R5.
+So, there's really a design choice in
+
+151
+00:11:29,599 --> 00:11:34,450
+practice as to whether we maintain one
+tree or one for every source.
+
+152
+00:11:34,450 --> 00:11:38,938
+So, I told you a little bit about some of
+the techniques and principles, and I'm
+
+153
+00:11:38,938 --> 00:11:43,597
+going to tell you a little bit about the
+practice how multicast is used in the
+
+154
+00:11:43,597 --> 00:11:47,246
+internet today.
+So, one thing that I haven't mentioned so
+
+155
+00:11:47,246 --> 00:11:51,347
+far is about addresses.
+There is a class of IPv4 addresses that
+
+156
+00:11:51,534 --> 00:11:54,206
+are different from the unicast
+addresses.
+
+157
+00:11:54,206 --> 00:11:59,611
+They are set of class D and
+they're sixteen bits so there are two^16
+
+158
+00:11:59,612 --> 00:12:04,708
+different multicast addresses and they
+don't correspond to a particular location
+
+159
+00:12:04,708 --> 00:12:07,442
+on the topology like a unicast address
+does.
+
+160
+00:12:07,442 --> 00:12:10,984
+They refer to a group.
+So, every, every recipent of packets
+
+161
+00:12:10,984 --> 00:12:15,210
+within a group will receive packets with
+the same multicast address.
+
+162
+00:12:15,210 --> 00:12:17,865
+So, it's a little bit of like an
+indirection.
+
+163
+00:12:18,042 --> 00:12:22,880
+The router will look up on the label.
+And, in fact, routers typically maintain
+
+164
+00:12:22,880 --> 00:12:27,541
+an entry for each tuple of (multicast
+address, source pair), so that they can
+
+165
+00:12:27,541 --> 00:12:35,052
+route packets on the source-specific tree.
+We also need a way for hosts to indicate
+
+166
+00:12:35,052 --> 00:12:39,306
+their interest in joining our group.
+One of the interesting things about
+
+167
+00:12:39,306 --> 00:12:44,404
+multicast is that generally the source
+does not need to know who the packets are
+
+168
+00:12:44,404 --> 00:12:47,866
+being delivered to.
+It's the network, it's the tree that
+
+169
+00:12:47,866 --> 00:12:51,391
+figures that out.
+So, each of the leaves of the tree, each
+
+170
+00:12:51,391 --> 00:12:56,679
+of the hosts needs to indicate an interest
+in receiving packets and it does this by
+
+171
+00:12:56,679 --> 00:13:00,330
+using IGMP, the Internet Group Management
+Protocol, RFC3376.
+
+172
+00:13:00,330 --> 00:13:05,721
+So, this is the protocol that runs between
+the host, between an end host and its
+
+173
+00:13:05,721 --> 00:13:09,816
+directly attached router.
+The, the hosts periodically will ask to
+
+174
+00:13:09,816 --> 00:13:13,843
+receive packets belonging to a particular
+multicast group.
+
+175
+00:13:13,843 --> 00:13:18,524
+In fact, the routers will,
+Will probe or will send out a request to
+
+176
+00:13:18,524 --> 00:13:23,731
+all of the hosts connected to them and
+say, what multicast groups are you
+
+177
+00:13:23,731 --> 00:13:27,652
+interested in?
+And then, the hosts will respond and will
+
+178
+00:13:27,652 --> 00:13:30,560
+say which groups they want to receive
+from.
+
+179
+00:13:30,730 --> 00:13:35,558
+And if they don't receive any reply after
+a while then the membership times out.
+
+180
+00:13:35,558 --> 00:13:39,818
+In other words, it says, I will no longer
+deliver packets belonging to this
+
+181
+00:13:39,818 --> 00:13:42,488
+multicast group if no one is interested in
+it.
+
+182
+00:13:42,488 --> 00:13:45,157
+This is an example of what's called soft
+state.
+
+183
+00:13:45,328 --> 00:13:50,042
+The state is only maintained, it isn't
+exclusively removed, it will just time out
+
+184
+00:13:50,042 --> 00:13:53,280
+if no one actually renews their interest
+in receiving it.
+
+185
+00:13:53,280 --> 00:13:57,635
+So, let me tell you about multicast
+routing in the internet very briefly.
+
+186
+00:13:57,635 --> 00:14:02,413
+The very first multicast routing protocol
+was called DVMRP, the Distance Vector
+
+187
+00:14:02,413 --> 00:14:05,377
+Multicast Routing Protocol described in
+RFC 1075.
+
+188
+00:14:05,559 --> 00:14:10,277
+It was first introduced in the, in the
+1980s and it basically used the Reverse
+
+189
+00:14:10,277 --> 00:14:13,483
+Path Broadcast plus prune.
+So, it was based on this observation,
+
+190
+00:14:13,483 --> 00:14:16,387
+hence, the distance vector name at the
+beginning.
+
+191
+00:14:16,387 --> 00:14:21,347
+It's based on the observation that the
+unicast routing protocol has already built
+
+192
+00:14:21,347 --> 00:14:25,400
+the tree for us, we're just going to, to
+use it in the reverse direction.
+
+193
+00:14:25,400 --> 00:14:29,624
+An alternative is called Protocol
+Independent Multicast or PIM.
+
+194
+00:14:29,624 --> 00:14:33,715
+And this, this recognizes two different
+modes of multicast.
+
+195
+00:14:33,715 --> 00:14:39,080
+One called dense mode, in which all of the
+routers or a very large number of the
+
+196
+00:14:39,080 --> 00:14:44,445
+routers are expected to be involved in
+multicast, in which case RPB plus prune is,
+
+197
+00:14:44,445 --> 00:14:50,279
+is fine because most of the routers will
+be involved and very few of them will need
+
+198
+00:14:50,279 --> 00:14:53,364
+to prune.
+So, that uses DVMRP or something very
+
+199
+00:14:53,364 --> 00:14:56,449
+similar to DVMRP and is described in RFC
+3973.
+
+200
+00:14:56,650 --> 00:15:01,707
+An alternative way is called
+Sparse mode PIM, in which a relatively
+
+201
+00:15:01,707 --> 00:15:06,382
+small number of the routers are expected
+to be involved in the multicast and
+
+202
+00:15:06,382 --> 00:15:11,421
+therefore, it will be very inefficient to
+the RPB plus prune because there would be
+
+203
+00:15:11,421 --> 00:15:16,642
+way to many prune messages in the network.
+And in this case it, it explicitly builds
+
+204
+00:15:16,642 --> 00:15:21,257
+rendezvous points through which the
+packets that are sent will join a small
+
+205
+00:15:21,257 --> 00:15:26,175
+set of spanning trees from the rendezvous
+points to all of the destinations of a
+
+206
+00:15:26,175 --> 00:15:29,514
+group.
+And so a lot of work went
+
+207
+00:15:29,514 --> 00:15:35,387
+into how you pick these rendezvous points.
+It's a fairly subtle problem
+
+208
+00:15:35,387 --> 00:15:39,967
+in it's own right.
+So, DVMRP and PIM, so really overall,
+
+209
+00:15:39,967 --> 00:15:48,589
+there are three well, widely-used methods
+protocols described in the three RFCs
+
+210
+00:15:48,589 --> 00:15:52,055
+mentioned here.
+So, in practice, multicast is used a
+
+211
+00:15:52,055 --> 00:15:54,544
+little less than what's originally
+expected.
+
+212
+00:15:54,544 --> 00:15:59,097
+It was originally anticipated that it
+would be used for a very large amount of
+
+213
+00:15:59,097 --> 00:16:03,590
+communication in the internet because at
+the time the multicast was first
+
+214
+00:16:03,590 --> 00:16:08,265
+conceived, it was still the case that
+majority of communications in the world
+
+215
+00:16:08,265 --> 00:16:10,997
+with TV and radio, they were broadcast
+medium.
+
+216
+00:16:10,997 --> 00:16:15,855
+And so, it was anticipated that this will
+be a very common type of communication.
+
+217
+00:16:15,855 --> 00:16:20,408
+And in fact, in practice, this has turned
+out to be less true than what's originally
+
+218
+00:16:20,408 --> 00:16:23,930
+thought and it seems that, over the last
+twenty or so years,
+
+219
+00:16:23,930 --> 00:16:27,380
+Communication has become much more
+individualized.
+
+220
+00:16:27,380 --> 00:16:32,624
+We tend to ask for content that we
+specifically want to watch at a specific
+
+221
+00:16:32,624 --> 00:16:35,729
+time.
+There's less interest in broadcast than
+
+222
+00:16:35,729 --> 00:16:39,800
+there used to be,
+Except for events like sporting events,
+
+223
+00:16:39,800 --> 00:16:44,906
+big political rallies, or a rocket
+launching, or something like that.
+
+224
+00:16:44,906 --> 00:16:50,336
+So this individualized time shifting
+that's common place today
+
+225
+00:16:50,336 --> 00:16:54,417
+and has really reduced the demand for
+multicast in the network.
+
+226
+00:16:54,417 --> 00:16:59,730
+Also some of the earlier implementations
+were pretty inefficient like DVMRP and
+
+227
+00:16:59,730 --> 00:17:05,109
+were found to have scaling problems and so
+it, it reduced some of the interest or
+
+228
+00:17:05,108 --> 00:17:08,694
+enthusiasm that people had for introducing
+multicast.
+
+229
+00:17:08,694 --> 00:17:14,272
+Today, it is used for some broadcast IP TV
+dissemination and some applications to
+
+230
+00:17:14,272 --> 00:17:18,920
+sort of an application-layer specific
+multicast not using the network
+
+231
+00:17:18,921 --> 00:17:24,340
+infrastructure but building their own
+overlay tree for themselves.
+
+232
+00:17:24,339 --> 00:17:27,412
+Multicast also raises some interesting
+questions.
+
+233
+00:17:27,601 --> 00:17:32,683
+And they're really to do with the state
+that one would have to maintain in order
+
+234
+00:17:32,683 --> 00:17:37,137
+to maintain reliable TCP-like
+communications with an end host.
+
+235
+00:17:37,137 --> 00:17:41,904
+So, for example, imagine that a source is
+sending to hundreds or thousands or
+
+236
+00:17:41,904 --> 00:17:44,978
+hundreds of thousands of destinations in a
+group.
+
+237
+00:17:44,978 --> 00:17:49,871
+If you wanted that communication to be
+reliable, in which it was maintaining a,
+
+238
+00:17:50,059 --> 00:17:55,078
+keeping track of which packets had been
+reliably received at which destinations,
+
+239
+00:17:55,078 --> 00:17:59,091
+This would be a horrendous task for a
+single source to, to manage.
+
+240
+00:17:59,091 --> 00:18:03,718
+In fact, anything that requires state,
+like flow-control or supporting different
+
+241
+00:18:03,718 --> 00:18:08,113
+rates to different end users, it's not
+clear how to do that either, or how to
+
+242
+00:18:08,113 --> 00:18:11,236
+make it secure.
+All of these are quite are quite big
+
+243
+00:18:11,236 --> 00:18:13,896
+problems.
+There's been lots of interest from a
+
+244
+00:18:13,896 --> 00:18:18,696
+research point of view but, but generally
+speaking, there aren't considered to be
+
+245
+00:18:18,696 --> 00:18:22,108
+good solutions to these.
+So generally, multicast is used for
+
+246
+00:18:22,108 --> 00:18:24,884
+delivering data that is primarily in one
+direction.
+
+247
+00:18:25,057 --> 00:18:29,734
+For example, like TV, in which that data
+is being moved from a source without
+
+248
+00:18:29,734 --> 00:18:35,517
+modification to a set of end hosts.
+And that's the end of the video on multicast
+

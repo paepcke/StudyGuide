@@ -1,0 +1,159 @@
+1
+00:00:03,580 --> 00:00:09,600
+Let’s look at the first of three properties
+that cryptography can provide: confidentiality,
+
+2
+00:00:09,600 --> 00:00:12,258
+or secrecy.
+
+3
+00:00:12,259 --> 00:00:18,880
+The basic way you achieve confidentiality
+is through encryption. Because cryptography
+
+4
+00:00:18,880 --> 00:00:22,939
+has a firm mathematical basis, and because
+it’s important to be precise given the dangers
+
+5
+00:00:22,939 --> 00:00:26,750
+of using it haphazardly, I’m going to introduce
+some terms.
+
+6
+00:00:26,750 --> 00:00:33,019
+I’m going to start with symmetric encryption.
+In symmetric encryption, two parties share
+
+7
+00:00:33,019 --> 00:00:39,979
+some secret key K. So let’s suppose we have
+a message M, we want to transmit confidentially,
+
+8
+00:00:39,979 --> 00:00:45,930
+and the key K. M is called the plaintext,
+or cleartext. It’s the thing we want to
+
+9
+00:00:45,930 --> 00:00:52,930
+keep secret. To encrypt, we call a function
+E, passing the message M and the key K. This
+
+10
+00:00:54,479 --> 00:01:00,570
+produces a ciphertext C. If our encryption
+algorithm is secure, then it’s intractable
+
+11
+00:01:00,570 --> 00:01:05,909
+for someone to figure out the cleartext from
+the ciphertext unless they have the key. So
+
+12
+00:01:05,909 --> 00:01:12,470
+we can transfer C over the network, adversaries
+can look at it, but they can’t read the
+
+13
+00:01:12,470 --> 00:01:18,280
+original message M.
+To decrypt the cipher text, we call the decrypt
+
+14
+00:01:18,280 --> 00:01:25,280
+function D, also passing the key K. This returns
+the original cleartext M. The goal is that
+
+15
+00:01:26,170 --> 00:01:32,710
+you can only decrypt the message, or learn
+anything about it, if you have the right K.
+
+16
+00:01:32,710 --> 00:01:37,659
+Of course someone could try every K, so you
+pick a key big enough that exhaustively searching
+
+17
+00:01:37,659 --> 00:01:44,659
+the space is intractable. For example, make
+the key 128 or 256 bits.
+
+18
+00:01:45,700 --> 00:01:52,420
+Because E and D take the same key K, we call
+this symmetric or shared key encryption. There
+
+19
+00:01:52,420 --> 00:01:56,870
+are other cryptosystems that don’t use symmetric
+keys, we’ll cover them later. Examples of
+
+20
+00:01:56,870 --> 00:02:00,740
+symmetric encryption algorithms are AES, Blowfish,
+DES, and RC4.
+
+21
+00:02:00,740 --> 00:02:07,740
+A 
+one-time pad is a perfectly secret but generally
+impractical encryption algorithm. We generate
+
+22
+00:02:13,700 --> 00:02:19,230
+a perfectly random stream of bits as our key
+K. The sender and receiver somehow exchange
+
+23
+00:02:19,230 --> 00:02:26,230
+this key securely beforehand. For example,
+through a handshake and a USB drive. To encrypt,
+
+24
+00:02:26,290 --> 00:02:33,290
+we XOR our message M with the key K. To decrypt,
+we XOR our ciphertext C with the key K.
+
+25
+00:02:36,200 --> 00:02:41,349
+This algorithm is “perfectly” secure in
+that if we have the ciphertext but not the
+
+26
+00:02:41,349 --> 00:02:48,349
+key, then any M is equally likely. Furthermore,
+it’s really fast. All we have to do is XOR
+
+27
+00:02:48,630 --> 00:02:52,330
+the messages.
+So if you’re a super-secret spy who has
+
+28
+00:02:52,330 --> 00:02:58,220
+to send a short message, one-time pads are
+great. But not so in general practice. The
+
+29
+00:02:58,220 --> 00:03:03,860
+problem with one-time pads is that your key
+K is the same size as the message M. To send
+
+30
+00:03:03,860 --> 00:03:09,510
+a gigabyte of data, you need a gigabyte- long
+key. This is not practical. We’d like to
+
+31
+00:03:09,510 --> 00:03:15,030
+be able to send small keys that encrypt large
+amounts of data yet are still intractable
+
+32
+00:03:15,030 --> 00:03:15,379
+to crack.
+

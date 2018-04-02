@@ -1,0 +1,884 @@
+1
+00:00:00,000 --> 00:00:04,727
+So in this video I'm going to talk about
+two additional mechanisms that TCP Tahoe
+
+2
+00:00:04,727 --> 00:00:08,929
+introduced to control congestion.
+Better RTT or round trip time estimation,
+
+3
+00:00:08,929 --> 00:00:14,462
+and self-clocking.
+To recall,  TCP Tahoe introduced three
+
+4
+00:00:14,462 --> 00:00:19,414
+basic mechanisms that allowed it to tame
+congestion and essentially allow the
+
+5
+00:00:19,414 --> 00:00:23,603
+Internet to work again.
+The prior video talked about, congestion
+
+6
+00:00:23,603 --> 00:00:28,047
+window and this idea of the slow start,
+and congestion avoidance states.
+
+7
+00:00:28,047 --> 00:00:31,920
+Now, let's talk about the second
+mechanism, timeout estimation.
+
+8
+00:00:32,880 --> 00:00:36,760
+So it turns out that estimating your round
+trip time is really critical for
+
+9
+00:00:36,760 --> 00:00:40,853
+retransmissions and for time outs.
+If your round trip time is estimated to be
+
+10
+00:00:40,853 --> 00:00:45,106
+too short, that is you estimate it to be
+shorter than what it is, then this means
+
+11
+00:00:45,106 --> 00:00:48,773
+that you're going to waste capacity.
+You are going to think that the packet
+
+12
+00:00:48,773 --> 00:00:52,760
+wasn't successfully received when it has
+been and retransmit unnecessarily.
+
+13
+00:00:52,760 --> 00:00:57,013
+This is then going to trigger slow start.
+This is really bad in the sense of I have
+
+14
+00:00:57,013 --> 00:01:00,787
+a nice window size, I'm sending data, but
+my RTT estimates are too short.
+
+15
+00:01:00,787 --> 00:01:05,116
+I'm now entering slow start unnecessarily.
+Now if the RTT estimation is too long,
+
+16
+00:01:05,116 --> 00:01:09,585
+that's also a problem because it could be
+that, really I could've retransmitted a
+
+17
+00:01:09,585 --> 00:01:11,902
+long time ago.
+The packet didn't get there.
+
+18
+00:01:11,902 --> 00:01:16,151
+But say, let's say I estimated an RTT of
+five minutes when it's only a couple
+
+19
+00:01:16,151 --> 00:01:20,454
+hundred milliseconds, your protocol's
+going to sit there dead for five minutes
+
+20
+00:01:20,454 --> 00:01:23,820
+before it issues a time out and tries to
+do a retransmission.
+
+21
+00:01:23,820 --> 00:01:28,579
+So this is fine, but the real challenge is
+that especially on the Internet, we've
+
+22
+00:01:28,579 --> 00:01:31,673
+seen the packet switching.
+Rtt can be highly dynamic.
+
+23
+00:01:31,673 --> 00:01:34,528
+Furthermore, it can vary significantly
+with load.
+
+24
+00:01:34,528 --> 00:01:39,288
+Even as you are starting to send things
+faster, you can change your own RTT even
+
+25
+00:01:39,288 --> 00:01:43,928
+if the rest of the world remains the same.
+And so how do you estimate RTT very
+
+26
+00:01:43,928 --> 00:01:46,962
+inexpensively, very quickly given these
+constraints?
+
+27
+00:01:46,962 --> 00:01:50,830
+So before TCP Tahoe, there was a very
+simple mechanism, which is that.
+
+28
+00:01:50,830 --> 00:01:53,620
+R is your RTT estimate.
+And you'll just initialize it to something
+
+29
+00:01:53,620 --> 00:01:55,760
+reasonable.
+Okay, we'll guess like five hundred
+
+30
+00:01:55,760 --> 00:01:59,801
+milliseconds or something.
+Then you're generating a measurement for
+
+31
+00:01:59,801 --> 00:02:04,755
+the most recently acked data packets.
+You say, okay, I sent packet five at this
+
+32
+00:02:04,755 --> 00:02:07,650
+time.
+I now got the ack at, you know, time plus
+
+33
+00:02:07,650 --> 00:02:12,347
+57 milliseconds, or say, 200 milliseconds,
+and then I'm going to estimate, and will
+
+34
+00:02:12,347 --> 00:02:17,888
+be, you know, 57 or 200 milliseconds.
+I then maintain an exponentially weighted
+
+35
+00:02:17,888 --> 00:02:20,863
+moving average.
+So alpha r + 1- alpha m.
+
+36
+00:02:20,863 --> 00:02:26,735
+So this is basically saying, take my
+existing estimate, and incorporate some
+
+37
+00:02:26,735 --> 00:02:31,589
+fraction of my new estimate.
+So if, say, let's just say r is equal to
+
+38
+00:02:31,589 --> 00:02:35,720
+100 milliseconds.
+And my measurement is equal to 80
+
+39
+00:02:35,720 --> 00:02:39,505
+milliseconds.
+And alpha, which are the weighting of
+
+40
+00:02:39,505 --> 00:02:44,728
+history to the present sample.
+Let's just say, alpha is equal to .9.
+
+41
+00:02:44,728 --> 00:02:50,027
+So I'm going to weight history a lot, this
+way this will smooth out noise.
+
+42
+00:02:50,027 --> 00:02:54,493
+Then the new r is going to be 0.9
+Times 100 milliseconds, plus 0.1.
+
+43
+00:02:54,493 --> 00:03:00,473
+Times 80 milliseconds, 98 milliseconds.
+And so this one sample, 80 milliseconds,
+
+44
+00:03:00,473 --> 00:03:04,940
+is going to, should go one-tenth of the
+way between r and m.
+
+45
+00:03:07,140 --> 00:03:10,849
+So you can imagine a lower alpha value
+means that you're going to weight the
+
+46
+00:03:10,849 --> 00:03:14,710
+current measurements more, versus a higher
+alpha value, weigh the history more.
+
+47
+00:03:14,710 --> 00:03:19,576
+Then, your timeout is based on this
+factor, beta R, and beta was two.
+
+48
+00:03:19,576 --> 00:03:25,697
+And so if you see that the, you don't get
+an acknowledgement for twice your average,
+
+49
+00:03:25,697 --> 00:03:30,490
+then you assume there's a timeout, and
+then you trigger a timeout.
+
+50
+00:03:30,490 --> 00:03:33,353
+So this seems like a totally reasonable
+algorithm.
+
+51
+00:03:33,353 --> 00:03:35,988
+You know, at first blush.
+So what's the problem?
+
+52
+00:03:35,988 --> 00:03:40,972
+It turns out that the problem is that the
+fact that R is a certain value should not
+
+53
+00:03:40,972 --> 00:03:44,867
+say anything about what the distribution of
+RTT values is like.
+
+54
+00:03:44,867 --> 00:03:48,246
+So one way to imagine is, let's say, you
+know, here's a graph.
+
+55
+00:03:48,246 --> 00:03:52,198
+And I'm looking at a distribution of the
+round trip times of packets.
+
+56
+00:03:52,198 --> 00:03:54,891
+They're not constant.
+They're varying over time.
+
+57
+00:03:54,891 --> 00:03:57,926
+Well, in some cases, I might have, here's
+my, my average.
+
+58
+00:03:57,926 --> 00:04:01,020
+Let's call it A.
+I might have a distribution like this.
+
+59
+00:04:01,320 --> 00:04:05,254
+All right.
+Where in fact, if I were to look at 2A,
+
+60
+00:04:05,254 --> 00:04:09,353
+that less than 0.0001% of packets take
+that long.
+
+61
+00:04:09,353 --> 00:04:15,420
+At which point, beta, a beta of two is a
+tremendously conservative estimate.
+
+62
+00:04:16,700 --> 00:04:21,749
+But, it could also be  a slightly
+different case, where here, let's just say
+
+63
+00:04:21,947 --> 00:04:27,263
+I have a another link or another path
+which is B, where my distribution looks
+
+64
+00:04:27,263 --> 00:04:32,740
+more like this.
+Where if I look at 2b.
+
+65
+00:04:32,740 --> 00:04:40,660
+Some, say, twenty percent of packets tend to
+have an RTT of that law.
+
+66
+00:04:40,660 --> 00:04:46,124
+Depending on the dynamics of the network.
+You can have very distributions of RTTs.
+
+67
+00:04:46,124 --> 00:04:48,990
+And this approach didn't keep that in
+mind.
+
+68
+00:04:48,990 --> 00:04:54,655
+And so, for tcp connections that had very,
+very tight distributions, beta is way too
+
+69
+00:04:54,655 --> 00:04:58,454
+conservative.
+And you end up being idle when you don't
+
+70
+00:04:58,454 --> 00:05:01,986
+need to be.
+The estimate's too large an RTT but
+
+71
+00:05:01,986 --> 00:05:07,118
+when the, when the RTT has a very broad
+distribution of beta
+
+72
+00:05:07,118 --> 00:05:10,517
+equals two.
+Is far too aggressive and you end
+
+73
+00:05:10,517 --> 00:05:14,870
+retransmitting unnecessarily.
+So TCP Tahoe, solved this problem by
+
+74
+00:05:14,870 --> 00:05:19,711
+essentially including the notion of the
+variance of the RTT in its estimates.
+
+75
+00:05:19,897 --> 00:05:24,241
+And so this is the algorithm that, that
+was proposed and which is used.
+
+76
+00:05:24,428 --> 00:05:28,958
+And essentially, what you're going to do
+is, just like before, you're doing an
+
+77
+00:05:28,958 --> 00:05:34,709
+exponentially weighted moving average.
+You have this RTT estimate, and what
+
+78
+00:05:34,709 --> 00:05:38,571
+you're doing is also measuring your error
+in the estimate.
+
+79
+00:05:38,571 --> 00:05:44,098
+And so given I have this estimate R, and I
+have a measurement M, I measure the error
+
+80
+00:05:44,098 --> 00:05:47,960
+to be M minus R.
+And I multiply it by this gain factor, and
+
+81
+00:05:47,960 --> 00:05:52,887
+because these terms I'm essentially
+multiplying by minus R, so there's the
+
+82
+00:05:52,887 --> 00:05:56,217
+alpha factor that we saw in the prior
+approach.
+
+83
+00:05:56,217 --> 00:06:00,811
+And then we measure the variance.
+And so the variance is again,  the weighted
+
+84
+00:06:00,811 --> 00:06:04,740
+average of the gain factor of the error
+minus the variance.
+
+85
+00:06:05,340 --> 00:06:10,387
+But the, so the basic idea here is we're
+measuring not only an exponentially
+
+86
+00:06:10,387 --> 00:06:15,245
+weighted moving average of R.
+But we're also measuring an exponentially
+
+87
+00:06:15,245 --> 00:06:18,400
+weighted moving average of the variance
+over time.
+
+88
+00:06:18,400 --> 00:06:23,352
+And then our timeout is equal to the
+average plus four times the variance,
+
+89
+00:06:23,352 --> 00:06:27,234
+where beta is four.
+So this way, if we have, as before, if we
+
+90
+00:06:27,234 --> 00:06:32,723
+have a very tight distribution, then, with
+a variance, like this, then we're going to
+
+91
+00:06:32,723 --> 00:06:37,341
+time out when the packet, when the
+variance is just, when you have a, a
+
+92
+00:06:37,341 --> 00:06:40,487
+packet that's just four times the variance
+out.
+
+93
+00:06:40,487 --> 00:06:43,700
+Similarly, if you have a very broad
+distribution,
+
+94
+00:06:44,000 --> 00:06:48,988
+Your variance is going to be way out here.
+Then you'll end up timing out when the
+
+95
+00:06:48,988 --> 00:06:52,067
+variance, when the, when it's four times
+that value.
+
+96
+00:06:52,067 --> 00:06:56,440
+And so, it's very it's very likely that
+the packet was actually lost.
+
+97
+00:06:56,440 --> 00:07:02,106
+In a case of tremendous congestion, you're
+not getting, estimates, you know, nothing
+
+98
+00:07:02,106 --> 00:07:05,884
+is happening, you exponentially increase,
+this timeout.
+
+99
+00:07:05,884 --> 00:07:11,348
+So here are two graphs from Van Jacobson's
+paper, which show the performance of this
+
+100
+00:07:11,348 --> 00:07:13,440
+RTT estimation.
+And so what the,
+
+101
+00:07:13,440 --> 00:07:19,612
+The faint line on the bottom shows is the
+actual measured RTTs as packets from
+
+102
+00:07:19,846 --> 00:07:24,300
+acknowledgements.
+And the solid line above shows the time
+
+103
+00:07:24,300 --> 00:07:30,628
+out estimate for the TCP algorithm.
+And so the idea is that in a perfect world
+
+104
+00:07:30,628 --> 00:07:34,785
+that the time out would, would.
+Perfectly mirror this, such that, gosh, we
+
+105
+00:07:34,785 --> 00:07:38,877
+didn't get it, and if we just wait a
+little longer, then we know to retransmit.
+
+106
+00:07:38,877 --> 00:07:40,897
+So, two points.
+This figure on the left.
+
+107
+00:07:40,897 --> 00:07:44,936
+You can see it, there's this huge gap.
+So TCP is sitting idle for a long time,
+
+108
+00:07:44,936 --> 00:07:47,700
+when really, it could have retransmitted
+much sooner.
+
+109
+00:07:48,200 --> 00:07:51,840
+There's also cases where it crosses.
+So this is kind of bad.
+
+110
+00:07:51,840 --> 00:07:54,715
+Where this means that the packet took
+longer.
+
+111
+00:07:54,715 --> 00:07:58,420
+You know, the estimate was in fact too was
+too short.
+
+112
+00:07:58,420 --> 00:08:03,740
+So  if you look at the pre tahoe
+algorithm on the right and post tahoe,
+
+113
+00:08:03,740 --> 00:08:09,133
+it's the tahoe algorithm we see that it's
+tracking rtt is much better right.
+
+114
+00:08:09,133 --> 00:08:14,310
+The gap here between the observed rtt's
+and the timeouts is much closer.
+
+115
+00:08:14,310 --> 00:08:19,918
+So the third improvement that tcp tahoe brought
+was something called self clocking.
+
+116
+00:08:19,918 --> 00:08:25,311
+And this in some ways is the greatest
+conceptual contribution of tcp tahoe.
+
+117
+00:08:25,311 --> 00:08:28,647
+This idea that.
+You want to, essentially clock out the
+
+118
+00:08:28,647 --> 00:08:32,450
+packets that you send based on the
+acknowledgements you receive.
+
+119
+00:08:32,450 --> 00:08:37,019
+And so, this is the, and this is the, sort
+of the, the conceptual model of the Van
+
+120
+00:08:37,019 --> 00:08:40,250
+Jacobson laid out.
+So let's say I have a sender that has a
+
+121
+00:08:40,250 --> 00:08:43,371
+really big pipe.
+We show by, sort of, being fat here, where
+
+122
+00:08:43,371 --> 00:08:45,822
+the, the volume of these packets is
+constant.
+
+123
+00:08:45,822 --> 00:08:49,700
+And the receiver also has a fat pipe.
+But there is this bottleneck link in the
+
+124
+00:08:49,700 --> 00:08:52,218
+middle.
+Well, since there is this bottleneck link,
+
+125
+00:08:52,218 --> 00:08:56,415
+what's going to happen is these packets
+that are sent very fast from the sender
+
+126
+00:08:56,415 --> 00:08:59,929
+are going to be stretched out in time,
+they're going to take longer.
+
+127
+00:08:59,929 --> 00:09:03,286
+And they're then going to be spaced out in
+time at the receiver.
+
+128
+00:09:03,286 --> 00:09:06,958
+The receiver, if it generates
+acknowledgements directly in response to
+
+129
+00:09:06,958 --> 00:09:11,102
+these packets, then it's going to be
+sending acknowledgments back with the same
+
+130
+00:09:11,102 --> 00:09:15,246
+timing that it's receiving them, which is
+determined by this congestion, by this,
+
+131
+00:09:15,404 --> 00:09:19,578
+the bottleneck congestion link.
+Then those acts are going to arrive.
+
+132
+00:09:19,755 --> 00:09:24,602
+They've traversed the bottleneck link, you
+can see they're much shorter, so they're
+
+133
+00:09:24,602 --> 00:09:27,499
+not filling it, they're only taking up
+part of it.
+
+134
+00:09:27,499 --> 00:09:32,405
+And then these acknowledgments arrive at
+the sender corresponding to the frequency
+
+135
+00:09:32,405 --> 00:09:37,193
+of the packets arriving at the receiver.
+And then if the sender sends new packets
+
+136
+00:09:37,193 --> 00:09:41,804
+timed by these acknowledgements, which
+essentially is going to inherently rate
+
+137
+00:09:41,804 --> 00:09:46,119
+limit itself or space out packets in
+time, so that they're entering this
+
+138
+00:09:46,119 --> 00:09:50,434
+bottleneck link at the right rate.
+That is, just as the packet's leaving, like
+
+139
+00:09:50,434 --> 00:09:54,670
+here which then falls through the neck,
+A new packet starts arriving.
+
+140
+00:09:54,670 --> 00:09:59,338
+And this idea of self-clocking, that you
+don't put a new packet in the network
+
+141
+00:09:59,338 --> 00:10:03,840
+until one comes out, and you clock
+yourself based on this is what allows TCP
+
+142
+00:10:03,840 --> 00:10:08,430
+in a very simple mechanism to not stuff
+lots of packets into the network and to
+
+143
+00:10:08,430 --> 00:10:12,848
+not suddenly send huge bursts of packets
+that saturate this link, because you can
+
+144
+00:10:12,848 --> 00:10:16,979
+imagine there is some queue here.
+And so even if TCP knows, oh I can only
+
+145
+00:10:16,979 --> 00:10:21,512
+send five packets per round trip time, if
+it sends a burst of five packets then
+
+146
+00:10:21,512 --> 00:10:24,438
+those packets might fall off the end of
+this queue.
+
+147
+00:10:24,438 --> 00:10:29,086
+But if they're spaced out properly due to
+this timing, then it's going to be feeding
+
+148
+00:10:29,086 --> 00:10:33,905
+them out at a nice steady rate which will
+fill this pipe without overfilling the
+
+149
+00:10:33,905 --> 00:10:36,295
+queue.
+And so the principle here is you only want
+
+150
+00:10:36,295 --> 00:10:38,532
+to put data into the network when data has
+left.
+
+151
+00:10:38,532 --> 00:10:42,386
+Otherwise you're increasing the amount of
+data in the network and you're causing
+
+152
+00:10:42,386 --> 00:10:44,670
+congestion.
+And so you send new data directly in
+
+153
+00:10:44,670 --> 00:10:47,794
+response to acknowledgements.
+But also it's important that you send
+
+154
+00:10:47,794 --> 00:10:50,594
+acknowledgements aggressively.
+Such as you saw with duplicate
+
+155
+00:10:50,594 --> 00:10:53,531
+acknowledgements, they're really important
+signals to the sender.
+
+156
+00:10:53,531 --> 00:10:57,111
+And so if you are receiving additional
+segments and you, and the segments that
+
+157
+00:10:57,111 --> 00:11:00,508
+have, you have missing segments, you
+should send acknowledgements for those
+
+158
+00:11:00,508 --> 00:11:04,226
+segments aggressively so it sees that
+there are duplicate acknowledgements so it
+
+159
+00:11:04,226 --> 00:11:06,291
+gets a signal that something has been
+missed.
+
+160
+00:11:06,291 --> 00:11:09,321
+It also knows on receiving those
+acknowledgements, those duplicate
+
+161
+00:11:09,321 --> 00:11:12,901
+acknowledgements, that packets have left
+the network and it can make decisions
+
+162
+00:11:12,901 --> 00:11:15,983
+accordingly, So
+this is the, those three mechanisms of a
+
+163
+00:11:15,983 --> 00:11:19,454
+congestion window.
+Better RTT estimation that considers
+
+164
+00:11:19,454 --> 00:11:23,404
+variance and self clocking, are really the
+foundation of TCP Tahoe.
+
+165
+00:11:23,404 --> 00:11:29,627
+And so, in 1987, 1988, Van Jacobson fixed
+with these mechanisms as well as a few other tricks.
+
+166
+00:11:29,627 --> 00:11:32,620
+And published this seminal TCP paper, TCP
+Tahoe.
+
+167
+00:11:32,787 --> 00:11:36,354
+And this is, basically solved TCP's,
+condition control problem.
+
+168
+00:11:36,354 --> 00:11:41,426
+The internet started working again.
+And this actually spawned a huge area of
+
+169
+00:11:41,426 --> 00:11:45,997
+research in TCP and this whole idea of how
+do you manage your sending rate to not,
+
+170
+00:11:46,164 --> 00:11:49,342
+congest the network.
+And so in this next, I've just talked
+
+171
+00:11:49,342 --> 00:11:52,909
+about the first version of TCP Tahoe.
+But there's a long history.
+
+172
+00:11:52,909 --> 00:11:57,480
+So the next video's going to talk about,
+TCP Reno and new Reno, which are closer to
+
+173
+00:11:57,480 --> 00:12:00,490
+what's done today.
+They add a couple new mechanisms.
+
+174
+00:12:00,490 --> 00:12:04,608
+And so, if this is interesting, I, I
+totally recommend reading Van Jacobson's
+
+175
+00:12:04,608 --> 00:12:08,831
+original paper "Congestion of Winds and
+Control." Sort of lays out a little bit of
+
+176
+00:12:08,831 --> 00:12:13,108
+the story of what they saw, and then these
+mechanisms and how they solved, and how
+
+177
+00:12:13,108 --> 00:12:13,900
+they solved it.
+

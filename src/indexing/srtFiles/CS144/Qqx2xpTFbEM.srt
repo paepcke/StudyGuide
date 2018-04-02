@@ -1,0 +1,510 @@
+1
+00:00:00,000 --> 00:00:02,910
+So in this video I'm going to give you a
+brief overview of the TCP header.
+
+2
+00:00:02,910 --> 00:00:07,391
+If you want more information, there's of
+course tons of documentation online but
+
+3
+00:00:07,391 --> 00:00:12,105
+this is just a brief summary of what, the
+fields and the header and their meaning.
+
+4
+00:00:12,105 --> 00:00:16,820
+Standard TCP header is twenty bytes long.
+So you can see here that there are five
+
+5
+00:00:16,820 --> 00:00:21,221
+rows of four octets each.
+Additionally, you can have options after
+
+6
+00:00:21,221 --> 00:00:24,539
+the TCP header, I'm not going to any of
+those now.
+
+7
+00:00:24,539 --> 00:00:29,481
+The basic TCP header you're seeing most
+connections is twenty bytes long.
+
+8
+00:00:29,482 --> 00:00:34,358
+So the first two fields in TCP are the
+source port and destination port.
+
+9
+00:00:34,358 --> 00:00:39,572
+Each of these are sixteen bits or two
+octets, so talk about connecting to the
+
+10
+00:00:39,572 --> 00:00:43,296
+web port, port 80, that's the destination
+port say of 80.
+
+11
+00:00:43,296 --> 00:00:48,917
+The next two fields are the TCP sequence
+numbers. So this denote from the source of
+
+12
+00:00:48,917 --> 00:00:55,609
+this packet to its destination. What is
+the sequence number of the data contained
+
+13
+00:00:55,609 --> 00:01:02,039
+in this segment, as well as what is the
+acknowledgment number from that endpoint?
+
+14
+00:01:02,039 --> 00:01:07,987
+So for example, I have, if I want to
+acknowledge that I received up to byte
+
+15
+00:01:07,987 --> 00:01:16,235
+5000 and then, this is sequence number
+4000, then as I said, I will send sequence
+
+16
+00:01:16,235 --> 00:01:24,505
+number 4000 acknowledgment number 5000 The
+sequence number denotes what the sequence
+
+17
+00:01:24,505 --> 00:01:31,244
+number of the first byte of the data
+region, which follows the segment header.
+
+18
+00:01:31,244 --> 00:01:38,421
+So, if I had a sequence number of 4000 and
+there were 500 bytes of data, then this
+
+19
+00:01:38,421 --> 00:01:46,057
+would mean byte 4000 to 4499. Now, the
+acknowledgment number acknowledges the
+
+20
+00:01:46,057 --> 00:01:52,044
+last byte received plus one.
+And, so if I were to send the segment 4000
+
+21
+00:01:52,044 --> 00:02:00,745
+to 4499 and the other side received it, it
+would have send an acknowledgment number
+
+22
+00:02:00,745 --> 00:02:06,596
+of 4,500 That is in TCP, the ACK is
+not for the last byte received but that
+
+23
+00:02:06,596 --> 00:02:09,171
+plus one.
+What is the next bytes that is needed?
+
+24
+00:02:09,170 --> 00:02:13,172
+So when we talk about TCP ACK packets,
+what these are, is they're TCP segments
+
+25
+00:02:13,172 --> 00:02:16,021
+that have no data.
+All they're doing is counting the
+
+26
+00:02:16,021 --> 00:02:19,309
+acknowledgment numbers for it.
+This happens, if say traffic is
+
+27
+00:02:19,309 --> 00:02:22,432
+unidirectional.
+Sending lots of data in one direction, but
+
+28
+00:02:22,432 --> 00:02:26,213
+there isn't data coming back.
+If the flow is bidirectional, then these
+
+29
+00:02:26,213 --> 00:02:30,651
+acknowledgment numbers are just going to
+be added or padded on to, not padded, but
+
+30
+00:02:30,651 --> 00:02:33,830
+incorporated into the data segments as
+they're being sent.
+
+31
+00:02:33,830 --> 00:02:38,238
+So after the sequence number and
+acknowledgment numbers, we have a bunch of
+
+32
+00:02:38,238 --> 00:02:45,046
+fields. Let's start with the checksum.
+So the checksum is computed over the TCP
+
+33
+00:02:45,046 --> 00:02:51,442
+pseudo header, which is the TCP header, as
+well as some of the IP header.
+
+34
+00:02:51,442 --> 00:02:58,649
+This way you add a little bit resilience
+for the IP header with the IP addresses,
+
+35
+00:02:58,649 --> 00:03:02,557
+et cetera.
+So the checksum covers the pseudo header,
+
+36
+00:03:02,557 --> 00:03:05,990
+the TCP header, and then the data within
+the TCP segment.
+
+37
+00:03:05,990 --> 00:03:11,017
+And so, the checksum, actually in someway
+stretches before the packet to the pseudo
+
+38
+00:03:11,017 --> 00:03:15,676
+header filled in from the IP header and
+stretches to the end of the segment.
+
+39
+00:03:15,676 --> 00:03:20,367
+Simple ones compliment checksum.
+The window field is the flow control
+
+40
+00:03:20,367 --> 00:03:23,900
+window.
+It tells the endpoint, so the flow control
+
+41
+00:03:23,900 --> 00:03:29,739
+window or the window flow within a packet
+is telling the other endpoint how much
+
+42
+00:03:29,739 --> 00:03:35,002
+receive buffer space its sender has.
+So if you say, say a window of 20,000,
+
+43
+00:03:35,002 --> 00:03:40,986
+that means that there cannot be more than
+20,000 outstanding on acknowledged bytes
+
+44
+00:03:40,986 --> 00:03:46,177
+in this connection, in that direction.
+So, these bits here, U, A, P, R, S, and F
+
+45
+00:03:46,177 --> 00:03:50,042
+are control bits.
+So, let's start with some of the less,
+
+46
+00:03:50,242 --> 00:03:53,570
+less common one.
+So there's U which is the urgent bit.
+
+47
+00:03:53,570 --> 00:03:56,831
+That means that this data is particularly
+urgent.
+
+48
+00:03:56,831 --> 00:04:00,359
+So hey, let's, let's get to the
+application quickly.
+
+49
+00:04:00,359 --> 00:04:05,284
+Then there's P which is the push pit.
+So, the push pit says hey, please push
+
+50
+00:04:05,284 --> 00:04:10,244
+this data to the receiving application.
+So the other four bits,
+
+51
+00:04:10,244 --> 00:04:16,078
+There's the ACK bit, the reset bit, the
+SYN bit, and the FIN bit.
+
+52
+00:04:16,077 --> 00:04:21,761
+So, the ACK bit here, this bit is set to
+one, if the acknowledgment number field is
+
+53
+00:04:21,762 --> 00:04:24,721
+valid.
+So, the ACK bit is generally set to one
+
+54
+00:04:24,721 --> 00:04:29,980
+for every single segment except for the
+first one that initiates the connection.
+
+55
+00:04:29,980 --> 00:04:35,245
+Because, when you initiate a connection,
+you don't know what the other side's sequence
+
+56
+00:04:35,245 --> 00:04:38,755
+number is,
+You can't acknowledge anything, so the ACK
+
+57
+00:04:38,755 --> 00:04:42,602
+bit is not set.
+So we talk about TCP set up, say the first
+
+58
+00:04:42,602 --> 00:04:48,205
+packet sent does not have the ACK bit set
+but all other packets in the connection
+
+59
+00:04:48,205 --> 00:04:53,672
+towards termination have the ACK bit set.
+The SYN and FIN bits are used to set up
+
+60
+00:04:53,672 --> 00:04:57,520
+and tear down connections accordingly or,
+or respectively.
+
+61
+00:04:57,520 --> 00:05:01,991
+So the SYN bit says, hey, this is my
+starting sequence number, please
+
+62
+00:05:01,991 --> 00:05:07,045
+syncronize to this number. And so when you
+first open a connection you sent a packet
+
+63
+00:05:07,045 --> 00:05:11,858
+with the ACK bit not set but with the
+SYN bits set and then the sequence number.
+
+64
+00:05:11,858 --> 00:05:16,792
+And you're telling the end point I would
+like to synchronize you to this sequence
+
+65
+00:05:16,792 --> 00:05:19,560
+number which represents my first byte of
+data.
+
+66
+00:05:20,020 --> 00:05:23,161
+The other side can then respond and say,
+alright I'm going to acknowledge that
+
+67
+00:05:23,161 --> 00:05:26,501
+sequence number and send you one of mine.
+In this case both of these fields are
+
+68
+00:05:26,501 --> 00:05:28,754
+valid.
+To which then you can respond and say
+
+69
+00:05:28,754 --> 00:05:31,199
+okay, I'm going to acknowledge your
+sequence number.
+
+70
+00:05:31,199 --> 00:05:33,740
+Now it's synchronizing.
+Both know when the byte start.
+
+71
+00:05:33,740 --> 00:05:37,943
+So one of the things that you can imagine I
+could always just start my sequence number
+
+72
+00:05:37,943 --> 00:05:41,651
+at zero for every connection for both
+direction but it turn out to be real
+
+73
+00:05:41,651 --> 00:05:45,162
+security problems are doing that.
+That means people can guess what your
+
+74
+00:05:45,162 --> 00:05:47,882
+sequence number is.
+They could start interspersing packets.
+
+75
+00:05:47,882 --> 00:05:51,145
+Generally seems a bad idea.
+Also because if you have lots of short
+
+76
+00:05:51,145 --> 00:05:55,052
+lived connections, these packets with
+similar sequence numbers can be long lived
+
+77
+00:05:55,052 --> 00:05:58,019
+with the network and you want to be able
+to filter them out.
+
+78
+00:05:58,019 --> 00:06:02,074
+So, the F is for FIN This is for tearing
+down a connection so when you set the FIN
+
+79
+00:06:02,074 --> 00:06:05,140
+bit, you're telling the other side I have
+no more data to send.
+
+80
+00:06:05,140 --> 00:06:11,079
+And so often they exchange as you send the
+FIN, they acknowledge the FIN, they send
+
+81
+00:06:11,079 --> 00:06:15,569
+later UF with new more data send and you
+acknowledge that FIN.
+
+82
+00:06:15,569 --> 00:06:21,074
+The final bit is R, the Reset bit, which
+says we need to reset the connection.
+
+83
+00:06:21,074 --> 00:06:25,927
+Something wrong has gone on.
+So, if the urgent bit is set, then this
+
+84
+00:06:25,927 --> 00:06:30,490
+urgent pointer points where in the segment
+that Urgent data is.
+
+85
+00:06:30,490 --> 00:06:35,107
+Finally we have the offset field.
+So, the offset field is needed because
+
+86
+00:06:35,107 --> 00:06:39,919
+it's possible for TCP to have options and
+you don't know from this header
+
+87
+00:06:39,919 --> 00:06:44,537
+necessarily where the options are.
+So, what the offset tells you is what
+
+88
+00:06:44,537 --> 00:06:47,333
+offset within the segment does data
+begin.
+
+89
+00:06:47,333 --> 00:06:52,471
+So, if you have options then the offset
+tells you the size of those options and
+
+90
+00:06:52,471 --> 00:06:55,982
+your TCP stack knows to look inside there
+for options.
+
+91
+00:06:55,982 --> 00:07:00,340
+Are the options are patterned to be four
+bytes or four octets wide.
+
+92
+00:07:00,640 --> 00:07:04,464
+So that's the basic TCP header where the
+source and destination ports.
+
+93
+00:07:04,464 --> 00:07:08,835
+The sequence numbers, both for the data
+and then for the acknowledgements of the
+
+94
+00:07:08,835 --> 00:07:12,442
+data that you've received.
+The offset field to tell you where data
+
+95
+00:07:12,442 --> 00:07:15,064
+begins.
+The urgent and push bits for urgent data
+
+96
+00:07:15,064 --> 00:07:19,435
+or data you want to push the application.
+The acknowledgement bit indicating the
+
+97
+00:07:19,435 --> 00:07:23,479
+acknowledgement number is valid.
+The SYN bit for synchronizing the sequence
+
+98
+00:07:23,479 --> 00:07:26,156
+number.
+The FIN bit for tearing down a connection
+
+99
+00:07:26,156 --> 00:07:28,669
+saying that this, there's no more data to
+send.
+
+100
+00:07:28,669 --> 00:07:33,165
+The reset bit for resetting a connection. 
+The window for flow control.
+
+101
+00:07:33,165 --> 00:07:37,676
+Checksum for making sure that there are no
+errors in the data.
+
+102
+00:07:37,676 --> 00:07:41,460
+An urgent point for the urgent bit and
+then options.
+

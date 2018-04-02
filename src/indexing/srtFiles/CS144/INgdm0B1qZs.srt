@@ -1,0 +1,64 @@
+1
+00:00:00,630 --> 00:00:07,630
+Answer: It will take 150 milliseconds. So
+250 milliseconds in total.
+
+2
+00:00:08,009 --> 00:00:12,990
+In this figure, blue lines are segments from
+the client to server, and red are from the
+
+3
+00:00:12,990 --> 00:00:19,990
+server to client. The SYN SYN-ACK exchange
+takes 100 milliseconds
+
+4
+00:00:20,339 --> 00:00:27,060
+The first request will take 60 milliseconds
+to arrive, at which point, 160 ms, the server
+
+5
+00:00:27,060 --> 00:00:32,529
+can begin sending a
+response. It enqueues two segments to send.
+
+6
+00:00:32,529 --> 00:00:36,460
+As the first response segment goes out over
+the link,
+
+7
+00:00:36,460 --> 00:00:42,530
+the server receives the second request, and
+enqueues 2 more response segments. This means
+
+8
+00:00:42,530 --> 00:00:45,430
+that
+the responses will take a total of 90 milliseconds
+
+9
+00:00:45,430 --> 00:00:49,720
+to arrive after the first request arrives.
+The
+
+10
+00:00:49,720 --> 00:00:56,720
+additional packetization delay of the 2nd
+request is masked by the queueing of responses.
+
+11
+00:00:57,100 --> 00:01:02,300
+So this means it will take a total of 480
+milliseconds: 230 milliseconds for the initial
+
+12
+00:01:02,300 --> 00:01:07,700
+request / response of the HTTP page, then
+an addition 250 milliseconds to fetch the
+
+13
+00:01:07,700 --> 00:01:08,439
+two images.
+

@@ -1,0 +1,98 @@
+1
+00:00:00,849 --> 00:00:05,490
+Phil: In this unit, we’re going to dig into
+the transport layer. Recall that the transport
+
+2
+00:00:05,490 --> 00:00:11,000
+layer provides the service for data communication
+between applications. This data communication
+
+3
+00:00:11,000 --> 00:00:17,660
+can, in the case of UDP be simple, unreliable
+datagrams, or in the case of TCP a reliable,
+
+4
+00:00:17,660 --> 00:00:23,490
+bidirectional byte stream. You’ll learn
+about how these transport layers work, their
+
+5
+00:00:23,490 --> 00:00:26,930
+abstractions, and their algorithms. You’ll
+also learn a new network principle, called
+
+6
+00:00:26,930 --> 00:00:31,510
+the “end-to-end argument” or the “end-to-end
+principle,” which governs how and where
+
+7
+00:00:31,510 --> 00:00:33,499
+you can implement a feature correctly.
+
+8
+00:00:33,499 --> 00:00:39,210
+Nick: In this unit, we’ll ask and answer
+questions such as “how exactly does TCP
+
+9
+00:00:39,210 --> 00:00:43,899
+set up a connection?” “What do TCP segments
+look like?” “How can two computers reliably
+
+10
+00:00:43,899 --> 00:00:49,370
+transfer data with high performance?” To
+transfer data reliably, TCP needs to know
+
+11
+00:00:49,370 --> 00:00:54,579
+when data has been corrupted – you’ll
+learn how to detect errors in data using three
+
+12
+00:00:54,579 --> 00:01:00,899
+algorithms: checksums, cyclic redundancy checks,
+and message authentication codes. You’ll
+
+13
+00:01:00,899 --> 00:01:07,240
+also learn about a basic tools and approach
+to network protocol design, finite state machines,
+
+14
+00:01:07,240 --> 00:01:10,979
+and walk through all of the details of the
+state machine TCP uses.
+
+15
+00:01:10,979 --> 00:01:16,590
+Phil: At the end of this unit, you’ll fully
+understand how TCP transfers data reliably
+
+16
+00:01:16,590 --> 00:01:21,200
+and sets up connections to do so. We won’t
+yet cover how TCP can be designed to run really
+
+17
+00:01:21,200 --> 00:01:26,369
+fast – that’s not until Unit 4, but we
+will cover how it can run reasonably well
+
+18
+00:01:26,369 --> 00:01:32,159
+and, most importantly, correctly. You’ll
+also know all of the details of UDP as well
+
+19
+00:01:32,159 --> 00:01:37,340
+as ICMP, the internet control message protocol,
+used to carry control information like error
+
+20
+00:01:37,340 --> 00:01:38,460
+notifications in the Internet.
+

@@ -1,0 +1,24 @@
+1
+00:00:00,149 --> 00:00:06,400
+The answer is that it will take at most 2
+to the 368 attempts. The two random values
+
+2
+00:00:06,400 --> 00:00:10,910
+are known by an adversary, because they are
+sent plaintext. The one true secret is the
+
+3
+00:00:10,910 --> 00:00:16,560
+pre-master secret, which is 46 bits long.
+If the adversary can guess this value, then
+
+4
+00:00:16,560 --> 00:00:21,410
+it can recompute the master secret using the
+pseudo-random function. With the master secret,
+
+5
+00:00:21,410 --> 00:00:25,669
+it can recompute the keys.
+

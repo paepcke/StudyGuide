@@ -1,0 +1,9 @@
+1
+00:00:07,350 --> 00:00:13,819
+The answer is no! Encryption provides confidentiality,
+but not integrity. So an adversary could still
+
+2
+00:00:13,820 --> 00:00:15,969
+modify and tamper with messages.
+

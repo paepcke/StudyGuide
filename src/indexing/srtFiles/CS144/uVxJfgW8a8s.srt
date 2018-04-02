@@ -1,0 +1,1273 @@
+1
+00:00:00,000 --> 00:00:04,099
+In the next few videos, we're going to
+look at a number of different ways that packets can
+
+2
+00:00:04,099 --> 00:00:09,004
+be routed across a network.
+In this video, I'm going to start with
+
+3
+00:00:09,005 --> 00:00:14,011
+some of the basic concepts and principles
+of routing, regardless of whether we're
+
+4
+00:00:14,011 --> 00:00:19,005
+routing packets based on the layer three,
+or IP addresses, or if we're using the
+
+5
+00:00:19,005 --> 00:00:21,074
+Ethernet address, and, and Ethernet
+switches.
+
+6
+00:00:21,074 --> 00:00:26,073
+The basic problem that we're trying to
+solve when routing packets, is how should
+
+7
+00:00:26,073 --> 00:00:31,023
+packets be routed from A to B.
+Should the packet be picked up by the end
+
+8
+00:00:31,023 --> 00:00:35,830
+host A, over here, by the network in the
+middle, or by some other entity?
+
+9
+00:00:35,830 --> 00:00:40,646
+So, what, what path should they pick?
+And, what are the most important metrics
+
+10
+00:00:40,646 --> 00:00:44,348
+for them to consider?
+Should they take the shortest path?
+
+11
+00:00:44,348 --> 00:00:47,248
+The least congested path?
+A randomly picked path?
+
+12
+00:00:47,249 --> 00:00:50,170
+The safest and most reliable path?
+Does it matter?
+
+13
+00:00:50,170 --> 00:00:54,817
+So, in the next few minutes, we're going
+to look through at some different
+
+14
+00:00:54,817 --> 00:00:58,340
+techniques and some different metrics for
+solving this basic problems.
+
+15
+00:00:58,340 --> 00:01:01,053
+So, we're going to look at a number of
+different approaches.
+
+16
+00:01:01,053 --> 00:01:05,000
+Flooding, source routing, forwarding
+table, and spanning tree.
+
+17
+00:01:05,000 --> 00:01:09,064
+We will at some metrics and then, I'll
+describe what the shortest path spanning
+
+18
+00:01:09,064 --> 00:01:14,028
+tree is and that describes some other
+types of routing, multipath and multicast.
+
+19
+00:01:14,028 --> 00:01:19,740
+Flooding is perhaps the simplest way to
+make sure at least one copy of a packet is
+
+20
+00:01:19,740 --> 00:01:24,331
+delivered to every destination in the
+network and therefore to the
+
+21
+00:01:24,331 --> 00:01:29,032
+destination that its wanting to go to.
+With flooding, each router is going to
+
+22
+00:01:29,032 --> 00:01:33,570
+forward the packet to every interface.
+So, if A is sending a packet, and let's
+
+23
+00:01:33,570 --> 00:01:36,825
+say that its sending it to B, so it has B's address in it.
+
+24
+00:01:36,825 --> 00:01:41,518
+When it reaches the first router, it's
+going to send it out of every interface
+
+25
+00:01:41,518 --> 00:01:46,154
+except the one through which it arrived.
+That's going to happen on the next router
+
+26
+00:01:46,154 --> 00:01:48,924
+as well, so it'll send it out of these
+interfaces.
+
+27
+00:01:48,924 --> 00:01:54,573
+It will come down to this one here, which
+will send it out here and here, then it'll
+
+28
+00:01:54,573 --> 00:01:58,134
+go out from here, and then it'll go from
+this one out of here.
+
+29
+00:01:58,134 --> 00:02:02,563
+But it'll also go in this direction.
+And it'll come back around here, and come
+
+30
+00:02:02,563 --> 00:02:07,101
+back around here and you could see, very
+quickly, that there's a loop that's going
+
+31
+00:02:07,101 --> 00:02:11,064
+to form in the middle with the packet
+going round and round and round forever.
+
+32
+00:02:11,064 --> 00:02:15,819
+But, we can be sure in this case, because
+every packet will be delivered at least
+
+33
+00:02:15,819 --> 00:02:19,059
+once to every leaf.
+It will therefore reach every destination.
+
+34
+00:02:19,059 --> 00:02:24,007
+And if it contains B's address, which it
+does, then we can be sure that B can find
+
+35
+00:02:24,007 --> 00:02:28,077
+the packet or receive the packet by simply
+filtering on packets matching its address.
+
+36
+00:02:28,077 --> 00:02:33,052
+This is clearly very inefficient.
+All packets are going to cross every link,
+
+37
+00:02:33,052 --> 00:02:37,059
+potentially multiple times.
+And packets are going to loop forever.
+
+38
+00:02:37,059 --> 00:02:42,066
+Therefore, it's common to use a hop count
+or a time to live field like we do in, in
+
+39
+00:02:42,066 --> 00:02:47,048
+IP to start packets looping forever.
+But at least, we can be sure that packets
+
+40
+00:02:47,048 --> 00:02:52,018
+are going to reach their eventual
+destination, we can be absolutely sure of
+
+41
+00:02:52,018 --> 00:02:54,043
+that.
+So, flooding is nice and simple.
+
+42
+00:02:54,043 --> 00:02:59,003
+It requires no state in the routers.
+It doesn't, it doesn't require any
+
+43
+00:02:59,003 --> 00:03:01,096
+understanding by A of the topology of the
+network.
+
+44
+00:03:01,096 --> 00:03:05,060
+So, it's very, very simple.
+But because it's so inefficient, it's
+
+45
+00:03:05,060 --> 00:03:10,029
+really only used at times and instances
+when we know nothing about the topology,
+
+46
+00:03:10,029 --> 00:03:15,004
+or we can't trust our knowledge of it, and
+we need to be able to reach every node.
+
+47
+00:03:15,004 --> 00:03:19,032
+So, we'll see a couple of examples of this
+later, particularly at times of
+
+48
+00:03:19,032 --> 00:03:22,042
+transition, when we're not quite sure
+what's going on.
+
+49
+00:03:22,042 --> 00:03:25,044
+So, in summary.
+It's inefficient in link usage, packets
+
+50
+00:03:25,044 --> 00:03:30,000
+going to loop forever, and it's used when
+we don't know or can't trust the topology.
+
+51
+00:03:30,000 --> 00:03:34,061
+Now, let's look at another method called
+source routing.
+
+52
+00:03:34,061 --> 00:03:40,099
+Source routing is when the source
+populates the packet with the sequence of
+
+53
+00:03:40,099 --> 00:03:47,070
+hops that it will visit along its path.
+So, if we give names to these routers,
+
+54
+00:03:47,070 --> 00:03:50,470
+let's call them R1, R2, R3, R4, R5, and
+R6.
+
+55
+00:03:50,470 --> 00:03:57,449
+And so, if A is sending to B, with source
+routing, it might, for example, put in the
+
+56
+00:03:57,449 --> 00:04:02,250
+header, R1, R3, R6 to indicate that it
+wants the packet to go through that
+
+57
+00:04:02,250 --> 00:04:06,431
+sequence, before it gets to B.
+So, that would just say, go to R1 first,
+
+58
+00:04:06,431 --> 00:04:10,525
+go to R3, R6, and then to B.
+I just happen to draw them in the order in
+
+59
+00:04:10,525 --> 00:04:14,723
+which they will be visited.
+That's going to depend on the way in which
+
+60
+00:04:14,723 --> 00:04:18,296
+we use source routing.
+We'll see that a little bit later.
+
+61
+00:04:18,296 --> 00:04:23,505
+But it hits specifically here, A knows the
+topology, it knows the order in which it
+
+62
+00:04:23,505 --> 00:04:28,449
+wants the routers to be visited, and it's
+giving the final destination to make sure
+
+63
+00:04:28,449 --> 00:04:34,038
+that it works, and reaches B.
+Likewise, with flooding, the routers need
+
+64
+00:04:34,038 --> 00:04:36,540
+no forwarding tables to be populated in
+advance.
+
+65
+00:04:36,540 --> 00:04:39,395
+All the decision-making is made by the end
+host.
+
+66
+00:04:39,395 --> 00:04:43,784
+So, this is actually a pretty good example of the
+end-to-end principle in action.
+
+67
+00:04:43,784 --> 00:04:48,078
+The function is implemented at the end
+host, A is the one that knew the route and
+
+68
+00:04:48,078 --> 00:04:50,637
+so it picked this as the path that would
+be taken.
+
+69
+00:04:50,637 --> 00:04:53,679
+And this way, we can make sure it's done
+correctly.
+
+70
+00:04:53,679 --> 00:04:58,274
+But it's a lot of work for the end host,
+and packets are a variable length and
+
+71
+00:04:58,274 --> 00:05:02,625
+might carry a lot of addresses.
+So, on the face of it, it's kind of a good
+
+72
+00:05:02,625 --> 00:05:07,203
+scheme but clearly, we would like to do
+something that was a little less
+
+73
+00:05:07,203 --> 00:05:11,198
+heavyweight on the end host.
+So, it's an end-to-end solution and no
+
+74
+00:05:11,198 --> 00:05:15,489
+support needed from the network.
+Packet carries a variable and maybe long
+
+75
+00:05:15,489 --> 00:05:20,098
+list of addresses, and hosts must know the
+topology and choose the route, and this is
+
+76
+00:05:20,098 --> 00:05:22,819
+used when the end host wants to control
+the route.
+
+77
+00:05:22,819 --> 00:05:28,336
+So now, let's look at the, the method that
+we already know is used by the Internet,
+
+78
+00:05:28,336 --> 00:05:33,205
+and the, this is in, this is when we
+actually have a forwarding table that's
+
+79
+00:05:33,205 --> 00:05:37,316
+used throughout the network to route the
+packets hop by hop.
+
+80
+00:05:37,316 --> 00:05:42,085
+And as you know already, I'll go through
+this fairly quickly, if we're sending a
+
+81
+00:05:42,085 --> 00:05:47,025
+packet from A to B along this particular
+path, S1, S2, S4, and then to B.
+
+82
+00:05:47,025 --> 00:05:52,040
+But the forwarding table case, we use a
+forwarding table at each hop in order to
+
+83
+00:05:52,040 --> 00:05:56,089
+decide where the packet will go next and we've seen as example before.
+
+84
+00:05:56,089 --> 00:06:00,016
+You can really think of this as a, an
+optimization.
+
+85
+00:06:00,016 --> 00:06:04,096
+It's an optimization in the sense that
+although we could correctly have the
+
+86
+00:06:04,096 --> 00:06:10,002
+behavior work by populating the packets
+with the, with the route using source
+
+87
+00:06:10,002 --> 00:06:14,057
+routing, we have decided to have the
+network take on these functions to
+
+88
+00:06:14,057 --> 00:06:19,070
+optimize it because it's such a common
+function, common to everybody that's using
+
+89
+00:06:19,070 --> 00:06:22,093
+the network.
+So, it's an optimization in the sense that
+
+90
+00:06:22,093 --> 00:06:27,047
+the network is going to handle the hop by
+hop routing on behalf of everybody.
+
+91
+00:06:27,047 --> 00:06:31,077
+It does require a population of the
+forwarding table so we need a way to
+
+92
+00:06:31,077 --> 00:06:36,001
+populate these forwarding tables.
+And we're going to see in, in, in, in the
+
+93
+00:06:36,001 --> 00:06:39,084
+next few videos, various ways in which we
+can populate this table.
+
+94
+00:06:39,084 --> 00:06:44,079
+So, from here on, we're going to be making
+the assumption that we're using forwarding
+
+95
+00:06:44,079 --> 00:06:46,513
+tables.
+And that, the, the, that we need some
+
+96
+00:06:46,513 --> 00:06:52,580
+method in order to populate this table, in
+order to decide how the routing will take
+
+97
+00:06:52,580 --> 00:06:55,129
+place.
+We have put destination state in the
+
+98
+00:06:55,129 --> 00:06:59,590
+network, because we are going, each of
+the, of the destinations, we're going to
+
+99
+00:06:59,590 --> 00:07:04,085
+have, to have a next hop address, populated
+in the table although we don't
+
+100
+00:07:04,085 --> 00:07:08,070
+necessarily have to have a flow state.
+Any flows in the network that are heading
+
+101
+00:07:08,070 --> 00:07:12,007
+towards the same destination could all use
+the same entries.
+
+102
+00:07:12,007 --> 00:07:17,070
+When populating the forwarding tables with
+entries, it's often the goal to create
+
+103
+00:07:17,070 --> 00:07:22,079
+what we call the spanning tree and we're
+going to see many examples of this.
+
+104
+00:07:22,079 --> 00:07:28,001
+Spanning tree is spanning in the sense
+that it reaches all the leaves and it's a
+
+105
+00:07:28,001 --> 00:07:33,030
+tree, in a sense that it has no loops.
+So, we want to make sure that we can reach
+
+106
+00:07:33,030 --> 00:07:37,653
+every destination or every source can
+reach a particular destination, and we
+
+107
+00:07:37,653 --> 00:07:43,056
+want to make sure that there are no loops.
+Let me give you an example of this.
+
+108
+00:07:43,056 --> 00:07:47,782
+Imagine that we want to create the
+spanning tree that A, B, C, and D, the
+
+109
+00:07:47,782 --> 00:07:53,513
+host at the top, will use in order to send
+packets to X, the destination at the
+
+110
+00:07:53,513 --> 00:07:56,589
+bottom.
+So, A, its packet could follow this path,
+
+111
+00:07:56,589 --> 00:08:02,187
+B's might follow this path, C's might
+follow this path, and D's might follow
+
+112
+00:08:02,187 --> 00:08:06,055
+that path.
+So, you can see I've created a tree with
+
+113
+00:08:06,055 --> 00:08:11,696
+the root at X and it's spanning all of the
+sources that might send to it.
+
+114
+00:08:11,696 --> 00:08:15,002
+So, tree in the sense that it has no
+loops.
+
+115
+00:08:15,002 --> 00:08:22,008
+This would be implemented by populating
+the routing, the forwarding table at R1
+
+116
+00:08:22,008 --> 00:08:27,078
+with the entry, if I want to go to X, then
+I go to R3 as my next hop.
+
+117
+00:08:27,078 --> 00:08:34,049
+That's, that's telling it what to do here.
+Likewise, at R3, we would have an entry
+
+118
+00:08:34,049 --> 00:08:40,030
+that said, if I want to go to, to X, then
+I will go directly to X.
+
+119
+00:08:40,030 --> 00:08:47,022
+Similarly, over here in R4, I will say, if
+I'm going to go to X, then I will go there
+
+120
+00:08:47,022 --> 00:08:51,026
+via R7.
+So, the spanning tree is used in order to
+
+121
+00:08:51,026 --> 00:08:57,058
+create the routing entries so that we can
+populate the forwarding tables and
+
+122
+00:08:57,058 --> 00:09:01,037
+therefore route paths along that spanning
+tree.
+
+123
+00:09:02,058 --> 00:09:07,007
+When calculating the spanning tree, we
+need to know what our objective is, or
+
+124
+00:09:07,007 --> 00:09:10,096
+what our metrics of success are.
+How do we know, amongst all of the
+
+125
+00:09:10,096 --> 00:09:14,015
+possible spanning trees, which one we're
+going to pick?
+
+126
+00:09:14,015 --> 00:09:17,031
+So, this is going to depend on what our
+metric is.
+
+127
+00:09:17,031 --> 00:09:20,078
+So, let's look at some, some choices that
+we might have.
+
+128
+00:09:20,078 --> 00:09:25,029
+We might choose to pick the spanning tree
+that minimizes the distance.
+
+129
+00:09:25,029 --> 00:09:30,031
+This could be the geographic distance or
+the, minimize the length of the links
+
+130
+00:09:30,031 --> 00:09:35,033
+between the source and the destination.
+So, for example, noticing that this link
+
+131
+00:09:35,033 --> 00:09:40,028
+along here is long, we might, we might
+decide that this path is actually
+
+132
+00:09:40,028 --> 00:09:44,086
+geographically shorter than this one down
+here, and therefore prefer it.
+
+133
+00:09:45,065 --> 00:09:48,081
+We might also choose the one with the
+minimum hop count.
+
+134
+00:09:48,081 --> 00:09:53,009
+So, the example I showed you before was
+generally following the shortest hop
+
+135
+00:09:53,009 --> 00:09:55,056
+count.
+So, for example, D would take this path
+
+136
+00:09:55,056 --> 00:09:58,015
+here, because it's the shortest number of
+hops.
+
+137
+00:09:59,072 --> 00:10:02,002
+It will also be the one that minimizes
+delay.
+
+138
+00:10:02,002 --> 00:10:06,032
+I've got no way of telling directly from
+the graph what will minimize the delay but
+
+139
+00:10:06,032 --> 00:10:10,051
+that might be something that I can measure
+in the recent past, what have been the
+
+140
+00:10:10,051 --> 00:10:14,005
+lengths that have experienced the
+minimum delay and therefore, give
+
+141
+00:10:14,005 --> 00:10:17,022
+preference to those.
+I might go and use the ones that maximize
+
+142
+00:10:17,022 --> 00:10:20,096
+the throughput, that maybe the least
+congested or the path that is least
+
+143
+00:10:20,096 --> 00:10:24,812
+loaded, or it may be the most reliable
+path, the one that in the recent past has
+
+144
+00:10:24,812 --> 00:10:27,516
+failed the least often.
+That may be my metric.
+
+145
+00:10:27,516 --> 00:10:32,085
+It could also be the lowest cost path.
+I may have a price or a cost associated
+
+146
+00:10:32,085 --> 00:10:34,700
+with using any one link, and I want to
+minimize it.
+
+147
+00:10:34,700 --> 00:10:39,079
+Or it could be the most secure path, the
+one that most recently has, had the, the
+
+148
+00:10:39,079 --> 00:10:43,785
+fewest security attacks, or it might be
+one over which I have a virtual private
+
+149
+00:10:43,785 --> 00:10:47,148
+network running, and so on.
+There are many, many metrics that I could
+
+150
+00:10:47,148 --> 00:10:49,096
+use.
+Or, in fact, I could actually use a
+
+151
+00:10:49,096 --> 00:10:52,611
+combination of any of those.
+So, typically, how we, how we do this, is
+
+152
+00:10:52,611 --> 00:10:57,668
+we start by creating a, an annotated graph
+with whatever cost metric we've chosen,
+
+153
+00:10:57,668 --> 00:11:03,004
+and I could have picked any of those ones.
+So, we can represent our metric as a cost
+
+154
+00:11:03,004 --> 00:11:05,653
+for using a link.
+So, this is a, a, a set of costs that I
+
+155
+00:11:05,653 --> 00:11:10,005
+made up, just as an example.
+In general, the cost might be different in
+
+156
+00:11:10,005 --> 00:11:14,225
+each direction, just because of the
+congestion maybe more in one direction, or
+
+157
+00:11:14,225 --> 00:11:19,018
+the throughput may be different, but for
+ease of drawing, I'm going to show one
+
+158
+00:11:19,018 --> 00:11:23,028
+number per link here.
+So, one natural choice is to try to find
+
+159
+00:11:23,028 --> 00:11:29,014
+the spanning tree from every host to x and
+I might try to find the one that is
+
+160
+00:11:29,014 --> 00:11:33,037
+minimizing the cost.
+In which case, I'm going to call it the
+
+161
+00:11:33,037 --> 00:11:37,087
+minimum cost spanning tree.
+In this example, the, the solution is
+
+162
+00:11:37,087 --> 00:11:41,095
+fairly obvious.
+Let's have a look at what, what that would
+
+163
+00:11:41,095 --> 00:11:44,074
+be.
+So, coming to X, if I'm coming from B,
+
+164
+00:11:44,074 --> 00:11:49,695
+then the minimum cost is going to be to
+take that path here because that has the
+
+165
+00:11:49,695 --> 00:11:54,005
+cost of four.
+When I'm going from C, the minimum cost is
+
+166
+00:11:54,005 --> 00:11:58,054
+going to be this one here, which has a
+cost of five, three + two.
+
+167
+00:11:58,056 --> 00:12:02,052
+Coming from D, it's pretty easy.
+It's going to be down here.
+
+168
+00:12:02,052 --> 00:12:06,042
+A is a little bit more subtle.
+It's not the one down here.
+
+169
+00:12:06,042 --> 00:12:11,054
+The lowest cost one is the one that goes
+this way, which has a cost of five.
+
+170
+00:12:11,054 --> 00:12:17,007
+So, there's my minimum cost spanning tree.
+And here's an example of that drawn out.
+
+171
+00:12:17,007 --> 00:12:21,048
+So, in this case, it's very simple to
+calculate it, what we need is a method
+
+172
+00:12:21,048 --> 00:12:24,004
+that will work in much more complicated
+networks.
+
+173
+00:12:24,004 --> 00:12:27,019
+For example, this one.
+This is clearly way beyond something a
+
+174
+00:12:27,019 --> 00:12:30,092
+human could do in their head.
+This is a picture of the topology map for
+
+175
+00:12:30,092 --> 00:12:34,045
+the backbone of the internet.
+Well, I can't do this in my head, maybe
+
+176
+00:12:34,045 --> 00:12:36,055
+you can.
+So, we need automated algorithms to
+
+177
+00:12:36,055 --> 00:12:40,050
+calculate the route and put the necessary
+forwarding entries into the forwarding
+
+178
+00:12:40,050 --> 00:12:43,053
+tables in the routers.
+So, to calculate the routes, the routers are
+
+179
+00:12:43,053 --> 00:12:47,048
+going to exchange information with each
+other about the current topology as they
+
+180
+00:12:47,048 --> 00:12:49,082
+know it.
+This is the job of what we call the, the
+
+181
+00:12:49,082 --> 00:12:54,010
+routing algorithm or the routing protocol.
+In some cases, the algorithm to calculate
+
+182
+00:12:54,010 --> 00:12:57,047
+the route is wrapped in with the exchange
+of the state itself.
+
+183
+00:12:57,047 --> 00:13:00,791
+In another case, it's that separate.
+We're going to look at examples of both.
+
+184
+00:13:00,791 --> 00:13:06,009
+Going back to our outline, we've got down
+to the, the shortest path spanning tree.
+
+185
+00:13:06,009 --> 00:13:10,038
+We're going to be looking at several
+examples of this over the next few videos.
+
+186
+00:13:10,038 --> 00:13:14,078
+I just want to finish up by telling you
+about two other types of, of routing that
+
+187
+00:13:14,078 --> 00:13:17,071
+are commonly used.
+The first one is multipath.
+
+188
+00:13:17,071 --> 00:13:21,659
+So far we've assumed that all the packets
+to, to a given destination are going to
+
+189
+00:13:21,659 --> 00:13:25,099
+follow the same path, in particular, the
+shortest path spanning tree.
+
+190
+00:13:25,099 --> 00:13:30,072
+The downside of the shortest path spanning
+tree is that some links can become very
+
+191
+00:13:30,072 --> 00:13:33,052
+popular.
+We saw that we had a path that went down
+
+192
+00:13:33,052 --> 00:13:35,097
+here before, and a path that went down
+here.
+
+193
+00:13:35,097 --> 00:13:40,053
+You can see that this whole are here is
+going to become quite popular, and could
+
+194
+00:13:40,053 --> 00:13:43,054
+become congested.
+So, it means that we might need to keep
+
+195
+00:13:43,054 --> 00:13:46,056
+adapting the algorithm.
+An alternative would be, instead of
+
+196
+00:13:46,056 --> 00:13:50,062
+adapting the algorithm is to, from the
+beginnings, spread all of the traffic of
+
+197
+00:13:50,062 --> 00:13:53,075
+all, over all of the links.
+So, this is quite different from the
+
+198
+00:13:53,075 --> 00:13:56,926
+shortest path spanning tree.
+This might be a, a case where we send some
+
+199
+00:13:56,926 --> 00:14:02,025
+of the packets from A to X this way and we
+might choose to send some of them this way
+
+200
+00:14:02,025 --> 00:14:06,036
+and we might choose to send some of them
+this way, then we might choose to send
+
+201
+00:14:06,036 --> 00:14:09,054
+some of them this way.
+This is called multipath where we are
+
+202
+00:14:09,054 --> 00:14:12,062
+spreading the packets to a destination
+over multiple paths.
+
+203
+00:14:12,062 --> 00:14:16,076
+Essentially, when load balancing traffic
+over some or possibly all of the paths,
+
+204
+00:14:16,076 --> 00:14:20,674
+we're going to see the details later but
+for now, it's enough to know that, that it
+
+205
+00:14:20,674 --> 00:14:23,041
+might look something like what I, what I
+just drew.
+
+206
+00:14:23,041 --> 00:14:27,095
+So, in principle, it's okay for packets to
+take
+
+207
+00:14:27,095 --> 00:14:30,053
+different length paths and to get
+disordered.
+
+208
+00:14:30,053 --> 00:14:35,041
+So, it might be that in the example I had
+here, that a packet taking this path here
+
+209
+00:14:35,041 --> 00:14:38,045
+might get there much sooner than taking
+this path here.
+
+210
+00:14:38,045 --> 00:14:41,010
+And therefore, get new sequence relative
+to it.
+
+211
+00:14:41,010 --> 00:14:44,038
+Now, the Internet makes no promise of
+in-sequence delivery.
+
+212
+00:14:44,038 --> 00:14:47,067
+That's the job of TCP, to put them back in
+the right order.
+
+213
+00:14:47,067 --> 00:14:50,848
+But we're going to see later that in
+practice, it's, it's common to make sure
+
+214
+00:14:50,848 --> 00:14:55,858
+that packets within a given application
+flow don't get missequenced just to make
+
+215
+00:14:55,858 --> 00:15:00,036
+life a bit easier for TCP.
+But this is just really an optimization in
+
+216
+00:15:00,036 --> 00:15:02,609
+the network.
+So, multipath is when we spread the
+
+217
+00:15:02,609 --> 00:15:06,890
+packets over multiple links, in order to
+spread the load as evenly as we can across
+
+218
+00:15:06,890 --> 00:15:11,033
+the network.
+Another type of routing, another method is
+
+219
+00:15:11,033 --> 00:15:15,030
+called multicast.
+So far, we have assumed that all packets
+
+220
+00:15:15,030 --> 00:15:19,048
+are going to a single destination,
+something we call unicast.
+
+221
+00:15:19,048 --> 00:15:25,907
+For example, the packets in the last few
+examples I've shown are going from A to X as
+
+222
+00:15:25,907 --> 00:15:29,670
+a single packet.
+In some applications, an end host might
+
+223
+00:15:29,670 --> 00:15:36,007
+want to send packets to a set of hosts.
+For example, A might want, might want to
+
+224
+00:15:36,007 --> 00:15:43,287
+send packets to, a, a single packet that
+gets delivered to B, C, and X maybe, but
+
+225
+00:15:43,287 --> 00:15:46,043
+not D.
+Applications that might want to do this
+
+226
+00:15:46,043 --> 00:15:51,021
+could be like a broadcast TV or a radio
+station where currently, B, C, and X are
+
+227
+00:15:51,021 --> 00:15:54,010
+listening to a TV station being broadcast
+from A.
+
+228
+00:15:54,028 --> 00:15:58,071
+It could be automatic updates to a large
+number of hosts, for example, a car
+
+229
+00:15:58,071 --> 00:16:02,078
+company updating its inventory every night
+to all of its dealerships.
+
+230
+00:16:02,078 --> 00:16:06,499
+Or it could be stock prices being updated
+in the trading room where you want
+
+231
+00:16:06,499 --> 00:16:10,063
+everybody to receive the update very,
+very, at the same time.
+
+232
+00:16:10,091 --> 00:16:16,000
+So, while we can obviously send each
+packet one at a time to its destination,
+
+233
+00:16:16,000 --> 00:16:19,750
+that would be fine.
+And you could send individual packets to
+
+234
+00:16:19,750 --> 00:16:22,096
+B, C, and X.
+It's natural to ask if the network can
+
+235
+00:16:22,096 --> 00:16:25,097
+help.
+Whether it can and whether it should do
+
+236
+00:16:25,097 --> 00:16:29,099
+the replication for us.
+So, for example, A could send a single
+
+237
+00:16:29,099 --> 00:16:34,868
+packet, it could come down until it
+reaches B and then, it could be
+
+238
+00:16:34,868 --> 00:16:39,035
+replicated, one packet going this way and
+one packet going this way and another
+
+239
+00:16:39,035 --> 00:16:43,613
+packet going on to C, and so on, at every
+branching point within the network.
+
+240
+00:16:43,613 --> 00:16:47,409
+So now, we send one packet and it's
+delivered to everybody.
+
+241
+00:16:47,409 --> 00:16:52,890
+And we're using the graph structure of the
+network to do the replication for us.
+
+242
+00:16:52,890 --> 00:16:58,934
+So, notice that in order to send for A to
+B, c, and x, I've essentially drawn a
+
+243
+00:16:58,934 --> 00:17:02,618
+spanning tree.
+And this is actually going to prove to be
+
+244
+00:17:02,618 --> 00:17:06,631
+quite interesting later.
+I've got a spanning tree across the set of
+
+245
+00:17:06,631 --> 00:17:11,250
+destinations, and we're going to see some
+examples of how this works later.
+
+246
+00:17:11,250 --> 00:17:16,480
+It's enough for us to know right now that
+just, that this is a one way of routing
+
+247
+00:17:16,480 --> 00:17:19,277
+packets.
+And we'll see later how this is done
+
+248
+00:17:19,277 --> 00:17:23,046
+specifically in the Internet.
+So, in summary, there are several ways to
+
+249
+00:17:23,046 --> 00:17:27,089
+route packets across a network, starting
+with the simplest method, flooding.
+
+250
+00:17:27,089 --> 00:17:33,003
+So, in practice, we use routing algorithms
+or also known as routing protocols to
+
+251
+00:17:33,003 --> 00:17:36,068
+calculate the routes and populate the
+forwarding tables.
+
+252
+00:17:36,068 --> 00:17:41,018
+Often, the algorithms calculate the
+minimum cost spanning tree to the
+
+253
+00:17:41,018 --> 00:17:45,042
+destination and we're going to see lots of
+examples of that soon.
+
+254
+00:17:45,042 --> 00:17:50,672
+Other types of routing include multipath
+to spread traffic overlinks and multicast
+
+255
+00:17:50,672 --> 00:17:55,035
+to deliver the, to multiple end hosts.
+That's the end of this video.
+

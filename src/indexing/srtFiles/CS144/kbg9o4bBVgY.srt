@@ -1,0 +1,1018 @@
+1
+00:00:00,000 --> 00:00:03,712
+So in this video, I want to talk about,
+some more modern versions TCP.
+
+2
+00:00:03,712 --> 00:00:07,648
+Tcp Reno and New Reno. Where TCP Tahoe
+solved the congestion control problem,
+
+3
+00:00:07,649 --> 00:00:10,912
+such that, TCP could operate, the internet
+could work again.
+
+4
+00:00:10,912 --> 00:00:14,118
+It wasn't necessarily as high performance
+as it could be.
+
+5
+00:00:14,118 --> 00:00:17,634
+In the sense that it was a bit more
+conservative than it need to be.
+
+6
+00:00:17,634 --> 00:00:20,718
+And so, since then, there have been
+improvements to TCP.
+
+7
+00:00:20,718 --> 00:00:25,311
+Although, still keeping the original
+mechanisms of TCP Tahoe, to
+
+8
+00:00:25,311 --> 00:00:28,630
+have it send data more quickly and have
+higher performance.
+
+9
+00:00:28,630 --> 00:00:32,008
+So, we are going to walk through two of
+those editions.
+
+10
+00:00:32,008 --> 00:00:35,450
+One is something called TCP Reno and then
+TCP New Reno.
+
+11
+00:00:35,450 --> 00:00:39,969
+So, if you recall for TCP Tahoe.
+If
+
+12
+00:00:39,970 --> 00:00:44,277
+the protocol is running and you encounter
+a time out or triple duplicate ACK which
+
+13
+00:00:44,277 --> 00:00:47,131
+implies that there's a lost packet.
+You do three things.
+
+14
+00:00:47,131 --> 00:00:51,126
+You set your slow start threshold to be
+the congestion window divided by two.
+
+15
+00:00:51,126 --> 00:00:55,330
+So it's determining when you're going to
+enter the congestion avoidance state as
+
+16
+00:00:55,330 --> 00:00:59,222
+the congestion window grows again.
+You set the congestion window to one and
+
+17
+00:00:59,222 --> 00:01:02,750
+you enter the slow start state.
+The idea here is that you're sending
+
+18
+00:01:02,750 --> 00:01:07,704
+along, you're sending data.
+I should say, here is the window size.
+
+19
+00:01:07,704 --> 00:01:10,810
+You're sending data,
+Something happens,
+
+20
+00:01:10,810 --> 00:01:15,429
+There's an event.
+You set your threshold to be half of your
+
+21
+00:01:15,429 --> 00:01:19,282
+original window size.
+You set your congestion window to be one.
+
+22
+00:01:19,282 --> 00:01:22,140
+You enter slow start again, exponential
+growth.
+
+23
+00:01:22,140 --> 00:01:26,490
+And then when you reach this threshold,
+you do additive increase again.
+
+24
+00:01:26,490 --> 00:01:31,026
+So that's TCP Tahoe's behavior.
+And so here's a picture just showing that
+
+25
+00:01:31,213 --> 00:01:35,190
+a little more clearly.
+So here we start with a congestion window
+
+26
+00:01:35,190 --> 00:01:37,800
+of size one.
+We're in the slow start state.
+
+27
+00:01:38,080 --> 00:01:42,180
+Then there's say a triple duplicate ACK,
+or a timeout.
+
+28
+00:01:43,080 --> 00:01:46,064
+We set the congestion window to be size
+one again.
+
+29
+00:01:46,064 --> 00:01:49,884
+We have a slow start threshold here, which
+is half of this value.
+
+30
+00:01:49,884 --> 00:01:54,719
+Right, so this is X, this is X over two.
+So we do exponential growth again until we
+
+31
+00:01:54,719 --> 00:01:57,883
+reach this point.
+Which point now we're on congestion
+
+32
+00:01:57,883 --> 00:02:01,280
+avoidance.
+Linear increase.
+
+33
+00:02:01,960 --> 00:02:07,832
+Here we have a timeout.
+The window size is staying stable.
+
+34
+00:02:07,832 --> 00:02:12,468
+Boom.
+Drop down to congestion window size one
+
+35
+00:02:12,468 --> 00:02:14,220
+again.
+Slow start,
+
+36
+00:02:14,580 --> 00:02:20,006
+Congestion avoidance, time out, etc.
+So we see this behavior, of whenever we
+
+37
+00:02:20,006 --> 00:02:26,503
+have a triple duplicate ACK or a time out,
+we end up reducing the congestion window to
+
+38
+00:02:26,503 --> 00:02:29,255
+a size one.
+Going through slow start.
+
+39
+00:02:29,255 --> 00:02:35,223
+And then entering congestion avoidance.
+So TCP Reno generally behaves similar to
+
+40
+00:02:35,223 --> 00:02:40,023
+TCP Tahoe with one exception which is
+that, on a time line, it behaves the same
+
+41
+00:02:40,023 --> 00:02:45,007
+way, that it sets this congestion window
+to be size one and does slow start again.
+
+42
+00:02:45,007 --> 00:02:49,869
+The assumption here is hey, things have
+gone very wrong if I have a timeout, and
+
+43
+00:02:49,869 --> 00:02:54,792
+so I'm just going to assume nothing about
+the network and pretend as if things are
+
+44
+00:02:54,792 --> 00:03:00,068
+starting from the beginning.
+What TCP Reno does differently is on a
+
+45
+00:03:00,068 --> 00:03:05,783
+triple duplicate ACK it assumes, look, a
+segment was lost, but other segments are
+
+46
+00:03:05,783 --> 00:03:09,256
+arriving.
+Chances are I'm close to what my speed
+
+47
+00:03:09,256 --> 00:03:13,017
+should be.
+I don't need to drop my congestion window
+
+48
+00:03:13,017 --> 00:03:18,660
+to size one, instead I still set the
+threshold to be congestion window divided
+
+49
+00:03:18,660 --> 00:03:22,598
+by two, as before.
+But I set my congestion window itself to
+
+50
+00:03:22,598 --> 00:03:26,790
+congestion window divided by two.
+So, this is called fast recovery.
+
+51
+00:03:26,790 --> 00:03:31,370
+Rather than entering slow start again, I
+just halve my congestion window.
+
+52
+00:03:31,542 --> 00:03:35,102
+Then it adds another mechanism.
+This, called fast retransmit.
+
+53
+00:03:35,102 --> 00:03:38,834
+Which it'll, won't wait for the timeout on
+a triple duplicate ack.
+
+54
+00:03:38,834 --> 00:03:41,303
+It says look, I have a triple duplicate
+ack.
+
+55
+00:03:41,303 --> 00:03:44,461
+It means that, that segment is really
+likely to be lost.
+
+56
+00:03:44,461 --> 00:03:46,815
+So I'm just going to retransmit
+immediately.
+
+57
+00:03:46,815 --> 00:03:50,950
+And what this behavior means is that, on a
+triple duplicate ACK, TCP Reno
+
+58
+00:03:50,950 --> 00:03:54,998
+will stay in the congestion avoidance
+isn't going to require logarithmic number of
+
+59
+00:03:54,998 --> 00:03:58,413
+steps to enter that state which means
+that the window size is bigger.
+
+60
+00:03:58,413 --> 00:04:02,169
+Fast retransmit means its not going to
+have top wait for a time up and so in theory
+
+61
+00:04:02,169 --> 00:04:05,974
+it is its not going to have a couple of
+round trip time towards them ramping up
+
+62
+00:04:05,974 --> 00:04:08,170
+and so its overall throughput will be
+higher.
+
+63
+00:04:08,170 --> 00:04:13,624
+And so what, this is a picture showing TCP
+Reno behaves under similar
+
+64
+00:04:13,624 --> 00:04:17,308
+circumstances.
+Here we see we start and a slow start
+
+65
+00:04:17,308 --> 00:04:18,866
+state.
+Here, slow start.
+
+66
+00:04:18,866 --> 00:04:25,268
+Then we have a triple duplicate ACK .
+And rather than drop down to a congestion
+
+67
+00:04:25,268 --> 00:04:30,122
+window of size one, it sets, if our
+congestion window here was X, it sets the
+
+68
+00:04:30,122 --> 00:04:34,912
+congestion window to be X divided by two.
+And since that is the slow start
+
+69
+00:04:34,912 --> 00:04:39,896
+threshold, this causes the protocol to re
+enter congestion avoidance, to enter
+
+70
+00:04:39,896 --> 00:04:43,780
+congestion avoidance.
+And here we see a triple duplicate ACK.
+
+71
+00:04:44,460 --> 00:04:47,262
+Do the fast re-transmit.
+We get the acknowledgement.
+
+72
+00:04:47,262 --> 00:04:50,558
+We're growing the window again.
+And here we have a, a timeout.
+
+73
+00:04:50,558 --> 00:04:54,954
+You know, in a timeout TCP Reno behaves in
+the same way, in that it says, it says
+
+74
+00:04:54,954 --> 00:04:59,020
+something has gone drastically wrong.
+I set my congestion window to be one.
+
+75
+00:05:00,120 --> 00:05:07,072
+And enter the slow start state again.
+So here we have a slow start, congestion
+
+76
+00:05:07,072 --> 00:05:13,068
+avoidance, congestion avoidance, timeout
+and then triple duplicate ACK.
+
+77
+00:05:13,068 --> 00:05:17,935
+This is how TCP Reno behaves.
+So let's walk through that.
+
+78
+00:05:17,935 --> 00:05:22,240
+This is my sender.
+Sends packet one.
+
+79
+00:05:23,100 --> 00:05:29,240
+I get an acknowledgment one.
+I send two and three.
+
+80
+00:05:30,840 --> 00:05:37,760
+I get acknowledgments two and three.
+I then send.
+
+81
+00:05:43,060 --> 00:05:49,448
+Four, five, six, seven.
+And let's say that, packet four is lost.
+
+82
+00:05:49,448 --> 00:05:54,755
+Well, the receiver is still going to send
+acknowledgments.
+
+83
+00:05:54,755 --> 00:06:01,340
+But in response to five, six and seven,
+it's going to send ACK three.
+
+84
+00:06:03,640 --> 00:06:06,760
+ACK three, three times.
+So triple duplicate ACK.
+
+85
+00:06:06,760 --> 00:06:11,806
+So at this point my congestion window is
+one, here it was two, here it was four.
+
+86
+00:06:11,806 --> 00:06:16,321
+Now in receiving this triple duplicate
+ACK, TCP Reno's going to set its
+
+87
+00:06:16,321 --> 00:06:22,291
+congestion window to be 2 Immediately
+retransmit we transmit, packet four.
+
+88
+00:06:22,291 --> 00:06:26,716
+Right, fast re-transmit, so here's the
+fast re-transmit.
+
+89
+00:06:26,716 --> 00:06:35,620
+No time out.
+And hopefully we will get an ACK seven
+
+90
+00:06:36,080 --> 00:06:44,465
+which point now we have congestion window
+size, of size two, and we'll send packets
+
+91
+00:06:44,465 --> 00:06:48,811
+eight and nine.
+So TCP Reno significantly improves TCP's
+
+92
+00:06:48,811 --> 00:06:54,039
+throughput, so you don't have to enter the
+slow-start state and drop your congestion
+
+93
+00:06:54,039 --> 00:06:57,400
+window to size one just when a single
+segment is lost.
+
+94
+00:06:57,400 --> 00:07:01,056
+TCP New Reno improves things even a little
+bit more.
+
+95
+00:07:01,056 --> 00:07:05,429
+Essentially, it behaves the same as Tahoe
+and Reno in timeout.
+
+96
+00:07:05,429 --> 00:07:11,164
+When you're in a fast recovery state, it
+does something a little fancy with your
+
+97
+00:07:11,164 --> 00:07:15,321
+congestion window.
+When you enter fast recovery, so this is
+
+98
+00:07:15,321 --> 00:07:21,272
+when there's a triple duplicate ACK on
+every duplicate ACK that you receive, you
+
+99
+00:07:21,272 --> 00:07:25,430
+inflate the congestion window by the
+maximum segment size.
+
+100
+00:07:25,430 --> 00:07:30,437
+Then when the last packet that's
+outstanding is acknowledged you return to
+
+101
+00:07:30,437 --> 00:07:35,377
+the congestion avoidance state.
+You set your congestion window back to the
+
+102
+00:07:35,377 --> 00:07:40,651
+value set when entering fast recovery.
+And essentially what this is going to do
+
+103
+00:07:40,651 --> 00:07:45,324
+is, if I have a large window of
+outstanding packets, say, you know, I had
+
+104
+00:07:45,324 --> 00:07:50,577
+a very large window.
+In this case, let's just say let's say I
+
+105
+00:07:50,577 --> 00:07:54,870
+have eight packets.
+That's not a super large window, but for a
+
+106
+00:07:54,870 --> 00:07:59,022
+drawing it's reasonable.
+And this packet here is lost.
+
+107
+00:07:59,022 --> 00:08:03,175
+Right, so let's call this packet x.
+So this packet is lost.
+
+108
+00:08:03,175 --> 00:08:07,820
+Each of these packets are going to trigger
+duplicate acknowledgements.
+
+109
+00:08:09,420 --> 00:08:14,286
+And, as now TCP Reno receives duplicate
+acknowledgements, it's going to start
+
+110
+00:08:14,286 --> 00:08:19,486
+inflating its congestion window size.
+And as it inflates the congestion window
+
+111
+00:08:19,486 --> 00:08:23,820
+size, what that's going to let it do is
+start sending new packets.
+
+112
+00:08:25,060 --> 00:08:29,106
+The idea here is we have evidence that
+packets are leaving the network, and so
+
+113
+00:08:29,106 --> 00:08:32,685
+it's Okay to send new packets.
+We don't want to sent them too quickly
+
+114
+00:08:32,684 --> 00:08:36,160
+because clearly we're close to the
+congestion point of the network, but
+
+115
+00:08:36,160 --> 00:08:38,754
+otherwise what happens if we do a fast
+retransmit.
+
+116
+00:08:38,755 --> 00:08:42,905
+We essentially have to wait for an entire
+RTT before we can send a new packet.
+
+117
+00:08:42,905 --> 00:08:47,314
+We have to do this new retransmission and
+then we get the acknowledgment we can then
+
+118
+00:08:47,314 --> 00:08:52,467
+move the window forward.
+And there is this whole RTT where
+
+119
+00:08:52,467 --> 00:08:58,261
+essentially TCP sits idle.
+And you see that, in this example here
+
+120
+00:08:58,261 --> 00:09:03,294
+where gosh, we have the situation where
+there are these long, there are these idle
+
+121
+00:09:03,294 --> 00:09:10,538
+periods waiting for the re-transmission.
+And so essentially what this
+
+122
+00:09:10,538 --> 00:09:15,512
+tweak which I will walk through explicitly in a second
+allows TCP New Reno to do is to start
+
+123
+00:09:15,512 --> 00:09:19,258
+sending out new packets while the fast
+retransmit is in flight.
+
+124
+00:09:19,258 --> 00:09:24,174
+It starts inflating the congestion window
+to be bigger so that even though this was
+
+125
+00:09:24,174 --> 00:09:27,803
+the last acknowledged packet, it can start
+sending new packets.
+
+126
+00:09:27,803 --> 00:09:31,958
+But then once we get a proper
+acknowledgement, like let's say we get an
+
+127
+00:09:31,958 --> 00:09:36,523
+acknowledgement for this segment here,
+then it suddenly reduces the congestion
+
+128
+00:09:36,523 --> 00:09:41,440
+window size to the right size so it's not
+like we've suddenly saturated the network.
+
+129
+00:09:42,580 --> 00:09:45,983
+So let's walk through what this looks
+like.
+
+130
+00:09:45,983 --> 00:09:50,100
+So let's say we have a congestion window
+of size...
+
+131
+00:09:50,100 --> 00:09:55,556
+Sixteen and we encounter a triple
+duplicate ACK.
+
+132
+00:09:55,556 --> 00:10:00,801
+So, the rules mean we're going to set the
+congestion window to be eight.
+
+133
+00:10:00,801 --> 00:10:06,200
+So at this point, we have a triple
+duplicate ACK, the congestion window
+
+134
+00:10:06,200 --> 00:10:10,852
+becomes eight.
+And we are going to do fast retransmit.
+
+135
+00:10:11,694 --> 00:10:17,218
+And so triple duplicate ACK comes in and we
+send out fast retransmit.
+
+136
+00:10:17,218 --> 00:10:26,344
+, Meanwhile, while that fast retransmit
+packet is outstanding, we're receiving
+
+137
+00:10:26,344 --> 00:10:31,620
+additional acknowledgements,
+Right? the window size was sixteen and so
+
+138
+00:10:31,620 --> 00:10:36,269
+we had a triple duplicate ACK.
+Essentially, we expect to receive order
+
+139
+00:10:36,269 --> 00:10:41,640
+sixteen, or fifteen duplicate ACKs.
+And so, as those start streaming in, what
+
+140
+00:10:41,640 --> 00:10:46,004
+we're going to do is increase the
+congestion window by one for each.
+
+141
+00:10:46,004 --> 00:10:49,428
+And so we count those, those three triple
+duplicate.
+
+142
+00:10:49,428 --> 00:10:55,001
+So over this interval here, the congestion
+window is going to increase +one for each
+
+143
+00:10:55,001 --> 00:10:57,820
+of those duplicate acknowledgements.
+Right?
+
+144
+00:10:57,820 --> 00:11:00,774
+Which means it's going to increase up to
+23.
+
+145
+00:11:00,774 --> 00:11:05,474
+So this might seem really big.
+So we've inflated our congestion window
+
+146
+00:11:05,474 --> 00:11:08,805
+from 16 to 23.
+But think about what this means in terms
+
+147
+00:11:08,805 --> 00:11:12,360
+of the sequence number space.
+So we had.
+
+148
+00:11:12,900 --> 00:11:19,462
+This window of packets, right, and this
+was the last acknowledged packet here.
+
+149
+00:11:19,462 --> 00:11:26,812
+Let's just call it packet one, right?
+And we started and we have an outstanding
+
+150
+00:11:26,812 --> 00:11:33,200
+window of size sixteen, right.
+So we can safely send from packet one to
+
+151
+00:11:33,200 --> 00:11:37,834
+sixteen.
+So we've got that last acknowledgement for
+
+152
+00:11:37,834 --> 00:11:40,576
+one.
+You know we could send sixteen everything
+
+153
+00:11:40,744 --> 00:11:45,109
+is some way one was acknowledged.
+Allows us to send seventeen so everything
+
+154
+00:11:45,109 --> 00:11:47,740
+is good.
+Now we have a triple duplicate ack and
+
+155
+00:11:47,740 --> 00:11:51,601
+we're not going to be able to send
+anything past seventeen until the
+
+156
+00:11:51,601 --> 00:11:55,911
+congestion window grows beyond seventeen.
+And so it's starting at one and the
+
+157
+00:11:55,911 --> 00:12:00,444
+congestion window has shrunk to eight and
+this mean that the valid packets we're
+
+158
+00:12:00,444 --> 00:12:04,069
+allowed to send.
+Are two, three, four, five, six, seven,
+
+159
+00:12:04,069 --> 00:12:07,389
+eight, and nine, right?
+That's not very helpful.
+
+160
+00:12:07,389 --> 00:12:12,405
+And so, now, as these additional
+acknowledgements come in, we're going to
+
+161
+00:12:12,405 --> 00:12:16,831
+start inflating this.
+So we're going to allow ourselves to send
+
+162
+00:12:16,831 --> 00:12:22,290
+to ten, to eleven, to twelve, to thirteen,
+to fourteen, et cetera, et cetera, et
+
+163
+00:12:22,290 --> 00:12:28,340
+cetera, until when we get say the eighth
+duplicate acknowledgement, now suddenly.
+
+164
+00:12:28,340 --> 00:12:34,018
+We have increased our congestion window
+size back up to sixteen which means that
+
+165
+00:12:34,228 --> 00:12:39,907
+well we could resend seventeen, and then
+when we get the ninth we've increased it
+
+166
+00:12:39,907 --> 00:12:44,253
+to seventeen, which means that we can now
+send packet eighteen.
+
+167
+00:12:44,253 --> 00:12:49,581
+And so, this will then increase up to
+twenty three, and essentially what this
+
+168
+00:12:49,581 --> 00:12:55,049
+does, is its inflates the congestion
+window, so we can send up to packet 24
+
+169
+00:12:55,049 --> 00:12:59,705
+Now if you look at this carefully, packets
+
+170
+00:12:59,705 --> 00:13:05,581
+seventeen, eighteen, nineteen, twenty, 21,
+22, 23, 24, that's eight packets which is
+
+171
+00:13:05,581 --> 00:13:09,106
+equal to what the actual congestion window
+size is.
+
+172
+00:13:09,106 --> 00:13:14,634
+It's the idea that by inflating in this
+way given that we halved it, now we are
+
+173
+00:13:14,634 --> 00:13:18,626
+adding plus one.
+The last half of acknowledgements that
+
+174
+00:13:18,626 --> 00:13:22,030
+arrive will allow us to clock out new
+packets.
+
+175
+00:13:22,030 --> 00:13:25,908
+And so, essentially, then, and as soon as
+the, the faste retransmit acknowledgement
+
+176
+00:13:25,908 --> 00:13:28,869
+comes in, we just reset everything.
+Gosh, we're acknowledged.
+
+177
+00:13:28,869 --> 00:13:32,084
+Our condition will go a size eight.
+We can start moving forward.
+
+178
+00:13:32,084 --> 00:13:35,300
+But essentially what this does is this
+inflating of the window.
+
+179
+00:13:35,300 --> 00:13:40,281
+After a triple duplicate acknowledgement,
+allows TCP New Reno to continue to send
+
+180
+00:13:40,281 --> 00:13:43,371
+data while the faster transmit is in
+flight.
+
+181
+00:13:43,371 --> 00:13:48,542
+And the amount of data its going to send
+is equal to, and it's clocked by, again,
+
+182
+00:13:48,542 --> 00:13:53,272
+acknowledgements coming in, so you know
+packets are leaving the network, the
+
+183
+00:13:53,272 --> 00:13:56,992
+expected congestion window size for the
+next round trip time.
+
+184
+00:13:56,992 --> 00:14:01,470
+Assuming that the fast retransmitted
+packet is delivered successfully.
+
+185
+00:14:01,470 --> 00:14:06,532
+So that's TCP Reno and New Reno.
+New Reno is generally used on many systems
+
+186
+00:14:06,532 --> 00:14:09,452
+today.
+Or at least the basis for TCP today.
+
+187
+00:14:09,452 --> 00:14:14,644
+I'll talk a little bit more about more
+advanced TCP that deals with some modern
+
+188
+00:14:14,839 --> 00:14:19,382
+network considerations.
+But you know, a Linux system, or a Windows
+
+189
+00:14:19,382 --> 00:14:24,574
+systems, MacOS systems, the basic TCP
+algorithm that's running is very similar
+
+190
+00:14:24,574 --> 00:14:28,079
+to New Reno.
+It turns out that congestion control is a
+
+191
+00:14:28,079 --> 00:14:32,168
+really hard problem.
+And it's one of the hardest problem for,
+
+192
+00:14:32,168 --> 00:14:37,281
+to build a robust network system.
+The basic approach that you see, has been
+
+193
+00:14:37,281 --> 00:14:40,688
+adopted.
+And which seems very, very powerful, and
+
+194
+00:14:40,688 --> 00:14:46,197
+very robust, is this idea of added
+increase multiplicative decrease that you
+
+195
+00:14:46,197 --> 00:14:48,608
+increase a window additively.,
+Right?
+
+196
+00:14:48,608 --> 00:14:52,518
+But then reduce it multiplicatively, so
+you respond very quickly when things go
+
+197
+00:14:52,518 --> 00:14:56,377
+badly and carefully increase it.
+And the trick is when you're doing this is
+
+198
+00:14:56,377 --> 00:14:58,795
+how to keep the pipe full and improve throughput.
+
+199
+00:14:58,795 --> 00:15:02,756
+So there's things like fast retransmit.
+Don't wait for a timeout just to send
+
+200
+00:15:02,756 --> 00:15:06,203
+very, very resend quickly.
+And also things like congestion window
+
+201
+00:15:06,203 --> 00:15:10,576
+inflation or gosh I don't want to waste a
+whole round trip time waiting for the fast
+
+202
+00:15:10,576 --> 00:15:13,921
+retransmit acknowledgment.
+I know stuff's leaving the network I'm
+
+203
+00:15:13,921 --> 00:15:16,030
+going to start sending out some new
+packets.
+
+204
+00:15:16,030 --> 00:15:18,860
+I'll allow these packets, packets have
+left the network.
+

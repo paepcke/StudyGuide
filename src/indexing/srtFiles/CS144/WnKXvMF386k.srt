@@ -1,0 +1,1648 @@
+1
+00:00:00,000 --> 00:00:04,030
+So in this video about the physical layer,
+we're going to talk about two things.
+
+2
+00:00:04,030 --> 00:00:08,435
+First, capacity, that is how you determine
+how many bits per second a given physical
+
+3
+00:00:08,435 --> 00:00:11,442
+layer can support.
+And then modulation, how is it you
+
+4
+00:00:11,442 --> 00:00:16,573
+represent these bits on the medium itself.
+So it turns out that there's a theoretical
+
+5
+00:00:16,573 --> 00:00:19,953
+limit on how much information a given
+channel can carry.
+
+6
+00:00:19,953 --> 00:00:24,179
+Well, in this case, a channel means a
+medium in which you're putting your
+
+7
+00:00:24,179 --> 00:00:27,257
+information.
+This channel could be, say a wire or
+
+8
+00:00:27,257 --> 00:00:29,430
+wireless.
+It could be sound waves,
+
+9
+00:00:29,430 --> 00:00:33,294
+Whatever you want.
+It's just a term that's used to talk about
+
+10
+00:00:33,475 --> 00:00:36,795
+the way in which the information is being
+communicated.
+
+11
+00:00:36,795 --> 00:00:41,624
+And says, this limit is called the, the
+Shannon limit, after Claude Shannon who
+
+12
+00:00:41,624 --> 00:00:44,888
+established it.
+And so, it turns out that if you look at
+
+13
+00:00:44,888 --> 00:00:49,720
+a given communication channel and under, a
+certain set of assumptions that often
+
+14
+00:00:49,720 --> 00:00:52,998
+hold pretty well.
+This is a very good approximation because
+
+15
+00:00:52,998 --> 00:00:55,990
+you could good sense as to, to, what's,
+what's possible.
+
+16
+00:00:55,990 --> 00:01:03,082
+The channel capacity or the number of bits
+per second you can send over a given
+
+17
+00:01:03,082 --> 00:01:09,261
+channel is B
+Log2 (1 + the signal to noise ratio), where B is the bandwidth
+
+18
+00:01:09,261 --> 00:01:14,006
+of your communication, that is with the
+range of frequencies you can use.
+
+19
+00:01:14,006 --> 00:01:19,410
+That's assuming that we're doing things
+with basically sinusoidal waves etcetera.
+
+20
+00:01:19,608 --> 00:01:25,210
+S is the signal strength, so how strong is
+the signal when it arrives at the receiver
+
+21
+00:01:25,210 --> 00:01:28,616
+and N is the noise.
+So any receiver is going to have some kind
+
+22
+00:01:28,616 --> 00:01:32,834
+of noise, in the same way that when you
+are listening, you might think you hear
+
+23
+00:01:32,834 --> 00:01:37,484
+sounds but there are sounds that are too
+faint for you to hear. And it's because those
+
+24
+00:01:37,484 --> 00:01:40,620
+sounds are essentially below the noise
+sensitivity of your ears.
+
+25
+00:01:40,782 --> 00:01:44,892
+Or in the same way if there is a white
+noise generator in the room, it can make
+
+26
+00:01:44,892 --> 00:01:47,920
+it harder to hear things because there is
+this noise.
+
+27
+00:01:47,920 --> 00:01:50,529
+And so, all communication devices have
+noise.
+
+28
+00:01:50,695 --> 00:01:53,915
+Often it's just due to thermal properties
+of the hardware.
+
+29
+00:01:53,915 --> 00:01:58,800
+There are just stray electrons from thermal
+effects that introduce some noise into the
+
+30
+00:01:58,800 --> 00:02:01,632
+system.
+It's a big thing in engineering on how do
+
+31
+00:02:01,632 --> 00:02:06,387
+you bring the noise down?
+And so what the, the basic point here is
+
+32
+00:02:06,387 --> 00:02:11,274
+that, the amount that we can send is
+proportional to the amount of bandwidth we
+
+33
+00:02:11,274 --> 00:02:16,285
+have, like how large a chunk of
+frequencies we can use and then the signal
+
+34
+00:02:16,285 --> 00:02:19,482
+to noise ratio.
+Now, if we want a higher signal to noise
+
+35
+00:02:19,482 --> 00:02:24,288
+ratio, it's just the Signal divided by the noise.
+It requires either you have lower noise,
+
+36
+00:02:24,288 --> 00:02:28,513
+that can be really expensive it's you
+know, harder to make hardware with, with
+
+37
+00:02:28,513 --> 00:02:32,263
+lower noise or a stronger signal requires
+that the signal be louder.
+
+38
+00:02:32,421 --> 00:02:36,488
+This for example, why when you have more
+bars on your phone it goes faster because
+
+39
+00:02:36,699 --> 00:02:40,871
+the data rate is
+faster because the signal to noise ratio is higher.
+
+40
+00:02:41,030 --> 00:02:44,950
+And turns out that building hardware for
+very high bandwidth, so signals that have
+
+41
+00:02:44,950 --> 00:02:47,225
+a tremendous bandwidth, is actually really
+hard.
+
+42
+00:02:47,225 --> 00:02:51,194
+All these complications come into play.
+So it's not like you can just easily build
+
+43
+00:02:51,194 --> 00:02:54,001
+a communication system with arbitrary
+channel capacity.
+
+44
+00:02:54,001 --> 00:02:57,679
+There are all these engineering things
+which come into play, which is why we
+
+45
+00:02:57,679 --> 00:03:00,100
+don't suddenly see you know, a terabit
+Ethernet.
+
+46
+00:03:01,880 --> 00:03:06,408
+But some fundamentals, we're talking about
+the capacity of a channel, we are talking about
+
+47
+00:03:06,408 --> 00:03:11,120
+bandwidth and signal to noise. The way to
+think about this is and this is how we
+
+48
+00:03:11,120 --> 00:03:16,199
+generally represent signals is in terms of
+analog signals, so think sinusoids.
+
+49
+00:03:16,382 --> 00:03:21,339
+And so when we are talking about
+sinusoidal waves here's a simple, here's a
+
+50
+00:03:21,339 --> 00:03:26,295
+simple one here, there are a couple of
+properties we care about that I'm going to
+
+51
+00:03:26,295 --> 00:03:29,600
+talk about in the rest of this and some
+future videos.
+
+52
+00:03:29,600 --> 00:03:32,660
+The first is the amplitude of the wave.
+So this is,
+
+53
+00:03:32,915 --> 00:03:40,410
+So the amplitude denotes the actual, one
+way to think of it is that how loud it is,
+
+54
+00:03:40,410 --> 00:03:45,520
+the signal strength, loudness.
+Signal strength .
+
+55
+00:03:45,805 --> 00:03:52,266
+Second property is the wavelength, so how
+long is one of these waves?
+
+56
+00:03:52,266 --> 00:04:00,248
+So the speed of light is approximately,
+
+57
+00:04:00,248 --> 00:04:02,529
+so C, is
+approximately one foot per nanosecond,
+
+58
+00:04:02,529 --> 00:04:07,280
+that's a good, rough rule of thumb.
+And so one billion
+
+59
+00:04:07,980 --> 00:04:18,253
+feet per second.
+And so if for example, I'm sending a
+
+60
+00:04:18,253 --> 00:04:25,809
+signal whose wavelength is one foot, this
+would mean that it has a, wave length of
+
+61
+00:04:25,809 --> 00:04:30,905
+one foot, since the wave is traveling,
+one billion feet per second and this
+
+62
+00:04:30,905 --> 00:04:34,389
+means that there must be one billion waves
+per second.
+
+63
+00:04:34,389 --> 00:04:39,292
+It's because there's, this waves traveling
+at a billion feet per second, the wave
+
+64
+00:04:39,292 --> 00:04:42,775
+length is a foot, must have a billion
+waves per second.
+
+65
+00:04:42,775 --> 00:04:47,485
+So this gives me the frequency, so how
+many waves do I expect a second, so
+
+66
+00:04:47,485 --> 00:04:50,897
+1 billion per second turns out to be one
+gigahertz.
+
+67
+00:04:50,897 --> 00:04:55,420
+So one gigahertz wave, in this is
+electromagnetics, this is light.
+
+68
+00:04:55,420 --> 00:05:00,583
+just at lower frequencies.
+A 1-foot, a 1-gigahertz signal is, has a
+
+69
+00:05:00,583 --> 00:05:05,593
+wavelength of about a foot.
+So, WiFi today, for example, operates at
+
+70
+00:05:05,593 --> 00:05:12,934
+2.4 gigahertz,
+Around five gigahertz So, these have wavelengths
+
+71
+00:05:12,934 --> 00:05:21,600
+of approximately five inches and, you
+know, 2.4 inches.
+
+72
+00:05:21,600 --> 00:05:25,984
+So here I'm talking about the frequency,
+the wave length of a given wave the
+
+73
+00:05:25,984 --> 00:05:30,535
+amplitude of a given wave, but it turns
+out that when we send signals you don't
+
+74
+00:05:30,535 --> 00:05:34,031
+use a single frequency, we actually use a
+range of frequencies.
+
+75
+00:05:34,031 --> 00:05:38,471
+It's the bandwidth is the size of the
+frequency ranges we use. For example, if
+
+76
+00:05:38,471 --> 00:05:42,744
+you look at one WiFi standard 802.11b,
+it's an older one, it's going to, we use
+
+77
+00:05:42,744 --> 00:05:46,962
+as a common example because it's one of
+the simpler ones since it's older. in
+
+78
+00:05:46,962 --> 00:05:51,236
+802.11b, if you, those of you who've used
+it, you have to select a channel, so
+
+79
+00:05:51,236 --> 00:05:58,005
+channels one through eleven.
+Often people use one, six, and eleven.
+
+80
+00:05:58,056 --> 00:06:01,720
+Each of these channels is twenty megahertz
+wide,
+
+81
+00:06:02,860 --> 00:06:06,186
+And so when you look at a frequency amount
+for 802.11b.
+
+82
+00:06:06,364 --> 00:06:10,998
+You can see that all these channels, and
+here's one, and here's eleven, and they
+
+83
+00:06:10,998 --> 00:06:15,069
+take up about twenty megahertz of the
+frequency range, like so.
+
+84
+00:06:15,860 --> 00:06:21,399
+And so you actually use a range of
+frequencies, and I'll show you sort of why
+
+85
+00:06:21,399 --> 00:06:26,793
+this happens and how this happens.
+So finally there's what we call phase.
+
+86
+00:06:26,793 --> 00:06:31,684
+And so this is actually the timing of the
+waves within a wavelength.
+
+87
+00:06:31,684 --> 00:06:37,583
+So here we have, here's a wave which is at
+this particular phase, where the peak is
+
+88
+00:06:37,583 --> 00:06:41,610
+occurring here.
+So let's call this t0. It's of course,
+
+89
+00:06:41,610 --> 00:06:48,775
+possible to send this exact same wave,
+but, at a different phase.
+
+90
+00:06:48,775 --> 00:06:56,111
+For example, we could send it like this.
+It's the same wave, but its phase is, its
+
+91
+00:06:56,111 --> 00:07:00,812
+phase is offset by one half, of, the
+wavelength, and therefore, 180 degrees.
+
+92
+00:07:00,812 --> 00:07:05,574
+And so, it turns out that things we do to
+control, as we'll see in a second, that we
+
+93
+00:07:05,574 --> 00:07:10,456
+do to control waves, that we do to send
+signals involve changing the amplitude of
+
+94
+00:07:10,456 --> 00:07:15,459
+waves, changing the frequency of waves, as
+well as changing the phase of these waves.
+
+95
+00:07:15,459 --> 00:07:19,980
+But fundamentally, these waves are what's
+going on underneath in the system.
+
+96
+00:07:19,980 --> 00:07:24,334
+So, given that we are using waves, there's
+a whole bunch of ways we can represent
+
+97
+00:07:24,334 --> 00:07:26,511
+bits.
+There's, this one is the simplest way is,
+
+98
+00:07:26,511 --> 00:07:28,961
+let me call it amplitude shift keying or
+ASK.
+
+99
+00:07:28,961 --> 00:07:31,464
+What's this, this process is called
+modulation.
+
+100
+00:07:31,464 --> 00:07:35,492
+How do I take a signal or take a
+particular bit of piece of data and then
+
+101
+00:07:35,492 --> 00:07:37,833
+modulate my waves to represent that
+signal?
+
+102
+00:07:37,833 --> 00:07:42,351
+So, here I'll try to represent that data.
+How I modulate the signal to represent the
+
+103
+00:07:42,351 --> 00:07:44,800
+data?
+So, here for example, I have an amplitude
+
+104
+00:07:44,800 --> 00:07:48,600
+shift keying where one has a small
+amplitude sorry, zero has a smaller
+
+105
+00:07:48,600 --> 00:07:52,814
+amplitude and one has a larger amplitude.
+So if I want to send a zero, I send a
+
+106
+00:07:52,814 --> 00:07:56,110
+smaller wave, and I want to send a one, I
+send this larger wave.
+
+107
+00:07:56,110 --> 00:08:00,103
+Another approach that you can use is
+something called frequency shift keying
+
+108
+00:08:00,103 --> 00:08:04,092
+where you use two separate frequencies and
+so here's a one and here's a zero.
+
+109
+00:08:04,092 --> 00:08:06,378
+The zero happens to be the higher
+frequency,
+
+110
+00:08:06,378 --> 00:08:10,112
+The one is the lower frequency.
+And then as I want to send out of stream
+
+111
+00:08:10,112 --> 00:08:13,120
+of 0s and 1s, I just move these
+frequencies back and forth.
+
+112
+00:08:13,120 --> 00:08:16,224
+Oh, I'm sending one, one, one, so it's
+longer, longer, longer then zero, zero,
+
+113
+00:08:16,224 --> 00:08:19,706
+zero, shorter, shorter, shorter.
+The other side can decode these and then
+
+114
+00:08:19,706 --> 00:08:23,752
+figure out what bits are being sent.
+So amplitude shift keying turns out to be
+
+115
+00:08:23,752 --> 00:08:26,760
+very, it's very commonly used especially
+in wired networks.
+
+116
+00:08:26,760 --> 00:08:29,823
+And the reason is that when you have a
+wire, your medium is controlled.
+
+117
+00:08:29,823 --> 00:08:33,237
+The signal, you put it on one side, it
+decreases a little bit on the other side,
+
+118
+00:08:33,236 --> 00:08:35,599
+but not by very much.
+Wires do not have a lot of resistance,
+
+119
+00:08:35,600 --> 00:08:40,143
+That's why we use them to, to carry power.
+And so, amplitude shift keying is commonly
+
+120
+00:08:40,143 --> 00:08:43,262
+used in wired systems.
+Just because it's very simple,
+
+121
+00:08:43,457 --> 00:08:47,485
+And it, it works great.
+So, most common wired Ethernet today uses
+
+122
+00:08:47,485 --> 00:08:51,555
+amplitude shift keying.
+For example 100BASE-T and 1000BASE-T,
+
+123
+00:08:52,030 --> 00:08:58,265
+This is a 100 megabit and gigabit ethernet
+use what's called PAM-5, which means five
+
+124
+00:08:58,265 --> 00:09:02,942
+levels of amplitude modulation.
+They're called pulses, because you're
+
+125
+00:09:02,942 --> 00:09:05,992
+sending pulses at these different
+amplitudes.
+
+126
+00:09:06,195 --> 00:09:12,014
+So think of these basically as voltages
+-two -one, zero, +one, +two.
+
+127
+00:09:12,024 --> 00:09:16,341
+And so, you're sending these different
+voltages along the wire.
+
+128
+00:09:16,567 --> 00:09:22,072
+It turns out, ten base, a 10GBASE-T or ten
+gigabit ethernet, more like the sort of upcoming
+
+129
+00:09:22,299 --> 00:09:29,161
+standards people are adopting needs to use
+more levels of amplitudes in order to get
+
+130
+00:09:29,161 --> 00:09:33,834
+all of its data through.
+And so, it uses PAM-16, so, it's sixteen
+
+131
+00:09:33,837 --> 00:09:38,827
+levels rather than five.
+So another form of modulation that's very
+
+132
+00:09:38,827 --> 00:09:41,620
+popular, is what's called phase shift
+keying.
+
+133
+00:09:41,620 --> 00:09:46,522
+So, unlike amplitude shift keying where we are
+adjusting amplitude of the waves, or frequency
+
+134
+00:09:46,522 --> 00:09:51,547
+shift keying where we are using different
+frequencies, the phase shift keying uses
+
+135
+00:09:51,547 --> 00:09:55,407
+the phase of the waves.
+So, here for example, let's say zero, this
+
+136
+00:09:55,407 --> 00:10:00,249
+is the phase of zero degrees, but then to
+send a one, as you can see, my phase is
+
+137
+00:10:00,249 --> 00:10:04,722
+reversed. This is a phase of 180 degrees
+right or -180 degrees, the two are the
+
+138
+00:10:04,722 --> 00:10:07,357
+same.
+Here I send the zero again, I start
+
+139
+00:10:07,357 --> 00:10:11,959
+sending at a phase of zero degrees again.
+So, phase shift keying is really useful
+
+140
+00:10:11,959 --> 00:10:15,869
+when your channel, when your medium is
+such that you can have significant
+
+141
+00:10:15,869 --> 00:10:19,726
+variations in signal strength.
+So amplitude shift keying, you need to got
+
+142
+00:10:19,726 --> 00:10:24,226
+to figure out all the different amplitudes
+are, so in the amplitudes when the actual
+
+143
+00:10:24,226 --> 00:10:28,030
+attenuation with signal strength is stable
+like in a wire, that's great.
+
+144
+00:10:28,030 --> 00:10:32,648
+But, for example in wireless situations,
+amplitude is a bit harder. Phase
+
+145
+00:10:32,648 --> 00:10:35,746
+can be much easier.
+So situations where phase shift keying is used
+
+146
+00:10:35,746 --> 00:10:39,914
+are, I'd say, DSL, Digital Subscriber
+Lines, you'll have better along long
+
+147
+00:10:39,914 --> 00:10:44,532
+phones lines, where there could be weather
+and wire shaking, and bad connections, but
+
+148
+00:10:44,532 --> 00:10:48,982
+really long wires. Cable modems, right,
+that are stretching out through an entire
+
+149
+00:10:48,982 --> 00:10:52,700
+neighborhood, wireless systems, these all
+use phase shift keying.
+
+150
+00:10:52,700 --> 00:10:57,983
+On some, they also use amplitude but
+they, unlike, you know, wired Ethernet,
+
+151
+00:10:57,983 --> 00:11:02,909
+all these systems use phase.
+And so one kind of phase shift keying is
+
+152
+00:11:02,909 --> 00:11:08,438
+binary phase shift keying or BPSK.
+And so basically you have two phases zero,
+
+153
+00:11:08,438 --> 00:11:13,904
+zero degrees and pi or a 180 degrees.
+And so I can now prior picture, you're
+
+154
+00:11:13,904 --> 00:11:23,772
+either sending something at this phase,
+let's say that's zero or you're sending it
+
+155
+00:11:23,772 --> 00:11:28,112
+at this phase,
+Which is say 180 degrees, this is 180
+
+156
+00:11:28,112 --> 00:11:30,640
+degrees,
+Pi.
+
+157
+00:11:34,480 --> 00:11:39,594
+That's, this is zero, zero.
+So example, BPSK is used in 802.11b, an
+
+158
+00:11:39,594 --> 00:11:45,520
+older WiFi standard, at low speeds,
+One megabit and two megabit per second.
+
+159
+00:11:45,980 --> 00:11:49,835
+There is also a Quadrature phase shift
+keying, QPSK.
+
+160
+00:11:49,835 --> 00:11:55,278
+Where now we have four phases.
+You can imagine just as we have zero and
+
+161
+00:11:55,278 --> 00:12:01,099
+180 degrees, in QPSK we have zero, 90
+degrees, 180 degrees, 270 or zero, pi/2,
+
+162
+00:12:01,099 --> 00:12:04,425
+pi, 3pi/2 radians and degrees
+respectively.
+
+163
+00:12:04,425 --> 00:12:09,112
+So, it turns out QPSK is also used in this
+older WiFi standard, 802.11b, it is used
+
+164
+00:12:09,112 --> 00:12:12,952
+at the higher speeds,
+5.5 megabits per second and eleven
+
+165
+00:12:12,955 --> 00:12:16,457
+megabits per second.
+Now one thing you should come out from
+
+166
+00:12:16,457 --> 00:12:21,323
+this is that the reason why we might use
+QPSK versus BPSK or PAM-16 rather than
+
+167
+00:12:21,323 --> 00:12:24,417
+PAM-5.
+Is that for a given signal we're sending, we
+
+168
+00:12:24,417 --> 00:12:28,424
+can send more information.
+Sor example, BPSK, each wave we send
+
+169
+00:12:28,424 --> 00:12:31,630
+carries one bit of information. Is it zero
+or pi?
+
+170
+00:12:31,630 --> 00:12:35,496
+In contrast for QPSK, each symbol that we
+send on the waves,
+
+171
+00:12:35,496 --> 00:12:40,738
+Each little chunk of data we're sending on
+the physical layer contains two bits.
+
+172
+00:12:40,738 --> 00:12:43,796
+Is it zero, pi over two, pi, or three pi
+over two?
+
+173
+00:12:43,818 --> 00:12:48,266
+So we can represent those as 00, 01, 10,
+11.
+
+174
+00:12:48,274 --> 00:12:53,516
+It's not actually how it's done, but the
+idea is actually, by having these denser
+
+175
+00:12:53,516 --> 00:12:57,514
+representation you're sending more
+information per unit time.
+
+176
+00:12:57,514 --> 00:13:03,411
+Now, one reason that phase keying is very
+popular is actually as it turns out, it's
+
+177
+00:13:03,411 --> 00:13:05,050
+very easy to shift phase.
+So for example here, if I just have a
+
+178
+00:13:05,050 --> 00:13:07,693
+carrier wave at, say zero degrees, and
+another carrier wave, you know, at -90
+
+179
+00:13:07,891 --> 00:13:11,109
+degrees.
+Then any linear combination of these two
+
+180
+00:13:11,109 --> 00:13:14,127
+allows me to create any intermediate
+frequencies.
+
+181
+00:13:14,127 --> 00:13:19,704
+So for example here, if I combine zero
+degrees to -90 degrees just add these two
+
+182
+00:13:19,704 --> 00:13:23,247
+waves up, I'll get something at
+minus 45 degrees.
+
+183
+00:13:23,247 --> 00:13:28,561
+That's if its a, you know, sort of one to
+one equality. If for example instead I did
+
+184
+00:13:28,561 --> 00:13:32,091
+0.5,1,
+Then we'd have something a little closer
+
+185
+00:13:32,091 --> 00:13:38,415
+to, to the zero degrees right, assuming
+that this is the -90 degrees and this is
+
+186
+00:13:38,415 --> 00:13:42,710
+the zero degrees.
+Okay? Similarly if I did rather than 1,1
+
+187
+00:13:42,710 --> 00:13:48,488
+if I did -1, 1, so this is -90
+degrees this is zero degrees, then what
+
+188
+00:13:48,488 --> 00:13:53,720
+we'd see is rather than a wave between
+these two the wave would be,
+
+189
+00:13:56,680 --> 00:14:00,943
+The wave would be here.
+Right? It would be at +45 degrees with
+
+190
+00:14:00,943 --> 00:14:03,683
+this setting.
+And so just from these two things you can
+
+191
+00:14:03,683 --> 00:14:07,741
+combine and create any intermediate
+frequency you want which turns out to be
+
+192
+00:14:07,741 --> 00:14:11,061
+really useful in hardware.
+And in fact that is exactly how hardware
+
+193
+00:14:11,061 --> 00:14:13,432
+does it using something called I/Q
+Modulation.
+
+194
+00:14:13,590 --> 00:14:16,541
+So I means the in-phase component so it's
+zero degrees.
+
+195
+00:14:16,541 --> 00:14:20,862
+Q is the quadrature component at -90
+degrees. This is just complex way of
+
+196
+00:14:20,862 --> 00:14:25,752
+saying hey if we want to create any,
+Any phase between zero and I'm going to
+
+197
+00:14:25,752 --> 00:14:30,766
+say 300 and, you know, zero and basically
+-zero wrapping around,
+
+198
+00:14:30,990 --> 00:14:36,303
+We can just combine these I and q with
+some linear factor and get that.
+
+199
+00:14:36,527 --> 00:14:42,438
+So for example let's look at those two
+thing, two things we had, BPSK AND QPSK, so
+
+200
+00:14:42,438 --> 00:14:45,656
+BPSK has two phases zero and a 180
+degrees.
+
+201
+00:14:45,656 --> 00:14:52,402
+What are the I/Q value's of those?
+Well, so for zero degrees, it's going to
+
+202
+00:14:52,402 --> 00:14:53,753
+be 1,0.
+Right?
+
+203
+00:14:53,753 --> 00:15:00,822
+For a 180 degrees, well, that's the
+
+204
+00:15:00,822 --> 00:15:02,822
+opposite of zero.
+Right?
+
+205
+00:15:02,822 --> 00:15:03,288
+If you would think about it, you know, on
+the unit circle, say here is zero, here is
+
+206
+00:15:03,288 --> 00:15:03,288
+180 degrees.
+So just as we have +1 and here we're
+
+207
+00:15:03,288 --> 00:15:03,579
+going to have -1, So -1, 0.
+For QPSK, we have four phases, let's say
+
+208
+00:15:03,579 --> 00:15:03,579
+zero, 270, 180, and 90.
+So, again, zero is going to be 1, 0.
+
+209
+00:15:03,579 --> 00:15:33,384
+But now, 270, alright, 270 is down here.
+Right? 270 is down here, right? So here is
+
+210
+00:15:33,384 --> 00:15:35,262
+-90/ 270.
+Right?
+
+211
+00:15:35,262 --> 00:15:44,510
+So, 270 is going to be 0, 1.
+180 is going to be just like in BPSK,
+
+212
+00:15:44,510 --> 00:15:50,493
+-1, 0 and 90 is going to be 0,
+-1.
+
+213
+00:15:50,500 --> 00:15:54,895
+And so we can, just by changing the
+scaling factors of the I and the Q, create
+
+214
+00:15:54,895 --> 00:15:58,948
+any phase we want of a signal.
+That's exactly kind of how it looks like
+
+215
+00:15:58,948 --> 00:16:02,031
+in hardware, is that we have these IQ
+values coming in,
+
+216
+00:16:02,031 --> 00:16:04,924
+These digital values.
+Then we have these two carrier
+
+217
+00:16:04,924 --> 00:16:09,844
+frequencies, and we had, adding them up to
+come out in RF, since then this is what comes out
+
+218
+00:16:09,844 --> 00:16:11,648
+of the antenna.
+This is actually how you build the
+
+219
+00:16:12,086 --> 00:16:15,803
+hardware, this IQ, this IQ values.
+But what's really available, and the
+
+220
+00:16:15,803 --> 00:16:20,231
+reason why I am going into them, but I/Q
+constellations is that they actually lend
+
+221
+00:16:20,231 --> 00:16:24,003
+themselves for really, really simple and
+easy to understand graphical
+
+222
+00:16:24,003 --> 00:16:27,120
+representation of whats going on down at the
+physical layer.
+
+223
+00:16:27,120 --> 00:16:32,410
+And so the way to think of it, is if we take
+these IQ values and we represent them on
+
+224
+00:16:32,410 --> 00:16:37,429
+an 2D grid, right, we can use what's
+called a /Q Constellation, this 2D plot.
+
+225
+00:16:37,429 --> 00:16:42,855
+In this case, in these 2D plots, the angle
+of your vector, represents the phase of
+
+226
+00:16:42,855 --> 00:16:48,350
+the signal, right like here say we have 45
+degrees, right here we have 135 degrees.
+
+227
+00:16:48,350 --> 00:16:52,112
+And then the length of this vector
+represents the amplitude of this signal.
+
+228
+00:16:52,112 --> 00:16:56,175
+So, if we look at something like on-off
+keying where you either send something or
+
+229
+00:16:56,175 --> 00:16:58,482
+it's silent,
+We see here's an amplitude of one,
+
+230
+00:16:58,482 --> 00:17:00,990
+amplitude of zero.
+There's our on-off keying.
+
+231
+00:17:00,990 --> 00:17:04,702
+Right? There's no shift in phase.
+Amplitiude shift keying, where we have two
+
+232
+00:17:04,702 --> 00:17:07,761
+different amplitudes used.
+See, here's a one and here's a zero.
+
+233
+00:17:07,762 --> 00:17:11,424
+We're just changing the amplitudes.
+We're not actually changing the phase,
+
+234
+00:17:11,424 --> 00:17:15,970
+we're just changing the value of i.
+Bpsk, remember there are two phases zero
+
+235
+00:17:15,973 --> 00:17:21,783
+and 180, hence that's what we see here. So
+here is 180 to say represent the one and
+
+236
+00:17:21,784 --> 00:17:27,082
+here's zero, say to represent the zero.
+Qpsk, also has four, has four points with
+
+237
+00:17:27,082 --> 00:17:31,413
+these four different phases.
+I could've also,  rotated them and
+
+238
+00:17:31,413 --> 00:17:36,862
+say drawn them like this, but still easier
+to see them when they're these four
+
+239
+00:17:36,862 --> 00:17:40,048
+corners like this.
+This is a way to represent what the
+
+240
+00:17:40,048 --> 00:17:43,209
+wireless signal is.
+It's a nice pictorial representation, we
+
+241
+00:17:43,209 --> 00:17:47,602
+start talking about signal or noise and
+those ratios will start, things will start
+
+242
+00:17:47,602 --> 00:17:51,727
+to make a little more sense, will be
+really clear depiction of what's
+
+243
+00:17:51,727 --> 00:17:54,406
+happening.
+And so just recall, we can represent any
+
+244
+00:17:54,406 --> 00:17:59,174
+intermediate phase from this zero and -90,
+There's just some linear combination with
+
+245
+00:17:59,174 --> 00:18:01,842
+those two.
+Now, at some point, at the link layer, we
+
+246
+00:18:01,842 --> 00:18:03,427
+have bits.
+Bits are coming in.
+
+247
+00:18:03,427 --> 00:18:07,855
+We have some packet, you know, from the
+network layer, and we have some frame at
+
+248
+00:18:07,855 --> 00:18:11,497
+the link layer with some bits in it,
+Zero, one, one, zero, zero, one, one,
+
+249
+00:18:11,518 --> 00:18:13,760
+organized into bytes, into octets,
+however.
+
+250
+00:18:13,760 --> 00:18:18,037
+But down to physical layer, we don't
+necessarily, can't necessarily transmit a
+
+251
+00:18:18,037 --> 00:18:20,945
+whole byte,
+It might be that we can only transmit a
+
+252
+00:18:20,945 --> 00:18:24,481
+couple bits at, at a time.
+And so in the physical layer, we talk
+
+253
+00:18:24,481 --> 00:18:27,561
+about symbols.
+And a symbol is the unit of, is the unit
+
+254
+00:18:27,561 --> 00:18:30,298
+of transfer that the physical layer can
+provide.
+
+255
+00:18:30,298 --> 00:18:33,036
+So often, we talk about things at the link
+layer,
+
+256
+00:18:33,036 --> 00:18:37,256
+We talk about, oh, we add a byte,
+But that might not be the boundary down at
+
+257
+00:18:37,256 --> 00:18:40,767
+the physical layer.
+The reasons is we sort, is what I talked
+
+258
+00:18:40,767 --> 00:18:43,923
+about before, a symbol can contain more
+than one bit.
+
+259
+00:18:43,923 --> 00:18:46,958
+So BPSK has one bit per symbol, there's
+two phases.
+
+260
+00:18:46,958 --> 00:18:49,690
+Qpsk has four phases, has two bits per
+symbol.
+
+261
+00:18:49,690 --> 00:18:54,508
+But then you also get situations like,
+like a PAM5 that's used in a 100 megabit
+
+262
+00:18:54,508 --> 00:18:59,620
+and one gigabit Ethernet on a Cat-5 cable
+where there are these five voltage levels.
+
+263
+00:18:59,620 --> 00:19:04,743
+There are five different symbols that you
+can use, and that doesn't necessarily map
+
+264
+00:19:04,743 --> 00:19:09,295
+perfectly, to, a number of bits, right,
+five symbols, is just over two bits.
+
+265
+00:19:09,295 --> 00:19:13,910
+It's as important to realize that,
+although, I'll put the link layer even
+
+266
+00:19:13,910 --> 00:19:19,166
+past down to the physical layer sequence
+of bits, there's this transformation that
+
+267
+00:19:19,166 --> 00:19:24,038
+occurs turning that sequence of bits into
+a sequence of symbols, down at the
+
+268
+00:19:24,038 --> 00:19:30,475
+physical layer.
+So finally I talked about amplitude
+
+269
+00:19:30,475 --> 00:19:39,104
+keying, I've talked about phase keying.
+There's this approach you use today, it's
+
+270
+00:19:39,104 --> 00:19:45,092
+very, very common, you see it in almost
+all modern communication systems, it's
+
+271
+00:19:45,092 --> 00:19:50,625
+called QAM which really stands for,
+Quadrature Amplitude Modulation, or
+
+272
+00:19:50,625 --> 00:19:55,324
+basically, this means phase and amplitude
+keying at the same time.
+
+273
+00:19:55,551 --> 00:20:01,690
+And so, whereas ASK, amplitude shift
+keying is only the amplitude, and phase
+
+274
+00:20:01,690 --> 00:20:05,480
+shift keying is only the phase, in QAM we
+use both.
+
+275
+00:20:05,480 --> 00:20:09,362
+So to give you an example, the way this is
+originally talked about,
+
+276
+00:20:09,362 --> 00:20:13,644
+Say sixteen QAM means that we have sixteen
+different symbols, and so we can
+
+277
+00:20:13,644 --> 00:20:16,670
+represent, for each symbol we can
+represent four bits.
+
+278
+00:20:16,670 --> 00:20:21,066
+256 QAM means there's 256 different
+symbols which means we can represent for
+
+279
+00:20:21,066 --> 00:20:25,577
+each symbol we can represent eight bits.
+And so returning to the IQ plot, or the
+
+280
+00:20:25,577 --> 00:20:28,546
+modulation plot.
+Here is what sixteen QAM looks like.
+
+281
+00:20:28,546 --> 00:20:32,999
+So this is the constellation, the I/Q
+constellation used in HSPDA, which is a 3G
+
+282
+00:20:33,170 --> 00:20:36,565
+data standard.
+And so, as you can see there are these
+
+283
+00:20:36,565 --> 00:20:42,167
+values from three, three to -three, -three
+and they map to different bits.
+
+284
+00:20:42,167 --> 00:20:47,632
+And so, here I've shown in gray the I and
+Q values, right, so here's an I of three a
+
+285
+00:20:47,632 --> 00:20:53,644
+Q of one, I of three Q of three, I of -one
+Q of three, Q of one, sorry. And then what
+
+286
+00:20:53,644 --> 00:20:57,060
+the represented bits are above the
+physical layer.
+
+287
+00:20:57,060 --> 00:21:02,717
+And so here's an example I/Q constellation
+for sixteen QAM, and as we can see, it's
+
+288
+00:21:02,717 --> 00:21:08,236
+adjusting not only the amplitude, that is
+the length of the vector, coming out of
+
+289
+00:21:08,236 --> 00:21:13,548
+the, the origin, but also the phase, which
+is the orientation of the vector coming
+
+290
+00:21:13,548 --> 00:21:18,426
+out, of the origin.
+So here's an example, I/Q constellation,
+
+291
+00:21:18,426 --> 00:21:25,985
+used in modern 3G systems, sixteen QAM,
+sixteen different symbols, and here's how,
+
+292
+00:21:25,985 --> 00:21:32,587
+bits mapped to these symbols.
+So for example, if I wanted to send, 1011
+
+293
+00:21:32,874 --> 00:21:37,220
+1001,
+I would send 1011,
+
+294
+00:21:37,220 --> 00:21:39,717
+So it sends this first.
+Right.
+
+295
+00:21:39,717 --> 00:21:45,039
+This will be the first symbol that I send,
+number one.
+
+296
+00:21:45,040 --> 00:21:55,875
+Then 1001, I would send this symbol,
+Second. And so if we're to go down and dig
+
+297
+00:21:55,875 --> 00:22:02,474
+into and see what's happening down in the
+physical layer, we're going to see a
+
+298
+00:22:02,474 --> 00:22:09,073
+signal transmitted, with a phase, of,
+what's essentially, 135 degrees, right,
+
+299
+00:22:09,073 --> 00:22:16,024
+this is, 135 degrees, and an amplitude of,
+let's, say of x, then the next symbol, is
+
+300
+00:22:16,024 --> 00:22:20,174
+going to be,
+With this angle, right, with this phase,
+
+301
+00:22:20,174 --> 00:22:25,536
+which is, you know, approximately, let's
+say, 105 degrees and a slightly smaller
+
+302
+00:22:25,536 --> 00:22:26,570
+amplitude.
+And it's slightly smaller amplitude,
+
+303
+00:22:26,570 --> 00:22:30,963
+right, because this vector is longer.
+And that's what you actually see in terms
+
+304
+00:22:30,963 --> 00:22:36,626
+of the waves in the physical layer.
+So what's used today?
+
+305
+00:22:36,626 --> 00:22:41,418
+Well ASK, amplitude shift keying is
+basically all the wired Ethernet uses amplitude
+
+306
+00:22:41,418 --> 00:22:45,090
+shift keying.
+Its very rare for communication systems to
+
+307
+00:22:45,090 --> 00:22:49,570
+use frequency shift keying.
+There are some examples like the National
+
+308
+00:22:49,570 --> 00:22:54,362
+Weather Services Weatheradio and Bluetooth
+actually uses it in some forms.
+
+309
+00:22:54,549 --> 00:22:59,154
+Binary phase shift keying is used
+basically by all the WiFi standards, abgn,
+
+310
+00:22:59,154 --> 00:23:03,832
+its also used in WiMax.
+Quadrature Phase Shift Keying is used in WiFi,
+
+311
+00:23:04,055 --> 00:23:08,589
+there's low power wireless, liked Zigbee,
+called 802.15.4.
+
+312
+00:23:08,812 --> 00:23:14,685
+3G, LTE, WiMAX, 16-QAM, is used in
+wifi, as well as these data standards for,
+
+313
+00:23:14,908 --> 00:23:18,625
+cellular phones, for mobile phone, mobile
+telephony.
+
+314
+00:23:18,848 --> 00:23:22,119
+64 QAM is used in WiFi, so it's LTE and
+WiMAX.
+
+315
+00:23:22,119 --> 00:23:27,349
+And so, as you can see, that, there are
+these, the, the older, that the more
+
+316
+00:23:27,349 --> 00:23:31,582
+modern standards are the ones using the
+denser constellation, because people have
+
+317
+00:23:31,582 --> 00:23:35,429
+made things go faster and faster.
+So here's an overview, there are many
+
+318
+00:23:35,429 --> 00:23:39,607
+different ways, that you can take your
+bits, and then represent them, in terms
+
+319
+00:23:39,607 --> 00:23:43,730
+of, a physical medium, convert them into
+voltages, phases, frequencies, etcetera.
+
+320
+00:23:43,963 --> 00:23:49,712
+Wired Ethernet and wired systems often use
+amplitude to represent signals.
+
+321
+00:23:49,945 --> 00:23:55,237
+Whereas Most technologies today like
+wireless technologies or things that are
+
+322
+00:23:55,237 --> 00:23:58,215
+over less controlled media like cable
+modems, DSl.
+
+323
+00:23:58,215 --> 00:24:03,321
+Use phase shift keying or a combination of
+phase and amplitude called QAM, quadrature
+
+324
+00:24:03,321 --> 00:24:06,664
+amplitude modulation.
+And one of the key things you can
+
+325
+00:24:06,664 --> 00:24:11,284
+represent a QAM symbol, in fact, any of
+these as a linear combination of two
+
+326
+00:24:11,284 --> 00:24:14,132
+things,
+That the, the in-phase component I at zero
+
+327
+00:24:14,135 --> 00:24:18,003
+degrees and a quadrature component q at
+-90 degrees.
+
+328
+00:24:18,003 --> 00:24:22,986
+This is actually how, how circuits do it
+today and what's really nice is that it
+
+329
+00:24:22,986 --> 00:24:27,706
+gives you a very good pictorial
+representation of what the signal looks
+
+330
+00:24:27,706 --> 00:24:32,820
+like, and how it's controlled, and how
+it's modulated, and how those map to bits.
+

@@ -1,0 +1,521 @@
+1
+00:00:00,849 --> 00:00:03,429
+I'm going to explain finite state machines,
+something very
+
+2
+00:00:03,429 --> 00:00:06,339
+commonly used when specifying network protocols
+and systems.
+
+3
+00:00:06,339 --> 00:00:09,130
+I'll also explain the common way they're
+drawn in network
+
+4
+00:00:09,130 --> 00:00:12,259
+protocols. I'll conclude by showing you
+the finite state machine
+
+5
+00:00:12,260 --> 00:00:16,289
+that's part of the TCP specification, which
+defines how TCP
+
+6
+00:00:16,289 --> 00:00:19,750
+connections are set up and torn down. So you'll
+see how you can
+
+7
+00:00:19,750 --> 00:00:23,259
+describe something like the three-way-handshake
+of TCP in a
+
+8
+00:00:23,260 --> 00:00:24,240
+finite state machine.
+
+9
+00:00:24,240 --> 00:00:27,580
+As the name suggests, a finite state machine
+is composed of
+
+10
+00:00:27,580 --> 00:00:33,269
+a finite number of states. A state is a particular
+configuration of the system. I'm going to
+
+11
+00:00:33,269 --> 00:00:36,440
+start with an
+abstract example. In this example, we have
+
+12
+00:00:36,440 --> 00:00:41,399
+three states:
+state one, state two, and state three. So
+
+13
+00:00:41,399 --> 00:00:44,449
+our system can be
+in one of these three states.
+
+14
+00:00:44,449 --> 00:00:47,379
+Edges between the states define how we transition
+between
+
+15
+00:00:47,379 --> 00:00:51,289
+them. When we draw an edge, we first specify
+what events
+
+16
+00:00:51,289 --> 00:00:55,469
+cause the transition to occur. Below this
+we can state what
+
+17
+00:00:55,469 --> 00:00:58,769
+actions the system will take when that transition
+occurs.
+
+18
+00:00:58,769 --> 00:01:01,739
+This part is optional, because not all transitions
+have actions
+
+19
+00:01:01,739 --> 00:01:05,309
+associated with them. But if there is an action,
+you should
+
+20
+00:01:05,309 --> 00:01:09,549
+specify it. Otherwise you have an incomplete
+specification
+
+21
+00:01:09,549 --> 00:01:13,119
+and people might not test or implement it
+correctly. If the
+
+22
+00:01:13,119 --> 00:01:16,070
+system is in a state and an event arrives
+for which there is
+
+23
+00:01:16,070 --> 00:01:19,409
+no transition described, then the behavior
+of the FSM is
+
+24
+00:01:19,409 --> 00:01:19,810
+undefined.
+
+25
+00:01:19,810 --> 00:01:24,590
+There can be multiple transitions from a single
+state. So
+
+26
+00:01:24,590 --> 00:01:28,119
+here we have a second transition from state
+1, a different
+
+27
+00:01:28,119 --> 00:01:32,359
+event that will take the system into state
+3. For any given
+
+28
+00:01:32,359 --> 00:01:36,990
+state, the transition for an event must be
+unique. In this
+
+29
+00:01:36,990 --> 00:01:42,450
+example, an event can cause state 1 to transition
+to state 2,
+
+30
+00:01:42,450 --> 00:01:45,340
+OR transition to state 3. But you can't
+have the same event
+
+31
+00:01:45,340 --> 00:01:48,539
+associated with both transitions, otherwise
+the transition is
+
+32
+00:01:48,539 --> 00:01:51,979
+ambiguous. If the event occurs, are you in
+state 2 or state 3?
+
+33
+00:01:51,979 --> 00:01:55,390
+The system can only be in one state.
+
+34
+00:01:55,390 --> 00:02:01,749
+So let's walk through an example, an HTTP
+request. In practice HTTP requests are a bit
+
+35
+00:02:01,749 --> 00:02:05,390
+more complex than this, there all kinds of
+options, so for this example we'll just
+
+36
+00:02:05,390 --> 00:02:07,259
+use a very
+simple form.
+
+37
+00:02:07,259 --> 00:02:12,580
+Let's describe our system this way. In our
+starting state we are are viewing a page or
+
+38
+00:02:12,580 --> 00:02:18,170
+otherwise idle. When we want to load a new
+page, we transition to the page requesting
+
+39
+00:02:18,170 --> 00:02:22,420
+state.
+So the event is load new page, and the action
+
+40
+00:02:22,420 --> 00:02:28,300
+is open a connection to the web server. Once
+we've opened a connection, we're now in
+
+41
+00:02:28,300 --> 00:02:32,420
+the page requesting state. We'll transition
+back to the idle state when the connection
+
+42
+00:02:32,420 --> 00:02:36,970
+closes or when we finish requesting every
+resource on the page.
+
+43
+00:02:36,970 --> 00:02:43,900
+We need one more state, which describes where
+we are in requesting a page. On the event
+
+44
+00:02:43,900 --> 00:02:48,240
+of having more resources to request, we take
+the action of requesting a resource with
+
+45
+00:02:48,240 --> 00:02:55,240
+an HTTP GET. This puts us in the request pending
+state. On the event of receiving the response,
+
+46
+00:02:55,940 --> 00:03:00,120
+our system transitions back to the page requesting
+state.
+
+47
+00:03:00,120 --> 00:03:07,120
+So here we have a three state system. Idle,
+page requesting, and request pending.
+
+48
+00:03:08,700 --> 00:03:12,620
+On one hand, this is a nice, simple FSM. But
+if you were to try to implement it, it leaves
+
+49
+00:03:12,620 --> 00:03:17,600
+a lot unsaid. Specifically, we have 4 events
+in the system: page request, more requests,
+
+50
+00:03:17,600 --> 00:03:23,330
+receive response, and connection closed. So
+what happens if the connection closes when
+
+51
+00:03:23,330 --> 00:03:28,440
+we're in the request pending state? Or when
+we receive a page request while in the page
+
+52
+00:03:28,440 --> 00:03:33,650
+requesting state? Or receive response while
+in the idle state?
+
+53
+00:03:33,650 --> 00:03:37,830
+If you want to be completely explicit and
+careful, you should specify what happens on
+
+54
+00:03:37,830 --> 00:03:44,760
+each state for every event. But this can lead
+to complicated FSMs which have tons of edges.
+
+55
+00:03:44,760 --> 00:03:51,450
+So often instead you'll write down just
+the common cases, for ease of understanding,
+
+56
+00:03:51,450 --> 00:03:57,130
+and have some supporting text about other
+transitions. Or, in some cases, it can even
+
+57
+00:03:57,130 --> 00:03:59,800
+be
+acceptable to leave something undefined. The
+
+58
+00:03:59,800 --> 00:04:05,570
+Internet Engineering Task Force, for example,
+often doesn't completely specify every FSM.
+
+59
+00:04:05,570 --> 00:04:09,280
+The idea is that by specifying only the
+parts that are necessary for interoperability,
+
+60
+00:04:09,280 --> 00:04:14,750
+you can leave the specification flexible for
+future exploration. As people use the protocol,
+
+61
+00:04:14,750 --> 00:04:20,030
+they'll figure out if something is important
+and if so can specify that extra part later.
+
+62
+00:04:20,029 --> 00:04:25,630
+So let's walk through a real example of
+an FSM, probably the most famous FSM in the
+
+63
+00:04:25,630 --> 00:04:29,900
+Internet. This
+diagram here describes the finite state machine
+
+64
+00:04:29,900 --> 00:04:33,920
+of TCP. I know it looks very complicated -- it
+has 12
+
+65
+00:04:33,920 --> 00:04:40,330
+states -- but I'll walk though it bit by
+bit and you'll see how it all fits together.
+
+66
+00:04:40,330 --> 00:04:45,550
+First off, the diagram really has four parts,
+which we can look at separately. These top
+
+67
+00:04:45,550 --> 00:04:52,180
+4 states are what
+describe how you open a TCP connection. This
+
+68
+00:04:52,180 --> 00:04:57,210
+center state, "ESTABLISHED" is when TCP
+is sending and
+
+69
+00:04:57,210 --> 00:05:03,220
+receiving data. It's after the connection
+has been established but before it's been
+
+70
+00:05:03,220 --> 00:05:09,320
+closed. These 6 states
+describe how connections close. This state
+
+71
+00:05:09,320 --> 00:05:13,760
+at the bottom, CLOSED, denotes the connection
+has closed
+
+72
+00:05:13,760 --> 00:05:18,720
+and the node can forget about it. Note that
+the top state is also the closed state -- before
+
+73
+00:05:18,720 --> 00:05:21,340
+we open the
+connection.
+
+74
+00:05:21,340 --> 00:05:28,000
+Recall that you start a TCP connection with
+a three way handshake -- SYN, SYN/ACK, ACK.
+
+75
+00:05:28,000 --> 00:05:31,580
+The client, or
+active opener, sends a SYN, synchronization,
+
+76
+00:05:31,580 --> 00:05:36,280
+message to a program listening for connection
+requests.
+
+77
+00:05:36,280 --> 00:05:40,780
+When it receives a SYN, it responds with a
+SYN/ACK, synchronizing and acknowledging the
+
+78
+00:05:40,780 --> 00:05:44,310
+original
+synchronization. The active opener, on receiving
+
+79
+00:05:44,310 --> 00:05:49,250
+the SYN/ACK, responds with an acknowledgement.
+
+80
+00:05:49,250 --> 00:05:56,220
+The state diagram here describes how TCP behaves
+on both sides of the TCP three-way handshake.
+
+81
+00:05:56,220 --> 00:06:01,490
+A passive opener is a server. It listens for
+requests
+
+82
+00:06:01,490 --> 00:06:07,180
+for connections from active openers, clients.
+So when a program calls listen(), the socket
+
+83
+00:06:07,180 --> 00:06:12,220
+transitions from the orange closed state to
+the yellow listen
+
+84
+00:06:12,220 --> 00:06:18,290
+state. The protocol takes no actions when
+this happens -- it doesn't send any messages.
+
+85
+00:06:18,290 --> 00:06:21,330
+If the server calls close on the socket when
+it's in the listen
+
+86
+00:06:21,330 --> 00:06:24,770
+state, it transitions immediately to the closed
+state.
+
+87
+00:06:24,770 --> 00:06:30,150
+Let's walk through the three way handshake
+starting with the first step, when a client
+
+88
+00:06:30,150 --> 00:06:34,180
+tries to open a connection and sends a SYN
+packet to the server.
+
+89
+00:06:34,180 --> 00:06:39,240
+We can see this first transition for the client
+side of the connection as this orange arrow
+
+90
+00:06:39,240 --> 00:06:46,240
+from closed to the SYN SENT state. This happens
+when the client
+
+91
+00:06:46,540 --> 00:06:53,540
+program calls connect -- the event -- and
+the client sends a SYN message.
+
+92
+00:06:54,560 --> 00:07:01,000
+So once the first SYN is sent, the client
+is in the SYN SENT state and the server is
+
+93
+00:07:01,000 --> 00:07:06,980
+in the LISTEN state. When the SYN arrives
+at the server, this leads to this
+
+94
+00:07:06,980 --> 00:07:13,980
+blue transition. You can see the event is
+receiving a SYN message. The action is to
+
+95
+00:07:14,919 --> 00:07:18,930
+send a SYN/ACK message in response. Now the
+server is in the SYN
+
+96
+00:07:18,930 --> 00:07:23,199
+RECEIVED state.
+Let's jump back to the client. Remember,
+
+97
+00:07:23,199 --> 00:07:29,669
+it was in the SYN SENT stage. Now, when it
+receives the SYN/ACK from the server, it transitions
+
+98
+00:07:29,669 --> 00:07:34,010
+to the
+ESTABLISHED state. Its action is to send an
+
+99
+00:07:34,010 --> 00:07:38,889
+ACK message, the third message of the SYN,
+SYN/ACK, ACK handshake. Now the client can
+
+100
+00:07:38,889 --> 00:07:40,490
+start sending data
+to the server.
+
+101
+00:07:40,490 --> 00:07:45,330
+Finally, let's go back to the server, which
+is in the SYN RECEIVED state. When it receives
+
+102
+00:07:45,330 --> 00:07:48,360
+the ACK from the client, it transitions to
+the ESTABLISHED state
+
+103
+00:07:48,360 --> 00:07:48,610
+and can send data.
+There are a couple more transitions during
+
+104
+00:07:48,510 --> 00:07:48,760
+connection opening -- don't worry about
+them for now, I discuss them in detail in
+
+105
+00:07:48,650 --> 00:07:49,580
+the video on connection
+setup and teardown.
+

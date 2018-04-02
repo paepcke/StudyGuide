@@ -1,0 +1,117 @@
+1
+00:00:02,760 --> 00:00:05,720
+Let’s look at a worked example for delay
+guarantees.
+
+2
+00:00:05,720 --> 00:00:12,720
+Q. Two end hosts are separated by three routers
+and four 250km links running at 100Mb/s. The
+
+3
+00:00:14,480 --> 00:00:21,020
+end hosts want to send a flow of 1500byte
+packets to each other at 15Mb/s, but they
+
+4
+00:00:21,020 --> 00:00:25,869
+don’t want their packets to take more than
+10ms to go from end-to-end. If each router
+
+5
+00:00:25,869 --> 00:00:32,869
+serves the flow at 15Mb/s, how long will packets
+be delayed in each router? (Assume a propagation
+
+6
+00:00:33,850 --> 00:00:40,850
+speed of 2x108 m/s and that queueing delay
+is evenly distributed among the routers.)
+
+7
+00:00:41,809 --> 00:00:46,350
+From the question we know that a third of
+the queueing delay will be in each of the
+
+8
+00:00:46,350 --> 00:00:51,429
+routers. So first, we need to figure out what
+the queueing delay is. The queueing delay
+
+9
+00:00:51,429 --> 00:00:57,579
+will be the total delay, which is 10ms, minus
+the fixed delay, which is the sum of the packetization
+
+10
+00:00:57,579 --> 00:00:59,999
+delay and the propagation delay.
+
+11
+00:00:59,999 --> 00:01:06,180
+Let’s first calculate the packetization
+delay, which is the time to transmit a 1500byte
+
+12
+00:01:06,180 --> 00:01:12,290
+packet onto each of the four links along the
+path. For each link, the packetization delay
+
+13
+00:01:12,290 --> 00:01:19,290
+is 1500bytes * 8bits/byte divided by 100Mb/s
+or 10 to the power of 8. This gives us a total
+
+14
+00:01:22,030 --> 00:01:24,820
+packetization delay of 0.48ms.
+
+15
+00:01:24,820 --> 00:01:31,660
+Now let’s calculate the propagation delay,
+which is the time taken for one bit to traverse
+
+16
+00:01:31,660 --> 00:01:38,660
+all four links. The time for each link is
+250km times 1000m per km, divided by the speed
+
+17
+00:01:41,310 --> 00:01:48,100
+of propagation. The total time will be 5ms
+across all four links. Our total fixed delay
+
+18
+00:01:48,100 --> 00:01:55,100
+is therefore 5.48ms. This means the queueing
+delay is 10 – 5.48ms = 4.52ms, which we
+
+19
+00:01:59,590 --> 00:02:04,020
+are told is divided equally among the three
+routers. Therefore, the queueing delay in
+
+20
+00:02:04,020 --> 00:02:11,020
+each router can be no more than 1.507ms. The
+answer is therefore 1.507ms of delay per router.
+
+21
+00:02:16,379 --> 00:02:21,819
+We could go on and calculate the amount of
+buffering needed in each router to hold 1.507ms
+
+22
+00:02:21,819 --> 00:02:28,819
+of data. Given that the queue is being served
+at 15Mb/s, this corresponds to 1.507ms * 15Mb/s
+
+23
+00:02:34,280 --> 00:02:41,280
+= 22,605 bits. In practice, we’d round this
+up to at least two packets, which is 24,000
+
+24
+00:02:42,389 --> 00:02:43,269
+bits per router.
+

@@ -1,0 +1,214 @@
+1
+00:00:03,310 --> 00:00:08,000
+One-time pads are generally impractical. Instead,
+what we want is a cryptosystem where we can
+
+2
+00:00:08,000 --> 00:00:14,980
+distribute a small key K, say 128 or 256 bits.
+We somehow share this key beforehand, for
+
+3
+00:00:14,980 --> 00:00:19,390
+example over the phone, or write it down and
+exchange it with a handshake. We then use
+
+4
+00:00:19,390 --> 00:00:25,890
+this K to encrypt a much larger message M.
+We then call encrypt, E, passing the plaintext
+
+5
+00:00:25,890 --> 00:00:29,820
+message M and the key K, to produce the ciphertext
+C.
+
+6
+00:00:29,820 --> 00:00:36,820
+Now, unlike a one-time pad, it might be there
+is only one possible M that produces the ciphertext.
+
+7
+00:00:37,530 --> 00:00:43,500
+But, we believe it’s computationally intractable
+to find this M. You could try all possible
+
+8
+00:00:43,500 --> 00:00:48,730
+keys, but decrypting with 2 to the 128, or
+300 undecillion, keys, would take a very,
+
+9
+00:00:48,730 --> 00:00:54,110
+very long time. Suppose you it only takes
+a single instruction to decrypt the message.
+
+10
+00:00:54,110 --> 00:00:58,410
+Let’s suppose your processor core is 4GHz.
+And let’s suppose your computer has 4 billion
+
+11
+00:00:58,410 --> 00:01:05,410
+cores. Then it would take 4 billion of these
+computers 31 years.
+
+12
+00:01:08,210 --> 00:01:12,060
+There are two kinds of symmetric ciphers:
+stream and block.
+
+13
+00:01:12,060 --> 00:01:16,390
+Stream ciphers generate a pseudo-random pad,
+a pseudo-random sequence of bits based on
+
+14
+00:01:16,390 --> 00:01:21,479
+the key. You then encrypt/ decrypt by XORing
+with this stream, like a one-time pad. But
+
+15
+00:01:21,479 --> 00:01:25,909
+it is NOT a one-time pad! Immediately mistrust
+anyone who says it is, they don’t know what
+
+16
+00:01:25,909 --> 00:01:29,659
+they’re talking about.
+Generally speaking, stream ciphers have run
+
+17
+00:01:29,659 --> 00:01:34,700
+into lots of problems in practice. Problems
+with stream ciphers typically stem from repetition.
+
+18
+00:01:34,700 --> 00:01:40,859
+If you re-use the same pseudorandom sequence
+of bits (e.g., reuse the same key on two different
+
+19
+00:01:40,859 --> 00:01:45,639
+messages) then adversaries can launch attacks
+like I showed with the two-time pad. The initial
+
+20
+00:01:45,639 --> 00:01:49,709
+WiFi encryption protocol, WEP, for example,
+used a stream cipher. It was shown to be broken
+
+21
+00:01:49,709 --> 00:01:54,869
+in around 2001, when WiFi was starting to
+take off, and replaced by WPA in 2003 and
+
+22
+00:01:54,869 --> 00:02:01,869
+WPA2 in 2004.
+WPA2 uses something called a block cipher.
+
+23
+00:02:03,549 --> 00:02:10,549
+A block cipher operates on fixed sized blocks
+of data, say 64 bits of 128 bits. A block
+
+24
+00:02:11,190 --> 00:02:17,430
+cipher maps a plaintext block to a ciphertext
+block. There are many block ciphers. Today,
+
+25
+00:02:17,430 --> 00:02:21,560
+you should generally use AES, the Advanced
+Encryption Standard.
+
+26
+00:02:21,560 --> 00:02:28,560
+I’m going to walk through the basics of
+how one block cipher, Blowfish, works. But
+
+27
+00:02:30,610 --> 00:02:35,150
+be careful! I’m not explaining the algorithm
+in its entirety. I’m just trying to give
+
+28
+00:02:35,150 --> 00:02:38,549
+you a feel for what a block cipher looks like
+and how it works. I’m left out a lot of
+
+29
+00:02:38,549 --> 00:02:43,500
+details, which if you don’t pay attention
+to, the cipher might not be secure. You should
+
+30
+00:02:43,500 --> 00:02:48,220
+rely on existing implementations and use suggestions.
+
+31
+00:02:48,220 --> 00:02:55,220
+Here are the basics of Blowfish. It uses something
+called a Feistel network. A Fesitel network,
+
+32
+00:02:56,970 --> 00:03:00,860
+or a Feistel cipher, is one where encryption
+and decryption use the same computational
+
+33
+00:03:00,860 --> 00:03:05,969
+structure. Specifically, decrypting in Blowfish
+looks just like the inverse of encrypting,
+
+34
+00:03:05,969 --> 00:03:11,439
+except that the function F is different. So
+to decrypt, you feed the ciphertext C in at
+
+35
+00:03:11,439 --> 00:03:16,500
+bottom, you reverse all the arrows, and the
+cleartext M comes out at top.
+
+36
+00:03:16,500 --> 00:03:22,180
+To use Blowfish, you take the original key
+and from it derive the function F and 18 subkeys,
+
+37
+00:03:22,180 --> 00:03:29,049
+P1 through P18. You take your plaintext block
+of 64 bits and divide it into two parts, the
+
+38
+00:03:29,049 --> 00:03:36,049
+left half L0 and the right half R0. Both L0
+and R0 are 32 bits long. You then processes
+
+39
+00:03:39,359 --> 00:03:46,359
+L0 and R0 through 16 iterations of the structure
+on the left. You XOR the left hand value with
+
+40
+00:03:46,900 --> 00:03:53,900
+a key P. You pass this value through the function
+F and XOR that with the right hand value.
+
+41
+00:03:54,109 --> 00:03:59,040
+The right hand value becomes the new left
+hand value and vice versa. Then, in the final
+
+42
+00:03:59,040 --> 00:04:05,109
+step, you XOR the left hand value with P18
+and the right hand value with P17. This produces
+
+43
+00:04:05,109 --> 00:04:09,920
+two 32-bit values, which you concatenate into
+the ciphertext C.
+

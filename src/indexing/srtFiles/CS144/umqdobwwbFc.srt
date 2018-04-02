@@ -1,0 +1,383 @@
+1
+00:00:00,359 --> 00:00:05,310
+In this video you are going to learn about
+the second transport layer UDP, the User Datagram
+
+2
+00:00:05,310 --> 00:00:10,650
+Protocol. UDP is used by applications that
+don’t need the guaranteed delivery service
+
+3
+00:00:10,650 --> 00:00:15,889
+of TCP, either because the application handles
+retransmissions in its own private way, or
+
+4
+00:00:15,889 --> 00:00:20,910
+because the application just doesn’t need
+reliable delivery. UDP is much much simpler
+
+5
+00:00:20,910 --> 00:00:26,890
+than TCP, which is why this video is much
+shorter. All UDP does is take application
+
+6
+00:00:26,890 --> 00:00:33,550
+data and create a UDP datagram, then hands
+it to the network layer. The UDP datagram
+
+7
+00:00:33,550 --> 00:00:38,920
+identifies the application that the data should
+be sent to at the other end. That’s about
+
+8
+00:00:38,920 --> 00:00:39,590
+it.
+
+9
+00:00:39,590 --> 00:00:44,329
+As we have come to expect, the UDP datagram
+is encapsulated inside the data field of the
+
+10
+00:00:44,329 --> 00:00:46,530
+IP datagram.
+
+11
+00:00:46,530 --> 00:00:51,060
+UDP provides a very simple service, as should
+be clear from the small number of fields in
+
+12
+00:00:51,060 --> 00:00:55,220
+the UDP header.
+Unlike TCP that has over ten header fields,
+
+13
+00:00:55,220 --> 00:01:00,239
+UDP has just four.
+1. The source port indicates which application
+
+14
+00:01:00,239 --> 00:01:04,850
+the data comes from. If the far end replies,
+it will send a datagram with this port number
+
+15
+00:01:04,849 --> 00:01:09,659
+as the destination so it can find its way
+back to the correct application.
+
+16
+00:01:09,659 --> 00:01:15,020
+2. The destination port indicates which application
+the data should be delivered to at the other
+
+17
+00:01:15,020 --> 00:01:20,650
+end host. The port numbers in UDP serve the
+same purpose as in TCP - they direct incoming
+
+18
+00:01:20,650 --> 00:01:27,100
+packets to the correct application process.
+3. The 16-bit Length field specifies the length
+
+19
+00:01:27,100 --> 00:01:32,170
+of the whole UDP datagram – header plus
+data – in bytes. The value must be at least
+
+20
+00:01:32,170 --> 00:01:35,340
+8 bytes, because that is the length of the
+UDP header.
+
+21
+00:01:35,340 --> 00:01:41,850
+4. The UDP checksum is optional when using
+IPv4. If the sender doesn’t include a checksum,
+
+22
+00:01:41,850 --> 00:01:47,049
+the field is filled with all zeroes. If a
+UDP checksum is used, then it is calculated
+
+23
+00:01:47,049 --> 00:01:50,330
+over the UDP header and data.
+
+24
+00:01:50,330 --> 00:01:56,100
+In fact, the UDP checksum calculation also
+includes a portion of the IPv4 header as well,
+
+25
+00:01:56,100 --> 00:02:01,189
+as shown here. The calculation includes the
+IP source and destination addresses and the
+
+26
+00:02:01,189 --> 00:02:06,670
+protocol ID which has the value of 17 and
+tells us that the IP datagram carries UDP
+
+27
+00:02:06,670 --> 00:02:12,720
+data. You might be wondering why the UDP checksum
+includes part of the IP header – doesn’t
+
+28
+00:02:12,720 --> 00:02:18,390
+that violate the clean separation of layers?
+Yes, it does. The rationale for violating
+
+29
+00:02:18,390 --> 00:02:22,670
+the layering principle and using information
+from the layer below is that it allows the
+
+30
+00:02:22,670 --> 00:02:28,280
+UDP layer to detect datagrams that were delivered
+to the wrong destination.
+
+31
+00:02:28,280 --> 00:02:33,190
+In summary, the UDP header is small, because
+the service it offers the application is very
+
+32
+00:02:33,190 --> 00:02:38,450
+simple. It provides a simple message protocol
+for sending data from an application on one
+
+33
+00:02:38,450 --> 00:02:44,450
+host that may or may not be delivered to an
+application on a remote host.
+
+34
+00:02:44,450 --> 00:02:48,280
+Port numbers in UDP work the same way as in
+TCP.
+
+35
+00:02:48,280 --> 00:02:55,280
+If process 1 on Host A has data to send to
+process 1 on Host B that uses port 177, the
+
+36
+00:02:56,379 --> 00:03:03,379
+data is placed into a new UDP datagram with
+destination port 177. Host A adds its own
+
+37
+00:03:03,440 --> 00:03:08,879
+source port number so any replies can be sent
+to Process 1 on Host A.
+
+38
+00:03:08,879 --> 00:03:14,209
+The datagram is encapsulated in an IP datagram
+and sent to Host B.
+
+39
+00:03:14,209 --> 00:03:19,629
+Host B removes the UDP datagram and directs
+the data to Process 1.
+
+40
+00:03:19,629 --> 00:03:26,629
+It is useful to think of UDP as merely a Demultiplexing
+mechanism to divide up the stream of UDP datagrams
+
+41
+00:03:27,670 --> 00:03:33,780
+and send them to the correct process. In fact,
+some people call it the User Demultiplexing
+
+42
+00:03:33,780 --> 00:03:37,930
+Protcol for this reason --- it is essentially
+all UDP does.
+
+43
+00:03:37,930 --> 00:03:43,580
+To sum up UDP’s Service Model, we say that
+it has the following three properties shown
+
+44
+00:03:43,580 --> 00:03:44,930
+in the table.
+
+45
+00:03:44,930 --> 00:03:49,970
+First, it provides a connectionless datagram
+service. No connection is established, because
+
+46
+00:03:49,970 --> 00:03:55,739
+none is needed – all of the information
+is self-contained in the datagram. It means
+
+47
+00:03:55,739 --> 00:03:59,970
+packets may show up in an any order, so if
+the application cares about in order delivery,
+
+48
+00:03:59,970 --> 00:04:03,540
+it will need to resequence the data itself.
+
+49
+00:04:03,540 --> 00:04:09,069
+UDP is an unreliable delivery service. It
+doesn’t send any acknowledgments to let
+
+50
+00:04:09,069 --> 00:04:13,860
+us know data reached the other end. It has
+no mechanism to detect missing datagrams.
+
+51
+00:04:13,860 --> 00:04:19,039
+If an entire datagram is dropped along the
+way, UDP will not inform the application,
+
+52
+00:04:19,039 --> 00:04:23,969
+and it will not ask the source to resend the
+datagram. However, the application might choose
+
+53
+00:04:23,969 --> 00:04:28,580
+to ask for the data again by itself, essentially
+building a retransmission mechanism on top
+
+54
+00:04:28,580 --> 00:04:35,580
+of UDP. Early versions of NFS, the network
+file system did exactly this. They decided
+
+55
+00:04:36,189 --> 00:04:40,960
+they didn’t want to use the sliding window
+used by TCP, so they created their own inside
+
+56
+00:04:40,960 --> 00:04:42,949
+the application.
+
+57
+00:04:42,949 --> 00:04:49,219
+UDP should sound very much like the service
+provided by the IP layer. That’s because
+
+58
+00:04:49,219 --> 00:04:54,029
+UDP is offering little more than a simple
+wrapper on top of the IP layer, with the means
+
+59
+00:04:54,029 --> 00:05:00,180
+to direct the arriving data to the correct
+application at the other end.
+
+60
+00:05:00,180 --> 00:05:07,180
+So why do we have UDP? It is used by applications
+that don’t need reliable delivery, such
+
+61
+00:05:07,729 --> 00:05:14,369
+as simple request-response applications. DNS
+– the domain name system used by the Internet
+
+62
+00:05:14,369 --> 00:05:19,589
+to turn a hostname into an IP address uses
+UDP because the request is fully contained
+
+63
+00:05:19,589 --> 00:05:25,809
+in one UDP datagram. You’ll learn how DNS
+works later, but for now you just need to
+
+64
+00:05:25,809 --> 00:05:31,770
+know that if we send a DNS request containing
+a hostname, the DNS server will respond with
+
+65
+00:05:31,770 --> 00:05:37,699
+an IP address we can use to send IP datagrams
+to the host. If the request is successful,
+
+66
+00:05:37,699 --> 00:05:42,009
+then using UDP is lightweight and fast – there
+is no need to setup a connection before making
+
+67
+00:05:42,009 --> 00:05:48,580
+the query. If the request is unsuccessful,
+it simply times out and is resent. This makes
+
+68
+00:05:48,580 --> 00:05:54,649
+DNS simple and fast most of the time. The
+DHCP or Dynamic Host Configuration Protocol
+
+69
+00:05:54,649 --> 00:05:59,800
+also uses UDP. DHCP helps a new host find
+out its IP address when it joins a network.
+
+70
+00:05:59,800 --> 00:06:02,139
+Your laptop probably uses DHCP when it connects
+to WiFi. We’ll learn more about DHCP later,
+
+71
+00:06:02,139 --> 00:06:02,979
+but it’s enough to know here that DHCP is
+also a request-response application making
+
+72
+00:06:02,979 --> 00:06:04,899
+a single, self-contained request in one UDP
+datagram. The Network Time Protocol or NTP
+
+73
+00:06:04,899 --> 00:06:07,349
+also uses UDP for the same reason.
+
+74
+00:06:07,349 --> 00:06:11,869
+Some applications use UDP because they have
+their own special needs for retransmission,
+
+75
+00:06:11,869 --> 00:06:17,219
+congestion control, in-sequence delivery.
+A few real-time streaming audio and video
+
+76
+00:06:17,219 --> 00:06:23,139
+services use UDP. This is much less common
+that it used to be, because most video and
+
+77
+00:06:23,139 --> 00:06:30,139
+audio streams of http today, which uses TCP
+instead of UDP.
+
+78
+00:06:33,889 --> 00:06:40,189
+In summary, UDP provides a simpler, datagram
+delivery service between application processes.
+

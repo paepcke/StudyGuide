@@ -1,0 +1,1172 @@
+1
+00:00:00,000 --> 00:00:04,078
+Continuing on our theme of routing, in this
+video, I'm going to tell you about a
+
+2
+00:00:04,078 --> 00:00:08,081
+distance vector protocol.
+Distance vector protocol is a way in
+
+3
+00:00:08,080 --> 00:00:13,098
+which the, the routers maintain a vector
+of their distances to a given, or to all
+
+4
+00:00:13,098 --> 00:00:18,001
+of the other routers, and then
+iteratively, through a distributed
+
+5
+00:00:18,001 --> 00:00:20,358
+algorithm,
+they converge on finding the shortest path
+
+6
+00:00:20,358 --> 00:00:24,333
+or the lowest cost spanning tree from them
+to every other router.
+
+7
+00:00:24,333 --> 00:00:29,565
+And we're going to see a specific example
+of this, what's known as the Bellman Ford
+
+8
+00:00:29,565 --> 00:00:34,376
+algorithm, which is the most commonly used
+algorithm in these distance vector
+
+9
+00:00:34,376 --> 00:00:37,526
+protocols.
+So, the particular problem we're going to
+
+10
+00:00:37,526 --> 00:00:41,949
+address is how can routers work together
+to find the minimum cost spanning tree?
+
+11
+00:00:41,949 --> 00:00:46,713
+Here's an example that I've shown in green
+here as the minimum cost spanning tree for
+
+12
+00:00:46,713 --> 00:00:51,149
+this particular graph.
+Notice that this is equivalent to finding
+
+13
+00:00:51,149 --> 00:00:53,983
+the minimum cost spanning tree amongst
+just the routers.
+
+14
+00:00:53,983 --> 00:00:58,610
+It didn't matter whether I included the
+end hosts because really in the end, we're
+
+15
+00:00:58,610 --> 00:01:01,484
+just building the spanning tree amongst
+the routers.
+
+16
+00:01:01,484 --> 00:01:04,910
+So, in the rest of the examples, I'm just
+going to confine myself to that.
+
+17
+00:01:04,910 --> 00:01:08,741
+So now, let's look at the distributed
+Bellman-Ford algorithm, And in this
+
+18
+00:01:08,741 --> 00:01:13,341
+example, we're going to use the case of
+trying to find the minimum cost spanning
+
+19
+00:01:13,341 --> 00:01:16,205
+tree to R8.
+Just to remind you in the previous slide,
+
+20
+00:01:16,205 --> 00:01:18,918
+this was the router in the bottom
+right-hand corner.
+
+21
+00:01:18,918 --> 00:01:22,611
+So, this green spanning tree shown here is
+the minimum cost spanning tree for
+
+22
+00:01:22,611 --> 00:01:23,759
+everybody
+to reach R8.
+
+23
+00:01:23,759 --> 00:01:28,546
+So, remember that in general, all of
+the routers are going to be building the
+
+24
+00:01:28,546 --> 00:01:32,322
+lowest cost spanning tree to reach all of
+the other routers.
+
+25
+00:01:32,322 --> 00:01:37,429
+So, we're just taking one specific case
+here of finding that minimum cost spanning
+
+26
+00:01:37,429 --> 00:01:38,311
+tree to r8.
+
+27
+00:01:38,311 --> 00:01:44,515
+In the Bellman Ford Algorithm, we're going
+to assume that the routers know the cost
+
+28
+00:01:44,515 --> 00:01:49,132
+of the link to each of their neighbors so
+that there is a metric and a cost
+
+29
+00:01:49,132 --> 00:01:53,589
+associated with using that link.
+And we're going to assume that router R
+
+30
+00:01:53,589 --> 00:01:57,870
+sub i is going to maintain the value of
+the cost to reach R8.
+
+31
+00:01:57,870 --> 00:02:03,938
+So, at any one instance, it's going to
+keep a sense of its current lowest cost to
+
+32
+00:02:03,938 --> 00:02:07,948
+reach R sub eight, so router RA, it's
+going to be C sub i.
+
+33
+00:02:07,948 --> 00:02:14,259
+So we're going to have a vector, C, which
+is going to contain the seven costs of the
+
+34
+00:02:14,259 --> 00:02:19,669
+seven routers, R1 through R7, of their
+current cost to reach R8, and this is the
+
+35
+00:02:19,669 --> 00:02:25,137
+the distance vector to reach R8.
+Initially, the algorithm is going to set
+
+36
+00:02:25,137 --> 00:02:30,435
+this vector to all values of infinity.
+And then, every T seconds, so starting
+
+37
+00:02:30,435 --> 00:02:34,878
+after the first t seconds, Ri is going to
+send Ci to its neighbors.
+
+38
+00:02:34,878 --> 00:02:40,397
+In other words, each router is going to
+send the cost to reach R8 to each of its
+
+39
+00:02:40,397 --> 00:02:43,200
+neighbors.
+If Ri, at anytime, learns of a
+
+40
+00:02:43,200 --> 00:02:47,039
+lower-cost path, it's going to update its
+value C sub i.
+
+41
+00:02:47,039 --> 00:02:52,075
+So if after t seconds it hears a
+lower-cost path to reach R8, it's going to
+
+42
+00:02:52,075 --> 00:02:57,698
+update it's value and then we're going to
+repeat and we're just going to keep
+
+43
+00:02:57,698 --> 00:02:59,426
+repeating forever.
+
+44
+00:02:59,426 --> 00:03:03,537
+Let's look at this is as, as, as how this
+would work on a graph.
+
+45
+00:03:03,537 --> 00:03:08,092
+And remember, there's a natural extension
+to calculate this for R1 through R7,
+
+46
+00:03:08,092 --> 00:03:12,594
+we just exchange all of the values.
+I'm just showing you the one example here.
+
+47
+00:03:12,594 --> 00:03:17,081
+Now let's look at a concrete example, and
+we're going to have a look at this
+
+48
+00:03:17,081 --> 00:03:20,173
+particular graph here, which I've
+annotated with some costs.
+
+49
+00:03:20,173 --> 00:03:24,208
+They're different from the costs before.
+It doesn't matter, what the particular values are, or
+
+50
+00:03:24,208 --> 00:03:28,075
+how they came about.  They could  represent the
+
+51
+00:03:28,075 --> 00:03:30,799
+delay of using a link, or the price of
+using a link.
+
+52
+00:03:30,799 --> 00:03:35,088
+They're just values, and we're going to
+try and find the minimum cost, spanning
+
+53
+00:03:35,088 --> 00:03:39,051
+tree using the Bellman Ford algorithm.
+So, remember, in the Bellman Ford algorithm,
+
+54
+00:03:39,051 --> 00:03:42,664
+we start out with a distance vector to
+reach R8, with all the values set to
+
+55
+00:03:42,664 --> 00:03:45,403
+infinity.
+So R1 thinks it costs, it's infinite to
+
+56
+00:03:45,403 --> 00:03:47,018
+start with.
+R2, and so on.
+
+57
+00:03:47,018 --> 00:03:51,646
+They all think that the cost is infinite
+in order to reach R8.
+
+58
+00:03:51,646 --> 00:03:54,004
+Okay.
+So, that's where we're going to begin.
+
+59
+00:03:54,004 --> 00:03:58,060
+And we're going to go through and see
+waves of information propagating through
+
+60
+00:03:58,060 --> 00:04:02,480
+so that we can update these and steadily
+converge on what the minimum cost spanning
+
+61
+00:04:02,480 --> 00:04:06,803
+tree is in order to reach r8.
+So, in the next step, then information is
+
+62
+00:04:06,803 --> 00:04:13,021
+going to propagate outwards from r8.
+So, this information here is going to tell
+
+63
+00:04:13,021 --> 00:04:18,091
+us in that first wave that r8 can be
+reached in one hop from these routers.
+
+64
+00:04:18,091 --> 00:04:22,063
+R3 is going to learn that, it can get
+there in four.
+
+65
+00:04:22,063 --> 00:04:26,050
+That's with the direct path.
+R5 can get there in six.
+
+66
+00:04:26,050 --> 00:04:32,038
+R6 over here will learn that it can get
+there in two, and R7 will learn that it
+
+67
+00:04:32,038 --> 00:04:36,092
+can get there in one.
+So, there are the costs in that first step.
+
+68
+00:04:36,092 --> 00:04:40,026
+And so, R3 will update its own value,
+four, six,
+
+69
+00:04:40,026 --> 00:04:44,077
+one, and two, respectively.
+And now, they will advertise those values
+
+70
+00:04:44,077 --> 00:04:50,023
+on in the next round of the algorithm.
+So, that information is going to propagate
+
+71
+00:04:50,023 --> 00:04:55,001
+out here into the, the next hop.
+So, R4 is going to learn in
+
+72
+00:04:55,001 --> 00:05:00,061
+the next iteration of the algorithm that
+it can get there, at a cost of two via R7.
+
+73
+00:05:00,084 --> 00:05:06,080
+It could get also get there at
+a cost of six via R6, that's a higher
+
+74
+00:05:06,080 --> 00:05:11,713
+value so it's going to ignore that one.
+R2 can get there at a cost of seven, six
+
+75
+00:05:11,713 --> 00:05:18,016
+plus one, so that's seven going via R5.
+And R1 is going to learn that it can get
+
+76
+00:05:18,016 --> 00:05:22,050
+there at the cost eight via R3.
+Okay, so it's tempting to think that we're
+
+77
+00:05:22,050 --> 00:05:25,741
+done at this point, because every router
+has had a value, but of course, this is
+
+78
+00:05:25,741 --> 00:05:29,407
+going to keep going, because this
+information is going to propagate further.
+
+79
+00:05:29,407 --> 00:05:33,026
+And the next time,
+this news is going to propagate this way.
+
+80
+00:05:33,026 --> 00:05:38,033
+This news is gong to propagate this way.
+This news is gong to propagate this way
+
+81
+00:05:38,033 --> 00:05:41,056
+and so on.
+So, everyone is going to hear more values
+
+82
+00:05:41,056 --> 00:05:45,018
+in the next round.
+Let me clear that to make a little bit
+
+83
+00:05:45,018 --> 00:05:48,016
+clearer and see what happens in the next
+round.
+
+84
+00:05:48,016 --> 00:05:51,077
+So, this is the values  that I
+just showed you.
+
+85
+00:05:51,096 --> 00:05:57,066
+Just as an example R1 had learned, if you
+remember, that it can get to it can get to
+
+86
+00:05:57,066 --> 00:06:02,003
+r8 via r3 at a cost of eight.
+So, it has that value eight going via r3,
+
+87
+00:06:02,003 --> 00:06:05,028
+for example.
+Okay, so now, what happens?  You can see
+
+88
+00:06:05,028 --> 00:06:08,077
+that we've found out all of the two hop
+information.
+
+89
+00:06:08,077 --> 00:06:11,092
+So this is really like the two hop
+information.
+
+90
+00:06:11,092 --> 00:06:16,075
+In the next iteration, we're going to find
+out the three hop information.
+
+91
+00:06:16,075 --> 00:06:19,077
+Let's see what this three hop information
+is.
+
+92
+00:06:19,077 --> 00:06:25,007
+Well, based on this, the ones that are
+going to change, and I've shown you in red
+
+93
+00:06:25,007 --> 00:06:26,081
+here.
+Let's focus on those.
+
+94
+00:06:26,081 --> 00:06:29,094
+R2.
+Which previously thought that the lowest
+
+95
+00:06:29,094 --> 00:06:33,009
+cost path was  of cost seven, going via
+R5.
+
+96
+00:06:33,009 --> 00:06:38,081
+It's going to learn about this three
+hop path because R4 is going to advertise
+
+97
+00:06:38,081 --> 00:06:42,079
+to it, the value six.
+And so, it's going to hear about this
+
+98
+00:06:42,079 --> 00:06:46,059
+value that it can get there at a cost of
+six going via r4.
+
+99
+00:06:46,059 --> 00:06:50,052
+So, that's going to be its new value and
+that's the one here.
+
+100
+00:06:50,052 --> 00:06:54,085
+Similarly, r5 is going to learn about
+3-hop path which goes via r4.
+
+101
+00:06:54,085 --> 00:07:00,003
+It's going to learn about this one here.
+So, previously, the lowest cost path was
+
+102
+00:07:00,003 --> 00:07:05,034
+of value six.  Now it's going to learn one
+of cost four going via R4.
+
+103
+00:07:05,034 --> 00:07:08,081
+So, that's this entry here that it just
+learned about.
+
+104
+00:07:08,081 --> 00:07:14,018
+So, the first 3-hop path that was actually
+lower cost than the 2-hop path.
+
+105
+00:07:14,018 --> 00:07:19,002
+Let's see what happens in the next
+iteration, In the next iteration of the
+
+106
+00:07:19,002 --> 00:07:24,042
+algorithm the news is spreading out further
+to the four hop paths and then the four
+
+107
+00:07:24,045 --> 00:07:29,068
+hop paths, for example, R1 is going to
+learn of the four hop path that goes one,
+
+108
+00:07:29,068 --> 00:07:34,084
+two, three, four, which is of cost seven,
+because R2 will have propagated on the
+
+109
+00:07:34,084 --> 00:07:38,067
+information that it can get there at a 
+cost of six.
+
+110
+00:07:38,067 --> 00:07:43,093
+So, six plus one is seven so if it goes
+via R2, it can get there at a cost of
+
+111
+00:07:43,093 --> 00:07:49,034
+seven so that's this one here.
+R2 has just learned, in this next
+
+112
+00:07:49,034 --> 00:07:54,035
+hop, that there is an even better path.
+And we can see this one here.
+
+113
+00:07:54,035 --> 00:07:58,095
+I'm going to draw this one in green, to
+make it a little bit clearer, which goes
+
+114
+00:07:58,095 --> 00:08:02,010
+via here, and that is the cost one, two,
+three, four, five.
+
+115
+00:08:02,010 --> 00:08:06,018
+So it's just learning that it can get
+there at five, if it goes via R5.
+
+116
+00:08:06,018 --> 00:08:10,066
+All right, so the interesting thing here
+is, that these two bits of information are
+
+117
+00:08:10,066 --> 00:08:14,091
+actually inconsistent, because the
+algorithm hasn't converged.  The news of
+
+118
+00:08:14,091 --> 00:08:18,000
+this particular opportunity hasn't made it
+to R1 yet.
+
+119
+00:08:18,000 --> 00:08:23,096
+So we'll see that happen in the next step.
+In the next step, r1 is going to learn of
+
+120
+00:08:23,096 --> 00:08:31,085
+the newer value which is hat
+it can reach it in the cost of six going
+
+121
+00:08:31,085 --> 00:08:38,054
+on this path here one, two, three, three,
+four, five, six, the cost of six going via
+
+122
+00:08:38,054 --> 00:08:41,088
+R2.
+Oops, I have a little bit of mistake
+
+123
+00:08:41,087 --> 00:08:44,071
+there.
+Okay, that should be via r2.
+
+124
+00:08:46,014 --> 00:08:49,097
+So, now it appears that we're done.
+How do we know that we're done?
+
+125
+00:08:49,097 --> 00:08:55,016
+Well, we can look at it and see that we
+can't find any lower cost paths that tells
+
+126
+00:08:55,016 --> 00:08:58,077
+us that we're done.
+But, you could also see that this will
+
+127
+00:08:58,077 --> 00:09:03,084
+finish, you can't go any further so long
+as we've, we've explored the maximum hop
+
+128
+00:09:03,084 --> 00:09:08,097
+length in the network and the maximum hop
+length here you can see that there's a
+
+129
+00:09:08,097 --> 00:09:13,027
+longer one that goes like this.
+That's probably about the longest, so
+
+130
+00:09:13,027 --> 00:09:18,040
+that's one, two, three, four, five, six.
+So, that will be another hop for
+
+131
+00:09:18,040 --> 00:09:22,004
+that information to propagate.
+So, it's the longest loop free path.
+
+132
+00:09:22,004 --> 00:09:25,096
+We know that a path that has a
+loop in it must have a higher cost, so
+
+133
+00:09:25,096 --> 00:09:29,069
+we're never going to pick that one.
+So, as long as we have gone as many hops
+
+134
+00:09:29,069 --> 00:09:32,046
+as the longest loop free path, we know
+that we'll finish.
+
+135
+00:09:32,046 --> 00:09:35,089
+The question is, how do we know that we'll
+end up with a right answer?
+
+136
+00:09:35,089 --> 00:09:39,012
+In fact, there's a couple of questions
+that are worth asking here.
+
+137
+00:09:39,012 --> 00:09:42,024
+The first one is, what is the maximum run
+time of the algorithm?
+
+138
+00:09:42,024 --> 00:09:45,062
+I just told you that, it's going to be the
+longest loop free path.
+
+139
+00:09:45,062 --> 00:09:48,064
+It's going to be the hop count of the
+longest loop free path.
+
+140
+00:09:48,064 --> 00:09:54,066
+Will the algorithm always converge?
+Intuitively, it's actually pretty clear
+
+141
+00:09:54,066 --> 00:09:59,066
+that it must converge, because we start
+out with the values infinity, and we only
+
+142
+00:09:59,066 --> 00:10:04,048
+ever replace them with lower values, and
+we keep reducing the value until the
+
+143
+00:10:04,048 --> 00:10:08,004
+algorithm has run.
+So we only ever replace a value with a
+
+144
+00:10:08,004 --> 00:10:12,098
+lower cost value, and eventually we should
+hear from all of our neighbors their
+
+145
+00:10:12,098 --> 00:10:17,085
+lowest cost path, and so eventually we
+will reach the lowest value, and we will
+
+146
+00:10:17,085 --> 00:10:20,079
+converge.
+So the algorithm will always converge.
+
+147
+00:10:20,079 --> 00:10:23,048
+It's the clever thing about this
+algorithm.
+
+148
+00:10:23,048 --> 00:10:30,072
+So, what happens when link costs change?
+Or when links and routers fail?
+
+149
+00:10:30,072 --> 00:10:35,021
+We'll see an example of that in a minute
+when actually, things can go wrong when
+
+150
+00:10:35,021 --> 00:10:37,091
+that happens.
+But in general, it will continue to
+
+151
+00:10:37,091 --> 00:10:41,079
+converge because, if something
+fails, if a lower cost path should
+
+152
+00:10:41,079 --> 00:10:44,094
+suddenly appear, then it will find it and
+start using it.
+
+153
+00:10:44,094 --> 00:10:50,001
+Things are a little bit more complicated
+when things fail and there is no longer a
+
+154
+00:10:50,001 --> 00:10:54,036
+path to somewhere, and I'll show you an
+example of this right now.
+
+155
+00:10:54,036 --> 00:10:58,028
+This is a well-known problem with the
+Bellman-Ford Algorithm.
+
+156
+00:10:58,028 --> 00:11:02,013
+And, it's sometimes characterized as bad
+news travels slowly.
+
+157
+00:11:02,013 --> 00:11:04,096
+Let's see what's going on
+here.
+
+158
+00:11:04,096 --> 00:11:06,568
+We're going to look at this really simple
+four-router network here that are all
+
+159
+00:11:06,568 --> 00:11:14,023
+connected in a line.
+And the cost from one router to the next
+
+160
+00:11:14,023 --> 00:11:16,099
+is one.
+So, a nice, simple, trivial example.
+
+161
+00:11:16,099 --> 00:11:22,038
+So, initially, everything is working fine.
+We've converged on these values down here
+
+162
+00:11:22,038 --> 00:11:26,006
+at time zero.
+We happen to know that we can get to R4.
+
+163
+00:11:26,006 --> 00:11:29,074
+So, this is all about your cost to reach
+R4 in this case.
+
+164
+00:11:29,094 --> 00:11:32,089
+We know that R1 can get there at a cost of
+three.
+
+165
+00:11:32,089 --> 00:11:40,094
+So that's its value, if it goes via R2.
+R2 can get there at a cost of two, that's
+
+166
+00:11:40,094 --> 00:11:47,094
+this plus this, if it goes via R3.
+R3 can get there in the cost of one and
+
+167
+00:11:47,094 --> 00:11:52,067
+it's directly connected to r4.
+So, everything is good.
+
+168
+00:11:52,067 --> 00:11:58,050
+But then suddenly, the link from three to
+four is going to break.
+
+169
+00:11:58,050 --> 00:12:03,024
+So, this link over here has broken.
+What happens next?
+
+170
+00:12:03,024 --> 00:12:06,075
+Well.
+What's going to happen is they're going to
+
+171
+00:12:06,075 --> 00:12:11,375
+keep advertising their costs.
+R3 is going to start advertising, "hey, I
+
+172
+00:12:11,375 --> 00:12:16,001
+was under the impression that I could get
+there with a cost of one before."
+
+173
+00:12:16,001 --> 00:12:20,047
+That's here.
+"But I don't have that link anymore.
+
+174
+00:12:20,047 --> 00:12:25,031
+I know that, that link is broken.
+But I did hear from R2 that R2 could get
+
+175
+00:12:25,031 --> 00:12:28,095
+there with a cost of two.
+Now, I am one hop away from R2.
+
+176
+00:12:28,095 --> 00:12:34,045
+So therefore, I must be able to get there
+at a cost of three, if I send my packets
+
+177
+00:12:34,045 --> 00:12:37,063
+to r2."
+Clearly, this is wrong r3 is delusional,
+
+178
+00:12:37,063 --> 00:12:41,061
+we can't really do that.
+But because it's, hearing this value
+
+179
+00:12:41,061 --> 00:12:46,091
+advertised to r2, that says, "if you send
+packets to me, I'll deliver them to r4 at
+
+180
+00:12:46,091 --> 00:12:51,062
+a cost of two plus the cost from me to
+you, and therefore, with an overall cost of three."
+
+181
+00:12:51,062 --> 00:12:55,024
+R1 doesn't know anything about the failure
+yet.
+
+182
+00:12:56,012 --> 00:13:01,061
+Let's see what happens in the next step.
+So, the question is, will it
+
+183
+00:13:01,061 --> 00:13:05,079
+eventually converge, and settle to
+the correct value?
+
+184
+00:13:05,079 --> 00:13:12,051
+So in the next step.
+Because r3 is now advertising its cost as
+
+185
+00:13:12,051 --> 00:13:19,032
+being three if it goes via r2.
+That news is going to reach R2.
+
+186
+00:13:19,032 --> 00:13:24,046
+And r2 is going to say, "hey, you were
+previously saying to me that it was a cost
+
+187
+00:13:24,046 --> 00:13:30,019
+of 
+one, now you're telling me, it's a cost of
+
+188
+00:13:30,019 --> 00:13:33,011
+three.
+So therefore, it must be costing me four to
+
+189
+00:13:33,011 --> 00:13:36,006
+get there.
+Its, your cost which was three that you
+
+190
+00:13:36,006 --> 00:13:40,094
+were advertising to me plus the one, so
+it's costing me four to get there if I go
+
+191
+00:13:40,094 --> 00:13:43,088
+via R3.
+And you can see what's going to happen.
+
+192
+00:13:43,088 --> 00:13:49,018
+They're going
+to gradually keep feeding each other bad
+
+193
+00:13:49,018 --> 00:13:54,005
+information iteratively, and it's going to
+increase at every step and this is just
+
+194
+00:13:54,005 --> 00:13:57,019
+going to spiral out of control.
+So, in the next round.
+
+195
+00:13:57,035 --> 00:14:01,079
+R2 is going to say, "hey, you were
+telling me that I can get there at four
+
+196
+00:14:01,079 --> 00:14:05,041
+plus the cost from me to you, that's five,
+if I send packets to you."
+
+197
+00:14:05,041 --> 00:14:09,069
+And so, it goes to five and then, you know
+it's going to go to six and so on.
+
+198
+00:14:09,069 --> 00:14:12,071
+And it's just going to keep increasing as
+we go around.
+
+199
+00:14:12,071 --> 00:14:15,046
+This is known as the counting to infinity
+problem.
+
+200
+00:14:15,046 --> 00:14:19,092
+Or bad news travels slowly.
+There's a fairly simple fix to this, which
+
+201
+00:14:19,092 --> 00:14:24,065
+is, it seems a bit of a kludge.
+But we could set infinity to be some small
+
+202
+00:14:24,065 --> 00:14:28,094
+number, and say, sixteen, and stop when
+you get to a count of sixteen.
+
+203
+00:14:28,099 --> 00:14:33,085
+If you get to a count of sixteen, it
+actually means that there's no path at
+
+204
+00:14:33,085 --> 00:14:36,012
+all.
+There are various other
+
+205
+00:14:36,012 --> 00:14:40,079
+methods, one that's called split-horizon.
+You'll find it described in textbooks.
+
+206
+00:14:40,097 --> 00:14:44,059
+Essentially, because R2 received the
+lowest cost path from R3,
+
+207
+00:14:44,059 --> 00:14:51,012
+it does not advertise that cost to R3.
+In other words, because R2 was originally
+
+208
+00:14:51,012 --> 00:14:58,005
+receiving that lowest cost path from R3,
+it doesn't send those advertisements to R3
+
+209
+00:14:58,005 --> 00:15:02,049
+and so, R3 will never think that it can
+reach R4 via R2.
+
+210
+00:15:02,049 --> 00:15:06,078
+So, that's one way.
+Another one is called split-horizon with
+
+211
+00:15:06,078 --> 00:15:10,079
+poison reverse.
+In this case, R2 will actively advertise
+
+212
+00:15:10,079 --> 00:15:14,087
+infinity to R3.
+So, it says, because I heard the lowest
+
+213
+00:15:14,087 --> 00:15:20,077
+cost path from you, I'm going to actively
+send you the value infinity so you will
+
+214
+00:15:20,077 --> 00:15:24,063
+absolutely never think that you can get
+there via me.
+
+215
+00:15:24,063 --> 00:15:29,053
+So these are kind of fixes to what is
+really an elegant algorithm, but which,
+
+216
+00:15:29,053 --> 00:15:33,073
+in practice, takes quite a few things
+like this to make it work.
+
+217
+00:15:33,073 --> 00:15:36,049
+Let's take a look at Bellman Ford in
+practice.
+
+218
+00:15:36,049 --> 00:15:39,097
+Bellman Ford is an example of a distance
+vector algorithm.
+
+219
+00:15:39,097 --> 00:15:44,090
+In other words, there's a distance vector
+that is maintained by all of the routers,
+
+220
+00:15:44,090 --> 00:15:49,088
+of the distance from them to every other
+router, and then they iteratively converge
+
+221
+00:15:49,088 --> 00:15:53,061
+on the correct answer.
+In other words, the correct minimum cost
+
+222
+00:15:53,061 --> 00:15:56,073
+distance.
+This is an example therefore of a distance
+
+223
+00:15:56,073 --> 00:16:01,042
+vector algorithm, and forms the heart of
+one of  the first routing protocols
+
+224
+00:16:01,042 --> 00:16:06,022
+used in the Internet called RIP.
+RIP stood for the Routing Information
+
+225
+00:16:06,022 --> 00:16:09,069
+Protocol, and it was used very widely for
+quite a long time.
+
+226
+00:16:09,069 --> 00:16:13,062
+And this was because, it requires very
+little computation on the routers, it
+
+227
+00:16:13,062 --> 00:16:17,034
+could be calculated in a distributed way
+requiring very little
+
+228
+00:16:17,034 --> 00:16:19,068
+computational burden on each of the
+routers.
+
+229
+00:16:19,068 --> 00:16:22,013
+And we knew that it would eventually
+converge.
+
+230
+00:16:22,013 --> 00:16:26,075
+With a few little fixes here like the
+split horizon technique and preventing it
+
+231
+00:16:26,075 --> 00:16:30,031
+from counting to infinity.
+Over time though, it was replaced by other
+
+232
+00:16:30,031 --> 00:16:34,083
+algorithms, other techniques that collect
+together the entire state of the network
+
+233
+00:16:34,083 --> 00:16:38,778
+on each router and then, independently on
+their own, calculate the minimum cost
+
+234
+00:16:38,778 --> 00:16:43,534
+spanning tree, so no longer a distributor.
+But we'll see an example of that in
+
+235
+00:16:43,534 --> 00:16:47,053
+another video on Dijkstra's Shortest Path
+First Algorithm.
+

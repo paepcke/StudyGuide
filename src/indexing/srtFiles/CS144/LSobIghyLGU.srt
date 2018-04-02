@@ -1,0 +1,844 @@
+1
+00:00:00,280 --> 00:00:03,949
+In this video I'm going to continue the
+topic of the four layer internet model and
+
+2
+00:00:03,949 --> 00:00:08,759
+I'm going to tell you about the ICMP
+service model. ICMP is the Internet Control
+
+3
+00:00:08,759 --> 00:00:11,900
+Message
+Protocol and it is used to report errors and
+
+4
+00:00:11,900 --> 00:00:15,700
+diagnose problems with the network
+layer. You'll recall that IP doesn't provide
+
+5
+00:00:15,700 --> 00:00:18,700
+any
+guarantees about delivery, but it does help
+
+6
+00:00:18,700 --> 00:00:22,850
+and it'll prove to be a very valuable
+tool to get some hints and some information
+
+7
+00:00:22,850 --> 00:00:26,400
+back from the layer, network
+layer to tell us about when things are going
+
+8
+00:00:26,400 --> 00:00:30,150
+wrong.
+There are three mechanisms that we use to
+
+9
+00:00:30,150 --> 00:00:33,859
+make the network layer work in the
+internet. The first, we've already seen, is
+
+10
+00:00:33,859 --> 00:00:38,050
+the
+internet protocol or IP. This creates IP datagrams,
+
+11
+00:00:38,050 --> 00:00:41,870
+and then
+delivers them hop by hop from end to end.
+
+12
+00:00:41,870 --> 00:00:45,859
+The second are the routing tables sitting
+inside the routers. There are algorithms that
+
+13
+00:00:45,859 --> 00:00:49,009
+run to populate
+these router forwarding tables, so that the
+
+14
+00:00:49,010 --> 00:00:55,069
+routers know how to deliver them hop
+by hop to the other end. The third mechanism
+
+15
+00:00:55,069 --> 00:00:58,089
+which is the purpose
+for this video is the ICMP, or the internet
+
+16
+00:00:58,089 --> 00:01:03,079
+control message protocol.
+ICMP helps communicate information about the
+
+17
+00:01:03,079 --> 00:01:06,110
+network layer between the end hosts
+and the routers and I'm going to show you
+
+18
+00:01:06,110 --> 00:01:10,530
+a couple of examples of those in a minute.
+It's typically used to report error conditions
+
+19
+00:01:10,530 --> 00:01:15,500
+and helps us diagnose problems,
+figure out the path taken by packets and so
+
+20
+00:01:15,500 --> 00:01:19,560
+on.
+Okay. ICMP runs above the network layer, and
+
+21
+00:01:19,560 --> 00:01:23,240
+so
+strictly speaking it's a transport layer protocol.
+
+22
+00:01:23,240 --> 00:01:28,110
+When an end host or router want to report
+an error using ICMP, it puts the
+
+23
+00:01:28,110 --> 00:01:33,479
+information that it wants to send back to
+the source into an ICMP payload.
+
+24
+00:01:33,479 --> 00:01:40,479
+And hands it to IP, to be sent as a datagram.
+Let's look at an example. As I said, ICMP
+
+25
+00:01:41,719 --> 00:01:46,719
+typically gets used as, as
+a method for error reporting. And in fact
+
+26
+00:01:46,719 --> 00:01:50,700
+you've seen it if you've
+ever seen the message destination network
+
+27
+00:01:50,700 --> 00:01:53,270
+unreachable.
+Let me give an example. Imagine that I have
+
+28
+00:01:53,270 --> 00:01:58,619
+a web client running
+as the application here. So I've got a an
+
+29
+00:01:58,619 --> 00:02:03,310
+HTTP or web client here
+that's going to be accessing an HTTPserver
+
+30
+00:02:03,310 --> 00:02:09,190
+over here at B.
+So as we've seen before, the application bytes
+
+31
+00:02:09,190 --> 00:02:16,110
+that for, for HTTP get put in to the
+transport layer as usual and to TCP, comes
+
+32
+00:02:16,110 --> 00:02:20,010
+down to the network by it, goes out along
+the link, comes up to the router along here.
+
+33
+00:02:20,010 --> 00:02:26,170
+Imagine that the address that is put inhere.
+Is actually to a network that this router
+
+34
+00:02:26,170 --> 00:02:31,069
+has no information about in its forwarding
+table. Now this will be a pretty bad situation,
+
+35
+00:02:31,069 --> 00:02:34,799
+because that router doesn't know how to forward
+the packet to B.
+
+36
+00:02:34,799 --> 00:02:41,180
+But, if that happens, then the router will
+send back a message, and so this will come
+
+37
+00:02:41,180 --> 00:02:48,180
+back down through the network, to A. And it
+will say in it, destination network
+
+38
+00:02:49,690 --> 00:02:56,690
+unreachable. And that's simply saying that
+it has no
+
+39
+00:02:58,900 --> 00:03:04,470
+means to deliver that packet to B, so it's
+alerting A by sending that back.
+
+40
+00:03:04,470 --> 00:03:08,950
+And we'll see the format that it uses in a
+moment.
+
+41
+00:03:08,950 --> 00:03:11,650
+So basically the ICMP service model is very,
+very simple.
+
+42
+00:03:11,650 --> 00:03:15,549
+It allows it to send a reporting message,a
+self-contained message reporting the
+
+43
+00:03:15,549 --> 00:03:17,840
+error. It's unreliable in the sense that it
+sends
+
+44
+00:03:17,840 --> 00:03:20,689
+a simple datagram. It doesn't attempt to re-send
+it, it
+
+45
+00:03:20,689 --> 00:03:23,470
+doesn't retain any state of the messages that
+it sent.
+
+46
+00:03:23,470 --> 00:03:28,329
+It simply sends back a digest, giving an indication
+of what the problem was.
+
+47
+00:03:28,329 --> 00:03:35,329
+And in fact how it actually works is, when
+a message comes in - so for example, an IP
+
+48
+00:03:35,340 --> 00:03:40,439
+datagram. So here is my IP datagram.
+Here is the header. Here is the payload or
+
+49
+00:03:40,439 --> 00:03:44,129
+the data portion of
+my ip datagram, so this is my IP datagram.
+
+50
+00:03:44,129 --> 00:03:48,860
+Let's say this has just arrived, and in my
+previous example, this has arrived from A
+
+51
+00:03:48,860 --> 00:03:52,040
+to the first router.
+If the first router wants to send back an
+
+52
+00:03:52,040 --> 00:03:59,040
+ICMP message, what it does is it takes the
+header. Now this header here has source address
+
+53
+00:03:59,349 --> 00:04:03,840
+A
+and destination address B. And it will populate
+
+54
+00:04:03,840 --> 00:04:09,870
+this into, it will
+place this into an ICMP message. So it will
+
+55
+00:04:09,870 --> 00:04:13,579
+take this header.
+And put it into the ICMP message. So this
+
+56
+00:04:13,579 --> 00:04:20,579
+is my ICMP message.
+And it will also take the first eight bytes
+
+57
+00:04:22,048 --> 00:04:27,910
+of the IP payload, and it'll put
+this into the ICMP message. And then it marks
+
+58
+00:04:27,910 --> 00:04:33,030
+it with a type and a
+code.And we'll see some examples of these
+
+59
+00:04:33,030 --> 00:04:36,220
+types
+and codes in a moment. And then the whole
+
+60
+00:04:36,220 --> 00:04:41,400
+lot gets placed into a
+new IP datagram. So this is the data of the
+
+61
+00:04:41,400 --> 00:04:45,070
+new IP
+datagram. And this is gonna be sent back.
+
+62
+00:04:45,070 --> 00:04:51,979
+So. So this is the header.
+And so the IP source, will be the router.
+
+63
+00:04:51,979 --> 00:04:57,470
+So I'll just put R for router and the IP
+destination in my example will be A. It's
+
+64
+00:04:57,470 --> 00:05:02,590
+gonna send it back to A to tell it
+that this was the, the error, this was the
+
+65
+00:05:02,590 --> 00:05:06,870
+type of error, this is how it figures out
+what type of error it was. This was the data
+
+66
+00:05:06,870 --> 00:05:11,300
+associated with that
+error. It's the IP datagram that was originally
+
+67
+00:05:11,300 --> 00:05:15,770
+causing the problem. That's all placed into
+the data of the IP
+
+68
+00:05:15,770 --> 00:05:22,460
+datagram that goes back again to A. Let's
+look at an example of some, some
+
+69
+00:05:22,460 --> 00:05:25,699
+particular ICMP message types. There are a
+lot of message types.
+
+70
+00:05:25,699 --> 00:05:28,120
+This is just a, this is just a sampling of
+them.
+
+71
+00:05:28,120 --> 00:05:32,069
+These are the six most important that we see.
+And you don't need to remember the types or
+
+72
+00:05:32,069 --> 00:05:38,650
+the codes you'll find those in the
+internet RFC792, and you can just look that
+
+73
+00:05:38,650 --> 00:05:42,789
+up online if you want.
+These are the ones that are most commonly
+
+74
+00:05:42,789 --> 00:05:47,600
+used and I'll just go through examples.
+We've already seen the network unreachable.
+
+75
+00:05:47,600 --> 00:05:51,520
+This was type three code zero. And there are
+two other destination
+
+76
+00:05:51,520 --> 00:05:54,550
+unreachable ones. Host unreachable, that's
+if an
+
+77
+00:05:54,550 --> 00:05:58,300
+Ip datagram gets to the last router, but then
+the last router doesn't know where
+
+78
+00:05:58,300 --> 00:06:05,300
+the host is. Port unreachable means that
+the port that's contained inside, or the protocol
+
+79
+00:06:06,349 --> 00:06:10,009
+ID that's inside the IP datagram,
+it doesn't know what to do with it. It doesn't
+
+80
+00:06:10,009 --> 00:06:15,669
+recognize it at the other end.
+We'll see how echo reply, echo request,and
+
+81
+00:06:15,669 --> 00:06:22,669
+ttl expired are used in a moment.
+Okay. You've probably used the ping command
+
+82
+00:06:24,130 --> 00:06:28,139
+before. And ping is used just to test the
+liveness
+
+83
+00:06:28,139 --> 00:06:31,800
+of, of another host. And it also checks that
+we've got
+
+84
+00:06:31,800 --> 00:06:35,300
+connectivity to that host. So imagine that
+we're sending a ping
+
+85
+00:06:35,300 --> 00:06:39,979
+message from A to B. So we're sitting at A
+and we run the
+
+86
+00:06:39,979 --> 00:06:45,229
+command ping B.Right?
+And you've probably done this. If you haven't
+
+87
+00:06:45,229 --> 00:06:48,669
+just try this on your
+computer. Pick the, the name of a computer
+
+88
+00:06:48,669 --> 00:06:55,669
+like
+www.stanford.edu and just type ping www.stanford.edu.
+
+89
+00:06:59,020 --> 00:07:06,020
+The ping application calls ICMP directly.
+It sends a ICMP echo request.
+
+90
+00:07:06,050 --> 00:07:09,360
+And so that will be a message that goes into
+the network.
+
+91
+00:07:09,360 --> 00:07:16,349
+So this is an ICMP. This is ICMP, and it's
+a, happens to be a
+
+92
+00:07:16,349 --> 00:07:21,680
+message of type eight, code zero. If you look
+on the table before, that is
+
+93
+00:07:21,680 --> 00:07:28,680
+actually a echo request. So this is my IP
+datagram.
+
+94
+00:07:33,490 --> 00:07:39,120
+And it's gonna go off to B. As this goes through
+the network, it's
+
+95
+00:07:39,120 --> 00:07:42,569
+gonna go across to B, we hope. Eventually
+it'll reach B.
+
+96
+00:07:42,569 --> 00:07:46,819
+And then B is gonna see this, and whats B
+is required to do is to send an echo
+
+97
+00:07:46,819 --> 00:07:53,530
+reply. So it will send back,
+towards A, it will send the ICMP.
+
+98
+00:07:53,530 --> 00:07:59,849
+And the ICMP will be a, I think it was type
+zero, code zero, which
+
+99
+00:07:59,849 --> 00:08:06,849
+was the echo reply. This gets placed into
+an IP datagram.
+
+100
+00:08:08,949 --> 00:08:14,810
+So, this will all be placed into the IP datagram,
+and it will be sent back to A.
+
+101
+00:08:14,810 --> 00:08:21,810
+Nice and simple. So, that's how ping works.
+Now let's have a look at how traceroute works.
+
+102
+00:08:22,560 --> 00:08:26,259
+Traceroute is an application that tells us
+the path that packets take through the
+
+103
+00:08:26,259 --> 00:08:30,069
+network and the routers that it visits along
+the way.
+
+104
+00:08:30,069 --> 00:08:35,900
+You can try this by simply typing traceroute
+and then the name of a web server or
+
+105
+00:08:35,900 --> 00:08:41,340
+some other server on the network into, into
+your computer as I'm showing here.
+
+106
+00:08:41,340 --> 00:08:44,510
+Traceroute is gonna tell you not only the
+path taken by the packets, but the
+
+107
+00:08:44,510 --> 00:08:48,320
+round trip delay to each of the routers along
+the path.
+
+108
+00:08:48,320 --> 00:08:53,030
+So, traceroute uses ICMP in quite a clever
+way.
+
+109
+00:08:53,030 --> 00:09:00,030
+So, the goal here of Traceroute is to find
+the routers on the path from A to B.
+
+110
+00:09:00,130 --> 00:09:05,230
+So, it's trying to identify the two routers
+along the path, and measure the
+
+111
+00:09:05,230 --> 00:09:09,730
+round trip time of packets from A to each
+of those routers.
+
+112
+00:09:09,730 --> 00:09:16,730
+So traceroute does this by sending UDP messages.
+And I'm first gonna describe what it does,
+
+113
+00:09:17,450 --> 00:09:23,820
+and then we'll see why it is that, that
+works. So, A is gonna send a UDP message,
+
+114
+00:09:23,820 --> 00:09:27,830
+so it's
+gonna send a UDP message. And that UDP message
+
+115
+00:09:27,830 --> 00:09:32,840
+is going to be sent,
+doesn't actually matter what it contains,
+
+116
+00:09:32,840 --> 00:09:39,650
+but it will be encapsulated into an IP
+datagram, for which the TTL, the Time To Live
+
+117
+00:09:39,650 --> 00:09:46,380
+field in the, the IP header, is, set
+to, one. So this will be sent over the link
+
+118
+00:09:46,380 --> 00:09:50,750
+from A
+to the first router, and as you recall the
+
+119
+00:09:50,750 --> 00:09:57,190
+router is required to decrement the TTL,
+and then discard the packet if the TTL reaches
+
+120
+00:09:57,190 --> 00:10:00,600
+zero.
+So it will set TTL equals zero, discard the
+
+121
+00:10:00,600 --> 00:10:03,410
+packet.
+One more thing that the router is required
+
+122
+00:10:03,410 --> 00:10:10,010
+to do is to send back an ICMP message, so
+an error reporting message back to A. And
+
+123
+00:10:10,010 --> 00:10:16,120
+it sends it back with a message of, of
+I think it's type eleven ICMP. Okay.
+
+124
+00:10:16,120 --> 00:10:23,120
+So it's going to send back a type eleven message,
+which is the TTL expired.
+
+125
+00:10:25,390 --> 00:10:30,350
+That's the, ICMP8 message, TTL expired. This
+is gonna tell A.
+
+126
+00:10:30,350 --> 00:10:34,660
+And in order for that packet to reach A, it's
+gonna take, just as before, it's
+
+127
+00:10:34,660 --> 00:10:40,390
+gonna take the IP header that was, the, the
+one that's, that was sent.
+
+128
+00:10:40,390 --> 00:10:45,250
+It's going to take the first eight bytes of
+the IP payload, and it's going to
+
+129
+00:10:45,250 --> 00:10:51,510
+populate that into a message along with this
+ICMP, so, let's draw this like this.
+
+130
+00:10:51,510 --> 00:10:55,850
+So, this is going to be the ICMP message coming
+in here.
+
+131
+00:10:55,850 --> 00:10:59,410
+This is going to be that digest of the original
+IP message.
+
+132
+00:10:59,410 --> 00:11:03,830
+Going to put this into an IP datagram, and
+it's going to send it back to A.
+
+133
+00:11:03,830 --> 00:11:08,880
+So when this reaches A, it's gonna know from
+this message, there was a TTL
+
+134
+00:11:08,880 --> 00:11:15,180
+expired. And from this portion, from the payload
+portion of the ICMP message, it's gonna know
+
+135
+00:11:15,180 --> 00:11:19,720
+aha, this came from a message I
+originally have sent from A. It's gonna come
+
+136
+00:11:19,720 --> 00:11:25,240
+from the router, so the IP
+source address of this datagram is going to
+
+137
+00:11:25,240 --> 00:11:30,040
+be the router, so I'll put that in as
+R.So it knows that it was this router.
+
+138
+00:11:30,040 --> 00:11:34,530
+It could look up it's name. And now it knows
+that the first hop router
+
+139
+00:11:34,530 --> 00:11:40,900
+is R. And by measuring the time that it took
+from when it sent the original IP message
+
+140
+00:11:40,900 --> 00:11:47,900
+until it received this ICMP reply, it now
+knows the round trip time to that router.
+
+141
+00:11:49,450 --> 00:11:54,310
+The next step is probably pretty obvious.
+Next A is going to send a UDP message, put
+
+142
+00:11:54,310 --> 00:12:01,310
+into an IP datagram, and that is going to
+have a TTL of two. Okay, so this is the IP
+
+143
+00:12:02,790 --> 00:12:05,690
+datagram that goes
+out. So it'll go through to the first router,
+
+144
+00:12:05,690 --> 00:12:09,600
+that will decrement the TTL to one. Come through
+to the second one, that will
+
+145
+00:12:09,600 --> 00:12:14,430
+decrement it to zero. And then this one will
+send back an ICMP
+
+146
+00:12:14,430 --> 00:12:20,060
+message.So the datagram will look like this.
+And I'll draw the IP datagram with the ICMP
+
+147
+00:12:20,060 --> 00:12:24,240
+message inside.
+So this is the IP datagram. This is going
+
+148
+00:12:24,240 --> 00:12:31,240
+to be going to A, from,
+let's call that R2. And inside is gonna be
+
+149
+00:12:32,650 --> 00:12:37,340
+the ICMP message.
+So this is the ICMP message that it's carrying.
+
+150
+00:12:37,340 --> 00:12:42,480
+It's gonna say type eleven. Which was the
+TTL expired.
+
+151
+00:12:42,480 --> 00:12:49,480
+And then it's gonna have the original IP header
+plus eight bytes.
+
+152
+00:12:50,450 --> 00:12:55,270
+So that when it get's back to A, it knows
+what message this was referring to, it can
+
+153
+00:12:55,270 --> 00:12:59,490
+measure the round trip time. Now it knows,
+based on the message coming
+
+154
+00:12:59,490 --> 00:13:05,910
+from R2, it knows what, what this router is.
+So you can look up its name, and now it knows
+
+155
+00:13:05,910 --> 00:13:10,730
+the round trip time to that router,
+and it'll do this until eventually the message
+
+156
+00:13:10,730 --> 00:13:15,800
+finds its way to B.
+The UDP message that it sends is using a port
+
+157
+00:13:15,800 --> 00:13:21,610
+number, which is a weird destination
+port number, it deliberately picks one that
+
+158
+00:13:21,610 --> 00:13:26,010
+B is not going to know, so that B
+will send back a message that says, and it's
+
+159
+00:13:26,010 --> 00:13:33,010
+going to be an ICMP message which is
+port un-reachable. And so when it's send back
+
+160
+00:13:33,360 --> 00:13:37,100
+the port
+unreachable, A knows, that, the message got,
+
+161
+00:13:37,100 --> 00:13:41,030
+the trace route made it all the way
+to B, and knows that the trace route is complete.
+
+162
+00:13:41,030 --> 00:13:46,960
+So in summary, ICMP, the internet control
+message protocol, provides information
+
+163
+00:13:46,960 --> 00:13:52,070
+about the network layer to end hosts and routers.
+It sits above the IP layer and, therefore,
+
+164
+00:13:52,070 --> 00:13:56,050
+strictly speaking, it's a transport layer
+mechanism. Although it's really there to serve
+
+165
+00:13:56,050 --> 00:13:58,930
+the
+network layer. The commonly used tools ping
+
+166
+00:13:58,930 --> 00:14:02,390
+and trace
+route both rely on ICMP, and I'd encourage
+
+167
+00:14:02,390 --> 00:14:05,120
+you to try both of them out and play with
+them. They, they give you a huge amount of
+
+168
+00:14:05,120 --> 00:14:08,480
+information about reachability and paths through
+the internet.
+
+169
+00:14:08,480 --> 00:14:10,200
+That's the end of this video.
+

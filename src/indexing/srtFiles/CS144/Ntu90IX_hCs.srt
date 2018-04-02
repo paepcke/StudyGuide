@@ -1,0 +1,356 @@
+1
+00:00:00,450 --> 00:00:03,949
+So in this unit where going to finally dig down below IP
+
+2
+00:00:03,949 --> 00:00:07,129
+and answer the question what is a link and
+
+3
+00:00:07,129 --> 00:00:11,929
+how they work. So, how does the link layer
+work and what are issues that you encounter at the link layer.
+
+4
+00:00:11,929 --> 00:00:15,308
+So there are two basic things that this unit is going to cover.
+
+5
+00:00:15,309 --> 00:00:18,990
+The first: the fundamental principles of
+communication
+
+6
+00:00:18,990 --> 00:00:22,880
+this is where the boundary of computer
+science and networking with electrical
+
+7
+00:00:22,880 --> 00:00:23,550
+engineering
+
+8
+00:00:23,550 --> 00:00:26,730
+we're going to talk about things like signal
+and noise
+
+9
+00:00:26,730 --> 00:00:30,720
+and how the signal to noise ratio, in fact,
+determines what's the potential
+
+10
+00:00:30,720 --> 00:00:34,149
+bit rate capacity of a link. There's a
+reason why today we don't have
+
+11
+00:00:34,149 --> 00:00:37,799
+100 terabit per second link layers
+because of some of these
+
+12
+00:00:37,800 --> 00:00:41,719
+fundamental mathematical principles of
+communication. So based on that, we're
+
+13
+00:00:41,719 --> 00:00:42,670
+going to look at things like
+
+14
+00:00:42,670 --> 00:00:46,640
+bit errors and how link layers recover from them.
+Using coding,
+
+15
+00:00:46,640 --> 00:00:51,860
+Error correcting codes. So that 
+for example, you add a little bit of redundancy to your link layer frames
+
+16
+00:00:51,860 --> 00:00:54,870
+such that, if there are a few bit errors down at the physical and link layer,
+
+17
+00:00:54,870 --> 00:00:59,100
+you can recover from and still
+receive the frame correctly. So the second thing
+
+18
+00:00:59,199 --> 00:01:00,890
+that we're going to learn about it this
+
+19
+00:01:00,890 --> 00:01:05,010
+in this unit are how these links are
+actually built. You'll remember
+
+20
+00:01:05,010 --> 00:01:08,240
+from unit one that the
+
+21
+00:01:08,240 --> 00:01:11,540
+thin waste of IP allows many many physical layers
+
+22
+00:01:11,540 --> 00:01:15,010
+and link layers to operate underneath and still
+use the
+
+23
+00:01:15,010 --> 00:01:19,520
+Interne Protocol and to tie them all together. So there are different categories of
+
+24
+00:01:19,520 --> 00:01:23,130
+physical links we're going to be talking
+about two here, two that you'll be very
+
+25
+00:01:23,130 --> 00:01:23,759
+familiar with
+
+26
+00:01:23,759 --> 00:01:26,790
+already. There's wired links, for which the
+
+27
+00:01:26,790 --> 00:01:29,850
+dominant linking in use today is ethernet. So we'll learn
+
+28
+00:01:29,850 --> 00:01:33,270
+how ethernet works. The original version
+Ethernet used a shared
+
+29
+00:01:33,270 --> 00:01:36,579
+cable and so needed a way to share
+that cable
+
+30
+00:01:36,579 --> 00:01:40,040
+so we'll be learning about what's called the
+CMSA/CD protocol
+
+31
+00:01:40,040 --> 00:01:44,500
+and medium access control mechanism  that allows us to share that physical cable.
+
+32
+00:01:44,579 --> 00:01:47,840
+but we'll learn also how ethernet works today,
+
+33
+00:01:47,840 --> 00:01:51,399
+which is to use switches, which you learned a  little bit about already
+
+34
+00:01:51,399 --> 00:01:54,840
+In the previous unit, how they learn addresses and
+
+35
+00:01:54,840 --> 00:01:58,719
+tables get populated. The second thing we'll be learning
+
+36
+00:01:58,719 --> 00:02:03,189
+under the links is wireless links. Now wireless is quite different
+
+37
+00:02:03,189 --> 00:02:06,759
+from wired. more than just a the fact
+that it's broadcasted
+
+38
+00:02:06,759 --> 00:02:10,179
+into the air, there's many characteristics of wireless that make it fundamentally
+
+39
+00:02:10,179 --> 00:02:13,760
+different in the way that it works and we need to be mindful of these when making practical links
+
+40
+00:02:13,760 --> 00:02:16,819
+the first thing is
+
+41
+00:02:16,819 --> 00:02:20,340
+the signal itself and the channel can vary
+
+42
+00:02:20,340 --> 00:02:23,900
+it's not fixed over time
+like it is in a wired link
+
+43
+00:02:23,900 --> 00:02:26,940
+where it always has the same capacity operating on the same link
+
+44
+00:02:26,940 --> 00:02:29,989
+The channel can fade, there can be
+
+45
+00:02:29,989 --> 00:02:33,260
+different types of interference signals can take different paths with different links
+
+46
+00:02:33,260 --> 00:02:36,430
+and interfere with itself and because it's broadcast
+
+47
+00:02:36,430 --> 00:02:39,790
+everybody can hear and so this introduces challenges as well
+
+48
+00:02:39,790 --> 00:02:43,470
+as well security challenges because
+everybody can hear what we're saying
+
+49
+00:02:43,470 --> 00:02:48,860
+there's another problem that we'll learn about that's called the hidden terminal problem
+
+50
+00:02:48,860 --> 00:02:53,120
+this is when two clients that are communicating
+
+51
+00:02:53,120 --> 00:02:56,970
+Are both happily talking to an AP 
+you but they have no means to
+
+52
+00:02:56,970 --> 00:02:58,810
+communicate with each other
+
+53
+00:02:58,810 --> 00:03:02,050
+because they don't have any direct signal contact
+
+54
+00:03:02,050 --> 00:03:05,739
+there needs to be some extra level of
+coordination in the network to make sure
+
+55
+00:03:05,739 --> 00:03:06,709
+that they don't interfere
+
+56
+00:03:06,709 --> 00:03:12,800
+with each other or at the access point. In addition to
+learning about these different types
+
+57
+00:03:12,840 --> 00:03:16,310
+link we'll be learning about what are
+the consequences of having
+
+58
+00:03:16,310 --> 00:03:19,629
+these different links and that is that different links can carry packets up to a different
+
+59
+00:03:19,629 --> 00:03:20,810
+maximum size
+
+60
+00:03:20,810 --> 00:03:24,209
+so-called maximum transmission unit. ethernet for
+example
+
+61
+00:03:24,209 --> 00:03:28,250
+take packets up to 1500 bytes low other links
+may take
+
+62
+00:03:28,250 --> 00:03:33,319
+packets only upto a certain length and so you
+probably remember that mention IP
+
+63
+00:03:33,319 --> 00:03:34,519
+fragmentation
+
+64
+00:03:34,519 --> 00:03:39,989
+in the earlier parts of the class. This is necessary when you're
+going from a link with a
+
+65
+00:03:39,989 --> 00:03:43,500
+large maximum transmission unit down to  a small one
+
+66
+00:03:43,500 --> 00:03:46,890
+that is not able to carry it the network will
+fragment it
+
+67
+00:03:46,890 --> 00:03:50,760
+into a number of self contained fragmets that don't get put back together again
+
+68
+00:03:50,760 --> 00:03:54,170
+until they get to the end host which then reassembles the data and
+
+69
+00:03:54,170 --> 00:03:57,629
+hands it up to the next layer. so you learn how that works
+
+70
+00:03:57,629 --> 00:04:01,000
+what specific mechanisms are inside  IP to make that work.
+
+71
+00:04:01,000 --> 00:04:05,939
+The last thing we're going to be learning about is this really interesting tricky little detail
+
+72
+00:04:05,939 --> 00:04:10,450
+of the communication channel and that is that
+when two hosts or two
+
+73
+00:04:10,450 --> 00:04:15,000
+ends of a link are communicating with each other they can't
+possibly be using exactly the same
+
+74
+00:04:15,000 --> 00:04:19,139
+clock or have exactly the same frequency
+exactly the same phase
+
+75
+00:04:19,139 --> 00:04:24,610
+two different places at the same
+time so when a  sender is sending using one clock
+
+76
+00:04:24,610 --> 00:04:28,590
+which is potentially different from the one the 
+receiver is using. So,  somehow we need to
+
+77
+00:04:28,590 --> 00:04:31,690
+indicate to  the receiver what clock
+rate and
+
+78
+00:04:31,690 --> 00:04:36,479
+frequency and phase that we were using in order for the far end to correctly decode the data
+
+79
+00:04:36,479 --> 00:04:40,380
+so we'll learn about encoding inorder to
+recover the clock
+
+80
+00:04:40,380 --> 00:04:41,979
+and use it correctly at the far end
+

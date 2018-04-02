@@ -1,0 +1,59 @@
+1
+00:00:00,820 --> 00:00:04,330
+Here’s a quiz. For this quiz, assume there
+is no other
+
+2
+00:00:04,330 --> 00:00:07,040
+documentation of the TCP finite state machine,
+so there’s no
+
+3
+00:00:07,040 --> 00:00:09,679
+supporting textual description which defines
+other state
+
+4
+00:00:09,679 --> 00:00:14,959
+transitions.
+In the first question, suppose the finite
+
+5
+00:00:14,959 --> 00:00:18,580
+state machine starts
+in the closed state. Then a user program calls
+
+6
+00:00:18,580 --> 00:00:21,900
+listen on the
+socket. The socket receives a SYN message,
+
+7
+00:00:21,900 --> 00:00:25,140
+but before any
+other event arrives the user program calls
+
+8
+00:00:25,140 --> 00:00:27,990
+closed. What state
+will the socket be in?
+
+9
+00:00:27,990 --> 00:00:31,849
+In the second question, suppose the finite
+state machine
+
+10
+00:00:31,849 --> 00:00:35,239
+starts in the closed state. Then a user program
+calls connect
+
+11
+00:00:35,239 --> 00:00:37,870
+and before any other event arrives the user
+program calls
+
+12
+00:00:37,870 --> 00:00:40,350
+close. What state will the socket be in?
+

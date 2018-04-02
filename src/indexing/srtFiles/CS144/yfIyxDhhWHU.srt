@@ -1,0 +1,250 @@
+1
+00:00:01,390 --> 00:00:07,419
+So welcome to unit 6. Unit 6 is about routing.
+The basic question of how do we get a packet
+
+2
+00:00:07,419 --> 00:00:14,419
+from A to B across a large network such as
+the Internet. We've already been assuming
+
+3
+00:00:14,750 --> 00:00:17,439
+implicitly that there was a way for packets
+to be delivered from one side of the Internet
+
+4
+00:00:17,439 --> 00:00:23,179
+to the other in all of the exercises, assignments,
+and videos that we've been working on so far.
+
+5
+00:00:23,179 --> 00:00:27,849
+Now we're actually going to look at the methods
+and approaches that we can use to actually
+
+6
+00:00:27,849 --> 00:00:32,720
+route those packets through the Internet.
+So there's a very obvious place to start.
+
+7
+00:00:32,720 --> 00:00:37,440
+And that is, what if each packet contained
+a list of all the routers that it was going
+
+8
+00:00:37,440 --> 00:00:41,870
+to pass through, and then found it's own way
+through the network, just with the state entirely
+
+9
+00:00:41,870 --> 00:00:46,420
+contained within the packet. That would work.
+That's one way to do it. But it's not how
+
+10
+00:00:46,420 --> 00:00:51,750
+the Internet works. That method, what we call
+source routing, was considered to be inefficient
+
+11
+00:00:51,750 --> 00:00:58,070
+and potentially a security loophole. And we'll
+see that in the videos coming up. Instead,
+
+12
+00:00:58,070 --> 00:01:02,789
+as you know, the Internet uses forwarding
+tables. Each router contains a forwarding
+
+13
+00:01:02,789 --> 00:01:08,680
+table that tells it, for each destination
+prefix, which path or which next hop to send
+
+14
+00:01:08,680 --> 00:01:14,930
+a packet to. And so the next question to ask
+is, how to those forwarding tables get populated?
+
+15
+00:01:14,930 --> 00:01:21,850
+For that, we use an algorithm. And that algorithm
+runs as a distributed algorithm, so that the
+
+16
+00:01:21,850 --> 00:01:26,420
+routers can come to a conclusion as to the
+entries that they will put in those forwarding
+
+17
+00:01:26,420 --> 00:01:32,070
+tables. The basic approach that gets used
+is that the routers will build a spanning
+
+18
+00:01:32,070 --> 00:01:37,649
+tree. A spanning tree is a tree - therefore
+it has no loops - and it's spanning in that
+
+19
+00:01:37,649 --> 00:01:43,899
+it has a way for every source to reach a given
+destination. The root of the tree is the destination,
+
+20
+00:01:43,899 --> 00:01:48,079
+and the leaves are all of the other sources,
+so that they can send on the spanning tree
+
+21
+00:01:48,079 --> 00:01:53,159
+to reach that destination. So the routers
+now have to build that spanning tree. And
+
+22
+00:01:53,159 --> 00:01:59,930
+there are two algorithms that we'll be describing
+in upcoming videos, about how those forwarding
+
+23
+00:01:59,930 --> 00:02:03,939
+table entries get built in order to create
+that spanning tree. The first one is called
+
+24
+00:02:03,939 --> 00:02:08,350
+the Bellman Ford algorithm, as known as a
+distance vector algorithm. And you'll see
+
+25
+00:02:08,350 --> 00:02:14,420
+why it's called distance vector in an upcoming
+video. An alternative method, which is now
+
+26
+00:02:14,420 --> 00:02:20,319
+more widely used, is called Dijkstra's algorithm,
+or Dijkstra's shortest path first algorithm,
+
+27
+00:02:20,319 --> 00:02:24,980
+and it is known as a link state algorithm.
+And again, you'll see that described in detail
+
+28
+00:02:24,980 --> 00:02:30,650
+in an upcoming video. You're also going to
+see how these algorithms are used in the internet
+
+29
+00:02:30,650 --> 00:02:35,890
+today. Well first off, the Internet is a collection
+of many different parties, each with their
+
+30
+00:02:35,890 --> 00:02:39,720
+own networks, which are somehow interconnected.
+Then we're going to talk a little bit about
+
+31
+00:02:39,720 --> 00:02:45,140
+the notion of an autonomous system, an administrative
+domain of routing within the Internet. Stanford
+
+32
+00:02:45,140 --> 00:02:49,659
+is an autonomous system, it's actually multiple
+ones. The Stanford Linear Accelerator is its
+
+33
+00:02:49,659 --> 00:02:54,750
+own autonomous system, then there's the main
+Stanford campus. Many large ISPs might have
+
+34
+00:02:54,750 --> 00:03:00,640
+multiple AS's. Not a huge number, but multiple
+autonomous systems. And there are different
+
+35
+00:03:00,640 --> 00:03:05,739
+kinds of AS's. For example, Stanford doesn't
+route transit traffic across the Internet.
+
+36
+00:03:05,739 --> 00:03:12,019
+It acts as an edge AS, or a stub AS. So within
+an autonomous system, there are two basic
+
+37
+00:03:12,019 --> 00:03:17,519
+routing algorithms that are used. RIP and
+OSPF. RIP is a distance vector protocol, whereas
+
+38
+00:03:17,519 --> 00:03:22,980
+OSPF is a link state protocol. In general
+today, almost everyone uses OSPF in order
+
+39
+00:03:22,980 --> 00:03:27,870
+to define their routing tables within an autonomous
+system. It is, for example, what Stanford
+
+40
+00:03:27,870 --> 00:03:34,189
+uses. But then, the routing between autonomous
+systems uses a different protocol - BGP, or
+
+41
+00:03:34,189 --> 00:03:39,319
+the Border Gateway Protocol. It turns out
+that often autonomous systems don't want to
+
+42
+00:03:39,319 --> 00:03:44,340
+expose what their system is like, so just
+doing the shortest path can be tricky. So
+
+43
+00:03:44,340 --> 00:03:48,250
+instead, BGP adds some additional mechanisms,
+like actually knowing the path that packets
+
+44
+00:03:48,250 --> 00:03:54,269
+might take, in order to allow autonomous systems
+to hide their internals while giving enough
+
+45
+00:03:54,269 --> 00:04:01,239
+information that routers can pick loop-free
+paths. And so, suddenly we've so far been
+
+46
+00:04:01,239 --> 00:04:05,750
+talking about applications and transport and
+all these things happening end-to-end. And
+
+47
+00:04:05,750 --> 00:04:10,129
+now we're going to look inside the middle,
+and see what are actually the pieces at work
+
+48
+00:04:10,129 --> 00:04:14,519
+and the mechanisms and the algorithms to make
+the Internet work as it does today. And so
+
+49
+00:04:14,519 --> 00:04:18,010
+when you come to the end of this unit, you
+should have a very good idea of the different
+
+50
+00:04:18,010 --> 00:04:21,790
+strategies that we can take in order to route
+packets from A to B.
+

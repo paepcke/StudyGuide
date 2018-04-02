@@ -1,0 +1,34 @@
+1
+00:00:00,950 --> 00:00:05,169
+The answer to the first question is FIN WAIT
+1. Let’s walk
+
+2
+00:00:05,169 --> 00:00:09,309
+through why. We start in the closed state.
+Then the user
+
+3
+00:00:09,309 --> 00:00:14,360
+program calls listen. We transition to the
+LISTEN state. Then
+
+4
+00:00:14,360 --> 00:00:17,640
+the socket receives a SYN and we transition
+to the SYN
+
+5
+00:00:17,640 --> 00:00:22,020
+RECEIVED state. While in the SYN RECEIVED
+state the user
+
+6
+00:00:22,020 --> 00:00:26,400
+program calls close. So we traverse the edge
+with close() as
+
+7
+00:00:26,400 --> 00:00:29,390
+an event, to the FIN WAIT 1 state.
+

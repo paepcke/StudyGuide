@@ -1,0 +1,509 @@
+1
+00:00:00,000 --> 00:00:04,114
+So in the video about TCP Reno and
+New-Reno, I said that additive-increase,
+
+2
+00:00:04,114 --> 00:00:08,394
+multiplicative-decrease turns out to be a
+really powerful and very effective
+
+3
+00:00:08,395 --> 00:00:10,851
+mechanism for congestion control.
+In this video,
+
+4
+00:00:10,851 --> 00:00:14,015
+I'm trying to give you an
+intuition as to why ---
+
+5
+00:00:14,015 --> 00:00:18,478
+Why it turns out to work so well and why
+it is that it's generally used on the
+
+6
+00:00:18,478 --> 00:00:21,359
+Internet?
+So the way to think about this problem of
+
+7
+00:00:21,359 --> 00:00:25,878
+congestion control is that there really
+are two conflicting requirements in the
+
+8
+00:00:25,878 --> 00:00:28,137
+network.
+The first is a service provider.
+
+9
+00:00:28,138 --> 00:00:32,093
+What they want to do is they want to
+maximize their length utilization.
+
+10
+00:00:32,093 --> 00:00:35,369
+That is, they want their network to be
+completely utilized.
+
+11
+00:00:35,369 --> 00:00:38,590
+They don't want to have idle capacity
+which is unused.
+
+12
+00:00:38,590 --> 00:00:41,533
+But users want to get a fair share of
+that,
+
+13
+00:00:41,533 --> 00:00:46,941
+You know, a service provider would be
+happy if one user just got the entire pipe
+
+14
+00:00:46,941 --> 00:00:52,143
+but then you're going to lose all of your
+clients and users will be unhappy.
+
+15
+00:00:52,143 --> 00:00:57,620
+And so the idea is that you'd like an
+algorithm for congestion control that has
+
+16
+00:00:57,620 --> 00:01:02,388
+the links operate close to utilization.
+But will converge to a point where
+
+17
+00:01:02,593 --> 00:01:06,535
+every user, assuming everything else is
+equal, will get approximately one nth, if
+
+18
+00:01:06,535 --> 00:01:09,300
+there are n users.
+And doing this is going to avoid
+
+19
+00:01:09,300 --> 00:01:12,115
+congestion collapse, if they're still
+doing useful data.
+
+20
+00:01:12,115 --> 00:01:14,624
+So these are the basic parameters of the
+problem.
+
+21
+00:01:14,624 --> 00:01:18,310
+We want to maximize link utilization: we want to have
+high link utilization. Meanwhile,
+
+22
+00:01:18,310 --> 00:01:23,038
+Everyone gets a fair share of that link
+utilization, and we want to make sure the
+
+23
+00:01:23,038 --> 00:01:25,852
+network does not run itself into the
+ground.
+
+24
+00:01:25,852 --> 00:01:28,605
+So what should your congestion window size
+be?
+
+25
+00:01:28,605 --> 00:01:33,513
+So it turns out that the optimal congestion window
+size, as we talked about before, is the
+
+26
+00:01:33,513 --> 00:01:37,105
+bandwidth delay product.
+And this is, basically the idea that,
+
+27
+00:01:37,105 --> 00:01:42,133
+let's say I have my bandwidth between San
+Francisco and Boston is ten
+
+28
+00:01:42,312 --> 00:01:48,390
+megabytes per second.
+And the delay is 100 milliseconds.
+
+29
+00:01:48,390 --> 00:01:54,747
+Well, this means that if I can support ten
+megabytes per second and a congestion
+
+30
+00:01:54,747 --> 00:02:00,721
+window lasts 100 milliseconds then my
+congestion window should essentially be
+
+31
+00:02:00,721 --> 00:02:02,176
+one megabyte.
+Right?
+
+32
+00:02:02,176 --> 00:02:07,002
+The product of 100 megabytes per second
+times 100 milliseconds.
+
+33
+00:02:07,002 --> 00:02:12,823
+Similarly if my bandwidth is six megabytes
+per second and my delay is, 90
+
+34
+00:02:12,823 --> 00:02:18,874
+milliseconds then I should be sending
+approximately a congestion window of 540
+
+35
+00:02:18,874 --> 00:02:21,491
+kilobytes.
+And this falls out from these values.
+
+36
+00:02:21,491 --> 00:02:25,394
+And then, if I'm sending one megabyte per
+congestion window, and there are ten congestion
+
+37
+00:02:25,394 --> 00:02:29,347
+windows, then I'm going to be sending ten
+
+38
+00:02:29,347 --> 00:02:32,049
+megabytes per second.
+Similarly, if my condition is 540
+
+39
+00:02:32,199 --> 00:02:36,274
+kilobytes, that's a congestion window
+every 90 milliseconds.
+
+40
+00:02:36,274 --> 00:02:39,649
+That will break down to six megabytes per
+second.
+
+41
+00:02:39,649 --> 00:02:44,711
+So now, a way to think about how a
+congestion window works over time or
+
+42
+00:02:44,711 --> 00:02:50,898
+rather, how pairs of congestion windows
+work over time is something called a Chiu
+
+43
+00:02:50,898 --> 00:02:53,853
+Jain plot.
+And this is really part of the thing which
+
+44
+00:02:53,853 --> 00:02:58,636
+sort of laid out some of, or one of the
+papers that laid out this first idea of,
+
+45
+00:02:58,636 --> 00:03:03,359
+sort of, why AIMD is a, is a good idea in a nice graphical way
+
+46
+00:03:03,359 --> 00:03:06,871
+So we have two flows that are competing for
+
+47
+00:03:06,871 --> 00:03:10,020
+the network.
+And we're going to plot the rate of flow A
+
+48
+00:03:10,195 --> 00:03:15,115
+based on its congestion window size.
+And the rate of on the X axis and the rate
+
+49
+00:03:15,115 --> 00:03:18,220
+flow B on the Y axis.
+It's going to be a scatter plot.
+
+50
+00:03:18,441 --> 00:03:22,051
+Now if the network is fair, it will be
+equal to B.
+
+51
+00:03:22,051 --> 00:03:27,134
+That is the rate which A gets will be
+equal to the rate which B gets.
+
+52
+00:03:27,134 --> 00:03:31,850
+And so the scatter point dot,
+should fall on this line.
+
+53
+00:03:31,850 --> 00:03:34,953
+And that's the user requirement.
+
+54
+00:03:35,642 --> 00:03:41,935
+Now, if we are, maintaining the service
+provider requirement, that is we're
+
+55
+00:03:41,935 --> 00:03:48,831
+actually running the network at capacity,
+then it should be that A plus B, the sum
+
+56
+00:03:48,831 --> 00:03:53,917
+of these two flows, is equal to the
+capacity of the network.
+
+57
+00:03:53,917 --> 00:03:57,365
+So this is the service provider,
+
+58
+00:03:58,055 --> 00:04:01,830
+requirement.
+And so, what we would like is a congestion
+
+59
+00:04:01,830 --> 00:04:06,984
+control algorithm that causes, you know,
+starting wherever we are on this plot,
+
+60
+00:04:06,984 --> 00:04:11,813
+you know, pick some random point,
+is going to cause flow A and flow B to
+
+61
+00:04:11,813 --> 00:04:15,140
+gravitate towards this desired point in
+the center.
+
+62
+00:04:15,140 --> 00:04:18,860
+Where we are fair and efficient while fully
+utilizing the link.
+
+63
+00:04:20,640 --> 00:04:24,794
+And so the way you can show this is if
+we're to the right of this efficiency
+
+64
+00:04:24,794 --> 00:04:27,222
+line, that means we've overloaded the
+network.
+
+65
+00:04:27,222 --> 00:04:29,650
+So chances are packets are going to be
+dropped.
+
+66
+00:04:29,650 --> 00:04:33,912
+We're going to see triple duplicate acks.
+If we're in the green region, we've under
+
+67
+00:04:33,912 --> 00:04:37,095
+loaded the network.
+And so we want to get to this point where
+
+68
+00:04:37,095 --> 00:04:40,980
+we're operating right at the network
+capacity, but we have fair capacity.
+
+69
+00:04:40,980 --> 00:04:46,272
+Now,  what this
+shows you, the series of T1 through T6,
+
+70
+00:04:46,272 --> 00:04:50,505
+etc is how additive-increase
+multiplicative-decrease behaves.
+
+71
+00:04:50,505 --> 00:04:55,939
+So let's just pick this arbitrary point
+T1, where flow B is operating at well
+
+72
+00:04:55,939 --> 00:04:59,679
+above its fair share as you can see, this
+distance.
+
+73
+00:04:59,890 --> 00:05:05,535
+And flow A is operating well before its
+fair share, as you can see by this
+
+74
+00:05:05,535 --> 00:05:09,416
+distance here.
+So what's going to happen?
+
+75
+00:05:09,416 --> 00:05:14,214
+Both are in additive-increase mode.
+If they're both going to additively
+
+76
+00:05:14,214 --> 00:05:18,758
+increase their congestion window size and
+their flow rate until at some point the
+
+77
+00:05:18,758 --> 00:05:21,489
+network becomes overloaded and it drops some
+packets.
+
+78
+00:05:21,489 --> 00:05:25,773
+At which point then they multiplicatively
+decrease their window size and go back
+
+79
+00:05:25,773 --> 00:05:29,200
+into additive increase.
+And so here's the mutliplicitve decrease.
+
+80
+00:05:29,660 --> 00:05:35,072
+And then they additively increase.
+Now, because the multiplicative decrease
+
+81
+00:05:35,072 --> 00:05:39,460
+decreases B's rate more than A
+(it's a multiplicative factor),
+
+82
+00:05:39,460 --> 00:05:44,287
+this then makes in the plot, the comparison
+of A and B, closer to fair.
+
+83
+00:05:44,287 --> 00:05:49,700
+You can see T3 here is bringing the pair
+of flows closer to the fair line.
+
+84
+00:05:49,700 --> 00:05:54,746
+And that's what we're seeing.
+And since we're reducing each flow by a
+
+85
+00:05:54,746 --> 00:05:59,208
+multiplicative factor.
+Over time, and then increasing it by an
+
+86
+00:05:59,208 --> 00:06:01,110
+additive factor.
+Over time,
+
+87
+00:06:01,110 --> 00:06:05,052
+they oscillate between overloaded and
+underloaded, in the sense of they're going
+
+88
+00:06:05,052 --> 00:06:09,410
+to push the network until it's just a
+little bit overloaded, and they back off a
+
+89
+00:06:09,410 --> 00:06:11,588
+little bit.
+And over time, this scaling with
+
+90
+00:06:11,588 --> 00:06:15,220
+multiplicative of decrease, causes them to
+converge towards this point.
+
+91
+00:06:17,060 --> 00:06:22,602
+And so in fact in the end case we will see, depending on exactly what
+
+92
+00:06:22,602 --> 00:06:27,881
+overload point causes a triple duplicate
+acknowledgments
+
+93
+00:06:27,881 --> 00:06:33,028
+you'll see these two
+flows oscillating along the fair line,
+
+94
+00:06:33,028 --> 00:06:37,248
+under-loading the network then increasing.
+Then overloading it.
+
+95
+00:06:37,248 --> 00:06:41,811
+Oh, they back off, increasing.
+And so over time, additive increase
+
+96
+00:06:41,811 --> 00:06:46,520
+multiplicative decrease causes a pair of
+flows or a set of flows.
+
+97
+00:06:46,520 --> 00:06:50,944
+To achieve both desired properties.
+They get a fair share of the capacity of
+
+98
+00:06:50,944 --> 00:06:54,321
+the network, right?
+They end up moving along this line here,
+
+99
+00:06:54,321 --> 00:06:59,095
+but also, through their additive increase
+they're going to be close to the network
+
+100
+00:06:59,095 --> 00:07:02,123
+capacity, right?
+There going to go a little bit
+
+101
+00:07:02,123 --> 00:07:05,092
+past, then a little bit back, then a
+little bit past.
+
+102
+00:07:05,092 --> 00:07:09,866
+But, generally speaking, additive increase
+multiplicative decrease will cause flows
+
+103
+00:07:09,866 --> 00:07:13,534
+to converge on this point.
+The desired equilibrium point of the network
+

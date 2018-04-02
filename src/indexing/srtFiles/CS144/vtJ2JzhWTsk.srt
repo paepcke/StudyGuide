@@ -1,0 +1,284 @@
+1
+00:00:00,620 --> 00:00:00,870
+Nick:
+
+2
+00:00:00,740 --> 00:00:04,140
+In this unit, you learned about the Transport
+Layer. Specifically, you learned about the
+
+3
+00:00:04,140 --> 00:00:09,170
+three most important Transport layers in use
+today. The first, TCP –or the Transmission
+
+4
+00:00:09,170 --> 00:00:14,969
+Control Protocol - is used by over 95% of
+Internet applications. TCP is almost universally
+
+5
+00:00:14,969 --> 00:00:19,480
+used because it provides the reliable, end-to-end,
+bi directional byte-stream service that almost
+
+6
+00:00:19,480 --> 00:00:24,710
+all applications desire. Most of the videos
+In this unit were about TCP. You learned how
+
+7
+00:00:24,710 --> 00:00:28,719
+we detect that a packet was not delivered
+or was corrupted along the way, and you leaned
+
+8
+00:00:28,720 --> 00:00:34,379
+about the mechanisms TCP uses to successfully
+retransmit data until it is correctly delivered.
+
+9
+00:00:34,379 --> 00:00:39,190
+We spent 3 videos exploring different methods
+for reliably delivering data across the unreliable
+
+10
+00:00:39,190 --> 00:00:41,300
+Internet.
+
+11
+00:00:41,300 --> 00:00:46,690
+The second transport layer we studied is UDP,
+or the User Datagram Protocol. UDP is used
+
+12
+00:00:46,690 --> 00:00:51,239
+by applications that don’t need the guaranteed
+delivery service of TCP, either because the
+
+13
+00:00:51,239 --> 00:00:56,920
+application handles retransmissions in its
+own private way, or because the application
+
+14
+00:00:56,920 --> 00:01:03,170
+just doesn’t need reliable delivery. All
+UDP does is take application data and create
+
+15
+00:01:03,170 --> 00:01:07,830
+a UDP datagram. The UDP datagram identifies
+the application that the data should be sent
+
+16
+00:01:07,830 --> 00:01:14,110
+to at the other end. That’s about it. Although
+very few applications use UDP, we saw examples
+
+17
+00:01:14,110 --> 00:01:21,110
+of DNS and DHCP which are both simple request-response
+query protocols.
+
+18
+00:01:21,470 --> 00:01:26,720
+The third transport layer we studied is ICMP,
+or Internet Control Message Protocol. ICMP’s
+
+19
+00:01:26,720 --> 00:01:31,750
+main job is to send feedback if things are
+going wrong. For example, if a router receives
+
+20
+00:01:31,750 --> 00:01:36,280
+an IP datagram but doesn’t know where to
+send it next, then it sends an ICMP message
+
+21
+00:01:36,280 --> 00:01:42,060
+back to the source to let it know. ICMP is
+very useful for understanding why end to end
+
+22
+00:01:42,060 --> 00:01:44,060
+communications are not working properly.
+
+23
+00:01:44,060 --> 00:01:48,270
+Finally, you learned about one of the most
+important overarching Architectural Principles
+
+24
+00:01:48,270 --> 00:01:52,850
+that guided the design of the internet, and
+continues to guides our thinking today. It
+
+25
+00:01:52,850 --> 00:01:56,990
+is called the “End to End Principle”.
+We learned about two versions of the End to
+
+26
+00:01:56,990 --> 00:02:00,830
+End principle: The milder version says that
+there are some functions that can only be
+
+27
+00:02:00,830 --> 00:02:06,090
+correctly implemented at the edges or fringe
+of the network; these clearly need to be implemented
+
+28
+00:02:06,090 --> 00:02:12,269
+there. End to end reliable file transfer and
+security are two examples. It is OK to help
+
+29
+00:02:12,269 --> 00:02:16,370
+these features by adding functions to the
+network, but these can only help, not replace
+
+30
+00:02:16,370 --> 00:02:20,819
+the end to end functionality. The second,
+stronger version of the End to End Principle
+
+31
+00:02:20,819 --> 00:02:25,510
+says that if we can implement a function at
+the end hosts, then we should. The basic idea
+
+32
+00:02:25,510 --> 00:02:29,879
+is that the network should be kept simple,
+streamlined with as few features to go wrong,
+
+33
+00:02:29,879 --> 00:02:34,330
+slow things down or require upgrading. It
+assumes that the end hosts are quite intelligent
+
+34
+00:02:34,330 --> 00:02:38,099
+– such as a laptop or smartphone – and
+can implement many of the features needed
+
+35
+00:02:38,099 --> 00:02:39,879
+by the application.
+
+36
+00:02:39,879 --> 00:02:41,379
+Phil:
+
+37
+00:02:41,379 --> 00:02:44,569
+In this unit you studied five main topics
+
+38
+00:02:44,569 --> 00:02:51,569
+1. Three widely used transport layers. TCP
+for reliable delivery of a byte stream between
+
+39
+00:02:52,709 --> 00:02:58,400
+applications, UDP as an unreliable delivery
+of datagrams between applications, and ICMP
+
+40
+00:02:58,400 --> 00:03:05,400
+as a way to detect when things go wrong.
+2. How TCP works, with a particular emphasis
+
+41
+00:03:05,629 --> 00:03:10,859
+on how it reliably delivers bytes between
+two applications. You learned how data errors
+
+42
+00:03:10,859 --> 00:03:15,069
+and missing packets are detected, and how
+packets are retransmitted as well as several
+
+43
+00:03:15,069 --> 00:03:20,189
+different retransmission strategies, including
+selective repeat and go back N. You learned
+
+44
+00:03:20,189 --> 00:03:24,079
+about how the basic TCP mechanism uses Go
+Back N and keeps track of the outstanding
+
+45
+00:03:24,079 --> 00:03:28,269
+unacknowledged bytes using a sliding window.
+You also learned about the TCP state machine
+
+46
+00:03:28,269 --> 00:03:33,279
+that keeps track of the current status of
+the TCP connection.
+
+47
+00:03:33,279 --> 00:03:39,810
+3. How UDP works and why it is used by a small
+number of applications.
+
+48
+00:03:39,810 --> 00:03:46,029
+4. How ICMP works and how it helps us detect
+when communications go wrong, and to monitor
+
+49
+00:03:46,029 --> 00:03:49,069
+the performance of the route between two end
+hosts.
+
+50
+00:03:49,069 --> 00:03:55,129
+5. You learned about the End to End Principle,
+which is an important overarching principle
+
+51
+00:03:55,129 --> 00:03:59,790
+used in the design of the Internet and many
+other communication systems. Throughout this
+
+52
+00:03:59,790 --> 00:04:03,579
+class – and after you go out into the world
+to use your new networking expertize – you’ll
+
+53
+00:04:03,579 --> 00:04:08,409
+find many people talking about this principle
+to help guide their design decisions.
+
+54
+00:04:08,409 --> 00:04:12,739
+Phil:
+You should now have a good understanding of
+
+55
+00:04:12,739 --> 00:04:16,190
+the three different Transport Layers.
+You should understand different retransmission
+
+56
+00:04:16,190 --> 00:04:22,160
+strategies and why TCP uses a “Sliding Window”.
+You should know why TCP uses connections,
+
+57
+00:04:22,160 --> 00:04:26,680
+how they are established and how they are
+maintained by a state machine.
+
+58
+00:04:26,680 --> 00:04:29,569
+You should be able to explain the End to End
+Principle.
+

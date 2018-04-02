@@ -1,0 +1,345 @@
+1
+00:00:00,979 --> 00:00:05,830
+There’s one last security primitive that’s
+very common today. You use it every time you
+
+2
+00:00:05,830 --> 00:00:12,199
+establish an SSH or HTTP session. They’re
+certificates. Public key cryptography lets
+
+3
+00:00:12,199 --> 00:00:17,830
+us verify that someone with the private key
+associated with a public key signed a document.
+
+4
+00:00:17,830 --> 00:00:24,830
+But how do we know what the right public key
+is? How do we know that www.ebay.com has a
+
+5
+00:00:25,009 --> 00:00:28,890
+public key? The answer is certificates.
+
+6
+00:00:28,890 --> 00:00:35,890
+Let’s say we want to securely communicate
+with a server, such as www.amazon.com. Now,
+
+7
+00:00:38,239 --> 00:00:45,239
+using public key cryptography, if I know www.amazon.com’s
+public key, then I can communicate securely
+
+8
+00:00:45,510 --> 00:00:52,510
+with that server. I can verify that www.amazon.com
+has the private key associated with the public
+
+9
+00:00:53,480 --> 00:00:57,899
+key I’m using. We can then use public key
+encryption to exchange symmetric keys. All
+
+10
+00:00:57,899 --> 00:01:03,299
+is well.
+But there’s a missing step here. How do
+
+11
+00:01:03,300 --> 00:01:08,810
+I get the server’s public key? Do I find
+it on a web page? If I just found it somewhere
+
+12
+00:01:08,810 --> 00:01:12,270
+random or insecure, then how can I be sure
+it’s really that server’s public key and
+
+13
+00:01:12,270 --> 00:01:18,660
+not an adversary pretending to be that server?
+
+14
+00:01:18,660 --> 00:01:23,020
+For example, imagine this very simple attack.
+I want to communicate with a server. So I
+
+15
+00:01:23,020 --> 00:01:27,890
+ask it for its public key. It gives me the
+key, then I can verify that it has the associated
+
+16
+00:01:27,890 --> 00:01:31,710
+private key.
+This is completely open to a man in the middle
+
+17
+00:01:31,710 --> 00:01:37,070
+attack. An attacker can pretend to to be the
+server and give me its own public key. I have
+
+18
+00:01:37,070 --> 00:01:42,270
+no way of telling whose key is right -- the
+attacker looks just like the server, except
+
+19
+00:01:42,270 --> 00:01:47,110
+that it has a different key. The attacker
+can then open up a connection to the server
+
+20
+00:01:47,110 --> 00:01:51,330
+and pretend to be you. It sees everything
+you send, since you’re communicating with
+
+21
+00:01:51,330 --> 00:01:56,320
+it, and forwards it along to the server. It
+can rewrite or suppress anything you send,
+
+22
+00:01:56,320 --> 00:02:00,840
+or even insert new traffic. You leak passwords,
+all kinds of stuff.
+
+23
+00:02:00,840 --> 00:02:07,840
+I need some way to be able to receive the
+public key for www.amazon.com and be reasonably
+
+24
+00:02:08,598 --> 00:02:15,349
+sure that it’s actually www.amazon.com.
+In the best case, I’d have someone I trust
+
+25
+00:02:15,349 --> 00:02:21,329
+tell me what www.amazon.com’s key is.
+
+26
+00:02:21,329 --> 00:02:28,329
+That’s exactly what a certificate does.
+Abstractly, a certificate is a digital document,
+
+27
+00:02:29,349 --> 00:02:35,040
+just a chunk of bytes, that bind a name to
+a value. This document is signed by a private
+
+28
+00:02:35,040 --> 00:02:42,040
+key K1-inverse. If I already have the public
+key K1, then I can verify this was signed
+
+29
+00:02:43,299 --> 00:02:49,780
+with the right private key. If I trust the
+party who has K1-inverse, then I can trust
+
+30
+00:02:49,780 --> 00:02:56,780
+their claim that the name, e.g., a hostname,
+has the public key K2. I can then use K2 when
+
+31
+00:02:57,799 --> 00:03:03,629
+communicating with N. In this way I establish
+a chain of trust. If I start with the public
+
+32
+00:03:03,629 --> 00:03:09,549
+key of one party that I trust, then that party
+can give me public keys for other parties.
+
+33
+00:03:09,549 --> 00:03:15,709
+Those parties could give me further public
+keys.
+
+34
+00:03:15,709 --> 00:03:19,319
+If you browse the web a lot, you’ve probably
+seen an error message like this come up many
+
+35
+00:03:19,319 --> 00:03:26,319
+times. This one is for Firefox. It tells you
+that it can’t trust that the site is secure.
+
+36
+00:03:26,450 --> 00:03:31,540
+Why? Generally you see this error because
+there is a mistake in certificates. Take,
+
+37
+00:03:31,540 --> 00:03:38,049
+for example, the host at Stanford my research
+group runs, sing.stanford.edu. It has a few
+
+38
+00:03:38,049 --> 00:03:43,670
+other names, such as tinyos.stanford.edu.
+Stanford provided me with a certificate that
+
+39
+00:03:43,670 --> 00:03:50,670
+says that these names are associated with
+the server’s public key. But if I added
+
+40
+00:03:51,109 --> 00:03:58,109
+a new name to Stanford’s DNS, such as “bad-sing.stanford.edu”,
+then the certificate wouldn’t have this
+
+41
+00:03:58,480 --> 00:04:05,109
+name. If you tried connecting to bad-sing.stanford.edu
+over https, you’d receive this error, because
+
+42
+00:04:05,109 --> 00:04:11,620
+the certificate doesn’t cover that name.
+So you often run into this error when someone
+
+43
+00:04:11,620 --> 00:04:16,440
+has aliases for a host, or issued a certificate
+for an old name and hasn’t updated it. But
+
+44
+00:04:16,440 --> 00:04:21,230
+it could be an adversary, running a different
+server and trying to convince you it’s trustable.
+
+45
+00:04:21,230 --> 00:04:25,940
+Generally speaking, seeing this error means
+someone has misconfigured their system for
+
+46
+00:04:25,940 --> 00:04:31,890
+security. But when I see an error like this
+I never say OK -- even if it’s just a little
+
+47
+00:04:31,890 --> 00:04:38,370
+mistake, given how subtle and hard security
+is, and how obvious this mistake is, I don’t
+
+48
+00:04:38,370 --> 00:04:41,770
+want to trust the server.
+
+49
+00:04:41,770 --> 00:04:48,770
+And so this is how things work today. Everyone
+trusts a few signing authorities and knows
+
+50
+00:04:49,250 --> 00:04:53,710
+their public keys. These keys are hard-baked
+into your browser or operating system -- a
+
+51
+00:04:53,710 --> 00:04:58,870
+good reason to check your programs for integrity!
+Here, let’s take a look at the keys installed
+
+52
+00:04:58,870 --> 00:05:05,870
+in my Mac. I open up applications, utilities,
+keychain access, select certificates. They
+
+53
+00:05:14,060 --> 00:05:21,060
+they are --
+
+54
+00:05:30,670 --> 00:05:37,670
+the certificates hard-baked into the OS. You
+can see a bunch from Apple, and there’s
+
+55
+00:05:41,850 --> 00:05:47,850
+Verisign.
+These root authorities can then sign keys
+
+56
+00:05:47,850 --> 00:05:54,030
+for other parties. For example, let’s go
+to google. I’m accessing google over https.
+
+57
+00:05:54,030 --> 00:05:59,680
+I’ve also installed a plugin into Firefox,
+called CipherFox, that lets me look at certificate
+
+58
+00:05:59,680 --> 00:06:06,680
+details. I can click on the lock and now see
+the certificate. You can see that www.google.com
+
+59
+00:06:14,830 --> 00:06:21,830
+is signed by the Google Internet Authority,
+which is in turn signed by the GeoTrust global
+
+60
+00:06:27,100 --> 00:06:34,100
+Certificate Authority. Signing authorities
+are often called CAs, for Certificate Authorities.
+
+61
+00:06:36,220 --> 00:06:43,220
+But realize that all a certificate says is
+that someone testifies that a host has this
+
+62
+00:06:44,860 --> 00:06:50,810
+key! If there’s an adversary along the certificate
+chain, then you could be fooled. It turns
+
+63
+00:06:50,810 --> 00:06:55,470
+out there are actually different kinds of
+certificates for this reason. Some, such as
+
+64
+00:06:55,470 --> 00:07:00,470
+the one I have on sing.stanford.edu, doesn’t
+require much more than filling out a web form.
+
+65
+00:07:00,470 --> 00:07:05,490
+Others requires paper validation and possibly
+meeting someone in person.
+
+66
+00:07:05,490 --> 00:07:11,700
+This is how TLS/HTTPS works today, when you
+see the padlock in our browser bar. You connect
+
+67
+00:07:11,700 --> 00:07:18,060
+to a server, and it provides a certificate
+with its public key. If the certificate chain
+
+68
+00:07:18,060 --> 00:07:23,310
+ends in a root CA that you trust, that is,
+already have the public key for so can verify
+
+69
+00:07:23,310 --> 00:07:27,830
+its signature, then you trust the key in the
+certificate and can encrypt data to the server.
+
+70
+00:07:27,830 --> 00:07:30,740
+I’ll explain the details of this in the
+TLS video.
+

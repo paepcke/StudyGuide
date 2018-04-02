@@ -1,0 +1,746 @@
+1
+00:00:01,600 --> 00:00:08,940
+Another kind of IP address is  internet
+protocol version six, or IPv6.
+
+2
+00:00:08,940 --> 00:00:14,472
+So recall the purpose of the IPv4 address
+originally was to allow you to stitch
+
+3
+00:00:14,472 --> 00:00:19,865
+multiple different networks together so
+provide this globally unique
+
+4
+00:00:20,075 --> 00:00:24,557
+identifier which would be usable across
+many different networks.
+
+5
+00:00:24,767 --> 00:00:28,970
+But some of the problems that's emerged,
+especially recently,
+
+6
+00:00:28,970 --> 00:00:32,952
+Is that the IPv4 address space has
+only 32 bits.
+
+7
+00:00:32,952 --> 00:00:37,450
+That's only 2^32 IPv4 addresses
+or approximately four billion.
+
+8
+00:00:37,450 --> 00:00:42,686
+This seemed tremendous at the time back
+when the internet was 60 nodes.
+
+9
+00:00:42,686 --> 00:00:48,606
+But today its actually a limiting factor.
+Generally for a variety of reasons on any
+
+10
+00:00:48,606 --> 00:00:53,240
+kind of numbering scheme like this, you
+look at telephone numbers etc or.
+
+11
+00:00:53,240 --> 00:00:58,909
+Utilization never going to be 100%.
+So in fact utilization of the IPv4 address
+
+12
+00:00:58,909 --> 00:01:03,384
+space is around 35%.
+Only 35% of the IPv4 addresses are active
+
+13
+00:01:03,384 --> 00:01:07,263
+at anytime.
+The challenge there is that if you don't
+
+14
+00:01:07,263 --> 00:01:13,587
+have an IPv4 address, then there's, you
+know, there isn't way to communicate with
+
+15
+00:01:13,587 --> 00:01:16,667
+IPV4.
+You need an IPv4 address to have
+
+16
+00:01:16,667 --> 00:01:20,910
+IPv4 communication.
+The other side needs an address to send an
+
+17
+00:01:20,910 --> 00:01:25,059
+IP packet to.
+And so realizing there is possibly this
+
+18
+00:01:25,059 --> 00:01:31,824
+shortness, this scarcity of IPV4 addresses
+plus a couple a sort of crufty things
+
+19
+00:01:31,824 --> 00:01:36,387
+people saw in IPv4.
+Work started on a new version of the
+
+20
+00:01:36,387 --> 00:01:42,174
+Internet protocol in 1994 called IPv6 or
+Internet protocol version six.
+
+21
+00:01:42,418 --> 00:01:47,145
+The basic protocol for IPv6 was published
+in 1998, RFC2460.
+
+22
+00:01:47,145 --> 00:01:53,502
+And then there was a lull for a good
+while, but still we think in 1998, this is
+
+23
+00:01:53,502 --> 00:01:54,890
+just before.
+
+24
+00:01:54,890 --> 00:01:59,048
+One year before the
+first dot com boom and bubble.
+
+25
+00:01:59,224 --> 00:02:04,320
+The Internet's taking off, but by no means
+is the IPv4 address space close to
+
+26
+00:02:04,320 --> 00:02:06,370
+exhaustion.
+So there's a lull of work,
+
+27
+00:02:06,370 --> 00:02:11,338
+But there was an increased interest, and
+in, around the 2003, 2006 time frame.
+
+28
+00:02:11,338 --> 00:02:16,440
+People started to get a better handle as
+to, what were the challenges in IPv4
+
+29
+00:02:16,440 --> 00:02:18,924
+networks.
+What's important, what's not.
+
+30
+00:02:18,924 --> 00:02:25,168
+How should we use IPV6 addresses based on,
+current work utilization and, and designs.
+
+31
+00:02:25,369 --> 00:02:31,210
+And so today, there's actually a hard push
+within the IETF as well as, several
+
+32
+00:02:31,210 --> 00:02:35,641
+governments to adopt IPv6.
+You can imagine, especially countries or
+
+33
+00:02:35,641 --> 00:02:39,065
+regions where growth of connectivity is
+very large,
+
+34
+00:02:39,065 --> 00:02:45,140
+Say in China, there, the scarcity of IPv4
+addresses, is perhaps a greater concern.
+
+35
+00:02:45,140 --> 00:02:51,462
+So, there's a big push today to get IPv6 deployed and in use in the
+
+36
+00:02:51,462 --> 00:02:56,435
+internet as a whole.
+So what does an IPv6 address look like?
+
+37
+00:02:56,435 --> 00:03:00,582
+So, IPv6,
+Rather than being limited to two to the
+
+38
+00:03:00,582 --> 00:03:05,236
+32, has a 128 bits of address.
+So this is absolutely enormous.
+
+39
+00:03:05,236 --> 00:03:08,402
+2^128.
+So approximately 3.4  10^38
+
+40
+00:03:08,402 --> 00:03:11,438
+addresses.
+This means that you could have 21 IPv6
+
+41
+00:03:11,438 --> 00:03:14,815
+addresses per square inch of the world's
+surface.
+
+42
+00:03:14,815 --> 00:03:19,845
+So, at least with the idea that an IPv6
+address is going to name a device.
+
+43
+00:03:20,052 --> 00:03:26,048
+As long as we have fewer than 21, devices
+per square inch, we'll be able to hold up
+
+44
+00:03:26,048 --> 00:03:30,389
+at least, on the Earth.
+Of course, it might well be that these
+
+45
+00:03:30,389 --> 00:03:34,180
+addresses are used for more than that.
+But, but still.
+
+46
+00:03:34,180 --> 00:03:38,996
+And generally speaking an IPv6 address is
+separated into two parts.
+
+47
+00:03:38,996 --> 00:03:44,213
+There's the sub net prefect, the sub net
+prefix which is same length n and the
+
+48
+00:03:44,213 --> 00:03:49,297
+interface ID within that subnet.
+128 minus n bits long, so think of this
+
+49
+00:03:49,297 --> 00:03:52,842
+similarly to a CIDR or address, or a CIDR
+class.
+
+50
+00:03:52,842 --> 00:03:58,327
+Where you have the net mask describing
+what's the network identifier and then the
+
+51
+00:03:58,327 --> 00:04:03,666
+set of nodes within that.
+Now, you don't really want to write 128
+
+52
+00:04:03,666 --> 00:04:11,991
+bit addresses as, sixteen, little octets.
+Plus, often, they have big regions of
+
+53
+00:04:11,991 --> 00:04:17,640
+zeroes, and repetitions.
+And so, IPv6 addresses are written
+
+54
+00:04:17,640 --> 00:04:24,181
+differently than IPv4.
+Where IPv4 is written as a simple, series
+
+55
+00:04:24,181 --> 00:04:33,078
+of, period delimited, integer values.
+IPv6 address are written in hexadecimal as
+
+56
+00:04:33,078 --> 00:04:37,508
+eight blocks of sixteen bits.
+So here's sixteen bits.
+
+57
+00:04:37,508 --> 00:04:41,769
+This is two, hexadecimal.
+There's two zeroes, 01.
+
+58
+00:04:42,030 --> 00:04:47,443
+And here's the second.
+This is, there's a leadings here at zero.
+
+59
+00:04:47,443 --> 00:04:52,680
+It's just been highlighted 0470806D1:
+:nine If you have a long run of zeroes,
+
+60
+00:04:52,680 --> 00:04:57,132
+you can omit a single one of those with
+colon, colon.
+
+61
+00:04:57,132 --> 00:05:03,680
+So this is really saying is, here's our
+first block, here's our second block.
+
+62
+00:05:03,680 --> 00:05:10,406
+Here's our third block, here's our fourth
+block, this is our eighth block.
+
+63
+00:05:10,406 --> 00:05:14,983
+The fifth, sixth, and seventh are all
+equal to zero.
+
+64
+00:05:14,983 --> 00:05:19,374
+Alright.
+So if I were to write this address out
+
+65
+00:05:19,374 --> 00:05:23,188
+fully you'ld see 2001:470:
+806D:1:0:0:0:9
+
+66
+00:05:23,200 --> 00:05:32,053
+And there's a prefix length here of 64,
+saying that the subnet is 64.
+
+67
+00:05:32,053 --> 00:05:43,158
+The last 64 bits denote the actual address
+of the node, which in this case is this.
+
+68
+00:05:43,390 --> 00:05:49,579
+You can also, if you want to use an IPv6
+address in http, in a URL, in your web
+
+69
+00:05:49,579 --> 00:05:53,447
+browser, you can do it by putting it into
+brackets.
+
+70
+00:05:53,679 --> 00:05:59,970
+So this says, to contact this node.
+This IPv6 address port 80 in
+
+71
+00:05:59,970 --> 00:06:06,048
+the URL. And it's also possible if you
+want to write the low 32 bits like IPv4,
+
+72
+00:06:06,048 --> 00:06:10,734
+that's an IPv4 address.
+Just because that's one way to make IPv4
+
+73
+00:06:10,734 --> 00:06:15,420
+addresses addressable fromfrom IPv6.
+If you have a leading 96.
+
+74
+00:06:15,634 --> 00:06:21,494
+Bits, didn't do anything, this is an IPv4
+address, and you stick the IPv4 address at
+
+75
+00:06:21,494 --> 00:06:24,495
+the end.
+So we have these enormous 128 bit
+
+76
+00:06:24,495 --> 00:06:27,845
+addresses,
+Which allow us to add many more devices to
+
+77
+00:06:27,845 --> 00:06:30,657
+the Internet.
+So, how do you assign them?
+
+78
+00:06:30,871 --> 00:06:37,859
+Currently say you look at IPv4 you have
+IANA and ICANN and RIRs handing out slash
+
+79
+00:06:37,859 --> 00:06:43,705
+eights and the RIRs take the slash eights,
+the blocks of sixteen million addresses
+
+80
+00:06:43,919 --> 00:06:49,410
+and distribute them to companies or
+organizations or whatever is, is asked.
+
+81
+00:06:49,619 --> 00:06:55,133
+As it turns out that actually how you
+assign IPv6 addresses has gone through a
+
+82
+00:06:55,133 --> 00:07:00,438
+couple of iterations as people have gained
+better experience and refinement.
+
+83
+00:07:00,438 --> 00:07:05,952
+So for example, the first RFC on this, RFC
+3177, said that generally want to give
+
+84
+00:07:05,952 --> 00:07:09,724
+people /48.
+Sometimes you'll want to give them a slash
+
+85
+00:07:09,724 --> 00:07:12,736
+64.
+Very, very rarely, give them a /128.
+
+86
+00:07:12,736 --> 00:07:16,389
+Alright?
+So this would be that we have, 48bits
+
+87
+00:07:16,389 --> 00:07:21,184
+identifying the network.
+80bits which they can use for the
+
+88
+00:07:21,184 --> 00:07:24,990
+interface ID.
+Sometimes we've got 64 where then, 64
+
+89
+00:07:24,990 --> 00:07:30,927
+denotes the interface ID, and occasionally
+we have just essentially the single
+
+90
+00:07:30,927 --> 00:07:34,504
+128-bit.
+So you're giving just one address to
+
+91
+00:07:34,504 --> 00:07:41,091
+somebody.
+RFC6177, after many years of experience said
+
+92
+00:07:41,404 --> 00:07:46,847
+this isn't a great idea.
+So, you want to give out at least /64's,
+
+93
+00:07:46,847 --> 00:07:51,620
+which I mean, you don't want the 64 to be
+any higher than that.
+
+94
+00:07:51,620 --> 00:07:57,347
+You do not want to be giving out 128, so
+give out 64's, or maybe 60's even, you
+
+95
+00:07:57,347 --> 00:08:03,515
+know, or 56's as needed. The observation
+is that 48 is a lot, much more than almost
+
+96
+00:08:03,515 --> 00:08:07,480
+anyone needs.
+And there are lots of cases where people
+
+97
+00:08:07,480 --> 00:08:11,152
+need more than one 64, and so you can
+allocate it.
+
+98
+00:08:11,372 --> 00:08:16,880
+And then kind of like how IPv4, when you
+go to a regional internet registry.
+
+99
+00:08:17,111 --> 00:08:22,733
+And you ask them for a block of addresses.
+They're going to ask you how many.
+
+100
+00:08:22,733 --> 00:08:27,200
+And they're going to make a decision as to
+whether or not.
+
+101
+00:08:27,200 --> 00:08:31,205
+If you ask, say, for a /, Say you ask for
+a /23.
+
+102
+00:08:31,205 --> 00:08:36,828
+They're going to decide whether you really
+need, that number of addresses.
+
+103
+00:08:36,828 --> 00:08:42,756
+In this case 512 addresses.
+And in the same way today RIR's can decide
+
+104
+00:08:42,756 --> 00:08:48,111
+on the allocation sizes used.
+Do you get a 64, do you get a 60, do you
+
+105
+00:08:48,111 --> 00:08:54,726
+get a 56, etc. Great, we have this way of
+distributing
+
+106
+00:08:54,726 --> 00:08:59,451
+IPv6 addresses.
+So how do we actually get an IPv6 address?
+
+107
+00:08:59,451 --> 00:09:05,264
+So if you look at something like DHCP,
+You know, you basically need to ask for an
+
+108
+00:09:05,264 --> 00:09:08,402
+IPv4 address,
+And it's independent of anything else.
+
+109
+00:09:08,402 --> 00:09:11,170
+But the IPv6 address space is so much
+larger.
+
+110
+00:09:11,170 --> 00:09:15,539
+It might be, you could do something a lot
+simpler and just simplify the
+
+111
+00:09:15,539 --> 00:09:18,431
+configuration devices.
+And exactly what it does.
+
+112
+00:09:18,431 --> 00:09:21,261
+So it turns out that if you have a /64
+subnet.
+
+113
+00:09:21,261 --> 00:09:24,030
+That is, you know, your organization has a
+/64.
+
+114
+00:09:24,030 --> 00:09:29,319
+So a 64-bit sub-net network identifier,
+you can then automatically generate your
+
+115
+00:09:29,319 --> 00:09:32,916
+own IPv6 address, just from this subnet
+identifier.
+
+116
+00:09:32,916 --> 00:09:37,360
+It turns out that Ethernet cards which is
+ basically what
+
+117
+00:09:37,360 --> 00:09:41,592
+almost everybody uses today, Ethernet
+devices are a 48-bit.
+
+118
+00:09:41,592 --> 00:09:46,952
+They have a 48-bit unique identifier.
+It's their layer 2 address that identifies the
+
+119
+00:09:46,952 --> 00:09:50,946
+actual device.
+It's specified manufacturing, it's baked
+
+120
+00:09:50,946 --> 00:09:55,156
+into the card.
+Often you can reprogram it but it's baked
+
+121
+00:09:55,156 --> 00:09:59,291
+into the card.
+And so the Ethernet address looks
+
+122
+00:09:59,291 --> 00:10:03,350
+something like this where there's a
+manufacturer code.
+
+123
+00:10:03,350 --> 00:10:09,214
+It's saying oh, this was made, say by
+Apple, or was made by Dell, or was made by
+
+124
+00:10:09,214 --> 00:10:14,476
+Oracle or made by HP, or Cisco.
+So these codes are what an organization
+
+125
+00:10:14,476 --> 00:10:18,160
+gives out, and then when an organization,
+you know,
+
+126
+00:10:18,160 --> 00:10:24,525
+Needs a code, you can then use the lower,
+24 bits to basically produce sixteen
+
+127
+00:10:24,525 --> 00:10:29,382
+million devices with that code.
+If it needs a new code, it gets a new code.
+
+128
+00:10:29,593 --> 00:10:35,153
+And the zero here is to denote just for
+unicast MAC address, G is zero, and there's a
+
+129
+00:10:35,153 --> 00:10:39,305
+unicast packet address.
+And so what you do is, you take this
+
+130
+00:10:39,305 --> 00:10:45,006
+Ethernet address, this 48-bit Ethernet 
+unique identifier, and you perform a
+
+131
+00:10:45,006 --> 00:10:49,299
+transformation.
+You basically add some 1's in, in the
+
+132
+00:10:49,299 --> 00:10:54,465
+middle you flip the zero.
+ and you add
+
+133
+00:10:54,465 --> 00:10:59,532
+FFFE, so F-F-F-E into the middle.
+And you're going to get a 64-bit,
+
+134
+00:11:00,389 --> 00:11:04,521
+identifier.
+So now if I know my organization's 64-bit
+
+135
+00:11:04,521 --> 00:11:10,055
+subnet ID, let's just say it's X.
+And I know my Ethernet address from my
+
+136
+00:11:10,055 --> 00:11:14,070
+hardware card, which is say Y.
+
+137
+00:11:14,070 --> 00:11:20,513
+I can then take Y put it through this
+function and now my IPv6
+
+138
+00:11:20,513 --> 00:11:25,810
+addresses, just this first 64 bits then
+these latter 64 bits.
+
+139
+00:11:25,810 --> 00:11:31,203
+And so this is specified in RFC 4291.
+And so here's an example of how you have
+
+140
+00:11:31,203 --> 00:11:35,971
+what is a large address space.
+And that, the size of the address space
+
+141
+00:11:35,971 --> 00:11:41,845
+being 128 bits actually gives you a great
+deal of flexibility in terms of assigning
+
+142
+00:11:41,845 --> 00:11:45,369
+addresses.
+So for example, one thing you could point
+
+143
+00:11:45,369 --> 00:11:50,000
+out is, every single ethernet device has
+these same two bytes in it.
+
+144
+00:11:50,000 --> 00:11:54,876
+You're not, you're not going to reuse them
+so in some ways that's flexible because
+
+145
+00:11:54,876 --> 00:11:58,087
+it's nice if we want to do something
+besides Ethernet.
+
+146
+00:11:58,087 --> 00:12:02,963
+We know as long as we don't match these
+bits then we can generate an IPv6 address
+
+147
+00:12:02,963 --> 00:12:05,579
+which will not collide with Ethernet
+device.
+
+148
+00:12:05,758 --> 00:12:10,396
+But essentially just that tremendous
+plentitude of addresses gives us a bunch
+
+149
+00:12:10,396 --> 00:12:14,558
+of flexibility and can simplify management
+can simplify configuration.
+
+150
+00:12:14,558 --> 00:12:16,640
+So in that way IPv6 is really nice.
+

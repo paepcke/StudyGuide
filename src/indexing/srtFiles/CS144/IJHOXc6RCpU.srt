@@ -1,0 +1,495 @@
+1
+00:00:02,120 --> 00:00:08,639
+Phil: Hi, so I’m here with Kevin Fall at
+a computer science conference at the symposium
+
+2
+00:00:08,639 --> 00:00:13,960
+of operating systems principles. I have run
+into him here, so I thought that actually
+
+3
+00:00:13,960 --> 00:00:19,340
+hearing a bit about what he has to say about
+the Internet would be interesting. So, Kevin,
+
+4
+00:00:19,340 --> 00:00:26,029
+you’re currently the author of TCP/IP Illustrated,
+so how did that happen? What’s your relationship
+
+5
+00:00:26,029 --> 00:00:31,349
+with TCP and the stuff that you’ve done
+in the past. What’s your background with
+
+6
+00:00:31,349 --> 00:00:32,160
+TCP/IP?
+
+7
+00:00:32,159 --> 00:00:39,160
+Kevin: So, I guess, right after I graduated,
+and shortly after I got to Berkeley, somebody
+
+8
+00:00:41,370 --> 00:00:46,800
+demonstrated to me that they could send some
+packet to Europe and back to Berkeley in under
+
+9
+00:00:46,800 --> 00:00:51,909
+a second, and I thought networking became
+sort of an interesting thing to look at. Fast
+
+10
+00:00:51,909 --> 00:00:58,909
+forward a number of years, I worked on networking
+implementation of Berkeley unix on a Cray
+
+11
+00:00:59,670 --> 00:01:06,670
+for a while, that got me a little bit into
+the HPC community, but then I worked at Lawrence
+
+12
+00:01:06,750 --> 00:01:13,680
+Berkeley National Lab after my graduate work
+at UC San Diego. So at UC San Diego, I was
+
+13
+00:01:13,680 --> 00:01:17,550
+doing some protocol work and some operating
+system work, but then with the networking
+
+14
+00:01:17,550 --> 00:01:22,690
+group at LBL, that was all quite a bit in
+the networking side, and worked on network
+
+15
+00:01:22,690 --> 00:01:29,630
+simulators, the NS simulator and so on. What
+happened though is I got to know this stuff
+
+16
+00:01:29,630 --> 00:01:36,630
+pretty well, and by the early 90s or mid 90s
+when the Internet was becoming more widely
+
+17
+00:01:38,280 --> 00:01:43,630
+known, people took an interest in what is
+the TCP IP stuff, and this particular book,
+
+18
+00:01:43,630 --> 00:01:49,680
+TCP IP illustrated, was the standard reference
+text, and the volume one is still quite a
+
+19
+00:01:49,680 --> 00:01:56,680
+good book. I was teaching out of it, teaching
+professionals from Cisco and places like that,
+
+20
+00:01:59,070 --> 00:02:03,930
+and so I got to know the material quite well,
+but as the years went on and on and on, there
+
+21
+00:02:03,930 --> 00:02:10,930
+were things that it would be nice to be updated
+in that book, and so there were places I had
+
+22
+00:02:11,120 --> 00:02:17,329
+heard where some people were approached to
+rewrite it, other people approached the editor,
+
+23
+00:02:17,329 --> 00:02:24,030
+Addison, to rewrite it, and for whatever reason,
+it never happened. And so I threw in my table
+
+24
+00:02:24,030 --> 00:02:30,189
+of contents and sample chapter, and got the
+job some seven years later finished off the
+
+25
+00:02:30,189 --> 00:02:33,139
+entire task of something that’s over 1,000
+pages long.
+
+26
+00:02:33,139 --> 00:02:37,400
+Phil: So what’s an example of something
+that you thought sort of had changed and needed
+
+27
+00:02:37,400 --> 00:02:39,959
+to be introduced, but wasn’t in the original
+text?
+
+28
+00:02:39,959 --> 00:02:46,959
+Kevin: One of the major ones is security.
+So there’s like 100 pages of security that
+
+29
+00:02:48,519 --> 00:02:52,430
+goes through the introduction of, what are
+the sort of basic primitives, what are the
+
+30
+00:02:52,430 --> 00:02:57,900
+sort of things you might want to protect against,
+all the various details of the protocols that
+
+31
+00:02:57,900 --> 00:03:03,090
+actually does that. Really, with security,
+not only the cryptographic parts of security,
+
+32
+00:03:03,090 --> 00:03:09,519
+but things like firewalls and stuff, really
+barely existed when the first work was done.
+
+33
+00:03:09,519 --> 00:03:15,400
+There’s also a new chapter at the beginning,
+that’s sort of the architectural underpinnings.
+
+34
+00:03:15,400 --> 00:03:19,739
+What was in the minds of people when they
+were thinking about the design decisions when
+
+35
+00:03:19,739 --> 00:03:24,189
+this stuff was made? So I always found that
+quite interesting, and being an operating
+
+36
+00:03:24,189 --> 00:03:30,590
+systems guy originally, how people came up
+with abstractions and how programs access
+
+37
+00:03:30,590 --> 00:03:37,590
+those things and not quite users necessarily,
+and what are the sort of architectural concerns?
+
+38
+00:03:37,609 --> 00:03:43,019
+So I was always quite interested in papers
+and thoughts in the architectural area.
+
+39
+00:03:43,019 --> 00:03:49,090
+Phil: And so last night we were talking, and
+you said that today people use the terms datagram
+
+40
+00:03:49,090 --> 00:03:53,639
+and packet interchangeably, but those were
+not interchangeable terms. They actually meant
+
+41
+00:03:53,639 --> 00:03:59,290
+something quite different, which is now sort
+of lost in time.
+
+42
+00:03:59,290 --> 00:04:06,290
+Kevin: So I think I mentioned this in part
+of the book, and packets were sort of a fascinating
+
+43
+00:04:07,299 --> 00:04:12,730
+new concept, that you could divide your larger
+message into little parts, and move them around
+
+44
+00:04:12,730 --> 00:04:18,030
+the network. But they were originally, at
+least some variant, were part of virtual circuits,
+
+45
+00:04:18,029 --> 00:04:24,330
+and so for example, the destination in a packet
+was the destination of an index of a table
+
+46
+00:04:24,330 --> 00:04:29,220
+in the next hop. So you would sort of set
+up the route ahead of time, and then if that
+
+47
+00:04:29,220 --> 00:04:33,060
+failed for some reason, you have a bunch of
+work to do to go back, and there’s all the
+
+48
+00:04:33,060 --> 00:04:40,060
+history of circuits. But datagrams were a
+maybe even more radical idea, where the final
+
+49
+00:04:41,460 --> 00:04:47,660
+destination is identified in the packet structure,
+which when I would teach this class, I would
+
+50
+00:04:47,660 --> 00:04:52,590
+say if I laid out the network in a two-dimensional
+space, with this datagram type property, I
+
+51
+00:04:52,590 --> 00:04:56,870
+could take it and drop it from the air down
+onto any router, and it would find it’s
+
+52
+00:04:56,870 --> 00:05:01,629
+way through, because the final destination
+was listed. But of course that was a tradeoff,
+
+53
+00:05:01,629 --> 00:05:04,440
+because now you have more bits that you have
+to allocate, because there’s presumably
+
+54
+00:05:04,440 --> 00:05:10,949
+a larger number of destinations available.
+So these were the kind of nuances that were
+
+55
+00:05:10,949 --> 00:05:15,849
+actually pretty neat to get the details from
+by going back in the architectural history
+
+56
+00:05:15,849 --> 00:05:20,919
+and thinking and learning about what people
+were sort of arguing about what people were
+
+57
+00:05:20,919 --> 00:05:23,289
+sort of arguing about at the time.
+
+58
+00:05:23,289 --> 00:05:25,840
+Phil: Cool, so what are you working on now?
+What are the most interesting things, do you
+
+59
+00:05:25,840 --> 00:05:31,270
+think, in networking, and the Internet, and
+systems that you’re trying to tackle.
+
+60
+00:05:31,270 --> 00:05:36,539
+Kevin: So there’s a couple areas that I
+think are fun and sort of worth mentioning,
+
+61
+00:05:36,539 --> 00:05:43,539
+at least one of which we have some work on.
+The first one, we don’t have so much work
+
+62
+00:05:44,159 --> 00:05:51,159
+on, but is the him and some of his colleagues
+and predecessors had envisioned that not only
+
+63
+00:05:56,500 --> 00:06:01,139
+to we have a thing that winds up essentially
+being today’s Internet, that there’s communication
+
+64
+00:06:01,139 --> 00:06:04,330
+in these communities. But there’s also a
+physical way of moving things around, which
+
+65
+00:06:04,330 --> 00:06:08,659
+was like a global pneumatic tube system. So
+you could take your thing, shove it, and it
+
+66
+00:06:08,659 --> 00:06:12,840
+would sort of find its way, which would be
+a very cool thing to have. But I don’t think
+
+67
+00:06:12,840 --> 00:06:19,840
+we’re quite there yet. But on the other
+hand, I think that 3d printing technology,
+
+68
+00:06:23,750 --> 00:06:30,319
+as combined with what’s going on with the
+free and easy dissemination of information,
+
+69
+00:06:30,319 --> 00:06:33,819
+becomes quite interesting, especially when
+you can print things other than plastics and
+
+70
+00:06:33,819 --> 00:06:40,819
+so on. So I had in my hand a demonstration
+that was a titanium 3d printed nose replacement
+
+71
+00:06:41,530 --> 00:06:48,530
+part, a prosthetic nose, and it was strands
+of titanium printed on top of each other,
+
+72
+00:06:50,830 --> 00:06:57,129
+and if you can load up your device with the
+right materials, pretty much any material
+
+73
+00:06:57,129 --> 00:07:03,629
+thing you want to create almost, could be
+created. So even into the world of sensor
+
+74
+00:07:03,629 --> 00:07:08,669
+networks, things people looked at sensing
+the world, maybe even actuating the world,
+
+75
+00:07:08,669 --> 00:07:12,120
+but like building the world on demand in combination
+with those other things is pretty interesting,
+
+76
+00:07:12,120 --> 00:07:16,530
+and I wonder if that’s not kind of the way
+to get to the vision of pneumatic tubes, but
+
+77
+00:07:16,530 --> 00:07:22,229
+instead of removing it, you just make another
+one. And so how far in the future will it
+
+78
+00:07:22,229 --> 00:07:28,150
+be that you just carry around in your backpack
+or your car the basic system, and then you
+
+79
+00:07:28,150 --> 00:07:34,770
+just download whatever the thing is you happen
+to need. There was literally, not even a few
+
+80
+00:07:34,770 --> 00:07:39,750
+months ago, there was a meeting in Washington
+DC about the security implications of additive
+
+81
+00:07:39,750 --> 00:07:40,159
+manufacturing.
+
+82
+00:07:40,159 --> 00:07:47,159
+Phil: There’s all these questions about
+firearms, for example. So generally in firearms,
+
+83
+00:07:48,960 --> 00:07:53,699
+there’s one piece of the gun that’s strongly
+regulated, it’s the one that everything
+
+84
+00:07:53,699 --> 00:07:58,599
+has to stick onto, and somebody 3 printed
+one, it’s normally something you need a
+
+85
+00:07:58,599 --> 00:08:05,349
+license for, and so there’s an interesting
+question about what the implications are going
+
+86
+00:08:05,349 --> 00:08:06,960
+forward, with things like DRM.
+
+87
+00:08:06,960 --> 00:08:13,960
+Kevin: Yeah, there’s lots of policy questions.
+I think, as is often the case, technology
+
+88
+00:08:14,099 --> 00:08:21,099
+will outpace the policy ability to comprehend
+and instantiate reasonable laws about things,
+
+89
+00:08:21,919 --> 00:08:28,919
+whatever that may be. And so this idea that
+bits become interchangeable with physical
+
+90
+00:08:29,360 --> 00:08:34,800
+objects, and we have traditionally regulated
+the control of physical objects, but now do
+
+91
+00:08:34,799 --> 00:08:41,799
+we have to include digital objects? It’s
+pretty interesting, so that’s one of the
+
+92
+00:08:44,760 --> 00:08:51,589
+topics, and it actually gets into other things
+that you can compute with and maybe print
+
+93
+00:08:51,589 --> 00:08:57,240
+and compute, like synthetic biology, like
+I want to create a little organism that takes
+
+94
+00:08:57,240 --> 00:09:03,190
+one thing and something comes out the other
+end, well I have biologicals in my 3d printer,
+
+95
+00:09:03,190 --> 00:09:09,920
+and not just download the designs, but have
+the tools to do the designs of the biological
+
+96
+00:09:09,920 --> 00:09:16,920
+systems. So that’s one whole category, that
+when I was thinking about the pneumatic tubes,
+
+97
+00:09:23,310 --> 00:09:27,120
+and then looking at 3d printing and its capabilities,
+and now the price is knocked down, so people
+
+98
+00:09:27,120 --> 00:09:29,829
+can go get them, it’s a pretty interesting
+thing.
+
+99
+00:09:29,829 --> 00:09:33,700
+Phil: Cool, well it was great chatting with
+you, and thank you for your time, so yeah.
+
+100
+00:09:33,700 --> 00:09:34,980
+See you next time.
+

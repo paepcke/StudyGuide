@@ -1,0 +1,970 @@
+1
+00:00:00,000 --> 00:00:03,987
+So, in this video about the physical
+error, we're going to talk about bit
+
+2
+00:00:03,987 --> 00:00:07,454
+errors and coding.
+A way to introduce some redundancy of the
+
+3
+00:00:07,454 --> 00:00:10,749
+data is that you can protect yourself
+against bit errors.
+
+4
+00:00:10,749 --> 00:00:15,141
+So recall, that the Shannon limit, the
+capacity of a communication channel is
+
+5
+00:00:15,141 --> 00:00:20,053
+determined by the bandwidth and then the
+base two log of one + the signal to noise
+
+6
+00:00:20,053 --> 00:00:23,259
+ratio.
+And so basically, what this means is that
+
+7
+00:00:23,259 --> 00:00:27,120
+in practice the available data rate
+possible data rate is bounded by this
+
+8
+00:00:27,120 --> 00:00:31,294
+signal to noise ratio, so if your signal
+is stronger you can send data faster, if
+
+9
+00:00:31,294 --> 00:00:34,477
+the noise in your circuits is lower, you
+can send data faster.
+
+10
+00:00:34,477 --> 00:00:37,086
+So, the importance is that this is a
+theoretical limit.
+
+11
+00:00:37,086 --> 00:00:41,052
+Just because we know we can't do better
+doesn't mean we know how to get there.
+
+12
+00:00:41,052 --> 00:00:43,609
+In fact, few systems today can actually
+get there.
+
+13
+00:00:43,609 --> 00:00:47,626
+We are getting close but it doesn't
+actually say how do it just that
+
+14
+00:00:47,626 --> 00:00:51,449
+it's impossible to do better.
+So often for a variety of reasons, your
+
+15
+00:00:51,449 --> 00:00:55,299
+bandwidth is typically fixed. Say, if,
+you, are, are, operating in some
+
+16
+00:00:55,299 --> 00:00:59,800
+unlicensed spectrum, like you're WiFi or
+something, the FCC says, hey you can't do
+
+17
+00:00:59,800 --> 00:01:02,761
+more than this, you can't use more than
+this bandwidth.
+
+18
+00:01:02,761 --> 00:01:07,500
+And so often what systems are trying to
+do, is, improve the signal to noise ratio.
+
+19
+00:01:07,500 --> 00:01:11,969
+But basically what it means, that if your
+signal strength is higher, then you can
+
+20
+00:01:11,969 --> 00:01:15,746
+transmit data faster.
+You can either transmit symbols shorter,
+
+21
+00:01:15,746 --> 00:01:20,719
+you can transmit them for shorter periods
+of time, or you can put more bits per
+
+22
+00:01:20,719 --> 00:01:24,496
+symbol, you can make your actual
+constellation denser, the IQ
+
+23
+00:01:24,496 --> 00:01:28,021
+constellation.
+See here we are transmitting this perfect
+
+24
+00:01:28,021 --> 00:01:30,950
+black signal.
+But the problem is that.
+
+25
+00:01:30,950 --> 00:01:35,452
+This perfect wave, because there's noise
+on the receiver, just in the hardware, what
+
+26
+00:01:35,452 --> 00:01:39,843
+we receive, is closer to this red signal,
+all this noise introduced, and so let's
+
+27
+00:01:39,843 --> 00:01:44,011
+take a step back and think what does that
+means, how would that appear to a
+
+28
+00:01:44,011 --> 00:01:46,568
+receiver?
+So let's go back, to this sixteen QAM
+
+29
+00:01:46,568 --> 00:01:51,126
+constellation I showed you when talking
+about IQ modulation and signal modulation.
+
+30
+00:01:51,126 --> 00:01:55,684
+So this is the constellation used in HSPDA
+3G data standard. As you recall we have
+
+31
+00:01:55,684 --> 00:02:00,242
+these sixteen points, with different INQ
+values. Well so if there's no noise in the
+
+32
+00:02:00,242 --> 00:02:04,410
+system, then when a signal arrives it's
+going to be exactly on one of these
+
+33
+00:02:04,410 --> 00:02:08,100
+points.
+But in practice it's not, that there's
+
+34
+00:02:08,100 --> 00:02:12,732
+some noise that the systems introduced,
+and so let's pretend for example that we
+
+35
+00:02:12,732 --> 00:02:17,422
+have some low noise receptions, such that the
+signal strength is much higher than the
+
+36
+00:02:17,422 --> 00:02:21,765
+noise, then well rather than seeing this
+exact point here, we'r going to see
+
+37
+00:02:21,765 --> 00:02:25,355
+something like this.
+The noise is going to cause the signal to
+
+38
+00:02:25,355 --> 00:02:30,045
+jitter around a bit, but it's still pretty
+clear, from the constellation, that it's
+
+39
+00:02:30,045 --> 00:02:35,133
+this symbol.
+Similarly if we were trying to receive in
+
+40
+00:02:35,133 --> 00:02:40,923
+this symbol, while there is some noise,
+But because the signal is much stronger
+
+41
+00:02:40,923 --> 00:02:45,716
+than the noise, these little jitters
+aren't very big and it's clear that it's
+
+42
+00:02:45,716 --> 00:02:49,206
+this symbol.
+But now what happens if we're in a higher
+
+43
+00:02:49,206 --> 00:02:53,149
+noise environment.?
+What that means is rather than the signal,
+
+44
+00:02:53,149 --> 00:02:57,545
+the received signal of what we are going
+to observe being like this,
+
+45
+00:02:57,545 --> 00:03:01,747
+It might be like this,
+Where the noise causes the received signal
+
+46
+00:03:01,747 --> 00:03:06,142
+to have all kinds of different phases and
+amplitudes than we expect,
+
+47
+00:03:06,142 --> 00:03:11,520
+Because of the noise in this system.
+And fundamentally, this means that
+
+48
+00:03:11,520 --> 00:03:18,583
+there'll be some points in which we get.
+You make the wrong conclusion about what
+
+49
+00:03:18,583 --> 00:03:23,072
+this symbol is.
+So in these cases, for example, what we
+
+50
+00:03:23,072 --> 00:03:29,933
+thought we receive, what we were trying to
+receive, 0000, our system might think it
+
+51
+00:03:29,933 --> 00:03:35,016
+was 0011 or 0001, or 1000, or 0100.
+So this is how bits are sure
+
+52
+00:03:35,016 --> 00:03:38,320
+introduced.
+It's when your constellation,
+
+53
+00:03:38,320 --> 00:03:44,150
+It's when the signal to noise ratio is
+such that some of the symbols are,
+
+54
+00:03:44,310 --> 00:03:48,314
+Misrecorded or misunderstood.
+And you can imagine if we had, had a sparser
+
+55
+00:03:48,314 --> 00:03:51,837
+constellation, like let's say we only had
+two points, here and here.
+
+56
+00:03:51,837 --> 00:03:56,108
+Then this degree of noise would've been
+fine, it wouldn't have caused us to jump
+
+57
+00:03:56,108 --> 00:03:58,404
+all the way from here over on to this
+side.
+
+58
+00:03:58,404 --> 00:04:02,461
+But for this particular density of
+constellation the noise was great enough
+
+59
+00:04:02,461 --> 00:04:06,295
+to introduce some bit errors.
+And so it turns out that there's a really
+
+60
+00:04:06,295 --> 00:04:10,594
+deep theory on exactly how this works and
+what's possible and what bit error rates
+
+61
+00:04:10,594 --> 00:04:14,839
+are and you can say given for a given
+modulation scheme and a signal to noise
+
+62
+00:04:14,839 --> 00:04:18,811
+ratio you can just analytically compute
+what your expected bit error rate is.
+
+63
+00:04:18,810 --> 00:04:22,838
+There's some mathematical assumptions that
+are made but this is the bedrock
+
+64
+00:04:22,838 --> 00:04:27,137
+assumption the bedrock principles of rf
+communication theory that served us so
+
+65
+00:04:27,137 --> 00:04:29,723
+well.
+What's important here is the bit error
+
+66
+00:04:29,723 --> 00:04:34,470
+rate can become arbitrarily low, but it
+never reaches zero The way noise behaves,
+
+67
+00:04:34,470 --> 00:04:39,097
+it's possible, although very rare, you
+might have this huge spike in noise just
+
+68
+00:04:39,097 --> 00:04:42,182
+for a moment.
+It happens to be, at that point, a whole
+
+69
+00:04:42,182 --> 00:04:46,394
+bunch of things happen at once.
+And so the bit error rate never reaches
+
+70
+00:04:46,394 --> 00:04:49,480
+zero and, what this turns out in practice
+is that.
+
+71
+00:04:49,880 --> 00:04:55,573
+In general, sending packets just as raw
+bits, like say picking, your constilation,
+
+72
+00:04:55,573 --> 00:05:01,055
+such that you have the right number of
+bits per symbol and then just directly
+
+73
+00:05:01,055 --> 00:05:06,538
+translating from bits in a packet into
+bits in symbols turns out to rarely be
+
+74
+00:05:06,538 --> 00:05:11,808
+the, most efficient way to use the
+channel, just because thers, this non zero
+
+75
+00:05:11,809 --> 00:05:16,338
+small probability to get bit error.
+But the issues is of course that if you
+
+76
+00:05:16,338 --> 00:05:20,877
+want to make that probability very, very
+low, low enough that it's unlikely that
+
+77
+00:05:20,877 --> 00:05:25,646
+any bit will be in error, well then, due
+to the way this works, you're going to be
+
+78
+00:05:25,646 --> 00:05:30,358
+doing much better than you do in general,
+by optimizing for this very rare case of
+
+79
+00:05:30,358 --> 00:05:34,380
+tiny spike, which might occur in any of
+the bits you're say, you know, 12,000 bit
+
+80
+00:05:34,380 --> 00:05:38,230
+long or 1500 byte packet.
+Many of the, the bits in terms that the,
+
+81
+00:05:38,230 --> 00:05:42,769
+the actual symbol intrem that constelation
+are doing just absolutely great, but
+
+82
+00:05:42,769 --> 00:05:45,700
+you've, sort of, over protected for this
+one outlier.
+
+83
+00:05:45,700 --> 00:05:50,924
+And so in practice, if you just directly
+map your bits to the symbols, your system
+
+84
+00:05:50,924 --> 00:05:55,955
+is going to operate well, well, below the
+capacity, well, well below the Shannon
+
+85
+00:05:55,955 --> 00:05:58,922
+limit.
+And so, in practice what you do with the
+
+86
+00:05:58,922 --> 00:06:01,825
+physical layer is you take, say here are
+bits,
+
+87
+00:06:01,825 --> 00:06:04,663
+So let's say we have a message that says
+hello.
+
+88
+00:06:04,663 --> 00:06:09,113
+So, H, E, L, L, O, question, O, O comma,
+which are these ASCII values, maps to
+
+89
+00:06:09,113 --> 00:06:12,274
+these bits.
+Here are our packet, here's our packet
+
+90
+00:06:12,274 --> 00:06:15,047
+data.
+Then do is transform this packet data
+
+91
+00:06:15,047 --> 00:06:18,581
+into.
+Symbols, with some amount of redundancy,
+
+92
+00:06:18,581 --> 00:06:24,851
+so some amount of error correcting codes.
+So the packet will actually get a little
+
+93
+00:06:24,851 --> 00:06:30,509
+longer, in terms of, the, number of, bits
+we're sending at the physical layer.
+
+94
+00:06:30,509 --> 00:06:37,036
+So here say we have, 48 bits.
+And we might send, in terms of symbols
+
+95
+00:06:37,036 --> 00:06:40,170
+say, 60 bits.
+So there's twelve extra bits.
+
+96
+00:06:40,170 --> 00:06:44,324
+We arranged this into something called
+coding so that if a couple of those bits
+
+97
+00:06:44,324 --> 00:06:47,828
+are wrong, we can recover from that and
+still get the original 48 bits.
+
+98
+00:06:47,828 --> 00:06:51,337
+So even if there are a couple of,
+Couple of jitters in here, we'll still
+
+99
+00:06:51,337 --> 00:06:54,318
+receive the packet and be able to recover
+the data just fine.
+
+100
+00:06:54,318 --> 00:06:58,229
+And so this is coding, it's the idea of
+adding a little bit of redundancy at the
+
+101
+00:06:58,229 --> 00:07:01,797
+physical layer, you can do it anywhere,
+but it's almost always done in the
+
+102
+00:07:01,797 --> 00:07:05,316
+physical layer, so the coding is not a
+physical layer specific idea but to
+
+103
+00:07:05,316 --> 00:07:09,031
+improve your link layer throughput.
+By adding a bit of redundancy you can
+
+104
+00:07:09,031 --> 00:07:13,332
+protect from a few bit errors or so with your
+expected rate of bit errors are and this will
+
+105
+00:07:13,332 --> 00:07:17,438
+, in aggregate, although you're making it a
+bit longer will improve the throughput of
+
+106
+00:07:17,438 --> 00:07:19,980
+the system. This is true both in theory
+and in practice.
+
+107
+00:07:19,980 --> 00:07:24,680
+So turns this off and use this coding
+gain, which is the ratio of bits to link
+
+108
+00:07:24,680 --> 00:07:29,682
+layer to the bits of the physical layer.
+So, if you hear somebody type, let's say,
+
+109
+00:07:29,682 --> 00:07:34,685
+one-half code, what that means is that if
+I have a packet that's n bits long at the
+
+110
+00:07:34,685 --> 00:07:38,060
+link layer, I turn it into 2n bits at the
+physical layer,
+
+111
+00:07:38,720 --> 00:07:45,014
+Or a three four code is each three bit. So
+3n bits become 4n bits at the physical
+
+112
+00:07:45,014 --> 00:07:48,355
+layer.
+So we have this redundancy you can
+
+113
+00:07:48,355 --> 00:07:55,587
+correct against some bit errors.
+So here's an example of a very, this is a
+
+114
+00:07:55,587 --> 00:08:01,140
+very, very simple wireless physical layer
+802.15.4 also called Zigs.
+
+115
+00:08:01,369 --> 00:08:05,401
+Also, it's used in ZigBee.
+802.15.4 uses quadrature
+
+116
+00:08:05,401 --> 00:08:11,943
+phase-shift-keying and so, each one, each
+actual transmitted symbol has two bits and
+
+117
+00:08:11,943 --> 00:08:17,877
+what 802.15.4 does is it combines two of
+these QPSA, QPSK symbols into a 4-bit
+
+118
+00:08:17,877 --> 00:08:21,242
+symbol.
+So it's what he calls these four bit
+
+119
+00:08:21,242 --> 00:08:24,641
+symbols.
+There are sixteen of them to the fourth.
+
+120
+00:08:24,641 --> 00:08:30,590
+And each one then maps to 32 QPSK chips.
+So, so here are symbols at the link layer
+
+121
+00:08:30,590 --> 00:08:33,635
+and here are symbols at the physical
+layer.
+
+122
+00:08:33,635 --> 00:08:39,230
+And so we take say, four bits of the link
+layer and turn it into 32 bits at the
+
+123
+00:08:39,230 --> 00:08:42,417
+physical layer which is sixteen QPSK
+symbols.
+
+124
+00:08:42,417 --> 00:08:48,365
+And so, if I say I want to transmit a
+packet that has 0001, then actually it's
+
+125
+00:08:48,365 --> 00:08:53,789
+transmits the physical layer is this
+sequence of bits in terms of QPSK symbols.
+
+126
+00:08:53,789 --> 00:08:56,795
+So we can then figure out, what's the data
+rate?
+
+127
+00:08:56,795 --> 00:09:00,826
+Or, what's the symbol rate?
+What's going on with k-, with 802.15.4?
+
+128
+00:09:00,826 --> 00:09:05,880
+So, it turns out the bit rate at the link
+layer is a h-, 250 kilobits per second.
+
+129
+00:09:05,880 --> 00:09:11,363
+The coding rate.
+You have sixteen chips of two bits, that's
+
+130
+00:09:11,363 --> 00:09:14,855
+32 bits.
+Is that the physical layer becomes four
+
+131
+00:09:14,856 --> 00:09:22,224
+bytes at the link layer.
+So we have, what is a one-eighth code.
+
+132
+00:09:22,224 --> 00:09:26,117
+Four physical layer bits become one linked
+layer bit.
+
+133
+00:09:26,117 --> 00:09:29,103
+Although they're in clusters of four and
+32.
+
+134
+00:09:29,103 --> 00:09:34,668
+So based on this, if we are transmitting
+250 kilobits per second at the link layer
+
+135
+00:09:34,668 --> 00:09:39,962
+and we have a one-eighth code, how many
+symbols are we transmitting per second?
+
+136
+00:09:39,962 --> 00:09:43,016
+How quickly is 802.15.4 modulating the
+signal?
+
+137
+00:09:43,016 --> 00:09:48,375
+Well, each of the symbols has two bits,
+right, this is one-eighth code and so one
+
+138
+00:09:48,378 --> 00:09:53,536
+way to look at it is that the physical
+layer, right, we're transmitting eight
+
+139
+00:09:53,943 --> 00:09:59,104
+that bits per second, so 8<i>250.
+250 kilobits per second which is equal to</i>
+
+140
+00:09:59,104 --> 00:10:04,551
+two megabits per second.
+At the physical layer, since each symboled
+
+141
+00:10:04,551 --> 00:10:11,520
+physical layer has, two bits, this means
+that, 802.15.4 transmits one million
+
+142
+00:10:11,980 --> 00:10:19,420
+symbols per second, or in other ways, each
+symbol is one microsecond.
+
+143
+00:10:21,000 --> 00:10:25,840
+Let's look at a, a more modern or, sorry,
+a more advanced physical layers.
+
+144
+00:10:25,840 --> 00:10:30,289
+This is what 802.11n.
+Very, a reasonably recent WiFi standard
+
+145
+00:10:30,485 --> 00:10:33,167
+uses.
+So most, you know, WiFi stuff you buy
+
+146
+00:10:33,167 --> 00:10:36,600
+today is a 802.11n.
+And so it turns out, there's all these
+
+147
+00:10:36,600 --> 00:10:40,569
+different schemes it can use but here's
+just a subset of them.
+
+148
+00:10:40,569 --> 00:10:44,966
+And so you can see for these eight, use a
+bunch of different modulations,
+
+149
+00:10:44,966 --> 00:10:50,034
+Bpsk, Binary Pahse of King, Quadrata Phase
+Shift King, sixteen, sixteen QAM, 64 QAM.
+
+150
+00:10:50,034 --> 00:10:54,553
+Different coding gains, so one-half,
+one-half three-fourths one-half 5/6ths.
+
+151
+00:10:54,553 --> 00:10:58,095
+And from that you can then figure out,
+given the data rate.
+
+152
+00:10:58,095 --> 00:11:01,210
+Here's the actual data rate in megabits
+per second.
+
+153
+00:11:01,210 --> 00:11:04,864
+Here are the different data rates of this
+physical layer support.
+
+154
+00:11:04,864 --> 00:11:09,588
+So for example, if you're using MCX, index
+seven is your sort of determination of the
+
+155
+00:11:09,588 --> 00:11:12,118
+standard of the, of what the coding system
+is.
+
+156
+00:11:12,287 --> 00:11:16,335
+We can get up to a 150 megabits per
+second, and that's if you're using a
+
+157
+00:11:16,335 --> 00:11:18,810
+64-QAM constellation with a five six
+coding.
+
+158
+00:11:18,983 --> 00:11:22,343
+As you notice here that there's these
+different channels?
+
+159
+00:11:22,343 --> 00:11:27,092
+Right, remember that the, the data that we
+get, is also not only the signal to noise
+
+160
+00:11:27,092 --> 00:11:31,842
+ratio, but is also based on the channel.
+And so here with twenty megahertz versus a
+
+161
+00:11:31,842 --> 00:11:36,534
+40 megahertz channel, you can see, with
+the 40 megahertz channel we're a little
+
+162
+00:11:36,534 --> 00:11:40,152
+better than twice as fast.
+The reason why we're a little better is
+
+163
+00:11:40,152 --> 00:11:42,370
+cause these time values are fixed.
+And so.
+
+164
+00:11:42,370 --> 00:11:46,595
+These things are fixed, so we can do a
+little bit better than half if there were
+
+165
+00:11:46,595 --> 00:11:50,925
+no time values you'd be directly, half,
+Plus there's also some guards. But so you
+
+166
+00:11:50,925 --> 00:11:54,464
+can do generally double the channel,
+you're just about doubling, the
+
+167
+00:11:54,464 --> 00:11:55,890
+throughput.
+So an overview.
+
+168
+00:11:55,890 --> 00:11:59,556
+We want to talk about chips which are down
+at the physical layer, the representation
+
+169
+00:11:59,556 --> 00:12:03,178
+signal of the physical layer, versus bits,
+which is the representation at the link
+
+170
+00:12:03,178 --> 00:12:05,325
+layers.
+The link layer has a whole bunch of bits
+
+171
+00:12:05,325 --> 00:12:08,544
+and then pass them down to the physical
+layer, they're turned into chips.
+
+172
+00:12:08,544 --> 00:12:12,300
+Now physical layer has to deal with noise.
+It's an actual physical medium, noise from
+
+173
+00:12:12,300 --> 00:12:14,402
+the hardware circuits, from the
+environment, etc.
+
+174
+00:12:14,402 --> 00:12:17,730
+This can cause chip errors.
+If you have a denser modulation.
+
+175
+00:12:17,730 --> 00:12:21,606
+Then you can have higher throughput,
+because you represent more bits per
+
+176
+00:12:21,606 --> 00:12:24,117
+symbol.
+But a denser modulation is less robust
+
+177
+00:12:24,117 --> 00:12:27,666
+to noise because of the distance between
+the different symbols.
+
+178
+00:12:27,666 --> 00:12:31,870
+So a sparser modulation has fewer errors.
+So big tensions what exactly is the
+
+179
+00:12:31,870 --> 00:12:34,491
+modulation used?
+We saw an 802.11n, there's a bunch of
+
+180
+00:12:34,491 --> 00:12:38,531
+different modulations that are used.
+Four different signal to noise ratios,
+
+181
+00:12:38,531 --> 00:12:40,933
+which give you different actual
+throughputs.
+
+182
+00:12:41,097 --> 00:12:43,390
+So the.
+How do you translate between these
+
+183
+00:12:43,390 --> 00:12:47,648
+link layer bits and physical layer bits?
+It turns out just a one to one mapping is
+
+184
+00:12:47,648 --> 00:12:51,145
+rarely a good idea.
+It might be the most efficient in terms of
+
+185
+00:12:51,145 --> 00:12:54,028
+just raw bits.
+But, the problem is that the probability
+
+186
+00:12:54,028 --> 00:12:56,377
+of bit errors mean you want some
+redundancy.
+
+187
+00:12:56,377 --> 00:12:59,580
+It's rarely going to let you get close to
+the Shannon capacity.
+
+188
+00:12:59,580 --> 00:13:03,964
+So you talk about something called a
+coding gain, which is the layer two to
+
+189
+00:13:03,964 --> 00:13:07,584
+layer one ratio.
+And because layer one will represent each
+
+190
+00:13:07,584 --> 00:13:12,018
+bit at the, at the link layer, with more
+than one bit at, its bit layer, you can
+
+191
+00:13:12,018 --> 00:13:16,165
+recover from some chip errors.
+So we saw one example 802.11 n, where
+
+192
+00:13:16,165 --> 00:13:20,426
+you see anything from a one-half coding
+gain to a five-sixths coding gain.
+
+193
+00:13:20,426 --> 00:13:24,399
+Under all kinds of different
+constellations, ranging from BPSK, Binary
+
+194
+00:13:24,399 --> 00:13:27,740
+Phase Shift King, to 64 QAM, 64 Quatra
+Amplitude Modulation.
+

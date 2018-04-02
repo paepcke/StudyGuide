@@ -1,0 +1,1375 @@
+1
+00:00:00,000 --> 00:00:03,811
+In the last video I told you about
+different types of congestion.
+
+2
+00:00:03,811 --> 00:00:08,619
+The different time scales it can occur at
+and what some of the consequences might
+
+3
+00:00:08,619 --> 00:00:11,023
+be.
+We then looked a little bit about the
+
+4
+00:00:11,199 --> 00:00:15,479
+little bit at the characteristics of
+congestion control algorithms that we
+
+5
+00:00:15,480 --> 00:00:18,763
+might like to try and design.
+So we said we wanted high throughput,
+
+6
+00:00:18,763 --> 00:00:23,454
+We wanted them to be fair amongst the
+flows competing for the bottle neck links.
+
+7
+00:00:23,454 --> 00:00:27,970
+We wanted the control of congestion to be
+distributed so that it can scale.
+
+8
+00:00:27,970 --> 00:00:32,148
+In this video we're going to start looking
+at basic approaches to controlling
+
+9
+00:00:32,148 --> 00:00:34,599
+congestion.
+We're going to consider whether the
+
+10
+00:00:34,599 --> 00:00:39,112
+congestion control should take place in
+the network with specific support of the
+
+11
+00:00:39,112 --> 00:00:42,065
+routers or whether it should be done at
+the end host.
+
+12
+00:00:42,065 --> 00:00:45,574
+And then I'm going to tell you a little
+bit about how TCP does it.
+
+13
+00:00:45,574 --> 00:00:49,809
+We're going to start with the basic
+mechanism called AIMD or additive increase
+
+14
+00:00:49,809 --> 00:00:54,377
+multiplicative decrease and we're going to
+study how that works over the next couple
+
+15
+00:00:54,377 --> 00:00:59,168
+of videos before we look in more detail at
+how TCP congestion control really works in
+
+16
+00:00:59,168 --> 00:01:01,446
+practice.
+So I'm going to start with the
+
+17
+00:01:01,446 --> 00:01:04,555
+consideration of where to put congestion
+control.
+
+18
+00:01:04,555 --> 00:01:10,138
+But you may have already been wondering
+why it is that we can't simply use fair
+
+19
+00:01:10,138 --> 00:01:13,119
+queueing.
+Notice that we've already seen a way to
+
+20
+00:01:13,119 --> 00:01:17,998
+give everyone a fair share of the outgoing
+link, by simply decomposing the output
+
+21
+00:01:17,998 --> 00:01:20,769
+buffer into per flow queues as I've shown
+here.
+
+22
+00:01:20,769 --> 00:01:24,262
+So that I've got multiple flows going
+through the network.
+
+23
+00:01:24,262 --> 00:01:27,274
+Then each flow would be placed into its
+own queue.
+
+24
+00:01:27,274 --> 00:01:31,550
+And then we use a fair-queuing scheduler
+to divide-up that egress rate.
+
+25
+00:01:31,550 --> 00:01:34,321
+Let's say R.
+Amongst all of the flows that are
+
+26
+00:01:34,321 --> 00:01:37,875
+contending for it.
+And so if they're all wanting to send at
+
+27
+00:01:37,875 --> 00:01:43,001
+rate greater than R over two, then they
+would each receive R over two, because
+
+28
+00:01:43,001 --> 00:01:45,610
+that's what affects queueing scheduler
+would do.
+
+29
+00:01:45,610 --> 00:01:49,046
+And in fat,
+This will give us a, not only a fair
+
+30
+00:01:49,046 --> 00:01:53,299
+behavior, it will actually give us the
+maxmin fair at every link across the
+
+31
+00:01:53,299 --> 00:01:57,492
+flows, it'll give us good throughput
+whenever there is work to be done.
+
+32
+00:01:57,492 --> 00:02:01,745
+It will always keep the outgoing line
+busy, we say it's more conserving.
+
+33
+00:02:01,745 --> 00:02:04,800
+So it'll give good throughput on each of
+the links.
+
+34
+00:02:04,800 --> 00:02:07,398
+So, what's wrong with this basic
+mechanism?
+
+35
+00:02:07,398 --> 00:02:10,924
+Well, the first thing is, that, that it
+isn't responsive.
+
+36
+00:02:10,924 --> 00:02:15,935
+It's simply going to divide up the links,
+but there's nothing here that will tell
+
+37
+00:02:15,935 --> 00:02:21,008
+the sources the rate at which they should
+send, or give them any indication of how
+
+38
+00:02:21,008 --> 00:02:25,338
+many packets they should send.
+In fact, if they do send, so if these are
+
+39
+00:02:25,338 --> 00:02:30,040
+each trying to send a, the full blast
+rate, so if there are packets coming in
+
+40
+00:02:30,040 --> 00:02:35,266
+from all directions, trying to, trying to
+use these links, then packets will simply
+
+41
+00:02:35,266 --> 00:02:38,431
+be dropped onto the floor as the buffers
+overflow.
+
+42
+00:02:38,431 --> 00:02:42,103
+We'll end up used, wasting a lot of the
+upstream bandwidth.
+
+43
+00:02:42,103 --> 00:02:46,471
+Delivering packets over links that
+eventually get dropped downstream.
+
+44
+00:02:46,471 --> 00:02:51,603
+So we need a way of signaling back to the
+sources, to say give them some indication
+
+45
+00:02:51,603 --> 00:02:56,290
+of the rate at which they should send or
+the number of outstanding packets that
+
+46
+00:02:56,290 --> 00:03:00,884
+they can have in the network.
+So in network based congestion control
+
+47
+00:03:00,884 --> 00:03:07,193
+there is explicit feedback that comes from
+the routers to indicate congestion in the
+
+48
+00:03:07,193 --> 00:03:10,904
+network.
+So for example if I have a source A and a
+
+49
+00:03:10,904 --> 00:03:16,322
+destination B and then some routers in
+between with some links like this.
+
+50
+00:03:16,322 --> 00:03:22,557
+Let's imagine there are some flows in the
+network that are coming in from different
+
+51
+00:03:22,557 --> 00:03:28,123
+directions going through this router
+causing some congestion to take place
+
+52
+00:03:28,123 --> 00:03:32,578
+right here.
+One thing that we can do is if there is
+
+53
+00:03:32,578 --> 00:03:37,490
+congestion is to try and signal back to A
+some signal.
+
+54
+00:03:37,490 --> 00:03:42,173
+To say there is congestion in the network
+you need to reduce the number of packets
+
+55
+00:03:42,173 --> 00:03:46,010
+that you have outstanding or reduce the
+rate at which you send them.
+
+56
+00:03:46,010 --> 00:03:48,550
+And so the question is, what would we
+send?
+
+57
+00:03:48,550 --> 00:03:54,417
+And how would we get it back to, to A.
+We could for example say I'm dropping a
+
+58
+00:03:54,417 --> 00:03:59,506
+packet or it could a indication of the
+occupancy of the buffer, or it could mark
+
+59
+00:03:59,506 --> 00:04:04,340
+we just crushed some threshold and so
+we're, we're getting more congested.
+
+60
+00:04:04,340 --> 00:04:07,584
+Any of these would be examples of, of, of
+congestion.
+
+61
+00:04:07,584 --> 00:04:12,800
+Another one might be that the outgoing
+link has a certain amount of capacity left
+
+62
+00:04:12,800 --> 00:04:18,016
+over and as, as the capacity gets used up
+we send a signal back to say how much of
+
+63
+00:04:18,016 --> 00:04:23,359
+that capacity is available or it could be
+a function of all of the signal that I've
+
+64
+00:04:23,549 --> 00:04:27,313
+that I've just mentioned.
+So the next question is, how do we get
+
+65
+00:04:27,313 --> 00:04:30,803
+that signal back, and how many bits do we
+use to represent it?
+
+66
+00:04:30,803 --> 00:04:35,323
+If we're sending back the whole queue
+occupancy, we'd really like to be able to
+
+67
+00:04:35,323 --> 00:04:39,671
+send, send a, sizable integer value, to
+indicate what the current occupancy is.
+
+68
+00:04:39,671 --> 00:04:42,989
+That would take a lot of bits, and it
+might be complicated.
+
+69
+00:04:42,989 --> 00:04:47,394
+So in practice, generally, people look for
+schemes that use, one, or a couple of
+
+70
+00:04:47,394 --> 00:04:51,671
+bits, to signal back to the source.
+And then the next question is, how do you
+
+71
+00:04:51,671 --> 00:04:55,366
+get them back to the source?
+There's no point in creating a whole
+
+72
+00:04:55,366 --> 00:05:00,028
+packet, just to send it back to the source
+if we can piggyback, on, packets that are
+
+73
+00:05:00,028 --> 00:05:03,497
+already going by.
+So it's fairly common, to use packets, for
+
+74
+00:05:03,497 --> 00:05:07,988
+example, if, there, if there's a TCP
+packet that's coming through, or some kind
+
+75
+00:05:07,988 --> 00:05:12,821
+of, 2-way communication, to piggyback onto
+packets going in one direction, such that
+
+76
+00:05:12,821 --> 00:05:16,574
+they get sent back in the
+acknowledgements, and, and, and eventually
+
+77
+00:05:16,574 --> 00:05:20,156
+get back to the source.
+There's one particular technique that's
+
+78
+00:05:20,156 --> 00:05:23,340
+called ECN, or explicit congestion
+notification, in which the
+
+79
+00:05:23,340 --> 00:05:28,097
+routers indicate whether they have, have
+some degree of congestion, for example,
+
+80
+00:05:28,097 --> 00:05:31,503
+crossing a threshold.
+They then mark bits in packets going
+
+81
+00:05:31,503 --> 00:05:36,436
+towards the destination, which then copies
+those bits back into the acknowledgements
+
+82
+00:05:36,436 --> 00:05:41,501
+going in the other direction.
+The original scheme that was designed to
+
+83
+00:05:41,501 --> 00:05:47,814
+work somewhat like this was called decbit
+that was proposed more than twenty
+
+84
+00:05:47,814 --> 00:05:53,800
+years ago as a single bit mechanism to
+signal to the source to slow down.
+
+85
+00:05:55,460 --> 00:05:57,814
+So.
+Nice advantage of a scheme like this is,
+
+86
+00:05:57,814 --> 00:06:01,483
+it's simple to understand.
+We can see that the signal will directly
+
+87
+00:06:01,483 --> 00:06:05,808
+control the behavior of the source.
+It should be pretty responsive to change,
+
+88
+00:06:05,808 --> 00:06:10,298
+because we can detect the, the onset of
+congestion in the, in the network and be
+
+89
+00:06:10,298 --> 00:06:13,748
+able to tell the source.
+It's distributed in the sense that the
+
+90
+00:06:13,748 --> 00:06:17,745
+signal is coming back from all of the
+routers in the network, and it only
+
+91
+00:06:17,745 --> 00:06:22,235
+affects the source, and so the source can
+make up its decision, make its, make up
+
+92
+00:06:22,235 --> 00:06:26,853
+its mind how it will process that signal.
+And it can be made to be maxmin fair.
+
+93
+00:06:26,853 --> 00:06:30,808
+So, it can be made to be fair.
+But for example, measure the rate of each
+
+94
+00:06:30,808 --> 00:06:35,328
+flow through the router and pass back the
+maxmin fair allocation for each flow.
+
+95
+00:06:35,328 --> 00:06:40,074
+There are other ways that are simpler for
+example using fair queuing as I described
+
+96
+00:06:40,074 --> 00:06:42,277
+before.
+So, network-based could certainly
+
+97
+00:06:42,277 --> 00:06:45,500
+work.
+On the other hand.
+
+98
+00:06:46,020 --> 00:06:50,750
+It's worth asking the question, of,
+whether we actually need, the network, to
+
+99
+00:06:50,750 --> 00:06:55,673
+provide any congestion notification.
+In other words, can we, support congestion
+
+100
+00:06:55,673 --> 00:07:00,595
+control, without any support from the
+network, at all, merely by implementing a
+
+101
+00:07:00,595 --> 00:07:05,454
+mechanism at the end hosts, where it's
+just going to simply observe the network
+
+102
+00:07:05,454 --> 00:07:10,628
+behavior.
+So going to the example that I had before,
+
+103
+00:07:10,628 --> 00:07:16,758
+if I have end hosts A and B, and then
+routers in between.
+
+104
+00:07:17,634 --> 00:07:22,780
+If I'm able to observe behavior of the
+network.
+
+105
+00:07:22,780 --> 00:07:27,368
+Such that it's enough to be able to decide
+at what rate I send or how many
+
+106
+00:07:27,368 --> 00:07:32,568
+outstanding packets I have in the network
+then perhaps we can implement a congestion
+
+107
+00:07:32,568 --> 00:07:36,789
+control mechanism this way.
+This is nice because if it doesn't depend
+
+108
+00:07:36,789 --> 00:07:41,500
+on the behavior of the routers or it
+doesn't behave on them sending specific
+
+109
+00:07:41,500 --> 00:07:46,577
+information back, we can evolve and adapt
+it over time without having to change the
+
+110
+00:07:46,577 --> 00:07:50,363
+network in between.
+We're going to see that TCP does this.
+
+111
+00:07:50,363 --> 00:07:56,134
+TCP actually does congestion control
+purely at the end host by observing the
+
+112
+00:07:56,134 --> 00:08:00,181
+network behavior.
+What it's going to do is, if packets are
+
+113
+00:08:00,181 --> 00:08:04,409
+dropped along the way.
+It's going to observe this through either
+
+114
+00:08:04,409 --> 00:08:09,502
+a timeout or it will see a sequence of
+acknowledgments that are all the same
+
+115
+00:08:09,502 --> 00:08:15,059
+coming back because the data was missing
+and so B is going to keep acknowledging an
+
+116
+00:08:15,059 --> 00:08:19,557
+earlier piece of data, which it can
+interpret as, as data missing and
+
+117
+00:08:19,557 --> 00:08:24,584
+therefore needing to retransmit it.
+So if there's been data that's dropped A
+
+118
+00:08:24,584 --> 00:08:29,809
+could interpret this as congestion and
+then slow down the rate or have a fewer
+
+119
+00:08:29,809 --> 00:08:35,300
+number of outstanding packets so that it
+will reduce the congestion in the network.
+
+120
+00:08:35,900 --> 00:08:40,548
+So basically A is going to observe, it's
+going to act a little bit like it's
+
+121
+00:08:40,731 --> 00:08:45,808
+observing the behavior in the network and
+seeing what happens in terms of timeouts
+
+122
+00:08:45,808 --> 00:08:49,784
+and duplicate acknowledgments and anything
+that indicates a drop.
+
+123
+00:08:49,784 --> 00:08:54,860
+It could also see an increase in delay or
+variance, any of the things that would
+
+124
+00:08:54,860 --> 00:08:59,325
+indicate to it that congestion is
+occurring so that it could change it's
+
+125
+00:08:59,325 --> 00:09:03,268
+behavior accordingly.
+In TCP's case, it actually has to do this
+
+126
+00:09:03,268 --> 00:09:08,520
+because IP offers no support by default.
+IP offers no indication of congestion in
+
+127
+00:09:08,520 --> 00:09:11,827
+the network.
+So when TCP was first conceived, it was
+
+128
+00:09:11,827 --> 00:09:17,080
+actually by necessity that it would that
+it would control congestion this way.
+
+129
+00:09:17,080 --> 00:09:21,020
+So let me give you a quick introduction to
+TCP congestion control.
+
+130
+00:09:21,020 --> 00:09:26,035
+TCP implements congestion control at the
+end host because the network provides  no
+
+131
+00:09:26,035 --> 00:09:29,021
+support.
+It reacts to events observable at the end
+
+132
+00:09:29,021 --> 00:09:31,469
+host.
+In particular it's going to use packet
+
+133
+00:09:31,469 --> 00:09:35,350
+loss or if it believes that there were
+packets that were dropped.
+
+134
+00:09:35,350 --> 00:09:39,897
+It's going to exploit TCP's sliding
+window, that we use for flow control and
+
+135
+00:09:39,897 --> 00:09:43,248
+retransmissions.
+It's going to exploit the fact that that's
+
+136
+00:09:43,248 --> 00:09:47,317
+there, and it's going to overload it with
+a means to control congestion.
+
+137
+00:09:47,317 --> 00:09:49,950
+And I'm going to be explaining that
+shortly.
+
+138
+00:09:49,950 --> 00:09:54,420
+And the way it's going to do this, is it's
+going to try and figure out how many
+
+139
+00:09:54,420 --> 00:09:57,805
+packets.
+It can safely have outstanding in the
+
+140
+00:09:57,805 --> 00:10:01,512
+network at any time.
+And this is a important concept.
+
+141
+00:10:01,512 --> 00:10:06,833
+Let me repeat it, it's going to try and
+figure out how many packets it can safely
+
+142
+00:10:06,833 --> 00:10:09,835
+have outstanding in the network at any
+time.
+
+143
+00:10:09,835 --> 00:10:15,429
+Now we're familiar with this already with
+a sliding window used in TCP, and this
+
+144
+00:10:15,429 --> 00:10:18,703
+just a reminder of how the sliding window
+works.
+
+145
+00:10:18,703 --> 00:10:24,366
+Recall that the window is sliding over a
+stream of bytes, so this is the underlying
+
+146
+00:10:24,366 --> 00:10:29,550
+steam of bytes that we're sending.
+And that is increasing to the right, so
+
+147
+00:10:29,550 --> 00:10:35,273
+byte zero was somewhere over here.
+And the window is telling us data that has
+
+148
+00:10:35,511 --> 00:10:40,735
+that has been acknowledged.
+So this is earlier data which has been
+
+149
+00:10:40,735 --> 00:10:44,495
+fully acknowledged.
+This is outstanding data that is being
+
+150
+00:10:44,495 --> 00:10:48,139
+sent, but not yet acknowledged.
+This is data that's okay to send.
+
+151
+00:10:48,139 --> 00:10:52,882
+In other words, it's data that we perhaps
+haven't sent yet but because it's inside
+
+152
+00:10:52,882 --> 00:10:55,601
+the window, we're allowed to send it if we
+want.
+
+153
+00:10:55,601 --> 00:11:00,518
+And then there is data that is not okay to
+send yet because it's ahead of the window.
+
+154
+00:11:00,518 --> 00:11:04,914
+The window hasn't slid, over the top of
+this yet, because we're still waiting for,
+
+155
+00:11:04,914 --> 00:11:09,721
+outstanding acknowledgements over here.
+Okay, so the sliding window tells us not
+
+156
+00:11:09,721 --> 00:11:13,549
+only which bytes can be outstanding, but
+also how many bytes.
+
+157
+00:11:13,549 --> 00:11:18,589
+That's the window size and you will recall
+that the, the receiver is going to send
+
+158
+00:11:18,589 --> 00:11:23,884
+back information about what is called the
+receive window to tell us how many bytes
+
+159
+00:11:23,884 --> 00:11:27,648
+we can have outstanding such that 
+we don't overrun the receiver.
+
+160
+00:11:27,648 --> 00:11:32,433
+And we're going to see in a minute that
+we're going to reuse that mechanism in a
+
+161
+00:11:32,433 --> 00:11:37,197
+different way at the sender.
+But just to give a rough idea of what's
+
+162
+00:11:37,197 --> 00:11:40,366
+going on.
+With the TCP sliding window, here is a
+
+163
+00:11:40,366 --> 00:11:45,829
+view on a timeline of what's taking place
+when packets are sent and received, and
+
+164
+00:11:45,829 --> 00:11:49,807
+it's going to give us a feeling for how
+this is going to work.
+
+165
+00:11:49,807 --> 00:11:55,135
+So A is allowed to send up to a window's
+worth of data and have it outstanding
+
+166
+00:11:55,135 --> 00:11:58,237
+before it reads, receives any
+acknowledgements.
+
+167
+00:11:58,237 --> 00:12:03,031
+So here is that window of, of data.
+And when those, when those packets are
+
+168
+00:12:03,031 --> 00:12:07,508
+sent, of course each one of them is going
+to lead to an acknowledgement.
+
+169
+00:12:07,508 --> 00:12:12,446
+So sometime later, we are going to get
+the, the acknowledgements and then we're
+
+170
+00:12:12,446 --> 00:12:15,277
+going to send the next window's worth of
+data.
+
+171
+00:12:15,277 --> 00:12:19,360
+So if the round trip time is much bigger
+than the window size.
+
+172
+00:12:19,360 --> 00:12:23,766
+In other words, the time is much bigger
+than the amount of data it takes to fill
+
+173
+00:12:23,766 --> 00:12:26,355
+that pipe.
+Then there will be this big delay in
+
+174
+00:12:26,355 --> 00:12:30,487
+between and TCP will basically move
+forward by sending a window in a burst.
+
+175
+00:12:30,487 --> 00:12:34,783
+Pausing and waiting for acknowledgements.
+Sending a window in a burst, having a
+
+176
+00:12:34,783 --> 00:12:38,860
+pause and then just repeating like that.
+So that's in this particular case.
+
+177
+00:12:38,860 --> 00:12:43,624
+Now let's consider a different case.
+And that is when the round trip time equals
+
+178
+00:12:43,624 --> 00:12:47,168
+the window size.
+In other words, the window is exactly able
+
+179
+00:12:47,168 --> 00:12:50,772
+to fill up the pipe.
+The number of outstanding packets that
+
+180
+00:12:50,772 --> 00:12:54,560
+we're allowed to have in the network
+precisely fills the pipe.
+
+181
+00:12:54,560 --> 00:12:59,114
+In this particular case, the first
+acknowledgement will come back just after
+
+182
+00:12:59,114 --> 00:13:03,429
+the last packet is being sent.
+And so, we're able to send in a continuous
+
+183
+00:13:03,429 --> 00:13:05,466
+stream.
+And so there are no pauses.
+
+184
+00:13:05,466 --> 00:13:10,141
+Therefore we're using the network more
+fully then in this case when we've got
+
+185
+00:13:10,141 --> 00:13:13,849
+this idle time.
+So this gives us a hint as to our ability
+
+186
+00:13:13,849 --> 00:13:18,397
+to keep the network full.
+Some people would interpret this as a rate
+
+187
+00:13:18,397 --> 00:13:22,410
+because it's the window size divided by
+the round trip time.
+
+188
+00:13:22,410 --> 00:13:26,422
+And we're going to look, we're going to
+consider that a little bit later.
+
+189
+00:13:26,422 --> 00:13:29,705
+So that's the basic idea of how this is
+going to work.
+
+190
+00:13:29,705 --> 00:13:32,684
+More specifically.
+With TCP congesting control.
+
+191
+00:13:32,684 --> 00:13:37,396
+TCP is going to vary the number of
+outstanding packets in the network by
+
+192
+00:13:37,396 --> 00:13:41,367
+varying the window size.
+And it's going to set the window size,
+
+193
+00:13:41,367 --> 00:13:45,810
+instead of just being the advertised
+window which is what it used
+
+194
+00:13:45,810 --> 00:13:49,772
+before, which came from the receiver to
+stop overwhelming the receiver.
+
+195
+00:13:49,772 --> 00:13:54,413
+It's also going to take into consideration
+something called the congestion window.
+
+196
+00:13:54,413 --> 00:13:57,356
+This is something which is calculated at
+the source.
+
+197
+00:13:57,356 --> 00:14:01,488
+So the advertise window comes from the
+receiver, and at the source, or the
+
+198
+00:14:01,488 --> 00:14:05,337
+transmitter, it's going to calculate the
+congestion window, that's often
+
+199
+00:14:05,337 --> 00:14:08,620
+abbreviated to CWND.
+C, W, N, D stands for congestion window.
+
+200
+00:14:08,620 --> 00:14:11,776
+And then it will take whichever is the
+smaller value.
+
+201
+00:14:11,776 --> 00:14:15,827
+In other words, if the network is
+congested, then it's going to use CWND,
+
+202
+00:14:15,827 --> 00:14:20,413
+and if the network is not congested, then
+it will be dominated by the receive
+
+203
+00:14:20,413 --> 00:14:22,914
+window, the one advertised by the
+receiver.
+
+204
+00:14:22,914 --> 00:14:27,203
+So the next question to ask is, okay, how
+do we decide the value for CWND?
+
+205
+00:14:27,203 --> 00:14:31,551
+How will we going to use CWND in order to
+change the window size to control
+
+206
+00:14:31,551 --> 00:14:36,198
+congestion in the network?
+And the scheme that we're going to use is
+
+207
+00:14:36,198 --> 00:14:40,489
+called AIMD.
+And this is a sort of a classic technique
+
+208
+00:14:40,489 --> 00:14:46,290
+in, in networking that's used for
+controlling congestion in a TCP network.
+
+209
+00:14:46,290 --> 00:14:51,757
+Alright, and, and it could be used in any
+network that uses sliding windows.
+
+210
+00:14:51,757 --> 00:14:56,559
+AIMD stands for additive increase and
+multiplicative decrease.
+
+211
+00:14:56,559 --> 00:15:02,396
+Let's start with the additive increase.
+The way the window size is going to evolve
+
+212
+00:15:02,396 --> 00:15:07,494
+is as follows, or, or rather CWND.
+If every time a packet is received
+
+213
+00:15:07,494 --> 00:15:13,035
+correctly by the sender it's going to
+increase the window size, in fact CWND,
+
+214
+00:15:13,035 --> 00:15:16,534
+By one over W.
+What this means is that every time a
+
+215
+00:15:16,534 --> 00:15:21,997
+complete window's worth of data has been
+accepted, has been correctly received and
+
+216
+00:15:21,997 --> 00:15:26,860
+acknowledged, then the sender is going to
+increase its window size by one.
+
+217
+00:15:26,860 --> 00:15:31,255
+It will increase it by 1/W for every
+packet, because there are W packets, then
+
+218
+00:15:31,255 --> 00:15:34,566
+by the end of the window it will have
+increased it by one.
+
+219
+00:15:34,566 --> 00:15:38,847
+So this is the additive increase.
+It's going to slowly increase when things
+
+220
+00:15:38,847 --> 00:15:42,100
+are going well.
+If things are going badly and packets are
+
+221
+00:15:42,100 --> 00:15:45,640
+dropped, then it's going to use this as a
+signal of congestion.
+
+222
+00:15:46,520 --> 00:15:52,135
+And if that happens it's going to reduce
+the CWND by a factor of two.
+
+223
+00:15:52,135 --> 00:15:57,432
+It's going to halve it.
+What this will look like is, if we draw
+
+224
+00:15:57,432 --> 00:16:04,437
+the window as a function of time.
+So this will be the CWND as a function
+
+225
+00:16:04,437 --> 00:16:08,130
+of time.
+It's going to start by increasing.
+
+226
+00:16:08,130 --> 00:16:12,561
+Every time we have a success.
+And then when we have a drop.
+
+227
+00:16:12,561 --> 00:16:17,070
+So here is the drop taking place here.
+It's going to drop down.
+
+228
+00:16:17,070 --> 00:16:22,152
+To halve its, half of its value.
+So if this is the peak value then this
+
+229
+00:16:22,152 --> 00:16:26,000
+value down here would be, that would be
+peak over two.
+
+230
+00:16:26,890 --> 00:16:30,702
+And then it's going to start increasing
+again and increasing, increasing until it
+
+231
+00:16:30,702 --> 00:16:33,439
+has another drop.
+And then it's going to increase again, and
+
+232
+00:16:33,439 --> 00:16:35,980
+increase again.
+And it could go up to a higher value
+
+233
+00:16:35,980 --> 00:16:39,841
+because now the network may be allowed
+more outstanding packets, come down to a
+
+234
+00:16:39,841 --> 00:16:43,165
+different value, and then go up.
+And then there might be another drop.
+
+235
+00:16:43,165 --> 00:16:46,440
+So it isn't always going to go in this
+nice neat symmetrical Sawtooth.
+
+236
+00:16:46,440 --> 00:16:50,799
+This is where the drops are taking place.
+And it's halving at each case.
+
+237
+00:16:50,799 --> 00:16:55,035
+So here is the additive increase, here is
+the multiplicative decrease.
+
+238
+00:16:55,035 --> 00:16:58,105
+The additive increase, the multiplicative
+decrease.
+
+239
+00:16:58,105 --> 00:17:02,219
+This is often referred to as the TCP
+Sawtooth or the AIMD Sawtooth.
+
+240
+00:17:02,219 --> 00:17:06,480
+Just because of its shape.
+If we zoom in, let's take a closer look at
+
+241
+00:17:06,480 --> 00:17:11,122
+what's going on at each step.
+So let's take a closer look at what's
+
+242
+00:17:11,122 --> 00:17:14,864
+going on here.
+This is actually proceeding by going in
+
+243
+00:17:14,864 --> 00:17:18,696
+steps.
+Remember it's going in steps such that
+
+244
+00:17:18,695 --> 00:17:23,006
+every packet time, it's going to increase
+by 1/W.
+
+245
+00:17:23,007 --> 00:17:26,770
+And I'm going to simplify that by saying
+every RTT.
+
+246
+00:17:26,770 --> 00:17:30,770
+This horizontal dimension is time.
+It's going to increase by one.
+
+247
+00:17:30,770 --> 00:17:33,646
+The window sizes are going to increase by
+one.
+
+248
+00:17:33,646 --> 00:17:38,522
+Because every time we've acknowledged a
+complete pack-, window's worth of data,
+
+249
+00:17:38,522 --> 00:17:41,398
+it's going to increase the window size by
+one.
+
+250
+00:17:41,398 --> 00:17:46,461
+So it's going to go forward in the steps
+of RTT along the horizontal part of the
+
+251
+00:17:46,461 --> 00:17:49,650
+stair, then it's going to by one, then RTT
+and so on.
+
+252
+00:17:49,650 --> 00:17:55,003
+So this leads to what's often called the
+AIMD Sawtooth, or the TCP Sawtooth that
+
+253
+00:17:55,003 --> 00:17:58,350
+can look like this.
+This is an evolution of CWND.
+
+254
+00:17:58,350 --> 00:18:01,429
+Remember that's the congestion window as a
+function of time.
+
+255
+00:18:01,429 --> 00:18:05,638
+So here was the additive increase, we had
+a drop, we dropped down to half the value,
+
+256
+00:18:05,638 --> 00:18:09,642
+we had an additive increase, we dropped
+down because of a drop that took place
+
+257
+00:18:09,642 --> 00:18:11,746
+here.
+And then we go up again through the
+
+258
+00:18:11,746 --> 00:18:16,058
+additive increase and you can see here the
+available window size, in other words the
+
+259
+00:18:16,058 --> 00:18:20,113
+amount of data that the, that the source
+can have outstanding in the network is
+
+260
+00:18:20,113 --> 00:18:23,347
+varying presumably because the network
+conditions are changing.
+
+261
+00:18:23,347 --> 00:18:27,453
+There are other flows in the network or
+maybe even the capacity of the links is
+
+262
+00:18:27,453 --> 00:18:30,020
+changing.
+Maybe they're wireless links for example.
+
+263
+00:18:30,020 --> 00:18:34,255
+So in summary, we have choice when we're
+implementing a congestion control
+
+264
+00:18:34,255 --> 00:18:37,174
+algorithm.
+We can im, implement it in the network, or
+
+265
+00:18:37,174 --> 00:18:41,639
+we can implement it at the end host.
+TCP controls congestion from the end host,
+
+266
+00:18:41,639 --> 00:18:45,760
+because IP offers it no support by
+default, so it gives it no signals or
+
+267
+00:18:45,760 --> 00:18:48,794
+indication of congestion, other than
+dropping packets.
+
+268
+00:18:48,794 --> 00:18:53,373
+So it merely reacts to events that are
+observable at the end host, in particular,
+
+269
+00:18:53,373 --> 00:18:56,568
+packet loss.
+It exploits TCP's sliding window and it's,
+
+270
+00:18:56,568 --> 00:19:01,287
+that's used for flow control and it's
+going to overload that sliding window by
+
+271
+00:19:01,287 --> 00:19:04,572
+changing the window size to try and
+control congestion.
+
+272
+00:19:04,572 --> 00:19:09,709
+It tries to figure out how many packets it
+can safely have outstanding in the network
+
+273
+00:19:09,709 --> 00:19:12,815
+at one time.
+And it's going to vary that window size
+
+274
+00:19:12,815 --> 00:19:16,937
+according to the additive increase
+multiplicative decrease algorithm.
+
+275
+00:19:16,937 --> 00:19:20,760
+And we're going to be studying that more
+in the next two videos.
+

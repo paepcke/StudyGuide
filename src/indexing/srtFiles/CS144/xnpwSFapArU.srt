@@ -1,0 +1,478 @@
+1
+00:00:00,000 --> 00:00:05,344
+So in this video, I'm going to talk about
+"request to send/clear to send" a wireless
+
+2
+00:00:05,344 --> 00:00:09,711
+media access control algorithm.
+So "request to send/clear to send" or
+
+3
+00:00:09,711 --> 00:00:14,990
+RTS/CTS, uses a short sequence of control
+packets to determine whether or not it's
+
+4
+00:00:14,990 --> 00:00:18,966
+safe to transmit data.
+So I'm showing three nodes, A, B, and C
+
+5
+00:00:19,161 --> 00:00:23,658
+where A can hear B, and B can hear C,
+etcetera but A and C cannot hear each
+
+6
+00:00:23,658 --> 00:00:26,657
+other.
+And so, in an RTS/CTS exchange, rather
+
+7
+00:00:26,657 --> 00:00:32,436
+than just immediately send the data packet
+to be like you do in, say, CSMA/CA, A can
+
+8
+00:00:32,436 --> 00:00:36,171
+just transmit.
+Instead, the first step, is that A sends
+
+9
+00:00:36,171 --> 00:00:41,147
+what's called a request to send packet or
+RTS.
+
+10
+00:00:41,147 --> 00:00:47,831
+That's a short control packet and it asks
+B, can I send you a packet of this
+
+11
+00:00:47,831 --> 00:00:52,389
+duration, say.
+If B successfully receives the RTS, and it
+
+12
+00:00:52,389 --> 00:00:57,236
+believes that it's possible for it to
+receive for example, it doesn't think
+
+13
+00:00:57,236 --> 00:01:02,207
+anyone else can be transmitting nearby,
+then it can respond with a clear to send,
+
+14
+00:01:02,207 --> 00:01:05,142
+a CTS.
+And it can tell A, you are clear to send
+
+15
+00:01:05,141 --> 00:01:09,050
+for this period of time.
+And the key thing here is that C can
+
+16
+00:01:09,051 --> 00:01:13,920
+overhear this clear to send packet, and
+know, that B is going to be receiving
+
+17
+00:01:13,920 --> 00:01:16,611
+data.
+Because B know that B's going to be
+
+18
+00:01:16,611 --> 00:01:20,647
+receiving data, it knows it shouldn't
+transmit during that time.
+
+19
+00:01:20,647 --> 00:01:25,773
+And so this clear to send can prevent C
+from transmitting, and therefore prevent,
+
+20
+00:01:25,773 --> 00:01:30,258
+in theory, the hidden terminal problem
+that we see in CSMA/CA networks.
+
+21
+00:01:30,258 --> 00:01:33,188
+So next, A sends the data.
+
+22
+00:01:33,188 --> 00:01:36,158
+Followed
+by B sending an acknowledgement back.
+
+23
+00:01:36,158 --> 00:01:40,647
+So this is the basic RTS/CTS exchange.
+An RTS followed by CTS followed by data,
+
+24
+00:01:40,647 --> 00:01:44,099
+followed by an ACK.
+Now, of course, if A sends an RTS to B and
+
+25
+00:01:44,099 --> 00:01:47,551
+doesn't hear a clear to send, then it can
+always retry later.
+
+26
+00:01:47,551 --> 00:01:50,083
+There, there are the standard backoff
+approaches.
+
+27
+00:01:50,083 --> 00:01:54,169
+You'd see, for example,
+exponential backoff that you see in data
+
+28
+00:01:54,169 --> 00:01:57,925
+transmissions in CSMA/CA.
+So the point here, is it's not that
+
+29
+00:01:57,925 --> 00:02:02,225
+RTS/CTS has a lower probability of, say,
+the hidden terminal problem.
+
+30
+00:02:02,225 --> 00:02:07,232
+But rather, what it's doing is it's
+pushing that problem to the control packet
+
+31
+00:02:07,232 --> 00:02:10,441
+exchange.
+For example, it could very well be that R,
+
+32
+00:02:10,441 --> 00:02:14,550
+that A, A and C try to simultaneously
+transmit an RTS .
+
+33
+00:02:14,895 --> 00:02:24,005
+And that causes a collision, but this
+won't appear as a data packet loss from A
+
+34
+00:02:24,005 --> 00:02:29,310
+to B.
+Instead you'll cause just additional RTS
+
+35
+00:02:29,310 --> 00:02:33,922
+packets.
+So RTS/CTS is pushing losses and
+
+36
+00:02:33,922 --> 00:02:43,148
+collisions to the control packet exchange.
+So let's go back to the problems with
+
+37
+00:02:43,148 --> 00:02:48,150
+CSMA/CA. Hidden terminals, exposed
+terminals, and collision or low SNR.
+
+38
+00:02:48,150 --> 00:02:53,898
+So you can ask, one by one, whether or not
+RTS/CTS helps or solves these problems.
+
+39
+00:02:53,898 --> 00:02:58,137
+So first, hidden terminals.
+RTS/CTS can't solve this problem.
+
+40
+00:02:58,137 --> 00:03:04,531
+It's always possible for example that RTSes
+arent heard, CTSes aren't heard, that for
+
+41
+00:03:04,531 --> 00:03:11,536
+example we have B sending a CTS to A, but
+some other node is transmitting, and so C
+
+42
+00:03:11,536 --> 00:03:16,834
+ends up not hearing it.
+So it's possible the hidden terminals will
+
+43
+00:03:16,834 --> 00:03:19,884
+occur.
+But, RTS/CTS greatly reduces them by
+
+44
+00:03:19,884 --> 00:03:25,984
+having this clear to send packet and
+clearing the channel around the receiver.
+
+45
+00:03:25,984 --> 00:03:30,960
+So for the most part it doesn't solve it,
+but it greatly helps.
+
+46
+00:03:30,960 --> 00:03:36,498
+So how about exposed terminals?
+So recall, exposed terminals are when we
+
+47
+00:03:36,498 --> 00:03:45,013
+have a node here, let's say C.
+So B wants to transmit to A.
+
+48
+00:03:45,013 --> 00:03:49,941
+C wants to transmit to D and C won't
+transmit, because it hears B transmitting.
+
+49
+00:03:49,941 --> 00:03:54,017
+So in theory it's very well possible that
+C could transmit to D.
+
+50
+00:03:54,017 --> 00:03:57,120
+So B is going to send an RTS.
+Then there will be a CTS.
+
+51
+00:03:57,120 --> 00:04:01,743
+C doesn't hear the, the RTS, doesn't hear
+the CTS, so it knows it can transmit.
+
+52
+00:04:01,743 --> 00:04:06,549
+But in practice, this doesn't really work.
+The reason being that C doesn't want to
+
+53
+00:04:06,549 --> 00:04:10,200
+transmit to D because A is going to send
+an acknowledgement.
+
+54
+00:04:11,340 --> 00:04:16,083
+And so generally, RTS/CTS won't really
+help you with exposed terminals.
+
+55
+00:04:16,083 --> 00:04:20,758
+So how about collision or low SNR?
+Well given that RTS CTS can reduce
+
+56
+00:04:20,757 --> 00:04:26,314
+collisions hidden terminals it can help
+with this collision of low SNR in a sense
+
+57
+00:04:26,314 --> 00:04:31,260
+of when data losses do occur, its more
+likely that their low SNR, there is
+
+58
+00:04:31,260 --> 00:04:36,681
+probability that their collision is lower.
+It can't solve the problem, but it can
+
+59
+00:04:36,681 --> 00:04:43,771
+help.
+So given that RTS/CTS can help, and it can
+
+60
+00:04:43,771 --> 00:04:48,045
+prevent you know, really help with hidden
+terminal problems, which is pretty common,
+
+61
+00:04:48,045 --> 00:04:51,515
+especially, you know, in heavily used
+networks, why don't we use it?
+
+62
+00:04:51,665 --> 00:04:54,180
+Why is it that most WiFi systems today use
+CSMA/CA?
+
+63
+00:04:54,180 --> 00:04:59,721
+So the reason is overhead.
+So recall, we have this packet exchange.
+
+64
+00:04:59,721 --> 00:05:05,003
+We have an RTS, then we have a CTS.
+The question is how long does this packets
+
+65
+00:05:05,003 --> 00:05:07,595
+take.
+Well, there are little control packets but
+
+66
+00:05:07,595 --> 00:05:12,000
+still just the way WiFi for example works
+is that these control packets actually
+
+67
+00:05:12,000 --> 00:05:16,198
+have to take a significant amount of time.
+The reason being that, unlike a data
+
+68
+00:05:16,198 --> 00:05:20,810
+packet which you can send at a really high
+speed just to the destination knowing that
+
+69
+00:05:20,810 --> 00:05:25,008
+it's going to have a high signal to noise
+ratio so you can use dense constellation
+
+70
+00:05:25,008 --> 00:05:29,336
+and you can send it really, really fast.
+These control packets need to be heard by
+
+71
+00:05:29,336 --> 00:05:32,632
+everyone, so they always have to be sent
+at a very low speed.
+
+72
+00:05:32,632 --> 00:05:36,861
+So, you know, wireless, may
+have many different speeds and you always have to send
+
+73
+00:05:36,861 --> 00:05:41,200
+these control packets at the lowest speed.
+And so, if you look, let's say, this is
+
+74
+00:05:41,200 --> 00:05:45,594
+just, this is some data a student of mine
+collected just using 802.11b, so it has
+
+75
+00:05:45,594 --> 00:05:48,615
+four speeds one, two, 5.5 and eleven
+megabits per second.
+
+76
+00:05:48,779 --> 00:05:52,240
+And this was the observed throughput in
+megabits per second.
+
+77
+00:05:52,688 --> 00:05:57,397
+of data, so this is throughput observed up at the
+network layers here is exchanging these
+
+78
+00:05:57,397 --> 00:06:00,088
+frames.
+And so you see, if you're exchanging data
+
+79
+00:06:00,088 --> 00:06:04,741
+frames at one megabit per
+second, this small control exchange is not
+
+80
+00:06:04,741 --> 00:06:08,497
+a big deal; it's just four%.
+Because these control packets, the actual
+
+81
+00:06:08,497 --> 00:06:13,038
+data packets themselves are being sent in
+one megabits, these control packets are
+
+82
+00:06:13,038 --> 00:06:15,673
+small.
+But as the data rate goes up, if the data
+
+83
+00:06:15,673 --> 00:06:19,822
+packets get shorter and shorter in time,
+because they're faster and faster, the
+
+84
+00:06:19,822 --> 00:06:22,849
+overhead goes up.
+These small control packets become a
+
+85
+00:06:22,849 --> 00:06:25,260
+larger and larger fraction of the air
+time.
+
+86
+00:06:25,260 --> 00:06:29,618
+Point of which if you're transmitting at
+eleven megabits per second, you can get
+
+87
+00:06:29,618 --> 00:06:31,961
+about 5.89 megabits per second out of
+CSMA.
+
+88
+00:06:31,961 --> 00:06:34,576
+About 4.42 out of RTS/CTS.
+There's a 25% overhead.
+
+89
+00:06:34,576 --> 00:06:38,771
+So you're reducing the throughput of your
+network by a quarter using RTS/CTS.
+
+90
+00:06:38,771 --> 00:06:43,238
+And so if you don't have collisions, if
+you're not having hidden terminals because
+
+91
+00:06:43,238 --> 00:06:45,690
+your network is idle, you're taking a big
+hit.
+
+92
+00:06:45,690 --> 00:06:49,605
+So when I approach people, what we talk
+about is that if you see very few losses,
+
+93
+00:06:49,605 --> 00:06:53,374
+things are working great, you use CSMA.
+But then, if you start seeing collision,
+
+94
+00:06:53,374 --> 00:06:57,192
+you start seeing losses, then switch over
+to RTS/CTS to get better arbitration.
+
+95
+00:06:57,192 --> 00:07:01,059
+So there's been some research on this.
+But, generally speaking, people often just
+
+96
+00:07:01,059 --> 00:07:01,500
+use CSMA.
+

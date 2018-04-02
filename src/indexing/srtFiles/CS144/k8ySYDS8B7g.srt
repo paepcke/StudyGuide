@@ -1,0 +1,1558 @@
+1
+00:00:00,000 --> 00:00:02,823
+So in this video, we're talking about
+congestion control.
+
+2
+00:00:02,823 --> 00:00:07,737
+Particularly the basic motivation for, for
+congestion control and transport
+
+3
+00:00:07,737 --> 00:00:12,255
+protocols, and protocols in general,
+And walk through the first example of a
+
+4
+00:00:12,255 --> 00:00:15,700
+protocol that really identified and
+tackled this problem, TCP,
+
+5
+00:00:15,700 --> 00:00:20,868
+Particular version TCP called TCP Tahoe.
+And I'll talk about the first mechanism
+
+6
+00:00:20,868 --> 00:00:26,685
+that TCP Tahoe uses to try and deal with
+congestion, something called slow start.
+
+7
+00:00:26,685 --> 00:00:32,283
+So the basic motivation for congestion
+control is that flow control tells an
+
+8
+00:00:32,283 --> 00:00:36,718
+endpoint say, is going to tell, Boston is
+going to tell San Francisco the amount of
+
+9
+00:00:36,718 --> 00:00:41,711
+data they can accept.
+And so flow control specifies the
+
+10
+00:00:41,711 --> 00:00:47,142
+limitations of the endpoint.
+However, it can very well be that this
+
+11
+00:00:47,142 --> 00:00:53,477
+node in Boston is able to receive data
+much, much faster than the network can
+
+12
+00:00:53,477 --> 00:00:58,578
+support it. So for example, while this
+node in Boston might have, you know a
+
+13
+00:00:58,578 --> 00:01:05,242
+buffer that allows it to receive 100
+packets per RTT, per RTT, it could be that
+
+14
+00:01:05,242 --> 00:01:11,660
+some bottleneck link on the path from San
+Francisco to Boston can really only
+
+15
+00:01:11,660 --> 00:01:16,458
+support about five packets per RTT.
+And so, the idea's that if San Francisco
+
+16
+00:01:16,458 --> 00:01:20,295
+communicates with Boston, this node in San
+Francisco communicates with a node in
+
+17
+00:01:20,295 --> 00:01:23,989
+Boston at a rate which flow control would
+allow. Then it's going to send packets
+
+18
+00:01:23,989 --> 00:01:28,018
+much faster than it can support and most
+of these packets are going to be dropped
+
+19
+00:01:28,018 --> 00:01:31,807
+and it's going to spend a lot of its time
+doing retransmissions trying to recover
+
+20
+00:01:31,807 --> 00:01:34,733
+from these heavy errors.
+You don't want to saturate the network,
+
+21
+00:01:34,733 --> 00:01:38,522
+because everything will work less
+efficiently than if most packets, arrive
+
+22
+00:01:38,810 --> 00:01:41,640
+require less control over head will
+generally work better.
+
+23
+00:01:41,940 --> 00:01:46,413
+And so, the basic idea of congestion
+control is tnat end point should can
+
+24
+00:01:46,413 --> 00:01:50,956
+control their data rate,
+So that they do not overload the network.
+
+25
+00:01:50,956 --> 00:01:55,150
+This will generally increase the
+performance of the network.
+
+26
+00:01:55,150 --> 00:01:59,898
+So if we just take a step back in terms of
+congestion control, what really led to it
+
+27
+00:01:59,898 --> 00:02:04,364
+as this very important area of study and
+of engineering in the Internet, it all
+
+28
+00:02:04,364 --> 00:02:07,021
+comes from TCP.
+So basic history of TCP in 1974,
+
+29
+00:02:07,190 --> 00:02:10,243
+established in 3-way handshake, you know syn, syn-ack ack.
+
+30
+00:02:10,413 --> 00:02:15,048
+In 1978, TCP and IP were split were split.
+It used to be that the internet, or at
+
+31
+00:02:15,048 --> 00:02:19,571
+that point the ARPAnet just supported TCP,
+but they realized, oh, we need to split
+
+32
+00:02:19,571 --> 00:02:24,124
+them because we need stuff like UDP.
+Then January one 1983, that was, you know,
+
+33
+00:02:24,124 --> 00:02:29,612
+the, the switch date when suddenly the
+entire ARPAnet switched over to TCP/IP,
+
+34
+00:02:29,612 --> 00:02:33,088
+IPv4.
+Three years after that, the Internet began
+
+35
+00:02:33,088 --> 00:02:36,968
+to suffer congestion collapse, where links
+were saturated.
+
+36
+00:02:36,968 --> 00:02:42,413
+They were sending, you know, operating at
+line speed, yet no worse, useful work was
+
+37
+00:02:42,413 --> 00:02:46,021
+being done.
+Instead, all the packets being transmitted
+
+38
+00:02:46,021 --> 00:02:50,037
+were unnecessary retransmissions or
+acknowledgments.
+
+39
+00:02:50,037 --> 00:02:55,482
+So you're seeing full utilization of
+links, while simultaneously no application
+
+40
+00:02:55,482 --> 00:03:00,259
+level throughput.
+So then, Van Jacobson in the seminal paper
+
+41
+00:03:00,487 --> 00:03:06,809
+fixed TCP, figured out what was going on
+and he published this seminal TCP paper
+
+42
+00:03:07,037 --> 00:03:13,131
+which described TCP Tahoe These names
+Tahoe and Reno come from the versions of
+
+43
+00:03:13,131 --> 00:03:18,920
+hardware for Berekely Unix that these TCP
+implementations occurred on.
+
+44
+00:03:18,920 --> 00:03:23,296
+And so, you read about Tahoe, Reno and
+then after they start getting names like
+
+45
+00:03:23,296 --> 00:03:26,081
+New Reno, Vegas, Daytona, just to follow
+that theme.
+
+46
+00:03:26,081 --> 00:03:30,344
+But Tahoe and Reno were denoted by
+versions of Berkeley, of Berkeley Unix.
+
+47
+00:03:30,344 --> 00:03:34,500
+They were distributed in the hardware they
+were for. So then about, you know, a
+
+48
+00:03:34,500 --> 00:03:38,830
+couple years after, this first TCP Tahoe,
+A fast recovery and fast retransmit,
+
+49
+00:03:38,830 --> 00:03:42,392
+Assuming it's in a future TCP version,
+we'll talk about it in a later,
+
+50
+00:03:42,557 --> 00:03:45,078
+Video TCP Reno.
+Which were, are common today,
+
+51
+00:03:45,078 --> 00:03:47,654
+But at the time, they were new ideas, were
+added.
+
+52
+00:03:47,654 --> 00:03:52,641
+And so if you look, basically all TCP
+implementations today have the mechanisms
+
+53
+00:03:52,641 --> 00:03:56,852
+that are in TCP Tahoe and TCP Reno and so
+we're going to go through them in this
+
+54
+00:03:56,852 --> 00:04:03,725
+series of videos.
+So, there are basically three questions
+
+55
+00:04:03,725 --> 00:04:09,650
+that a transport protocol needs to answer,
+if it is going to provide reliable
+
+56
+00:04:09,650 --> 00:04:12,426
+transport.
+Alright? The first is, when should it send
+
+57
+00:04:12,426 --> 00:04:14,879
+new data?
+That is, when should it send data, which,
+
+58
+00:04:14,879 --> 00:04:16,668
+you know, has never put all in a network
+before?
+
+59
+00:04:16,668 --> 00:04:19,070
+Second is, when should it send a
+retransmission?
+
+60
+00:04:19,070 --> 00:04:21,983
+When should it try to retransmit data it
+has sent before?
+
+61
+00:04:21,983 --> 00:04:25,356
+And finally, when should it send
+acknowledgements for data that it
+
+62
+00:04:25,356 --> 00:04:28,678
+successfully received?
+These are these basic things of as to when
+
+63
+00:04:28,678 --> 00:04:30,722
+is it going to generate packets?
+Alright?
+
+64
+00:04:30,722 --> 00:04:33,993
+Whether they're data packets,
+retransmissions of data packets, or
+
+65
+00:04:33,993 --> 00:04:38,007
+acknowledgement packets. You know, of course
+often, we talk about data and
+
+66
+00:04:38,007 --> 00:04:41,276
+acknowledgement packets as being
+independent, but in TCP they're not.
+
+67
+00:04:41,276 --> 00:04:44,882
+The acknowledgements are simply a field
+and a header, and you can of course,
+
+68
+00:04:44,882 --> 00:04:48,295
+piggyback data in an acknowledgement.
+But often we just talk about data
+
+69
+00:04:48,295 --> 00:04:52,190
+acknowledgment separately, just pretending
+that the flow is unidirectional though
+
+70
+00:04:52,190 --> 00:04:54,497
+often it might not be.
+It might be bidirectional.
+
+71
+00:04:54,497 --> 00:04:58,344
+The point being that it can be that you
+have no data to send, but you do need to
+
+72
+00:04:58,344 --> 00:05:03,528
+send an acknowledgment.
+So what did TCP look like before TCP
+
+73
+00:05:03,528 --> 00:05:06,489
+Tahoe?
+So essentially, what happens is you set up
+
+74
+00:05:06,489 --> 00:05:11,151
+a connection through the, through a
+handshake and an endpoint now has the flow
+
+75
+00:05:11,151 --> 00:05:14,977
+control window size, denoted by the window
+field of a TCP header.
+
+76
+00:05:14,977 --> 00:05:19,459
+And so what, pre-Tahoe, what TCP would do
+is, this seemed like a simple thing.
+
+77
+00:05:19,459 --> 00:05:23,822
+It would just send a full window of
+packets of the window said, Ah-ha!
+
+78
+00:05:23,822 --> 00:05:27,468
+I'm 30 kilobytes, it would send 30
+kilobytes worth of packets.
+
+79
+00:05:27,468 --> 00:05:32,464
+So it's just obeying the flow control.
+We then start a retransmit timer for each
+
+80
+00:05:32,464 --> 00:05:37,360
+packet, and then, if it didn't receive an
+acknowledgement for that packet by the
+
+81
+00:05:37,360 --> 00:05:41,760
+time the transmit retransmit timer fired,
+it would then retransmit that packet.
+
+82
+00:05:42,240 --> 00:05:46,677
+And so, the basic problem this encounters,
+what happens if the flow control window is
+
+83
+00:05:46,677 --> 00:05:49,079
+much larger than what the network can
+support?
+
+84
+00:05:49,079 --> 00:05:53,256
+It might be that your endpoint has space
+for 30 kilobytes, but you know, the link
+
+85
+00:05:53,256 --> 00:05:57,485
+is already saturated, you can't suddenly
+just dump another 30 kilobytes on it.
+
+86
+00:05:57,485 --> 00:06:01,662
+I mean these numbers might seem small now,
+but back then these were, you know, you
+
+87
+00:06:01,662 --> 00:06:05,265
+had 50, you, you have relatively slow
+links in comparison to today's speed.
+
+88
+00:06:05,265 --> 00:06:09,180
+So I think of it is more of like your
+window suddenly advertised 30 megabytes.
+
+89
+00:06:09,180 --> 00:06:12,679
+You don't usually want to dump 30
+megabytes onto your DSL or your cable
+
+90
+00:06:12,679 --> 00:06:16,204
+modem link immediately.
+So, if you implement that algorithm, you
+
+91
+00:06:16,204 --> 00:06:18,886
+just send a window of packets,
+What happens?
+
+92
+00:06:18,886 --> 00:06:22,819
+Well, see here's the picture.
+So, here it's showing, on the X-axis is
+
+93
+00:06:22,819 --> 00:06:27,467
+the time in seconds and the Y-axis is the
+packet frequency number, the, in terms of
+
+94
+00:06:27,467 --> 00:06:30,507
+kilo bytes,
+So the sequence number of the byte that
+
+95
+00:06:30,507 --> 00:06:33,487
+TCP has sent.
+And so, what you see is, on connection
+
+96
+00:06:33,487 --> 00:06:38,612
+establishment, it immediately sends a full
+buffer of packets, about twenty kilobytes
+
+97
+00:06:38,612 --> 00:06:41,106
+worth.
+And then it's getting some
+
+98
+00:06:41,106 --> 00:06:44,587
+acknowledgments,
+So it's sending some more data.
+
+99
+00:06:44,587 --> 00:06:50,601
+But then, suddenly it's window is, a
+certain size, the flow control window, and
+
+100
+00:06:50,601 --> 00:06:56,140
+it hasn't received an acknowledgment for
+this, this segment here.
+
+101
+00:06:56,140 --> 00:06:59,996
+And so, at this point TCP is blocked.
+Right the, here's the, these dots are
+
+102
+00:06:59,996 --> 00:07:02,299
+showing the packet they are transmitted
+to.
+
+103
+00:07:02,299 --> 00:07:06,745
+So at this point it's blocked in that it
+has sent up to the last acknowledged byte
+
+104
+00:07:06,745 --> 00:07:11,191
+plus the window size and it can't send any
+more and the reason is that this packet
+
+105
+00:07:11,191 --> 00:07:14,297
+probably was lost.
+So then here's the, basically, here's the
+
+106
+00:07:14,297 --> 00:07:22,658
+time out and it retransmits that packet
+then as you can see, it's able to send a
+
+107
+00:07:22,658 --> 00:07:26,714
+whole bunch more packets.
+It gets a whole bunch of acknowledgments
+
+108
+00:07:26,898 --> 00:07:31,999
+or it gets accumulative acknowledgment
+allowing the window to move forward,
+
+109
+00:07:31,999 --> 00:07:35,563
+etcetera, etcetera.
+But the basic point to see here is that
+
+110
+00:07:35,563 --> 00:07:40,357
+there are these huge sawtooths that you
+see, big bursts of packets followed by
+
+111
+00:07:40,357 --> 00:07:43,614
+idle timeouts.
+Big bursts of packets followed by idle
+
+112
+00:07:43,614 --> 00:07:46,318
+timeouts.
+And that many of these packets are
+
+113
+00:07:46,318 --> 00:07:50,190
+redundant like this particular packet,
+here, is sent three times.
+
+114
+00:07:50,190 --> 00:07:54,588
+This one is also sent three times.
+So, you've seen lots of additional
+
+115
+00:07:54,588 --> 00:07:58,862
+retransmissions and overall, the protocol
+is not performing very well.
+
+116
+00:07:58,862 --> 00:08:04,003
+It's sending all this packets, but if you
+look at the actual slope of this line, the
+
+117
+00:08:04,003 --> 00:08:07,534
+sense of the data out sending, the slope
+isn't very high.
+
+118
+00:08:07,534 --> 00:08:12,304
+If TCP were operating at line speed,
+operating at the correct speed, it should
+
+119
+00:08:12,304 --> 00:08:17,321
+be following this line here, but instead,
+it's following the line of the much lower
+
+120
+00:08:17,321 --> 00:08:20,109
+slope.
+It's actually sending data much slower
+
+121
+00:08:20,109 --> 00:08:24,386
+than it should be able to.
+So this is what was observed, that TCP is
+
+122
+00:08:24,386 --> 00:08:29,589
+very slow because it's sending lots of
+retransmissions unnecessarily and there
+
+123
+00:08:29,589 --> 00:08:36,923
+are lots of time outs.
+So based on this Van Jacobson proposed
+
+124
+00:08:36,923 --> 00:08:40,593
+three improvements.
+The first is the idea of a congestion
+
+125
+00:08:40,592 --> 00:08:45,550
+window, the second is better timeout
+estimation, and the last is self-clocking.
+
+126
+00:08:45,550 --> 00:08:50,832
+I'm going to walk through each of those.
+Congestion, the congestion window, going
+
+127
+00:08:50,832 --> 00:08:55,245
+to talk about in this video.
+In future videos, I'll talk about timeout
+
+128
+00:08:55,245 --> 00:08:58,855
+estimation and self-clocking.
+So, the congestion window.
+
+129
+00:08:58,855 --> 00:09:04,204
+So, the basic insight is that the flow
+control window is only about the endpoint.
+
+130
+00:09:04,204 --> 00:09:09,219
+And so what you want to do is have TCP
+estimate a congestion window, that is how
+
+131
+00:09:09,219 --> 00:09:14,568
+much can the network support, when I, in
+the sense of how quickly can I send data
+
+132
+00:09:14,568 --> 00:09:18,494
+and have the network deliver it reliably?
+And then the sender windows can be the
+
+133
+00:09:18,494 --> 00:09:21,541
+minimum of these two.
+Since there is no point sending data
+
+134
+00:09:21,541 --> 00:09:25,222
+faster than the network can support nor is
+there any point sending data faster than
+
+135
+00:09:25,222 --> 00:09:29,249
+the end host can support.
+And then, what you do is based on this
+
+136
+00:09:29,249 --> 00:09:34,135
+idea of a congestion window, you separate
+how you behave in terms of sending packets
+
+137
+00:09:34,135 --> 00:09:37,275
+in the size of this congestion window into
+two states.
+
+138
+00:09:37,275 --> 00:09:42,809
+The first is something called slow start.
+The second is congestion avoidance.
+
+139
+00:09:42,809 --> 00:09:47,087
+You slow start when you're doing
+connection start up or when there's a
+
+140
+00:09:47,087 --> 00:09:50,582
+packet timeout,
+When something has gone very wrong and you
+
+141
+00:09:50,582 --> 00:09:55,463
+want to back off completely and figure out
+what it is that the network can support.
+
+142
+00:09:55,463 --> 00:10:00,344
+Congestion avoidance, in contrast, is when
+the network, when you're behaving pretty
+
+143
+00:10:00,344 --> 00:10:02,935
+well,
+That is, you're operating close to the
+
+144
+00:10:02,935 --> 00:10:07,816
+network capacity and so you don't want to
+start sending things much faster nor much
+
+145
+00:10:07,816 --> 00:10:10,708
+slower.
+You're operating close to what you think
+
+146
+00:10:10,708 --> 00:10:18,994
+the congestion window of the network is.
+So the idea of slow start is that, what
+
+147
+00:10:18,994 --> 00:10:24,175
+the node does, is rather than start its
+window at the flow control window size, it
+
+148
+00:10:24,175 --> 00:10:29,036
+starts its window at the size of a, maximium segment size.
+
+149
+00:10:29,036 --> 00:10:32,171
+So basically, one, one packet's worth of
+data.
+
+150
+00:10:32,171 --> 00:10:37,224
+Today nodes might start with two or four
+there's some, some rules about that, two,
+
+151
+00:10:37,224 --> 00:10:41,318
+three, two, three or four, but the
+original version started at one.
+
+152
+00:10:41,510 --> 00:10:46,920
+And then, everytime a packet's
+acknowledged, everytime you receive a new
+
+153
+00:10:46,920 --> 00:10:51,960
+acknowledgment, you increase this window
+by the maximum segment size.
+
+154
+00:10:51,960 --> 00:10:55,772
+And what this means in terms of practice
+is that in the first roundtrip time,
+
+155
+00:10:55,772 --> 00:10:58,545
+you're going to send a single packet,
+it'll be acknowledged,
+
+156
+00:10:58,545 --> 00:11:02,357
+And now your segment size, now your window
+size is two, so you'll send two packets.
+
+157
+00:11:02,357 --> 00:11:05,773
+They'll both be acknowledged.
+You'll increase by two and it'll send four
+
+158
+00:11:05,773 --> 00:11:07,358
+packets.
+They'll be acknowledged.
+
+159
+00:11:07,358 --> 00:11:10,477
+You'll then send eight packets.
+There's this exponential growth.
+
+160
+00:11:10,477 --> 00:11:14,339
+And so that's what you're seeing here.
+See, here's one packet, two packets, or
+
+161
+00:11:14,339 --> 00:11:16,617
+there's, one, two, four, you know, eight,
+etcetera.
+
+162
+00:11:16,617 --> 00:11:20,615
+There's exponential growth scaling up,
+So in a log, logarithmic number of steps,
+
+163
+00:11:20,615 --> 00:11:24,918
+you can hopefully what is the, the
+congestion window size of the network.
+
+164
+00:11:24,918 --> 00:11:29,505
+So this might seem, exponential growth is
+not slow, and so the name is, it can be a
+
+165
+00:11:29,505 --> 00:11:32,789
+little confusing.
+The reason it's called slow is that it's
+
+166
+00:11:32,789 --> 00:11:37,206
+slow compared to the prior approach.
+It's actually the most faster mode of TCP
+
+167
+00:11:37,206 --> 00:11:41,849
+today, but compared to sending an entire
+flow control window of packets, doing this
+
+168
+00:11:41,849 --> 00:11:46,379
+exponential scale up through logarithmic
+number of steps was comparatively slow.
+
+169
+00:11:46,379 --> 00:11:50,740
+So it's an interesting sort of historic
+compare to the modern, modern idea.
+
+170
+00:11:53,440 --> 00:12:00,517
+And so you can see in this figure, this is
+also from Van Jacobson's paper that, the
+
+171
+00:12:00,517 --> 00:12:04,359
+packet sequence number, you know it's
+increasing this way and you see this
+
+172
+00:12:04,359 --> 00:12:08,564
+exponential growth, and then using slow
+start, you end up plus then the congestion
+
+173
+00:12:08,564 --> 00:12:12,613
+avoidance state, that I'll talk about in a
+moment, you end up hitting this nice
+
+174
+00:12:12,613 --> 00:12:16,662
+steady state and while it takes you a
+little bit of time to discover what the
+
+175
+00:12:16,662 --> 00:12:20,867
+line speed is. Eventually the behavior of
+the protocol is very close to this line
+
+176
+00:12:20,867 --> 00:12:22,891
+speed and it's operating close to
+capacity.
+
+177
+00:12:22,891 --> 00:12:26,837
+It's not overwhelming it and you're not
+seeing these sawtooths of terrible
+
+178
+00:12:26,837 --> 00:12:29,480
+performance.
+.
+
+179
+00:12:29,940 --> 00:12:33,824
+So that's the slow start state.
+So, in the slow start state, you are
+
+180
+00:12:33,824 --> 00:12:37,283
+increasing the congestion window by a
+maximum of segment size for each
+
+181
+00:12:37,283 --> 00:12:40,059
+acknowledgement,
+This leads to an exponential increase in
+
+182
+00:12:40,059 --> 00:12:42,738
+the window size.
+The second state that you can be in is
+
+183
+00:12:42,738 --> 00:12:45,904
+called congestion avoidance.
+And in this model, when you're in the
+
+184
+00:12:45,904 --> 00:12:49,946
+congestion avoidance state,
+You increase the congestion window by end,
+
+185
+00:12:49,946 --> 00:12:54,718
+the maximum segment side squared divided
+by the congestion window for each
+
+186
+00:12:54,718 --> 00:12:58,003
+acknowledgement.
+And what this behavior results is rather
+
+187
+00:12:58,003 --> 00:13:03,023
+than increase by the window by maximum
+segment size for each acknowledgement, you
+
+188
+00:13:03,023 --> 00:13:07,237
+end up increasing the maximum segment size
+for each roundtrip time.
+
+189
+00:13:07,237 --> 00:13:12,443
+So it's an additive increase where as this
+is growing the window size exponentially.
+
+190
+00:13:12,443 --> 00:13:16,920
+This is growing the window size linearly.
+.
+
+191
+00:13:19,580 --> 00:13:24,886
+So we have these two states,
+Slow start and congestion avoidance.
+
+192
+00:13:24,886 --> 00:13:27,780
+How do we transmission between them?
+Well, really there are these, there are
+
+193
+00:13:27,780 --> 00:13:30,773
+these two goals.
+One is slow start to quickly find what the
+
+194
+00:13:30,773 --> 00:13:34,116
+network congestion capacity is.
+That is, how fast can we send things
+
+195
+00:13:34,116 --> 00:13:38,058
+before the network enters congestion and
+starts buffering packets and dropping
+
+196
+00:13:38,058 --> 00:13:40,303
+packets.
+And so then, once we are close to that
+
+197
+00:13:40,303 --> 00:13:43,347
+capacity, one is congestion avoidance, to
+very carefully probe.
+
+198
+00:13:43,347 --> 00:13:47,239
+So we're below the congestion points.
+Let's just start slowly increasing until
+
+199
+00:13:47,239 --> 00:13:51,330
+we reach it then maybe drop down a bit
+then start slowly increasing it till we
+
+200
+00:13:51,330 --> 00:13:53,775
+reach it,
+But basically can use that to stay close
+
+201
+00:13:53,775 --> 00:13:56,320
+to that value and be close to the network
+capacity.
+
+202
+00:13:56,320 --> 00:13:58,306
+And we have three signals to accomplish
+this.
+
+203
+00:13:58,306 --> 00:14:00,337
+Right?
+The first is, if we're seeing increasing
+
+204
+00:14:00,337 --> 00:14:02,545
+acknowledgements,
+That means that data transfer's going
+
+205
+00:14:02,545 --> 00:14:04,311
+well,
+Maybe we can speed things up a bit.
+
+206
+00:14:04,311 --> 00:14:06,607
+The second is if we have duplicate
+acknowledgements.
+
+207
+00:14:06,607 --> 00:14:09,256
+Remember, TCP's using cumulative
+acknowledgement.
+
+208
+00:14:09,256 --> 00:14:12,920
+So if we're seeing many acknowledgements
+for the same piece of data, that means TCP
+
+209
+00:14:12,920 --> 00:14:15,040
+is receiving segments, but one of them's
+missing.
+
+210
+00:14:15,040 --> 00:14:17,014
+So this means something was lost or
+delayed.
+
+211
+00:14:17,014 --> 00:14:18,944
+The final signal is that there's a
+timeout.
+
+212
+00:14:18,944 --> 00:14:22,669
+If we sent a whole bunch of packets or a
+window of packets and we've heard nothing
+
+213
+00:14:22,669 --> 00:14:25,676
+and there's a timeout, that means
+something very wrong has happened.
+
+214
+00:14:25,676 --> 00:14:29,266
+We're maybe way off of what the congestion
+is or maybe the network has suddenly
+
+215
+00:14:29,266 --> 00:14:31,780
+become congested, 'because it itself can
+have dynamic traffic.
+
+216
+00:14:31,780 --> 00:14:36,327
+So this is the TCP Tahoe finite state
+machine.
+
+217
+00:14:36,327 --> 00:14:42,942
+I am going to walk through it bit by bit.
+So, when you open a TCP Tahoe connection,
+
+218
+00:14:42,942 --> 00:14:47,810
+you start in the slow start state with a
+maximum, with a window of a maximum
+
+219
+00:14:47,810 --> 00:14:53,191
+segment size and recall that your actual
+window will never grow larger than your
+
+220
+00:14:53,191 --> 00:14:58,444
+flow control window, the minimum of the
+flow control window and congestion control
+
+221
+00:14:58,444 --> 00:15:02,608
+window, so this is controlling the
+congestion control window size.
+
+222
+00:15:02,608 --> 00:15:07,925
+Then everytime we're in the slow start
+state and receive an acknowledgement, we
+
+223
+00:15:07,925 --> 00:15:12,021
+increase the congestion window, this cwnd
+by the maximum segment size.
+
+224
+00:15:12,021 --> 00:15:26,346
+So this is the exponential increase here.
+Then, we have a parameter ssthresh, which
+
+225
+00:15:26,346 --> 00:15:31,099
+is this, stands for slow start threshold.
+If the congestion window grows larger than
+
+226
+00:15:31,099 --> 00:15:35,223
+the slow start threshold, then we
+transition to the congestion avoidance
+
+227
+00:15:35,223 --> 00:15:37,800
+state.
+This means that hey, we suddenly have a
+
+228
+00:15:37,800 --> 00:15:42,095
+big enough congestion window than we
+should slow down our growth and so we
+
+229
+00:15:42,095 --> 00:15:47,840
+transition the congestion avoidance.
+Now in the congestion avoidance state, if
+
+230
+00:15:47,840 --> 00:15:54,000
+we receive an acknowledgement, increase
+the congestion window by a maximum segment
+
+231
+00:15:54,000 --> 00:15:59,785
+size squared divided by the congestion
+window, this is the linear increase.
+
+232
+00:15:59,785 --> 00:16:05,870
+And so, we see that the window size will
+look like this over time effective, where
+
+233
+00:16:05,870 --> 00:16:12,436
+here is where we hit ssthres,.
+And this part corresponds to this state,
+
+234
+00:16:12,436 --> 00:16:19,321
+this part corresponds to this state.
+But now, what happens if we're in the
+
+235
+00:16:19,321 --> 00:16:24,378
+congestion avoidance state, and this
+linear increase goes beyond the congestion
+
+236
+00:16:24,563 --> 00:16:28,140
+capacity of the network?
+Well, what's going to happen is we're
+
+237
+00:16:28,140 --> 00:16:31,039
+going to see a time-out or a triple
+duplicate ack.
+
+238
+00:16:31,224 --> 00:16:34,554
+A triple duplicate ack, this implies a
+packet was lost.
+
+239
+00:16:34,739 --> 00:16:37,514
+We're seeing this, this many
+acknowledgements.
+
+240
+00:16:37,700 --> 00:16:44,007
+And so what TCP Tahoe does on seeing
+either a time-out or triple duplicate ack
+
+241
+00:16:44,007 --> 00:16:50,235
+is it resets the congestion window to be
+one and sets the ssthresh to the old
+
+242
+00:16:50,235 --> 00:16:55,908
+congestion window divided by two.
+And so what this is going to do, is after,
+
+243
+00:16:55,908 --> 00:17:01,826
+say this, we see this linear growth,
+And then at this point, say we see a
+
+244
+00:17:01,826 --> 00:17:06,863
+triple duplicate ack.
+What'll happen is that TCP Tahoe is going
+
+245
+00:17:06,863 --> 00:17:11,261
+to set,
+This blue, is going to set ssthresh to be
+
+246
+00:17:11,261 --> 00:17:15,340
+half of what the congestion window is at
+that time.
+
+247
+00:17:15,339 --> 00:17:23,801
+It's then going to re-enter slow start, do
+an exponential increase until it reaches
+
+248
+00:17:23,801 --> 00:17:29,000
+this ssthresh, and which point, will then,
+SS threshold, at which point will then
+
+249
+00:17:29,000 --> 00:17:32,401
+enter congestion avoidance and do a linear
+increase.
+
+250
+00:17:32,401 --> 00:17:37,870
+And so a way to think of this is that upon
+this triple-duplicate ack, or this
+
+251
+00:17:37,870 --> 00:17:40,590
+time-out,
+The TCP Tahoe has discovered what it
+
+252
+00:17:40,590 --> 00:17:44,686
+thinks is too much, too fast a
+transmission rate, the window is too big.
+
+253
+00:17:44,686 --> 00:17:48,836
+So then what it does is it says, okay, I'm
+going to exponentially grow my window
+
+254
+00:17:48,836 --> 00:17:52,986
+until I reach half of that point and then
+it'll start linearly increasing it.
+
+255
+00:17:52,986 --> 00:17:57,191
+And so that way you can hopefully quickly
+get back to, you know, close to capacity
+
+256
+00:17:57,191 --> 00:18:01,013
+in a logarithmic number of steps, but
+then you don't want to get too close and
+
+257
+00:18:01,013 --> 00:18:05,218
+so you start with half of, half of what
+that old value was and start linearly
+
+258
+00:18:05,218 --> 00:18:08,385
+increasing again.
+So this is the basic Finite State Machine
+
+259
+00:18:08,385 --> 00:18:11,761
+for TCP Tahoe.
+So here I will walk through a simple
+
+260
+00:18:11,761 --> 00:18:15,221
+example.
+So we start with a sender, and let's just
+
+261
+00:18:15,221 --> 00:18:19,561
+say, ssthresh,
+Is equal to four when it starts up.
+
+262
+00:18:19,561 --> 00:18:25,051
+So, first it's going to send a single TCP
+segment; single maximum segment size
+
+263
+00:18:25,051 --> 00:18:28,482
+segment.
+The receiver let's just call this one, I'll
+
+264
+00:18:28,482 --> 00:18:34,040
+number them a packets for simplicity,
+The receiver sends an acknowledgement.
+
+265
+00:18:35,360 --> 00:18:39,540
+So at this point here our congestion
+window is equal to one.
+
+266
+00:18:39,540 --> 00:18:43,720
+Now since we are in the slow start state
+it will become two.
+
+267
+00:18:45,620 --> 00:18:49,760
+It comes two, and so the sender can send
+two packets.
+
+268
+00:18:50,100 --> 00:18:55,012
+Three and four.
+The receiver receives them.
+
+269
+00:18:55,012 --> 00:19:11,228
+I'm sorry, two and three.
+The receiver receives them, sends
+
+270
+00:19:11,228 --> 00:19:14,380
+acknowledgments.
+Now our congestion window is four,
+
+271
+00:19:17,680 --> 00:19:24,580
+Which means that we will send, four
+packets,
+
+272
+00:19:27,369 --> 00:19:32,034
+Which would be four, five, six, seven.
+Now, at this point, congestion window has
+
+273
+00:19:32,034 --> 00:19:37,204
+reached the slow start threshold, which
+means that TCP Tahoe is going to exit
+
+274
+00:19:37,204 --> 00:19:42,059
+the slow start state and enter the
+congestion avoidance state. And so when
+
+275
+00:19:42,059 --> 00:19:48,449
+these acknowledgements come back,
+It's going to increase the window by one
+
+276
+00:19:48,449 --> 00:19:52,640
+and so rather than send eight packets,
+congestion window will be five.
+
+277
+00:19:53,380 --> 00:19:55,569
+.
+And you'll send five packets.
+
+278
+00:19:55,569 --> 00:20:00,302
+So let's just say I was drawing one arrow
+here of packets eight, nine, ten, eleven,
+
+279
+00:20:00,302 --> 00:20:03,083
+twelve.
+Now, let's say that packet eight is lost.
+
+280
+00:20:03,083 --> 00:20:06,988
+It's dropped in the network.
+We've actually reached our congestion
+
+281
+00:20:06,988 --> 00:20:08,645
+point.
+Well, what will happen?
+
+282
+00:20:08,645 --> 00:20:11,485
+Well, the receiver is going to acknowledge
+eight.
+
+283
+00:20:11,485 --> 00:20:16,633
+It's going to acknowledge that eight was
+received and remember this TCP so the
+
+284
+00:20:16,633 --> 00:20:19,887
+ac\k would actually say nine but it'll just write,
+write eight for simplicity's sake.
+
+285
+00:20:19,887 --> 00:20:22,550
+So we're going to say, aha, I've received
+eight,
+
+286
+00:20:22,550 --> 00:20:28,596
+Then ten, eleven, and twelve arrive.
+Now, TCP is going to then send
+
+287
+00:20:28,596 --> 00:20:31,826
+acknowledgment, eight,
+Eight, eight,
+
+288
+00:20:31,826 --> 00:20:35,885
+Because it's accumulative
+acknowledgements, it hasn't received nine,
+
+289
+00:20:35,885 --> 00:20:40,004
+it can only say I've received eight, I've
+received eight, received eight.
+
+290
+00:20:40,004 --> 00:20:44,122
+This is a triple duplicate acknowledgement
+we have three duplicates.
+
+291
+00:20:44,122 --> 00:20:49,271
+So what now, TCP, Tahoe is going to do, is
+it's going to transition back to the slow
+
+292
+00:20:49,271 --> 00:20:52,542
+start state.
+My congestion window is five, so I'm going
+
+293
+00:20:52,542 --> 00:20:58,007
+to set my slow start threshold to be equal
+to half of the congestion window.
+
+294
+00:20:58,207 --> 00:21:01,527
+Right?
+So, let's just say we are going to set it
+
+295
+00:21:01,527 --> 00:21:05,114
+to basically 2.5 and enter the slow start
+state again,
+
+296
+00:21:05,114 --> 00:21:09,060
+So I'll send a single packet.
+Right.
+
+297
+00:21:09,520 --> 00:21:13,244
+Now this packet is going to be sent on a
+time-out,
+
+298
+00:21:13,244 --> 00:21:17,180
+So essentially I'm waiting for the
+acknowledgement nine.
+
+299
+00:21:17,180 --> 00:21:21,959
+I haven't heard it, I'll time-out and I
+will send, I will resend nine,
+
+300
+00:21:21,959 --> 00:21:25,966
+Then that's the number of packets I can
+have outstanding.
+
+301
+00:21:25,966 --> 00:21:31,658
+Then if an acknowledgement for nine comes
+back, I can set my congestion window to
+
+302
+00:21:31,658 --> 00:21:35,501
+two.
+But this acknowledgment won't just be for
+
+303
+00:21:35,501 --> 00:21:38,067
+nine because it received ten, eleven and
+twelve,
+
+304
+00:21:38,067 --> 00:21:42,064
+So that acknowledgment is actually going
+to say is acknowledge twelve.
+
+305
+00:21:42,064 --> 00:21:46,240
+So I now move my congestion window to two, I
+know twelve has been received.
+
+306
+00:21:46,240 --> 00:21:51,012
+I can send thirteen and fourteen and I'm back
+in the slow start state, until I reach
+
+307
+00:21:51,012 --> 00:21:55,725
+this ssthreshold in which point I'll
+transition back to congestion avoidance.
+
+308
+00:21:55,725 --> 00:21:59,413
+So that's a basic walk through of TCP
+Tahoe and how it behaves.
+
+309
+00:21:59,413 --> 00:22:03,136
+It's moving between slow start and
+congestion avoidance and how it's using
+
+310
+00:22:03,136 --> 00:22:07,108
+triple duplicate acts in order to infer
+that something has gone wrong.
+
+311
+00:22:07,108 --> 00:22:09,392
+And we're turned back to the slow start
+state.
+
+312
+00:22:09,392 --> 00:22:12,520
+It's using that to infer that there's
+congestion and slow down.
+

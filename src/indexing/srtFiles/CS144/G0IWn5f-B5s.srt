@@ -1,0 +1,1175 @@
+1
+00:00:00,000 --> 00:00:04,288
+To continue on our theme of packet
+switching, in this video I'm going to tell you
+
+2
+00:00:04,288 --> 00:00:08,336
+how packet switches work.
+That's things like Ethernet switches,
+
+3
+00:00:08,336 --> 00:00:15,630
+Internet routers, and so on.
+In this video we're going to learn about
+
+4
+00:00:15,630 --> 00:00:20,378
+what a packet switch looks like, what a
+packet switch does, whether it's an
+
+5
+00:00:20,378 --> 00:00:24,937
+ethernet switch or a Internet router and
+how address lookups work.
+
+6
+00:00:24,937 --> 00:00:28,800
+So let's start with a picture of a generic
+packet switch.
+
+7
+00:00:28,800 --> 00:00:33,203
+The three main stages of a packet switch
+are that when a packet arrives.
+
+8
+00:00:33,203 --> 00:00:36,505
+The first thing that we do is look up at
+the address.
+
+9
+00:00:36,505 --> 00:00:40,541
+This means looking at the destination
+address to figure out where it's going to
+
+10
+00:00:40,541 --> 00:00:42,789
+go next.
+We do this by looking up in a forwarding
+
+11
+00:00:42,789 --> 00:00:45,049
+table.
+We send the destination address down to
+
+12
+00:00:45,049 --> 00:00:48,928
+the forwarding table which will tell us
+the egress link or the port that it's
+
+13
+00:00:48,928 --> 00:00:51,780
+going to and that helps us decide where to
+send it next.
+
+14
+00:00:51,780 --> 00:00:55,543
+The next thing that we may need to do is
+to update the header.
+
+15
+00:00:55,543 --> 00:00:59,933
+So, for example, if it's an Internet
+router we have to decrement the TTL
+
+16
+00:00:59,933 --> 00:01:04,384
+and update the checksum.
+The next thing we have to do is to queue
+
+17
+00:01:04,384 --> 00:01:07,339
+the packet.
+This is because in there may be some
+
+18
+00:01:07,339 --> 00:01:10,737
+congestion.
+There may be many packets trying to get to
+
+19
+00:01:10,737 --> 00:01:15,049
+this outgoing link at the same time.
+So we use a buffer memory to hold some
+
+20
+00:01:15,049 --> 00:01:19,036
+packets that are waiting their turn to
+depart on the egress line.
+
+21
+00:01:19,036 --> 00:01:23,875
+Course, this one input, one output packet
+switch is not very interesting.
+
+22
+00:01:23,875 --> 00:01:28,097
+Packet switches, in general, will have
+multiple input, and outputs.
+
+23
+00:01:28,097 --> 00:01:31,493
+Here's one with three inputs and three
+outputs.
+
+24
+00:01:33,118 --> 00:01:34,743
+Packets will arrive and I've color coded
+these ones.
+
+25
+00:01:34,743 --> 00:01:39,699
+The red packets are going to the red
+output over here, and the blue one is
+
+26
+00:01:39,699 --> 00:01:42,175
+going to the blue output up here.
+So.
+
+27
+00:01:42,175 --> 00:01:46,612
+Just as before, the packets are gonna be
+processed the address is gonna be looked
+
+28
+00:01:46,612 --> 00:01:49,366
+up, we're gonna update the header if we
+need to.
+
+29
+00:01:49,366 --> 00:01:51,780
+Then we're gonna transfer it across that
+back plane.
+
+30
+00:01:51,780 --> 00:01:56,777
+This is supposed to represent a shared bus
+over which all of these packets are gonna
+
+31
+00:01:56,777 --> 00:01:59,238
+pass.
+And then they're gonna find their way to
+
+32
+00:01:59,238 --> 00:02:02,170
+the upper queue.
+In this case, we've got two red packets
+
+33
+00:02:02,170 --> 00:02:04,540
+that are gonna contend for the same
+output.
+
+34
+00:02:04,540 --> 00:02:08,671
+So what we'll need to do is we can send
+the blue one to its output.
+
+35
+00:02:08,670 --> 00:02:12,546
+We can send one of the red ones all the
+way through to its output.
+
+36
+00:02:12,546 --> 00:02:17,650
+But because we can only send one packet at
+a time, the other red packet is gonna have
+
+37
+00:02:17,650 --> 00:02:22,001
+to wait in the buffer memory until the
+first one is gone.
+
+38
+00:02:22,001 --> 00:02:24,068
+Once it's gone, this one can go on it's
+way.
+
+39
+00:02:24,068 --> 00:02:27,084
+So this is sort of the generic structure
+of a packet switch.
+
+40
+00:02:27,084 --> 00:02:34,055
+More specifically, one very common type of
+packet switch is an Ethernet switch.
+
+41
+00:02:34,079 --> 00:02:38,072
+These are the four
+basic operations that an Ethernet switch
+
+42
+00:02:38,072 --> 00:02:41,575
+must perform.
+So an Ethernet switch is an example
+
+43
+00:02:41,575 --> 00:02:45,055
+of a packet switch.
+It's just a very specific one that's
+
+44
+00:02:45,055 --> 00:02:50,026
+dealing with Ethernet frames.
+So the first thing it does is it examines
+
+45
+00:02:50,026 --> 00:02:54,273
+the header of each arriving frame.
+If the Ethernet destination address is the
+
+46
+00:02:54,273 --> 00:02:58,033
+Ethernet destination address.
+And these are 48 bit addresses with the
+
+47
+00:02:58,033 --> 00:03:01,039
+Ethernet.
+If it finds that address in the forwarding
+
+48
+00:03:01,039 --> 00:03:05,016
+table, it's gonna forward the frame to the
+correct outgoing port.
+
+49
+00:03:05,016 --> 00:03:08,052
+Or maybe a selection of ports if it's a
+multicast packet.
+
+50
+00:03:08,052 --> 00:03:15,366
+If it finds that the Ethernet destination
+address is not in the table, in an
+
+51
+00:03:15,366 --> 00:03:18,098
+Ethernet switch it broadcasts the frames
+to all ports.
+
+52
+00:03:18,098 --> 00:03:22,043
+Well all ports except the one through
+which the frame arrived.
+
+53
+00:03:22,043 --> 00:03:26,073
+In other words, it doesn't know where to
+send it, so it's going to flood it to
+
+54
+00:03:26,073 --> 00:03:29,052
+everybody, in the hope it'll reach its
+destination.
+
+55
+00:03:30,006 --> 00:03:33,055
+How does it populate the table in the
+first place?
+
+56
+00:03:33,055 --> 00:03:38,009
+Well, it does this by learning addresses
+that it sees on the wire.
+
+57
+00:03:38,009 --> 00:03:43,062
+More specifically, when a packet arrives,
+the entries in the table are learnt by
+
+58
+00:03:43,062 --> 00:03:47,068
+examining the Ethernet source address of
+arriving packets.
+
+59
+00:03:47,068 --> 00:03:53,046
+So when packets first come through, the
+destination address is not in the table.
+
+60
+00:03:53,046 --> 00:03:58,048
+It's broadcast to everybody.
+Hopefully the other end will respond, send
+
+61
+00:03:58,048 --> 00:04:02,070
+a packet back, we'll see it's source
+address and we will therefore learn that
+
+62
+00:04:02,070 --> 00:04:06,097
+in the future we must send packets through
+that particular port to reach that
+
+63
+00:04:06,097 --> 00:04:10,031
+particular address.
+So these are the four basic operations of
+
+64
+00:04:10,031 --> 00:04:13,037
+an Ethernet switch.
+Let's contrast that with an Internet
+
+65
+00:04:13,037 --> 00:04:18,303
+router another type of packet switch which
+processes the internet destination, the IP
+
+66
+00:04:18,303 --> 00:04:23,000
+destination address instead.
+So there's seven basic operations.
+
+67
+00:04:23,000 --> 00:04:28,521
+Because it's dealing with, IP datagrams
+that are encapsulated in Ethernet packets.
+
+68
+00:04:28,521 --> 00:04:33,681
+First of all, it's going to check to see
+whether the Ethernet destination address
+
+69
+00:04:33,681 --> 00:04:36,564
+of the arriving frame belongs to the
+router.
+
+70
+00:04:36,564 --> 00:04:40,617
+In other words, is it specifically
+addressed to this router?
+
+71
+00:04:40,617 --> 00:04:45,639
+If it isn't accepted, if it doesn't, it
+drops it because it's clearly not destined
+
+72
+00:04:45,639 --> 00:04:49,568
+for us.
+The next thing it does is to check that
+
+73
+00:04:49,568 --> 00:04:55,074
+the IP version number is four if its an
+IPV4 router, and checks the length of the
+
+74
+00:04:55,074 --> 00:05:00,574
+data ground, next it's going to decrement
+the TTL, and update the IP header check
+
+75
+00:05:00,574 --> 00:05:06,060
+sum because the check sum includes the
+TTL, it checks to see if the TTL equals
+
+76
+00:05:06,060 --> 00:05:11,764
+zero, if it does ot drops the packet, if
+it doesn't it can continue to forward it.
+
+77
+00:05:11,764 --> 00:05:15,220
+Next it's going to look up in the
+forwarding table.
+
+78
+00:05:15,220 --> 00:05:20,622
+If the AP destination address is in the
+forwarding table, it's going to forward it
+
+79
+00:05:20,622 --> 00:05:24,077
+to the correct egress port or ports if
+it's multicast.
+
+80
+00:05:24,077 --> 00:05:29,545
+And this is the correct ports to reach the
+next hop because AP is doing hop by hop
+
+81
+00:05:29,545 --> 00:05:33,427
+routing.
+Now that it's decided which port it's
+
+82
+00:05:33,427 --> 00:05:38,647
+going to depart from, it encapsulates the
+IP datagram back into an ethernet frame,
+
+83
+00:05:38,647 --> 00:05:44,194
+and it has to figure out the correct
+ethernet destination address for the next
+
+84
+00:05:44,194 --> 00:05:46,914
+hop router.
+We'll learn this process later at
+
+85
+00:05:46,914 --> 00:05:51,050
+something called ARP.
+So it will encapsulate the IP datagram
+
+86
+00:05:51,050 --> 00:05:56,406
+into the ethernet frame, create the new
+ethernet frame and send it to the wire.
+
+87
+00:05:56,406 --> 00:06:00,608
+So the basic operations of a packet switch
+are to look up the address.
+
+88
+00:06:00,608 --> 00:06:05,626
+So we're going to ask the question how is
+this address looked up in the forwarding
+
+89
+00:06:05,626 --> 00:06:07,774
+table?
+I'm going to show you some examples in a
+
+90
+00:06:07,774 --> 00:06:10,577
+moment.
+The second operation is switching, once
+
+91
+00:06:10,577 --> 00:06:15,041
+it's figured out which egress port it
+needs to go to, it now has to send it to
+
+92
+00:06:15,041 --> 00:06:19,729
+that correct output, it's got to deliver
+it to that correct output port so it can
+
+93
+00:06:19,729 --> 00:06:23,866
+leave on the correct outgoing link.
+I'm going to start with the look up
+
+94
+00:06:23,866 --> 00:06:28,344
+address, and in the next video we're going
+to learn about switching.
+
+95
+00:06:28,344 --> 00:06:34,038
+So for Ethernet switches looking up the
+address is very straightforward.
+
+96
+00:06:34,038 --> 00:06:39,052
+It will have a forwarding table, which
+I've drawn in very simplified form here.
+
+97
+00:06:39,071 --> 00:06:45,611
+This is the match that it's gonna perform.
+This is what it's gonna try and match the
+
+98
+00:06:45,611 --> 00:06:51,018
+Ethernet destination address on.
+And this is then the action it's gonna
+
+99
+00:06:51,018 --> 00:06:55,079
+perform if it finds a match.
+If an incoming Ethernet frame has a
+
+100
+00:06:55,079 --> 00:06:59,022
+destination address that matches this one
+here, then.
+
+101
+00:06:59,022 --> 00:07:04,042
+It's going to forward it to port seven.
+If it matches on this addresses here then
+
+102
+00:07:04,042 --> 00:07:09,032
+it's gonna forward it to port three.
+I just turned on the 48-bit addresses here
+
+103
+00:07:09,032 --> 00:07:14,037
+as a hexadecimal numbers.
+Okay, so the Ethernet forwarding table has
+
+104
+00:07:14,037 --> 00:07:18,986
+a number of rows, one for each address and
+for each address, it's gonna tell it which
+
+105
+00:07:18,986 --> 00:07:23,783
+port that it needs to forward to.
+And if it misses then it broke off; that's
+
+106
+00:07:23,783 --> 00:07:28,635
+what the Ethernet switches do when they
+don't know the address to send it to.
+
+107
+00:07:28,635 --> 00:07:33,497
+Now to do this look up, the way that it
+performs this look up, is that typically
+
+108
+00:07:33,497 --> 00:07:38,696
+it stores these addresses in a hash table,
+because these are 48 bit addresses, but
+
+109
+00:07:38,696 --> 00:07:43,549
+there's nothing like two to the 48
+entries, there may be 100,000, maybe even
+
+110
+00:07:43,549 --> 00:07:48,624
+1,000,000 entries, so nothing like two to
+the power of 48 so it's a very sparse
+
+111
+00:07:48,624 --> 00:07:51,471
+table.
+So typically they store addresses in a
+
+112
+00:07:51,471 --> 00:07:56,520
+hash table, it might be a two way hash to
+increase the probability of having a hit
+
+113
+00:07:56,520 --> 00:08:01,835
+on the first try, and then it will look up
+the match by looking for an exact match in
+
+114
+00:08:01,835 --> 00:08:05,072
+the table.
+Another words it's looking for an exact
+
+115
+00:08:05,072 --> 00:08:10,004
+match on the 48 bit address.
+So that's how address look ups are done in
+
+116
+00:08:10,004 --> 00:08:13,096
+an Ethernet switch.
+Now let's look how they done in an IP
+
+117
+00:08:13,096 --> 00:08:18,084
+router, an internet router.
+So, IP addresses are bit more complicated,
+
+118
+00:08:18,084 --> 00:08:24,088
+IP addresses we don't just look up on an
+exact match, we look up on what's called a
+
+119
+00:08:24,088 --> 00:08:29,040
+longest prefix match.
+We'll learn about why that is later when
+
+120
+00:08:29,040 --> 00:08:34,020
+we learn about IP addresses.
+But it suffices to know right now we are
+
+121
+00:08:34,020 --> 00:08:38,042
+performing longer prefix match rather than
+an exact match.
+
+122
+00:08:38,042 --> 00:08:43,065
+So just as before we've got some, some
+matches here of some IP prefixes.
+
+123
+00:08:43,065 --> 00:08:46,083
+And I'll tell you what those are in a
+moment.
+
+124
+00:08:46,083 --> 00:08:50,037
+And then this is the action that we would
+perform.
+
+125
+00:08:50,037 --> 00:08:55,052
+So for example if we if we had a match on
+this IP destination address.
+
+126
+00:08:55,052 --> 00:08:59,034
+At this on here.
+And this is a specific IP destination
+
+127
+00:08:59,034 --> 00:09:00,083
+address.
+127.43.57.99.
+
+128
+00:09:00,083 --> 00:09:05,098
+So that'll be a 32-bit address.
+We're gonna forward it to this IP address.
+
+129
+00:09:05,098 --> 00:09:11,078
+So this is actually the IP address of the
+interface of the next router that we're
+
+130
+00:09:11,078 --> 00:09:16,019
+going to.
+After it's made this decision it's going
+
+131
+00:09:16,019 --> 00:09:19,058
+to resolve this.
+It's going to turn this IP address into
+
+132
+00:09:19,058 --> 00:09:24,037
+the equivalent Ethernet destination
+address of that interface so that it knows
+
+133
+00:09:24,037 --> 00:09:28,079
+what to encapsulate the packet into.
+But anyway, for inside the forwarding
+
+134
+00:09:28,079 --> 00:09:33,064
+table it maintains it as an IP address.
+So if we see something that matches here
+
+135
+00:09:33,064 --> 00:09:38,043
+then this is the action that we perform.
+So let's look at what a longest prefix
+
+136
+00:09:38,043 --> 00:09:42,338
+match is.
+Along here, I've got the IP version for
+
+137
+00:09:42,338 --> 00:09:47,079
+address number-line.
+Although it's all of the possible two to
+
+138
+00:09:47,079 --> 00:09:53,099
+the 32 different addresses that we can
+have in an IP destination address.
+
+139
+00:09:53,099 --> 00:09:57,087
+And what I've got up here is some line
+segments.
+
+140
+00:09:57,087 --> 00:10:04,011
+These line segments are prefixes, and
+they're always represented as in the
+
+141
+00:10:04,011 --> 00:10:08,073
+following form.
+This line segment here corresponds to all
+
+142
+00:10:08,073 --> 00:10:14,008
+of the addresses that start with 65.
+The interpretation of this is.
+
+143
+00:10:14,008 --> 00:10:19,057
+All of those with 65 as the first eight
+bits so if a packet, an incoming
+
+144
+00:10:19,057 --> 00:10:25,034
+destination address has 65 as the first
+eight bits of address then it's gonna
+
+145
+00:10:25,034 --> 00:10:31,012
+match on this line segment and this line
+segment represents all the IP addresses
+
+146
+00:10:31,012 --> 00:10:34,064
+that start with 65.
+In the first eight bit locations.
+
+147
+00:10:34,064 --> 00:10:41,015
+Similarly, this line segment here,
+corresponds to all of the IP addresses
+
+148
+00:10:41,015 --> 00:10:48,038
+that their first sixteen bits are 128.9.
+So there are two to the pair of sixteen
+
+149
+00:10:48,038 --> 00:10:53,016
+addresses here, all with the first sixteen
+bits 128.9.
+
+150
+00:10:53,016 --> 00:11:00,003
+And so we represent that prefix as
+128.9.00/16, corresponding to those first
+
+151
+00:11:00,003 --> 00:11:03,047
+sixteen bits.
+Finally one more example.
+
+152
+00:11:03,047 --> 00:11:09,047
+This one up here, which is a very short
+line segment, is all those addresses that
+
+153
+00:11:09,047 --> 00:11:14,031
+share the first 24 bits.
+This means there are two to the eight of
+
+154
+00:11:14,031 --> 00:11:18,091
+them, or 256 different addresses, that all
+start with 128.9.176.
+
+155
+00:11:18,091 --> 00:11:22,014
+Okay.
+So when a packet arrives with a particular
+
+156
+00:11:22,014 --> 00:11:25,029
+destination address.
+And here's an example here.
+
+157
+00:11:25,029 --> 00:11:29,059
+This one is clearly gonna match on this
+line segment right here.
+
+158
+00:11:31,050 --> 00:11:34,053
+So, this is the address on the number
+line.
+
+159
+00:11:34,053 --> 00:11:39,080
+This is where it matches here.
+So that we know that the prefix that we've
+
+160
+00:11:39,080 --> 00:11:45,044
+matched on to the table is this one.
+So the table will contain this entry here.
+
+161
+00:11:45,044 --> 00:11:49,012
+This address will match on this entry in
+the table.
+
+162
+00:11:49,012 --> 00:11:54,062
+Similarly, this address 128.9.16.14 is
+gonna match on this line segment here.
+
+163
+00:11:54,062 --> 00:11:59,065
+Notice that it matched on this one.
+But this one is, is a longer matching
+
+164
+00:11:59,065 --> 00:12:02,072
+prefix.
+More of the bits match on this one then I
+
+165
+00:12:02,072 --> 00:12:06,011
+do on this one.
+This is a longest, longer prefix it's a
+
+166
+00:12:06,011 --> 00:12:09,062
+21-bits prefix, whereas this one is only a
+16-bit prefix.
+
+167
+00:12:09,062 --> 00:12:13,050
+So because it matches on both, and this is
+the longest one, the.
+
+168
+00:12:13,050 --> 00:12:18,095
+The dress this address here will match on
+this prefix here in the table.
+
+169
+00:12:18,095 --> 00:12:24,078
+So in routing lookups what we do is we
+find the longest matching prefix also
+
+170
+00:12:24,078 --> 00:12:30,030
+known as the most specific route amongst
+all the prefixes that match the
+
+171
+00:12:30,030 --> 00:12:36,010
+destination address.
+Let's look at how we might implement this
+
+172
+00:12:36,010 --> 00:12:39,040
+in a table.
+And, one common implementation is to use,
+
+173
+00:12:39,040 --> 00:12:44,000
+what's called a Binary Trie, TRIE.
+And, there are many variations of this.
+
+174
+00:12:44,000 --> 00:12:49,012
+But, this is the most common one here.
+Let's say that we had a prefix table, look
+
+175
+00:12:49,012 --> 00:12:52,004
+like this.
+This prefix table is a bit strange
+
+176
+00:12:52,004 --> 00:12:57,048
+because, all the prefixes are very short,
+I am just doing that they can be clearly
+
+177
+00:12:57,048 --> 00:13:01,069
+represented in this table.
+So, I've got, one, two, three, four, five,
+
+178
+00:13:01,069 --> 00:13:05,044
+six, seven, eight, nine, ten different
+entries in, In the table.
+
+179
+00:13:05,044 --> 00:13:08,067
+And I'm going to populate them on this
+trie right here.
+
+180
+00:13:10,013 --> 00:13:16,066
+Because the matching of an incoming
+address is, going to have variable length,
+
+181
+00:13:16,066 --> 00:13:21,032
+we need a data structure to hold variable
+length entries.
+
+182
+00:13:21,032 --> 00:13:28,010
+So the way that this data structure holds
+these entries is, let's take the, 00001.
+
+183
+00:13:28,010 --> 00:13:32,045
+This is zero, this is zero, this is zero,
+this is zero, and then this is one.
+
+184
+00:13:32,045 --> 00:13:37,028
+In other words, we take the left branch
+for a zero and the right branch for a one.
+
+185
+00:13:37,028 --> 00:13:42,035
+And so we encode or store this entry A at
+this particular leaf corresponding to that
+
+186
+00:13:42,035 --> 00:13:44,097
+entry.
+And certainly the other extreme, let's
+
+187
+00:13:44,097 --> 00:13:48,029
+take a look at J.
+That's 1,1,1,1,0,0,0,0.
+
+188
+00:13:48,029 --> 00:13:56,019
+Corresponding to this entry here, and this
+is where we'll find J at the leaf Once
+
+189
+00:13:56,019 --> 00:14:00,098
+we've got this data structure for storing
+the entries when a packet comes in with a
+
+190
+00:14:00,098 --> 00:14:05,077
+particular destination address we can just
+do a bit by bit comparison traverse this
+
+191
+00:14:05,077 --> 00:14:09,065
+tree and it will tell us which entry is
+the longest matching prefix.
+
+192
+00:14:09,065 --> 00:14:14,033
+If we get to a leaf and find that there's
+nothing there we go back to the nearest
+
+193
+00:14:14,033 --> 00:14:17,064
+matching one that shared bits in common
+with that address.
+
+194
+00:14:17,064 --> 00:14:21,018
+You might want to experiment this with
+other entries in table.
+
+195
+00:14:21,018 --> 00:14:25,514
+So this is one common way of stirring and
+performing the look up for a longest
+
+196
+00:14:25,514 --> 00:14:30,197
+lasting prefix and there's another entry
+another mechanism which Is quite commonly
+
+197
+00:14:30,197 --> 00:14:33,091
+used to.
+That's to use a special type of memory
+
+198
+00:14:33,091 --> 00:14:37,067
+device called a Ternary Content Addressable
+Memory, or a T-CAM.
+
+199
+00:14:37,067 --> 00:14:42,088
+And a TCAM that here's the table again
+that we had that we had before.
+
+200
+00:14:42,088 --> 00:14:48,065
+And we start by storing it in a slightly
+different representation in the table.
+
+201
+00:14:48,065 --> 00:14:52,031
+So entry A would be stored as four 0's and
+a one.
+
+202
+00:14:52,031 --> 00:14:58,029
+And here we've rounded everything out to
+eight bits as if they're eight bit eight
+
+203
+00:14:58,029 --> 00:15:03,036
+bit prefixes and this mask value here.
+Is telling us which bits in the value
+
+204
+00:15:03,036 --> 00:15:07,026
+above actually matter.
+So wherever there was a 01, we put a one
+
+205
+00:15:07,026 --> 00:15:11,048
+to say these are all valid.
+And wherever we have an X, we put a zero.
+
+206
+00:15:11,048 --> 00:15:15,082
+So these two bits, these two
+representations here, we can either think
+
+207
+00:15:15,082 --> 00:15:20,079
+of them as a ternary value or two binary
+values that are storing in this entry.
+
+208
+00:15:20,079 --> 00:15:25,020
+They tell us which bits have which values
+and which ones don't matter.
+
+209
+00:15:25,020 --> 00:15:29,001
+So the process of performing a look-up,
+it's kind of brute force.
+
+210
+00:15:29,001 --> 00:15:33,066
+We compare an incoming address against
+every masked entry at the same time in
+
+211
+00:15:33,066 --> 00:15:37,024
+parallel on the table.
+So these specialized memories consume
+
+212
+00:15:37,024 --> 00:15:41,053
+quite a bit of power, because they're
+doing all of that at the same time.
+
+213
+00:15:41,053 --> 00:15:46,041
+But they can be really, really fast, and
+so they're quite commonly used the longest
+
+214
+00:15:46,041 --> 00:15:50,039
+prefix matches in routers.
+One of the last thing I wanted to point
+
+215
+00:15:50,039 --> 00:15:55,037
+out is this is sort of an increasing
+interest these days in what we might call
+
+216
+00:15:55,037 --> 00:15:58,089
+generic lookups.
+You know, I made the observation before
+
+217
+00:15:58,089 --> 00:16:03,081
+that these tables are holding a match
+field and an action field, and so we can
+
+218
+00:16:03,081 --> 00:16:08,079
+generalize this or abstract this and say
+pretty much any packet switch is doing a
+
+219
+00:16:08,079 --> 00:16:13,040
+lookup which is a match followed by an
+action, and the match might be on any
+
+220
+00:16:13,040 --> 00:16:18,032
+fields like an IP address or Ethernet
+destination address and an IP address if
+
+221
+00:16:18,032 --> 00:16:21,097
+we wanted, and we might have actions like
+forward or drop or.
+
+222
+00:16:21,097 --> 00:16:26,069
+Or, encapsulate or do other things.
+So we can generalize the specification of
+
+223
+00:16:26,069 --> 00:16:31,048
+a packet switch and Nowadays packet
+switches are designed that can do all
+
+224
+00:16:31,048 --> 00:16:34,078
+sorts of different types of forwarding for
+layer two.
+
+225
+00:16:34,078 --> 00:16:39,057
+Layer three at the same time.
+Or they could be they could be for, for
+
+226
+00:16:39,057 --> 00:16:41,055
+things like switches.
+Routers.
+
+227
+00:16:41,055 --> 00:16:44,011
+Firewalls.
+All sorts of devices like that.
+
+228
+00:16:44,011 --> 00:16:47,051
+So in summary, packet switches perform two
+basic operations.
+
+229
+00:16:47,051 --> 00:16:52,025
+They perform the look ups, for looking up
+addresses in a forwarding table, and then
+
+230
+00:16:52,025 --> 00:16:55,025
+they switch the packet to the correct
+outgoing port.
+
+231
+00:16:55,025 --> 00:16:59,079
+But high level, Ethernet switches and
+internet routers perform very similar
+
+232
+00:16:59,079 --> 00:17:02,094
+operations.
+Their basically processing these packets
+
+233
+00:17:02,094 --> 00:17:06,093
+in a very similar way.
+Address look up is different in switches
+
+234
+00:17:06,093 --> 00:17:10,044
+and routers.
+And we saw some examples of those for both
+
+235
+00:17:10,044 --> 00:17:14,038
+Ethernet addresses and IP addresses.
+That's the end of this video.
+

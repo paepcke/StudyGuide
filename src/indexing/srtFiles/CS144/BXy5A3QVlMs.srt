@@ -1,0 +1,229 @@
+1
+00:00:00,799 --> 00:00:04,170
+The answer to the second question is CLOSED.
+We start in
+
+2
+00:00:04,170 --> 00:00:07,410
+the closed state. Then the user program calls
+connect and
+
+3
+00:00:07,410 --> 00:00:10,830
+we transition to the SYN SENT state. While
+in the SYN SENT
+
+4
+00:00:10,830 --> 00:00:14,220
+state the user program calls close. There's
+an edge from
+
+5
+00:00:14,220 --> 00:00:19,060
+SYN SENT on the close event, back to the CLOSED
+state.
+
+6
+00:00:19,060 --> 00:00:25,919
+So now our sockets are in the ESTABLISHED
+state. They’re exchanging data. The six
+
+7
+00:00:25,919 --> 00:00:31,439
+states in blue boxes are how TCP “tears
+down” a connection, or how it closes it.
+
+8
+00:00:31,439 --> 00:00:34,670
+It’s sometimes useful to talk
+about “tearing down” a connection because
+
+9
+00:00:34,670 --> 00:00:39,230
+the word “close” means something in terms
+of system calls. A connection exists after
+
+10
+00:00:39,230 --> 00:00:45,559
+one side “closes” it, as we’ll see.
+There’s symmetry between how TCP sets up
+
+11
+00:00:45,559 --> 00:00:50,589
+a connection and how it tears it down. Where
+connection establishment uses synchronization
+
+12
+00:00:50,589 --> 00:00:54,249
+or SYN packets, connection teardown uses finish,
+or FIN
+
+13
+00:00:54,249 --> 00:00:59,089
+packets. If one of the sides of the connection
+calls close, it traverses along the right
+
+14
+00:00:59,089 --> 00:01:05,319
+edge on the left to the FIN WAIT 1 state.
+This causes it to send a FIN packet to the
+
+15
+00:01:05,319 --> 00:01:09,360
+other side of the connection.
+This is called the “active closer” because
+
+16
+00:01:09,360 --> 00:01:15,890
+it starts the operation. The other side receives
+the FIN and takes the blue edge on the right
+
+17
+00:01:15,890 --> 00:01:19,190
+to the CLOSE WAIT state. It remains in this
+state until the
+
+18
+00:01:19,190 --> 00:01:23,140
+program on its side calls close, at which
+point it sends a FIN.
+
+19
+00:01:23,140 --> 00:01:30,100
+Here’s where it gets a little complicated.
+A TCP connection is bidirectional. The active
+
+20
+00:01:30,100 --> 00:01:34,750
+closer has closed its direction of the connection,
+so it can’t write any more data. But it
+
+21
+00:01:34,750 --> 00:01:39,800
+could be the passive
+closer has more data to send. So it can continue
+
+22
+00:01:39,800 --> 00:01:44,990
+to send data, which the active closer receives
+and acknowledges. Or it could close its side
+
+23
+00:01:44,990 --> 00:01:48,260
+of the connection to. Or it could even have
+decided to
+
+24
+00:01:48,260 --> 00:01:52,180
+close the connection at the same time, such
+that we have two FIN packets crossing each
+
+25
+00:01:52,180 --> 00:01:57,420
+other in the network.
+From the FIN WAIT 1 state, where the active
+
+26
+00:01:57,420 --> 00:02:03,830
+closer is, there are three possible outcomes.
+First, the passive closer might acknowledge
+
+27
+00:02:03,830 --> 00:02:08,700
+the FIN but not send a FIN. In this case,
+the passive closer is in
+
+28
+00:02:08,699 --> 00:02:13,860
+the CLOSE WAIT state and can continue to send
+data. This is the lowermost edge, where the
+
+29
+00:02:13,860 --> 00:02:20,340
+active closer enters the FIN WAIT 2 state.
+Second, the passive closer might close its
+
+30
+00:02:20,340 --> 00:02:24,870
+side too,
+acknowledging the FIN and send a FIN of its
+
+31
+00:02:24,870 --> 00:02:31,819
+own. This is the middle edge, to the TIME_WAIT
+state. Finally, it could be that both sides
+
+32
+00:02:31,819 --> 00:02:35,069
+actively closed at almost the same time, and
+sent FINs to each
+
+33
+00:02:35,069 --> 00:02:40,750
+other. In this case, both are in the FIN WAIT
+1 state. Each one will see a FIN from the
+
+34
+00:02:40,750 --> 00:02:46,030
+other side that doesn’t ACK its own FIN.
+In this case we transition to the CLOSING
+
+35
+00:02:46,030 --> 00:02:49,380
+state, and when our FIN is
+acknowledged we transition to the TIME_WAIT
+
+36
+00:02:49,380 --> 00:02:56,380
+state, just as with the middle edge.
+TCP transitions from FIN WAIT 2 to TIME WAIT
+
+37
+00:02:57,819 --> 00:03:02,190
+when we receive a FIN from the other side.
+It then stays in TIME WAIT for a period of
+
+38
+00:03:02,190 --> 00:03:09,190
+time, until it can safely transition to close.
+The final blue edge, from LAST ACK to CLOSED,
+
+39
+00:03:09,510 --> 00:03:16,510
+occurs when the passive closer’s FIN is
+acknowledged.
+
+40
+00:03:20,959 --> 00:03:24,459
+On one hand, that’s a lot of detail. There
+are 12 states,
+
+41
+00:03:24,459 --> 00:03:29,050
+covering lots of cases. But you can see how
+this FSM takes
+
+42
+00:03:29,050 --> 00:03:32,810
+what was previously a few colloquial descriptions
+and gives
+
+43
+00:03:32,810 --> 00:03:36,530
+them detail and precision. Trying to implement
+a properly
+
+44
+00:03:36,530 --> 00:03:39,130
+interoperating TCP based on those descriptions
+would be
+
+45
+00:03:39,130 --> 00:03:44,319
+hard. This diagram precisely specifies how
+TCP behaves and
+
+46
+00:03:44,319 --> 00:03:48,720
+so is tremendously useful.
+

@@ -1,0 +1,278 @@
+1
+00:00:01,010 --> 00:00:05,640
+Phil: In this unit, you learned about network
+security, and just how dangerous the Internet
+
+2
+00:00:05,640 --> 00:00:06,380
+can be.
+
+3
+00:00:06,380 --> 00:00:12,680
+You learned that, when thinking about security,
+this is the model you should assume. The network
+
+4
+00:00:12,680 --> 00:00:16,750
+isn’t your friend. It’s controlled by
+the adversary.
+
+5
+00:00:16,750 --> 00:00:23,140
+Specifically, an adversary can eavesdrop on
+anything you transmit. An adversary can tamper
+
+6
+00:00:23,140 --> 00:00:28,640
+with and rewrite your messages. An adversary
+can suppress messages you send so they don’t
+
+7
+00:00:28,640 --> 00:00:34,559
+arrive. An adversary can spoof to be someone
+else or you. An Adversary can act as a man
+
+8
+00:00:34,559 --> 00:00:39,629
+in the middle and intercept your traffic before
+passing it on. An adversary can redirect or
+
+9
+00:00:39,629 --> 00:00:45,100
+hijack communication at layer 2, through Ethernet
+mechanisms, at layer 3, through ICMP or other
+
+10
+00:00:45,100 --> 00:00:51,719
+protocols, and at layer 4 by injecting new
+segments into a TCP stream. Many mechanisms
+
+11
+00:00:51,719 --> 00:00:55,479
+designed with the best of intentions turn
+out to be powerful weapons in the hands of
+
+12
+00:00:55,479 --> 00:01:01,799
+an adversary, both for accessing your data
+and for denying access to networked systems.
+
+13
+00:01:01,799 --> 00:01:07,430
+Nick: But there’s hope! You learned that
+three basic security principles can empower
+
+14
+00:01:07,430 --> 00:01:11,620
+you to build secure systems even in the face
+of such attacks.
+
+15
+00:01:11,620 --> 00:01:18,080
+The first, confidentiality, lets you communicate
+secretly even if someone can read your messages.
+
+16
+00:01:18,080 --> 00:01:22,250
+Using confidentiality, you can communicate
+with another party over an untrusted network
+
+17
+00:01:22,250 --> 00:01:26,880
+and be confident that no-one else can read
+your traffic. Or, at the the very least, it’s
+
+18
+00:01:26,880 --> 00:01:30,340
+computationally intractable for someone to
+read your traffic.
+
+19
+00:01:30,340 --> 00:01:35,060
+The second principle is integrity. Integrity
+lets you be sure that no-one has tampered
+
+20
+00:01:35,060 --> 00:01:41,200
+with your data. You learned about cryptographic
+mechanisms that let you very inexpensively
+
+21
+00:01:41,200 --> 00:01:44,790
+verify that a piece of data hasn’t been
+changed.
+
+22
+00:01:44,790 --> 00:01:49,690
+The third principle is authenticity. With
+authenticity, you can be sure that the other
+
+23
+00:01:49,690 --> 00:01:55,420
+party has a secret. This can be a secret you’ve
+shared beforehand, or a secret that they can
+
+24
+00:01:55,420 --> 00:02:01,020
+prove they have. You of course can’t be
+sure who the other party is, but you can at
+
+25
+00:02:01,020 --> 00:02:08,020
+least be sure they have a secret that only
+someone else you trust has.
+
+26
+00:02:08,780 --> 00:02:13,689
+Practically speaking, you also learned a whole
+bunch of security tools that achieve these
+
+27
+00:02:13,689 --> 00:02:19,109
+principles. You learned about symmetric cryptography,
+where two parties share a secret. You learned
+
+28
+00:02:19,109 --> 00:02:23,620
+about block ciphers, which transform fixed
+blocks of data. You learned about the dangers
+
+29
+00:02:23,620 --> 00:02:30,019
+of electronic code book mode and how cipher
+block chaining mode solves them.
+
+30
+00:02:30,019 --> 00:02:33,799
+You also learned about cryptographic hashes.
+They have the wonderful property that they
+
+31
+00:02:33,799 --> 00:02:38,299
+are easy to compute, but it would be intractable
+for an attacker to generate an input which
+
+32
+00:02:38,299 --> 00:02:42,709
+would compute to a specific hash value. So
+if someone tells you the hash value of your
+
+33
+00:02:42,709 --> 00:02:46,799
+software, you can check it’s correct. It’s
+nearly impossible for someone to create a
+
+34
+00:02:46,799 --> 00:02:53,639
+new piece of software that has the same hash
+value. This is called “collision resistance.”
+
+35
+00:02:53,639 --> 00:02:57,510
+You learned how you can combine cryptographic
+hashes with a shared secret to generate a
+
+36
+00:02:57,510 --> 00:03:02,659
+message authentication code, or MAC. With
+a MAC, you can be sure that no-one has tampered
+
+37
+00:03:02,659 --> 00:03:07,549
+with the message and that its sender has the
+secret. Simple ways of generating a MAC are
+
+38
+00:03:07,549 --> 00:03:12,669
+fraught with peril, though, so be careful
+
+39
+00:03:12,669 --> 00:03:18,040
+But how do we learn these secrets? You learned
+about a different kind of cryptographic system
+
+40
+00:03:18,040 --> 00:03:25,040
+than symmetric cryptography, called public
+key cryptography. With public key cryptography,
+
+41
+00:03:25,219 --> 00:03:30,069
+there are two keys, one public and one private.
+Information encrypted with the public key
+
+42
+00:03:30,069 --> 00:03:35,510
+can only be decrypted with the private key.
+So you can share your public key freely and
+
+43
+00:03:35,510 --> 00:03:40,840
+everyone else can send you encrypted data
+that only you can read. There are also ways
+
+44
+00:03:40,840 --> 00:03:45,909
+to generate message authentication codes using
+public key encrytpion, called signatures,
+
+45
+00:03:45,909 --> 00:03:52,099
+which only a private key can create but which
+the public key can verify.
+
+46
+00:03:52,099 --> 00:03:58,799
+Finally, certificates are a way of establishing
+a chain of trust to learn public keys. If
+
+47
+00:03:58,799 --> 00:04:02,249
+you trust Apple, for example, then Apple can
+sign a document telling you someone else’s
+
+48
+00:04:02,249 --> 00:04:07,040
+public key. You can then use that public key
+to communicate with them.
+
+49
+00:04:07,040 --> 00:04:12,739
+Phil: You’ve learned some of the basics
+of network security and cryptography. There
+
+50
+00:04:12,739 --> 00:04:17,370
+were a lot of details, as we tried to give
+you a sense of how these very important mechanisms
+
+51
+00:04:17,370 --> 00:04:23,030
+work. If you take away one lesson from this
+unit, however, it shouldn’t be exactly how
+
+52
+00:04:23,030 --> 00:04:28,490
+a block cipher works. It should be that in
+security, it’s very easy to make a mistake.
+
+53
+00:04:28,490 --> 00:04:33,590
+So don’t try to implement these mechanisms
+yourself – it’s too easy to miss a detail
+
+54
+00:04:33,590 --> 00:04:39,340
+that turns out to be a vulnerability. Use
+existing, open source implementations of crypto
+
+55
+00:04:39,340 --> 00:04:44,560
+systems. Use well-tested and well-understood
+approaches that people have examined for a
+
+56
+00:04:44,560 --> 00:04:51,560
+long time. Finally, be careful, and follow
+best practices.
+

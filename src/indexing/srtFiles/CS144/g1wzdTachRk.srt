@@ -1,0 +1,377 @@
+1
+00:00:00,960 --> 00:00:04,669
+Nick: By now you’ve heard it said several
+times during the quarter that IP is the “narrow
+
+2
+00:00:04,669 --> 00:00:09,070
+waist” of the Internet. You probably remember
+this figure from Unit 1….
+
+3
+00:00:09,070 --> 00:00:13,949
+Nick: If we want to use the Internet, we have
+to use the Internet Protocol, IP. We have
+
+4
+00:00:13,950 --> 00:00:14,950
+no choice.
+
+5
+00:00:14,950 --> 00:00:20,239
+But we have lots and lots of choices for Link
+Layers: IP runs over many different Link Layers,
+
+6
+00:00:20,239 --> 00:00:26,029
+such as Ethernet, WiFi, DSL, 3G cellular,
+and so on. On top of the unreliable IP layer,
+
+7
+00:00:26,029 --> 00:00:28,419
+we can choose between many different transport
+layers . We already saw TCP and UDP. There
+
+8
+00:00:28,419 --> 00:00:29,109
+is RTP for real time data and many others
+too. And of course there are tens of thousands
+
+9
+00:00:29,109 --> 00:00:29,359
+of different applications. .
+
+10
+00:00:29,229 --> 00:00:33,769
+In this unit you learned about different link
+layers. You learned about the Link Layer Service
+
+11
+00:00:33,769 --> 00:00:38,260
+Model, how Etherhet works, incuding the different
+speeds it runs at. You watched several videos
+
+12
+00:00:38,260 --> 00:00:42,440
+about wireless networks: Why wireless is different
+and why we need medium access control protocols
+
+13
+00:00:42,440 --> 00:00:47,120
+to share access to the air. You learned about
+Shannon capacity and how it helps us determine
+
+14
+00:00:47,120 --> 00:00:51,410
+the maximum data rate, or capacity, of a communication
+channel. And you learned about error correction
+
+15
+00:00:51,410 --> 00:00:52,519
+mechanisms.
+
+16
+00:00:52,519 --> 00:00:58,288
+Phil: We started by exploring the most commonly
+used wired network: Ethernet. If you’ve
+
+17
+00:00:58,289 --> 00:01:01,890
+ever physically plugged your computer into
+a network, it was almost certainly an Ethernet
+
+18
+00:01:01,890 --> 00:01:07,579
+network. Although many different wired networks
+were proposed in 1990s, and several were standardized,
+
+19
+00:01:07,579 --> 00:01:13,100
+built and sold, Ethernet won the day and is
+now almost universally used for wired networks.
+
+20
+00:01:13,100 --> 00:01:19,020
+This is because it is very simple, cheap and
+reliable. In a switched Ethernet network,
+
+21
+00:01:19,020 --> 00:01:22,570
+when you have data to send, you can just go
+ahead and send it. The network learns addresses,
+
+22
+00:01:22,570 --> 00:01:26,450
+so there are no complicated routing protocols
+to worry about. And Ethernet runs over the
+
+23
+00:01:26,450 --> 00:01:30,990
+wiring that is installed in almost every office
+building – making it very easy to install.
+
+24
+00:01:30,990 --> 00:01:37,700
+Nowadays, almost all Ethernet networks use
+Ethernet switches, allowing many simultaneous
+
+25
+00:01:37,700 --> 00:01:42,310
+communications in the network, and every link
+is full duplex, allowing data to flow in both
+
+26
+00:01:42,310 --> 00:01:48,299
+directions at the same time. In the next few
+years we will start to see 40Gb/s Ethernet,
+
+27
+00:01:48,299 --> 00:01:53,960
+100Gb/s Ethernet and beyond. Ethernet looks
+certain to remain the dominant wired link
+
+28
+00:01:53,960 --> 00:01:57,270
+layer for years to come.
+
+29
+00:01:57,270 --> 00:02:03,219
+All link layer networks have a maximum packet
+size they can carry. For Ethernet, this is
+
+30
+00:02:03,219 --> 00:02:08,840
+1500bytes by default. Other link layers can
+carry larger packets, such as the FDDI standard
+
+31
+00:02:08,840 --> 00:02:14,780
+of the 1990s that carried packets up to 4500bytes
+long. Some Ethernet networks are configured
+
+32
+00:02:14,780 --> 00:02:21,330
+to carry so-called Jumbo frames up to 9kbtyes
+long. We call the longest packet a link can
+
+33
+00:02:21,330 --> 00:02:27,700
+carry its “MTU”, or maximum transmission
+unit. When a router interconnects two links
+
+34
+00:02:27,700 --> 00:02:33,340
+with different MTUs, it might need to fragment
+IP datagrams going from the link with the
+
+35
+00:02:33,340 --> 00:02:38,190
+larger MTU to the smaller one. You learned
+how a router does this using the fragment
+
+36
+00:02:38,190 --> 00:02:45,190
+fields in the IPv4 header to break IP datagrams
+into new self-contained IP datagrams. The
+
+37
+00:02:45,640 --> 00:02:50,210
+network doesn’t reassemble the fragments;
+the destination host uses information in the
+
+38
+00:02:50,210 --> 00:02:57,210
+IPv4 header to put the data back into the
+correct order before handing it to TCP. IP
+
+39
+00:02:59,520 --> 00:03:04,740
+fragmentation is less common than it used
+to be, for two reasons. First, most wired
+
+40
+00:03:04,740 --> 00:03:09,420
+networks use Ethernet today, and so the MTU
+tends to be 1500bytes on most links and there
+
+41
+00:03:09,420 --> 00:03:15,840
+is no need to fragment. Second, hosts often
+use MTU discovery when creating a TCP connection,
+
+42
+00:03:15,840 --> 00:03:20,740
+to identify the shortest MTU along the path.
+The senders don’t send packets larger than
+
+43
+00:03:20,740 --> 00:03:26,560
+the MTU, eliminating the need for fragmentation
+along the way. When we talk about the MSS,
+
+44
+00:03:26,560 --> 00:03:33,130
+or maximum segment size, of a transport protocol,
+it’s the smallest MTU along a path between
+
+45
+00:03:33,130 --> 00:03:35,380
+the IP endpoints.
+
+46
+00:03:35,380 --> 00:03:40,110
+Wireless networks are very different from
+wired networks. In a wired network the links
+
+47
+00:03:40,110 --> 00:03:44,650
+have a constant data rate, but in a wireless
+network the link speed is always changing.
+
+48
+00:03:44,650 --> 00:03:49,690
+This is for several reasons: interference
+from nearby wireless networks, and from other
+
+49
+00:03:49,690 --> 00:03:54,340
+devices operating in the same frequency band,
+such as microwave ovens and cordless phones.
+
+50
+00:03:54,340 --> 00:03:59,570
+It can also be caused by fades in the channel
+due to shadowing and multipath. Wireless networks
+
+51
+00:03:59,570 --> 00:04:03,930
+also suffer from the so-called hidden terminal
+problem; this happens when two clients can’t
+
+52
+00:04:03,930 --> 00:04:07,850
+communicate directly with each other, but
+can both communicate with an access point.
+
+53
+00:04:07,850 --> 00:04:11,400
+Because they don’t hear each other, they
+don’t know to avoid transmitting at the
+
+54
+00:04:11,400 --> 00:04:17,259
+same time, requiring extra coordination in
+the network. Another way in which wireless
+
+55
+00:04:17,259 --> 00:04:21,870
+networks are different is that the channel
+naturally broadcasts all communications. This
+
+56
+00:04:21,870 --> 00:04:27,189
+means senders need to take turns to transmit,
+leading to medium access control protocols,
+
+57
+00:04:27,189 --> 00:04:32,789
+such as the CSMA protocol used in WiFi. A
+shared broadcast channel also means we need
+
+58
+00:04:32,789 --> 00:04:37,080
+to be more careful with securing our data
+– everyone in the neighborhood can more
+
+59
+00:04:37,080 --> 00:04:40,770
+easily eavesdrop on our conversations than
+in a wired network.
+
+60
+00:04:40,770 --> 00:04:45,349
+Nick: You also learned some of the underlying
+principles of communications that dictate
+
+61
+00:04:45,349 --> 00:04:48,250
+how we build physical links.
+
+62
+00:04:48,250 --> 00:04:52,020
+You learned about bit errors and how they
+can lead us to incorrectly decode a packet
+
+63
+00:04:52,020 --> 00:04:57,370
+on the wire; and you learn about ways to code
+data to make it easier to detect errors when
+
+64
+00:04:57,370 --> 00:04:58,960
+they happen.
+
+65
+00:04:58,960 --> 00:05:03,740
+And you learned about how error correcting
+codes work, and when we use them. Generally
+
+66
+00:05:03,740 --> 00:05:08,770
+speaking, we use error correcting codes in
+environments where bit errors are frequent,
+
+67
+00:05:08,770 --> 00:05:13,210
+or where the cost of retransmitting a corrupted
+packet would be high: for example, in a network
+
+68
+00:05:13,210 --> 00:05:16,139
+with a very large bandwidth-delay product.
+
+69
+00:05:16,139 --> 00:05:21,759
+Finally, but perhaps most importantly of all,
+you learned about Shannon capacity. Claude
+
+70
+00:05:21,759 --> 00:05:27,189
+Shannon created the wonderfully powerful field
+of information theory, and the centerpiece
+
+71
+00:05:27,189 --> 00:05:32,310
+of his work was deducing the maximum errror-free
+rate that a channel can communicate at, now
+
+72
+00:05:32,310 --> 00:05:38,310
+referred to as the Shannon capacity. The remarkable
+property of the Shannon capacity is that it
+
+73
+00:05:38,310 --> 00:05:43,430
+gives a fundamental, inescapable limit to
+the maximum rate information can be carried
+
+74
+00:05:43,430 --> 00:05:50,020
+over a channel, regardless of the clever coding
+schemes we invent.
+
+75
+00:05:50,020 --> 00:05:54,669
+All of the communications principles we describe
+give you a taste of some of the material you
+
+76
+00:05:54,669 --> 00:06:00,449
+would learn in an electrical engineering class
+on communications theory or information theory.
+
+77
+00:06:00,449 --> 00:06:04,580
+If you really enjoyed this material, you might
+consider taking EE classes in future.
+

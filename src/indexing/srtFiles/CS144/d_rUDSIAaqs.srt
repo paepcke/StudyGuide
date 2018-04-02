@@ -1,0 +1,34 @@
+1
+00:00:04,740 --> 00:00:11,740
+TLS random values are 32 bytes long (a 4 byte
+timestamp and 28 bytes of randomness). The
+
+2
+00:00:11,760 --> 00:00:18,760
+pre-master secret is 48 bytes long, 2 bytes
+of protocol version and 46 bytes of randomness.
+
+3
+00:00:19,789 --> 00:00:26,789
+Suppose your TLS session uses these to generate
+1024 bytes of keys. What is the maximum number
+
+4
+00:00:28,230 --> 00:00:34,230
+of tries an adversary might have to make to
+crack the session keys, assuming an exhaustive
+
+5
+00:00:34,230 --> 00:00:39,559
+attack? Assume that the adversary can correctly
+recompute the output of a pseudo-random function
+
+6
+00:00:39,559 --> 00:00:46,559
+from its input.
+Write your answer as the base-2 exponent (i.e.,
+
+7
+00:00:53,600 --> 00:01:00,600
+if it would take 231 tries, write 31).
+

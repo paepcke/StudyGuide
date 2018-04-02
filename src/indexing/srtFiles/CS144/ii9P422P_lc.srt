@@ -1,0 +1,779 @@
+1
+00:00:00,000 --> 00:00:05,057
+In this final video, as part of the attack
+series, we're going to talk about denial
+
+2
+00:00:05,057 --> 00:00:09,930
+of service. In February of 2000 Yahoo's
+router, one day, just started crashing.
+
+3
+00:00:09,930 --> 00:00:15,050
+And the engineers had problems with the
+router previously, but this time, it was
+
+4
+00:00:15,050 --> 00:00:20,046
+worse, and they couldn't figure out what
+was going wrong, why that every time they
+
+5
+00:00:20,046 --> 00:00:25,228
+brought up the router, it kept crashing.
+and it took them many hours to figure out
+
+6
+00:00:25,228 --> 00:00:30,039
+that they were being flooded with ICMP
+echo reply packets, at such a high rate
+
+7
+00:00:30,039 --> 00:00:35,635
+that it was causing their router to crash.
+And in the weeks and months that followed,
+
+8
+00:00:35,635 --> 00:00:40,510
+there were many of these so-called
+distributed denial of service or DDOS
+
+9
+00:00:40,510 --> 00:00:45,806
+attacks against a bunch of high-profile
+sites. So, basically, what a denial of
+
+10
+00:00:45,806 --> 00:00:50,567
+service attack is, is something that
+prevents a, a service from, from being
+
+11
+00:00:50,763 --> 00:00:55,981
+available and the easiest denial of
+service attack you can do is to overload
+
+12
+00:00:55,981 --> 00:01:01,720
+either a server or a network with too many
+packets so that it can no longer function
+
+13
+00:01:01,720 --> 00:01:07,394
+properly and serve legitimate clients. So,
+of course, you want to, as an attacker,
+
+14
+00:01:07,394 --> 00:01:12,351
+you want to maximize the costs of each
+packet to the server, in terms of, you
+
+15
+00:01:12,351 --> 00:01:17,520
+know, network resources, CPU, and memory.
+The reason distributed denial of service
+
+16
+00:01:17,520 --> 00:01:23,556
+or DDOS is so effective is that the attack
+comes from all over the place so it's hard
+
+17
+00:01:23,556 --> 00:01:29,133
+to just filter out one bad person. Also,
+because it's coming from a number of hosts
+
+18
+00:01:29,330 --> 00:01:33,879
+there's, each of those hosts has some of
+resources, so you, you've got a lot of
+
+19
+00:01:33,879 --> 00:01:38,315
+traffic coming in, if it's a, a widely
+distributed DDOS attack. How do attackers
+
+20
+00:01:38,315 --> 00:01:42,751
+do this? Well, they can penetrate many
+machines in a, in a semiautomatic fashion
+
+21
+00:01:42,751 --> 00:01:47,585
+with malware, and then they turn the hosts
+into zombies that will basically attack on
+
+22
+00:01:47,585 --> 00:01:51,737
+command. And then, at some point, they
+later decide, hey, I want to attack this
+
+23
+00:01:51,737 --> 00:01:56,230
+victim, like yahoo.com, you know, push a
+button, and boom, all of these compromised
+
+24
+00:01:56,230 --> 00:02:01,601
+machines will start flooding Yahoo with
+packets. Now, in general, DoS attacks are,
+
+25
+00:02:01,601 --> 00:02:07,498
+are attacks that just target availability.
+and you might wonder well, is, is, why is
+
+26
+00:02:07,498 --> 00:02:11,913
+that useful? Right, is not like you are
+breaking into a bank and convincing it to
+
+27
+00:02:11,913 --> 00:02:16,715
+send you money or something. But it turns
+out that a lot of people perform these DoS
+
+28
+00:02:16,715 --> 00:02:21,131
+attacks for a number of reasons. One is
+extortion right, you go to, attackers will
+
+29
+00:02:21,131 --> 00:02:25,602
+go to some company maybe the company is
+doing something a little bit fringe like
+
+30
+00:02:25,602 --> 00:02:29,686
+an offshore gambling site or something.
+And, they'll say hey, pay us a small
+
+31
+00:02:29,686 --> 00:02:34,212
+amount of money or we'll take down your
+site. And at that point the people who run
+
+32
+00:02:34,212 --> 00:02:38,793
+the site might think, well we don't really
+want to go to the FBI with this maybe we
+
+33
+00:02:38,793 --> 00:02:43,180
+should just pay the money, but of course
+if they do that it'll probably even you
+
+34
+00:02:43,180 --> 00:02:47,620
+know a month later the price will, will
+double, because they've now proven that
+
+35
+00:02:47,620 --> 00:02:52,469
+they're willing to into the extortion. But
+nonetheless people try to do this. Another
+
+36
+00:02:52,469 --> 00:02:57,464
+thing is that people use it for revenge.
+So, for example spammers mounted a
+
+37
+00:02:57,464 --> 00:03:02,979
+denial-of-service-attack that permanently
+shut down an anti-spam company called Blue
+
+38
+00:03:02,979 --> 00:03:08,235
+Security once. And you know, finally of
+course people do it for bragging rights.
+
+39
+00:03:08,430 --> 00:03:15,566
+so denial of service can happen at many
+different layers of abstraction. You do it
+
+40
+00:03:15,566 --> 00:03:20,517
+at the link layer, at the network layer,
+transport layer, or at the application
+
+41
+00:03:20,517 --> 00:03:24,972
+layer. So, here's a kind of a warm-up,
+some very simple denial of service
+
+42
+00:03:24,972 --> 00:03:29,923
+attacks. One is jam a wireless network at
+the physical layer, right? So, you could
+
+43
+00:03:29,923 --> 00:03:34,874
+maybe even just buy some off-the-shelf
+cordless phone or build a very simple
+
+44
+00:03:34,874 --> 00:03:40,401
+circuit that would make a wireless network
+inoperable, essentially. Another thing you
+
+45
+00:03:40,401 --> 00:03:45,463
+could do is exploit properties or features
+of the link layer. So, for example, in
+
+46
+00:03:45,463 --> 00:03:50,108
+802.11, there's this feature called the
+net allocation vector, which is used to
+
+47
+00:03:50,108 --> 00:03:54,932
+suggest when the network might be free.
+and what you can do that, is you can do,
+
+48
+00:03:54,932 --> 00:03:59,756
+use that repeatedly to reserve the network
+for the maximum number of seconds, and
+
+49
+00:03:59,756 --> 00:04:04,401
+then if, essentially at that point, no one
+will end up transmitting. You'll have,
+
+50
+00:04:04,401 --> 00:04:09,890
+have effectively disabled that wireless
+network. Here's an example of DoS attack
+
+51
+00:04:09,890 --> 00:04:15,562
+at the network l ayer, you can flood ping
+a victim. So, for example on most machines
+
+52
+00:04:15,562 --> 00:04:21,369
+you, run ping-fvictim.com and it will
+flood the victim with ICMP echo request
+
+53
+00:04:21,369 --> 00:04:27,245
+packets as fast as possible. Of course,
+what makes a denial of service attack
+
+54
+00:04:27,245 --> 00:04:32,768
+particularly devastating is if you can
+somehow amplify the, the resources
+
+55
+00:04:32,768 --> 00:04:37,872
+required to handle the packets at the
+servers. So, what the attacker really
+
+56
+00:04:37,872 --> 00:04:43,116
+wants is to, you know, expend a small
+number of resources, you know, send, send
+
+57
+00:04:43,325 --> 00:04:48,919
+some stream of packets. But that, somehow,
+that costs a lot more to process at the
+
+58
+00:04:48,919 --> 00:04:54,372
+server than it does for the attacker to
+send. Well, it turns out that there are
+
+59
+00:04:54,372 --> 00:05:06,269
+many ways to do exactly that. For example
+EDNS has some, some queries that result in
+
+60
+00:05:06,269 --> 00:05:12,144
+responses that are like 40 times the size
+of a query. And there also happen to be a
+
+61
+00:05:12,144 --> 00:05:16,679
+large number of open DNS resolvers around
+the Internet, say, you know, half a
+
+62
+00:05:16,679 --> 00:05:21,686
+million or so. So, one of the things you
+could do is flood the victim with DNS
+
+63
+00:05:21,686 --> 00:05:27,573
+responses. What you do is you send a
+request to a DNS server that's forged to
+
+64
+00:05:27,573 --> 00:05:33,612
+look like the request is coming from the
+victim. And, you know, the request might
+
+65
+00:05:33,612 --> 00:05:39,502
+be like some 60-byte EDNS request but the
+reply will 3,000 bytes. And the, so,
+
+66
+00:05:39,502 --> 00:05:44,592
+you're getting kind of a 40-times
+amplification in bandwith for, for these
+
+67
+00:05:44,592 --> 00:05:49,616
+requests and responses. And because you
+can send these requests to many, many
+
+68
+00:05:49,616 --> 00:05:55,302
+different open DNS resolvers it's, it's
+very easy to, to amplify this attack even
+
+69
+00:05:55,302 --> 00:06:00,855
+from a, from a small number of hosts that
+are originally sending these forged DNS
+
+70
+00:06:00,855 --> 00:06:06,341
+requests. Another nice thing from the
+attacker's point of view is that it's not
+
+71
+00:06:06,341 --> 00:06:11,970
+clear who's actually mounting the attack.
+By the time the request has made it to the
+
+72
+00:06:11,970 --> 00:06:17,598
+server and the server has responded, what
+you get is a packet from the DNS server to
+
+73
+00:06:17,598 --> 00:06:22,554
+the victim, but the, the, the attacker's
+identity doesn't figure anywhere in the
+
+74
+00:06:22,554 --> 00:06:26,976
+packet. Its Mac address isn't there. Its
+IP address was never there, since it was
+
+75
+00:06:26,976 --> 00:06:31,734
+forging the IP address to begin with, and,
+and it's not on the path between the DNS
+
+76
+00:06:31,734 --> 00:06:36,100
+server and the target. So again, it's,
+it's hard to f ilter out to, to kick the
+
+77
+00:06:36,100 --> 00:06:40,746
+bad guy off the network as a way to try to
+deal with this kind of attack when it's
+
+78
+00:06:40,746 --> 00:06:45,496
+underway. Yet another one of these attacks
+is known as a SMURF attack. This is
+
+79
+00:06:45,496 --> 00:06:50,678
+actually the attack that was being used
+against Yahoo. And here taking advantage
+
+80
+00:06:50,678 --> 00:06:56,173
+of the fact that ICMP echo, the, the ping
+protocol, supports pinging an IP broadcast
+
+81
+00:06:56,173 --> 00:07:01,106
+address. So, this is actually useful if
+you want to know what machines are on your
+
+82
+00:07:01,106 --> 00:07:05,852
+network, you ping the broadcast address,
+and you get an echo reply from every
+
+83
+00:07:05,852 --> 00:07:10,659
+machine that's connected to the network.
+Unfortunately, this provides a big
+
+84
+00:07:10,659 --> 00:07:15,889
+amplification opportunity for a flooding
+attack. Imagine they compromised one
+
+85
+00:07:15,889 --> 00:07:20,847
+machine on a network with, say, 200
+machines, and then you stick a bunch of
+
+86
+00:07:20,847 --> 00:07:26,281
+broadcast ping packets that purport to be
+from the victim's IP address. Then, all
+
+87
+00:07:26,281 --> 00:07:31,919
+200 machines on the network are going to
+reply to that IP address. And, and so
+
+88
+00:07:31,919 --> 00:07:37,149
+again, that's, that's what was used to
+take down Yahoo. The same thing was used
+
+89
+00:07:37,149 --> 00:07:43,078
+against buy.com, and Amazon back in 2000.
+Now, moving up the protocol stack, you can
+
+90
+00:07:43,078 --> 00:07:48,801
+also attack at the transport layer. So,
+remember, TCP has this initial handshake,
+
+91
+00:07:48,801 --> 00:07:54,598
+right? The, the client sends a server SYN
+packet, then the server sends a SYN-ACK
+
+92
+00:07:54,598 --> 00:08:00,029
+packet back to the client. And finally,
+the client sends server of the third ACK
+
+93
+00:08:00,029 --> 00:08:04,854
+packet. So, has implemented at the server,
+well, when the server receives a SYN
+
+94
+00:08:04,854 --> 00:08:10,251
+packet it you know, allocates some data
+structure, sticks it in a hash table and,
+
+95
+00:08:09,997 --> 00:08:15,013
+and sends back the SYN-ACK packet, and
+then it waits for this, this third ACK
+
+96
+00:08:15,013 --> 00:08:20,282
+packet here for some amount of time, like
+a minute. And then, if after a minute, it,
+
+97
+00:08:20,282 --> 00:08:25,235
+it basically garbage collects it and says,
+okay, I guess this connection is not
+
+98
+00:08:25,235 --> 00:08:30,610
+happening. So, every time a packet comes
+in, every time an ACK packet comes in, it
+
+99
+00:08:30,610 --> 00:08:35,968
+needs to be compared to all the existing
+connections to see if this is an ACK for
+
+100
+00:08:35,967 --> 00:08:42,148
+a, a partially open connection. And
+unfortunately, the operating system can't
+
+101
+00:08:42,149 --> 00:08:48,600
+handle an arbitrary number of partial
+connections. I mean especially at the time
+
+102
+00:08:48,600 --> 00:08:53,574
+t hese attacks started getting
+popularized, I mean, there, there would
+
+103
+00:08:53,574 --> 00:08:59,596
+only be, you know, only a small number of,
+of the partially open connections that the
+
+104
+00:08:59,596 --> 00:09:04,671
+OS would be willing to cache and then it
+would just drop the SYN packets, so or
+
+105
+00:09:04,671 --> 00:09:09,135
+would drop future SYN packets. So,
+basically, the SYN-bomb attack consists of
+
+106
+00:09:09,135 --> 00:09:14,027
+sending a stream of SYN packets all from
+bogus addresses, the SYN-ACKs go off into
+
+107
+00:09:14,027 --> 00:09:18,247
+wherever, and at that point, the, the
+servers' tables fill up and it stops
+
+108
+00:09:18,247 --> 00:09:23,210
+accepting connections and legitimate
+clients can't actually connect. And the
+
+109
+00:09:23,210 --> 00:09:28,739
+thing that was so devastating about the
+stack is just a, a few hundred packets per
+
+110
+00:09:28,739 --> 00:09:33,690
+second could completely disable most
+servers. So, you really didn't need a lot
+
+111
+00:09:33,690 --> 00:09:38,962
+of horsepower to mount this attack against
+a server you didn't like. So, an example
+
+112
+00:09:38,962 --> 00:09:44,363
+of SYN bombs in the wild, there was a worm
+called the MS Blaster worm, that basically
+
+113
+00:09:44,363 --> 00:09:49,635
+flooded port 80 of windowsupdate.com with
+SYN packets. And it sent about 50 SYN
+
+114
+00:09:49,635 --> 00:09:55,144
+packets per second, that's, that's again,
+they each only 40 bytes each. So, really
+
+115
+00:09:55,144 --> 00:10:00,162
+not a lot of bandwidth being consumed. It
+randomize the last two bytes of the source
+
+116
+00:10:00,162 --> 00:10:05,002
+IP address, so making it hard to track
+down the exact machines that were actually
+
+117
+00:10:05,002 --> 00:10:10,204
+infected. And what made this particularly
+devastating is that clients couldn't
+
+118
+00:10:10,204 --> 00:10:15,258
+connect to Windows Update to actually
+solve the problem. So, eventually, what
+
+119
+00:10:15,258 --> 00:10:20,441
+Microsoft had to do was change the update
+URL to be windowsupdate.microsoft.com
+
+120
+00:10:20,441 --> 00:10:24,912
+instead of windowsupdate.com. That still
+wasn't good enough, because there was
+
+121
+00:10:24,912 --> 00:10:29,504
+still old machines that were infected with
+the blaster worm and were actually trying
+
+122
+00:10:29,504 --> 00:10:33,880
+to connect to windowsupdate.com, which at
+that point they had given up on, so what
+
+123
+00:10:33,880 --> 00:10:38,471
+they eventually had to do was actually use
+a content distribution network, Akamai,
+
+124
+00:10:38,471 --> 00:10:43,117
+had a really high capacity to serve
+windowsupdate.com so those machines could
+
+125
+00:10:43,117 --> 00:10:47,193
+get updated and take care of the
+infection. Okay. Other attacks that can
+
+126
+00:10:47,193 --> 00:10:51,826
+happen. IP fragment flooding. Well, it's
+kind of similar to a SYN bomb attack
+
+127
+00:10:51,826 --> 00:10:56,951
+where, when, when you receive in, an IP
+fra gment, you have to allocate some space
+
+128
+00:10:56,951 --> 00:11:02,750
+and keep that around until the remaining
+fragments that are part of that IP packet
+
+129
+00:11:02,750 --> 00:11:10,032
+come in. And so you could basically forge
+a host send a stream of bogus fragments to
+
+130
+00:11:10,032 --> 00:11:15,426
+a server and never bother to send the
+remaining fragments, so the server will
+
+131
+00:11:15,426 --> 00:11:20,484
+never be able to reconstruct these
+packets, it will just have to time out the
+
+132
+00:11:20,484 --> 00:11:26,661
+fragments, eventually. Another attack is
+that there's a UDP service known as the,
+
+133
+00:11:26,661 --> 00:11:32,634
+the echo service, which is on port seven
+and if you send a packet to port seven on
+
+134
+00:11:32,634 --> 00:11:37,613
+a server that's running the echo service,
+which a lot of hosts used to by default it
+
+135
+00:11:37,613 --> 00:11:42,096
+will simply reply. So, I mean, this is
+kind of a, a really dumb attack. You could
+
+136
+00:11:42,096 --> 00:11:46,986
+just forge a packet from port seven on one
+machine to port seven on another machine,
+
+137
+00:11:46,986 --> 00:11:52,051
+and the two packet, the two machines will
+start sending traffic back and forth until
+
+138
+00:11:52,051 --> 00:11:56,872
+a packet is dropped. and, and so,
+obviously there's a pretty easy fix, which
+
+139
+00:11:56,872 --> 00:12:02,220
+is that a sane echo server should actually
+drop the packet on the floor if the source
+
+140
+00:12:02,220 --> 00:12:07,070
+port is port seven, right? The source port
+should be something higher, like over
+
+141
+00:12:07,070 --> 00:12:11,299
+1,024, anyway. Finally, there is, of
+course application-level denial of
+
+142
+00:12:11,299 --> 00:12:16,398
+service. So examples of this are, well,
+it's anything where just a, something you
+
+143
+00:12:16,398 --> 00:12:21,373
+can do on the client can be much more
+expensive to the server than it is to the
+
+144
+00:12:21,373 --> 00:12:26,855
+client. So, for example, DNS supports both
+TCP and UDP. And the way the TCP protocols
+
+145
+00:12:26,165 --> 00:12:32,060
+works is that you connect to the server
+and then, you send requests, but because
+
+146
+00:12:32,060 --> 00:12:36,846
+TCP is a stream protocol, not a datagram
+protocol, you need to say where the
+
+147
+00:12:36,846 --> 00:12:41,696
+boundaries are between requests and
+responses. And so, the protocol works, you
+
+148
+00:12:41,696 --> 00:12:47,121
+sent a 16-bit length followed by that many
+bytes. And it turned out a lot of DNS
+
+149
+00:12:47,121 --> 00:12:52,226
+implementations blocked while reading the
+message. So, if you sent a large length
+
+150
+00:12:52,226 --> 00:12:57,459
+but then didn't actually send that many
+bytes afterwards, you could end up causing
+
+151
+00:12:57,459 --> 00:13:01,806
+a DNS server to hang. And, and just
+completely take it out, right? So, very
+
+152
+00:13:01,806 --> 00:13:06,380
+little effort on the client's part, server
+becomes completely inoperable. Another
+
+153
+00:13:06,380 --> 00:13:11,343
+example is SSL, which requires a fairly
+expensive public key decryption to happen
+
+154
+00:13:11,343 --> 00:13:16,429
+at the server, and again, you can burn a
+lot of CPU time at the server by sending
+
+155
+00:13:16,429 --> 00:13:21,638
+bogus connection requests, a lot more time
+CPU time than is required at the client to
+
+156
+00:13:21,638 --> 00:13:22,680
+mount the attack.
+
